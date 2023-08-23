@@ -1,0 +1,59 @@
+<?php
+
+namespace Cachet\Models;
+
+use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Events\Components\ComponentCreated;
+use Cachet\Events\Components\ComponentDeleted;
+use Cachet\Events\Components\ComponentUpdated;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class Component extends Model
+{
+    use HasFactory, SoftDeletes;
+
+    protected $casts = [
+        'status' => ComponentStatusEnum::class,
+        'order' => 'int',
+        'component_group_id' => 'int',
+        'enabled' => 'bool',
+        'meta' => 'json',
+    ];
+
+    protected $fillable = [
+        'name',
+        'description',
+        'link',
+        'order',
+        'status',
+        'component_group_id',
+        'enabled',
+        'meta',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => ComponentCreated::class,
+        'deleted' => ComponentDeleted::class,
+        'updated' => ComponentUpdated::class,
+    ];
+
+    /**
+     * Get the group the component belongs to.
+     */
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(ComponentGroup::class, 'component_group_id', 'id');
+    }
+
+    /**
+     * Get the incidents for the component.
+     */
+    public function incidents(): HasMany
+    {
+        return $this->hasMany(Incident::class);
+    }
+}

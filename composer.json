@@ -1,0 +1,89 @@
+{
+    "name": "cachethq/core",
+    "description": "Cachet core package.",
+    "keywords": [
+        "cachet",
+        "status page",
+        "laravel"
+    ],
+    "homepage": "https://cachethq.io",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/cachethq/core/issues",
+        "source": "https://github.com/cachethq/core"
+    },
+    "authors": [
+        {
+            "name": "James Brooks",
+            "email": "james@alt-three.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "doctrine/dbal": "^3.6",
+        "illuminate/console": "^10.0",
+        "illuminate/database": "^10.0",
+        "illuminate/events": "^10.0",
+        "illuminate/queue": "^10.0",
+        "illuminate/support": "^10.0",
+        "inertiajs/inertia-laravel": "^0.6.9",
+        "lorisleiva/laravel-actions": "^2.7",
+        "spatie/laravel-query-builder": "^5.2",
+        "tightenco/ziggy": "^1.6",
+        "timacdonald/json-api": "^v1.0.0-beta.4",
+        "twig/twig": "^3.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.8",
+        "pestphp/pest": "^2.13",
+        "pestphp/pest-plugin-laravel": "^2.2",
+        "spatie/laravel-ray": "^1.32"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cachet\\": "src",
+            "Cachet\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Cachet\\Tests\\": "tests",
+            "Workbench\\App\\": "workbench/app/",
+            "Workbench\\Database\\": "workbench/database/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@prepare",
+        "test": "vendor/bin/pest",
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": [
+            "@prepare",
+            "@clear",
+            "@php vendor/bin/testbench workbench:build"
+        ],
+        "start": [
+            "@build",
+            "Composer\\Config::disableProcessTimeout",
+            "@php vendor/bin/testbench serve"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.x-dev"
+        },
+        "laravel": {
+            "providers": [
+                "Cachet\\CachetCoreServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

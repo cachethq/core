@@ -1,0 +1,7 @@
+.idea
+composer.lock
+/public/app.js.LICENSE.txt
+/node_modules
+/vendor
+.phpunit.xml
+.phpunit.result.cache

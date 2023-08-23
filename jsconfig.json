@@ -1,0 +1,20 @@
+{
+    "include": [
+        "./resources/js/**/*"
+    ],
+    "compilerOptions": {
+        "module": "es2020",
+        "moduleResolution": "node",
+        "target": "es5",
+        "jsx": "preserve",
+        "sourceMap": true,
+        "allowJs": true,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "resources/js/*"
+            ]
+        },
+        "types": ["vite/client"]
+    }
+}

@@ -1,0 +1,23 @@
+providers:
+  - Cachet\CachetCoreServiceProvider
+
+env:
+  - APP_NAME=Cachet
+  - SEND_QUERIES_TO_RAY=false
+
+migrations: true
+
+workbench:
+  start: '/status'
+  install: false
+  sync:
+    - from: public/build
+      to: public/vendor/cachethq/cachet
+  build:
+    - asset-publish
+    - create-sqlite-db
+    - db:wipe
+    - migrate:refresh
+  assets:
+    - query-builder-config
+    - cachet-assets
