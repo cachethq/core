@@ -1,4 +1,23 @@
-# Cachet Core [![run-tests](https://github.com/cachethq/core/actions/workflows/run-tests.yml/badge.svg)](https://github.com/cachethq/core/actions/workflows/run-tests.yml)
+<p align="center">
+    <img src="https://cachethq.io/assets/cachet-logo-light.svg" alt="Cachet Logo" /> 
+</p>
+
+<p align="center">
+    <a href="https://github.com/cachethq/core/actions">
+        <img src="https://github.com/cachethq/core/workflows/run-tests/badge.svg" alt="Build Status">
+    </a>
+    <a href="https://packagist.org/packages/cachethq/core">
+        <img src="https://img.shields.io/packagist/dt/cachethq/core" alt="Total Downloads">
+    </a>
+    <a href="https://packagist.org/packages/cachethq/core">
+        <img src="https://img.shields.io/packagist/v/cachethq/core" alt="Latest Stable Version">
+    </a>
+    <a href="https://packagist.org/packages/cachethq/core">
+        <img src="https://img.shields.io/github/license/cachethq/core" alt="License">
+    </a>
+</p>
+
+## Introduction
 
 This package provides the core functionality of Cachet and may be installed into existing Laravel applications. Cachet 3.x will ship as a standalone Laravel application that requires this package.
 
