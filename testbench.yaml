@@ -10,6 +10,7 @@ migrations: true
 workbench:
   start: '/status'
   install: false
+  welcome: true
   sync:
     - from: public/build
       to: public/vendor/cachethq/cachet
