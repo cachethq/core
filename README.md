@@ -41,4 +41,12 @@ This package provides the core functionality of Cachet and may be installed into
     ```shell
     npm run dev
     ```
-5. Make your changes to the frontend. Currently, HMR is not enabled so manual refreshes are needed. 
+5. Make your changes to the frontend. Currently, HMR is not enabled so manual refreshes are needed.
+
+## Security Vulnerabilities
+
+Please review our [security policy](https://github.com/cachethq/cachet/security/policy) on how to report security vulnerabilities.
+
+## License
+
+Cachet Core is open-sourced software licensed under the [MIT license](LICENSE.md).
