@@ -1,0 +1,27 @@
+preset: package
+
+namespace: Cachet
+user-auth-provider: App\Models\User
+
+paths:
+  src: src
+  resource: resources
+
+factory:
+  path: database/factories
+
+migration:
+  path: database/migrations
+  prefix: ''
+
+console:
+  namespace: Cachet\Console\Commands
+
+model:
+  namespace: Cachet\Models
+
+provider:
+  namespace: Cachet\Providers
+
+testing:
+  namespace: Cachet\Tests
