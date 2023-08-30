@@ -9,8 +9,8 @@ class CreateComponentGroup
 {
     use AsAction;
 
-    public function handle(): ComponentGroup
+    public function handle(array $data): ComponentGroup
     {
-        //
+        return ComponentGroup::create($data);
     }
 }

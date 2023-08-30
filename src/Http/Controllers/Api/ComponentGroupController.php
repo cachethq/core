@@ -2,6 +2,8 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\ComponentGroup\CreateComponentGroup;
+use Cachet\Http\Requests\CreateComponentGroupRequest;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
 use Illuminate\Http\Request;
@@ -27,9 +29,11 @@ class ComponentGroupController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateComponentGroupRequest $request)
     {
-        //
+        $componentGroup = CreateComponentGroup::run($request->validated());
+
+        return ComponentGroupResource::make($componentGroup);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use Cachet\Models\ComponentGroup;
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 
 it('can list component groups', function () {
     ComponentGroup::factory(2)->hasComponents(2)->create();
@@ -38,5 +39,28 @@ it('can get a component group', function () {
     $response->assertOk();
     $response->assertJsonFragment([
         'id' => $componentGroup->id,
+    ]);
+});
+
+it('can get a component group with components', function () {
+    $componentGroup = ComponentGroup::factory()->hasComponents(2)->create();
+
+    $response = getJson('/status/api/component-groups/'.$componentGroup->id.'?include=components');
+
+    $response->assertOk();
+    $response->assertJsonFragment(['id' => $componentGroup->id]);
+});
+
+it('can create a component group', function () {
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+    ]);
+
+    $response->assertCreated();
+    $response->assertJsonFragment([
+        'name' => 'New Group',
+    ]);
+    $this->assertDatabaseHas('component_groups', [
+        'name' => 'New Group',
     ]);
 });
