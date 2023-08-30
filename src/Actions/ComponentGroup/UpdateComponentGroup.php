@@ -9,8 +9,10 @@ class UpdateComponentGroup
 {
     use AsAction;
 
-    public function handle(ComponentGroup $componentGroup): ComponentGroup
+    public function handle(ComponentGroup $componentGroup, array $data): ComponentGroup
     {
-        //
+        $componentGroup->update($data);
+
+        return $componentGroup->fresh();
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Cachet\Actions\Metric;
 
-use Cachet\Data\MetricData;
 use Cachet\Models\Metric;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -10,8 +9,8 @@ class CreateMetric
 {
     use AsAction;
 
-    public function handle(MetricData $data): Metric
+    public function handle(array $data): Metric
     {
-        return Metric::create($data->toArray());
+        return Metric::create($data);
     }
 }

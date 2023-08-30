@@ -12,7 +12,6 @@ return new class extends Migration
     public function up()
     {
         Schema::create('metrics', function (Blueprint $table) {
-
             $table->increments('id');
             $table->string('name');
             $table->string('suffix');

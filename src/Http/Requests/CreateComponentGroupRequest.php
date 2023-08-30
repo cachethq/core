@@ -2,11 +2,9 @@
 
 namespace Cachet\Http\Requests;
 
-use Cachet\Enums\ComponentStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateComponentRequest extends FormRequest
+class CreateComponentGroupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +22,9 @@ class UpdateComponentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'max:255'],
-            'description' => ['string'],
-            'status' => [Rule::enum(ComponentStatusEnum::class)],
-            'link' => ['string'],
+            'name' => ['required', 'string', 'max:255'],
             'order' => ['int', 'min:0'],
-            'group' => ['int', 'min:0'],
-            'enabled' => ['boolean'],
+            'visible' => ['bool'],
         ];
     }
 }

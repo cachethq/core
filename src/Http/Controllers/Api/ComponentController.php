@@ -5,10 +5,10 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
-use Cachet\Data\ComponentData;
+use Cachet\Http\Requests\CreateComponentRequest;
+use Cachet\Http\Requests\UpdateComponentRequest;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -32,9 +32,9 @@ class ComponentController extends Controller
     /**
      * Create Component.
      */
-    public function store(Request $request)
+    public function store(CreateComponentRequest $request)
     {
-        $component = CreateComponent::run(ComponentData::fromRequest($request));
+        $component = CreateComponent::run($request->validated());
 
         return ComponentResource::make($component);
     }
@@ -56,12 +56,9 @@ class ComponentController extends Controller
     /**
      * Update Component.
      */
-    public function update(Request $request, Component $component)
+    public function update(UpdateComponentRequest $request, Component $component)
     {
-        // @todo can we improve this?
-        $request->mergeIfMissing($component->toArray());
-
-        UpdateComponent::run($component, ComponentData::fromRequest($request));
+        UpdateComponent::run($component, $request->validated());
 
         return ComponentResource::make($component->fresh());
     }

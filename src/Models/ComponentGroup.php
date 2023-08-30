@@ -16,6 +16,12 @@ class ComponentGroup extends Model
         'visible' => ResourceVisibilityEnum::class,
     ];
 
+    protected $fillable = [
+        'name',
+        'order',
+        'visible',
+    ];
+
     /**
      * Get the components in the group.
      */

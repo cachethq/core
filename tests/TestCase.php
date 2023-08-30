@@ -28,5 +28,9 @@ abstract class TestCase extends Orchestra
         $app['config']->set([
             'database.default' => 'testing',
         ]);
+
+        //        $app['config']->set([
+        //            'query-builder.request_data_source' => 'body',
+        //        ]);
     }
 }
