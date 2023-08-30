@@ -2,7 +2,6 @@
 
 namespace Cachet\Actions\Incident;
 
-use Cachet\Data\IncidentData;
 use Cachet\Models\Incident;
 use Illuminate\Support\Str;
 use Lorisleiva\Actions\Concerns\AsAction;

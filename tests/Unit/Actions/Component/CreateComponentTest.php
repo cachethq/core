@@ -1,7 +1,6 @@
 <?php
 
 use Cachet\Actions\Component\CreateComponent;
-use Cachet\Data\ComponentData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Illuminate\Support\Facades\Event;

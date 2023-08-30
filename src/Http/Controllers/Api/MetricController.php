@@ -3,12 +3,10 @@
 namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Actions\Metric\CreateMetric;
-use Cachet\Data\MetricData;
 use Cachet\Http\Requests\CreateMetricRequest;
 use Cachet\Http\Requests\UpdateMetricRequest;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;

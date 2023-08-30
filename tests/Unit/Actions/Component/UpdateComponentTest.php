@@ -1,7 +1,6 @@
 <?php
 
 use Cachet\Actions\Component\UpdateComponent;
-use Cachet\Data\ComponentData;
 use Cachet\Events\Components\ComponentUpdated;
 use Cachet\Models\Component;
 use Illuminate\Support\Facades\Event;

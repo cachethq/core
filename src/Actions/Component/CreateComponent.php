@@ -2,7 +2,6 @@
 
 namespace Cachet\Actions\Component;
 
-use Cachet\Data\ComponentData;
 use Cachet\Models\Component;
 use Lorisleiva\Actions\Concerns\AsAction;
 

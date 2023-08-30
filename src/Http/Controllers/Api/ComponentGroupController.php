@@ -2,9 +2,12 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ComponentGroupController extends Controller
 {
@@ -13,7 +16,12 @@ class ComponentGroupController extends Controller
      */
     public function index()
     {
-        //
+        $componentGroups = QueryBuilder::for(ComponentGroup::class)
+            ->allowedIncludes(['components'])
+            ->allowedSorts(['name', 'id'])
+            ->simplePaginate(request('per_page', 15));
+
+        return ComponentGroupResource::collection($componentGroups);
     }
 
     /**
@@ -29,7 +37,13 @@ class ComponentGroupController extends Controller
      */
     public function show(ComponentGroup $componentGroup)
     {
-        //
+        $componentGroup = QueryBuilder::for($componentGroup)
+            ->allowedIncludes(['components'])
+            ->first();
+
+        return ComponentGroupResource::make($componentGroup)
+            ->response()
+            ->setStatusCode(Response::HTTP_OK);
     }
 
     /**

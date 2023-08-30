@@ -2,7 +2,6 @@
 
 namespace Cachet\Actions\Metric;
 
-use Cachet\Data\MetricData;
 use Cachet\Models\Metric;
 use Lorisleiva\Actions\Concerns\AsAction;
 
