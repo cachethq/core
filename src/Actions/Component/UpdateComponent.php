@@ -10,9 +10,9 @@ class UpdateComponent
 {
     use AsAction;
 
-    public function handle(Component $component, ComponentData $data): Component
+    public function handle(Component $component, array $data): Component
     {
-        $component->update(array_filter($data->toArray()));
+        $component->update($data);
 
         return $component->fresh();
     }

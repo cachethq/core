@@ -10,8 +10,8 @@ class CreateComponent
 {
     use AsAction;
 
-    public function handle(ComponentData $component): Component
+    public function handle(array $component): Component
     {
-        return Component::create($component->toArray());
+        return Component::create($component);
     }
 }

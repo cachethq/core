@@ -31,6 +31,19 @@ class Metric extends Model
         'updated' => MetricUpdated::class,
     ];
 
+    protected $fillable = [
+        'name',
+        'suffix',
+        'description',
+        'calc_type',
+        'display_chart',
+        'places',
+        'default_value',
+        'default_view',
+        'visible',
+        'order',
+    ];
+
     /**
      * Get the metrics points.
      */

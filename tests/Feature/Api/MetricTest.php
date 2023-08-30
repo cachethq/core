@@ -3,6 +3,7 @@
 use Cachet\Models\Metric;
 
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 
 it('can list metrics', function () {
     Metric::factory(2)->create();
@@ -39,5 +40,21 @@ it('can get a metric', function () {
     $response->assertOk();
     $response->assertJsonFragment([
         'id' => $metric->id,
+    ]);
+});
+
+it('can create a metric', function () {
+    $response = postJson('/status/api/metrics', [
+        'name' => 'New Metric',
+        'suffix' => 'cups of tea',
+    ]);
+
+    $response->assertCreated();
+    $response->assertJsonFragment([
+        'name' => 'New Metric',
+    ]);
+    $this->assertDatabaseHas('metrics', [
+        'name' => 'New Metric',
+        'suffix' => 'cups of tea',
     ]);
 });

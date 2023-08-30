@@ -73,7 +73,9 @@ it('can create a component', function () {
 });
 
 it('can update a component', function () {
-    $component = Component::factory()->create();
+    $component = Component::factory()->create([
+        'order' => 10,
+    ]);
 
     $response = putJson('/status/api/components/'.$component->id, [
         'name' => 'Updated Component Name',
@@ -83,10 +85,12 @@ it('can update a component', function () {
     $response->assertOk();
     $response->assertJsonFragment([
         'name' => 'Updated Component Name',
+        'order' => 10,
     ]);
     $this->assertDatabaseHas('components', [
         'name' => 'Updated Component Name',
         'description' => 'This is an updated component.',
+        'order' => 10,
     ]);
 });
 

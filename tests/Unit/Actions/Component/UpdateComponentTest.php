@@ -14,10 +14,10 @@ it('can update a component', function () {
         'description' => 'My component description.',
     ]);
 
-    $data = new ComponentData(
-        name: 'My Updated Component',
-        description: 'My updated component description.',
-    );
+    $data = [
+        'name' => 'My Updated Component',
+        'description' => 'My updated component description.',
+    ];
 
     UpdateComponent::run(
         $component,
@@ -25,8 +25,8 @@ it('can update a component', function () {
     );
 
     expect($component)
-        ->name->toBe($data->name)
-        ->description->toBe($data->description);
+        ->name->toBe($data['name'])
+        ->description->toBe($data['description']);
 
     Event::assertDispatched(ComponentUpdated::class, fn ($event) => $event->component->is($component));
 });

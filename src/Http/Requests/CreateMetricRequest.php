@@ -12,7 +12,7 @@ class CreateMetricRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,7 +25,7 @@ class CreateMetricRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'suffix' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
+            'description' => ['string'],
             'default_value' => ['float'],
             'threshold' => ['int', 'min:0', 'max:60', new FactorOfSixty()],
         ];

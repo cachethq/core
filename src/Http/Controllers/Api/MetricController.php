@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Metric\CreateMetric;
 use Cachet\Data\MetricData;
 use Cachet\Http\Requests\CreateMetricRequest;
+use Cachet\Http\Requests\UpdateMetricRequest;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class MetricController extends Controller
      */
     public function store(CreateMetricRequest $request)
     {
-        $metric = CreateMetric::run(MetricData::fromRequest($request));
+        $metric = CreateMetric::run($request->validated());
 
         return MetricResource::make($metric);
     }
@@ -55,7 +56,7 @@ class MetricController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Metric $metric)
+    public function update(UpdateMetricRequest $request, Metric $metric)
     {
         //
     }
