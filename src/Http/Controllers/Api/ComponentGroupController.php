@@ -3,7 +3,10 @@
 namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Actions\ComponentGroup\CreateComponentGroup;
+use Cachet\Actions\ComponentGroup\DeleteComponentGroup;
+use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
 use Cachet\Http\Requests\CreateComponentGroupRequest;
+use Cachet\Http\Requests\UpdateComponentGroupRequest;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
 use Illuminate\Http\Request;
@@ -53,9 +56,11 @@ class ComponentGroupController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ComponentGroup $componentGroup)
+    public function update(UpdateComponentGroupRequest $request, ComponentGroup $componentGroup)
     {
-        //
+        UpdateComponentGroup::run($componentGroup, $request->validated());
+
+        return ComponentGroupResource::make($componentGroup->fresh());
     }
 
     /**
@@ -63,6 +68,11 @@ class ComponentGroupController extends Controller
      */
     public function destroy(ComponentGroup $componentGroup)
     {
-        //
+        // @todo - should we stop if a component group contains components?
+        // @todo - should we offer a flag to delete all components within the group?
+
+        DeleteComponentGroup::run($componentGroup);
+
+        return response()->noContent();
     }
 }

@@ -1,8 +1,10 @@
 <?php
 
 use Cachet\Models\ComponentGroup;
+use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
+use function Pest\Laravel\putJson;
 
 it('can list component groups', function () {
     ComponentGroup::factory(2)->hasComponents(2)->create();
@@ -62,5 +64,32 @@ it('can create a component group', function () {
     ]);
     $this->assertDatabaseHas('component_groups', [
         'name' => 'New Group',
+    ]);
+});
+
+it('can update a component group', function () {
+    $componentGroup = ComponentGroup::factory()->create();
+
+    $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
+        'name' => 'Updated Component Group Name',
+    ]);
+
+    $response->assertOk();
+    $response->assertJsonFragment([
+        'name' => 'Updated Component Group Name',
+    ]);
+    $this->assertDatabaseHas('component_groups', [
+        'name' => 'Updated Component Group Name',
+    ]);
+});
+
+it('can delete a component group', function () {
+    $componentGroup = ComponentGroup::factory()->create();
+
+    $response = deleteJson('/status/api/component-groups/'.$componentGroup->id);
+
+    $response->assertNoContent();
+    $this->assertDatabaseMissing('component_groups', [
+        'id' => $componentGroup->id,
     ]);
 });
