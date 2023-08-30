@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Models\ComponentGroup;
+
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;

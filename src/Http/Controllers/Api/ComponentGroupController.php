@@ -9,7 +9,6 @@ use Cachet\Http\Requests\CreateComponentGroupRequest;
 use Cachet\Http\Requests\UpdateComponentGroupRequest;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
