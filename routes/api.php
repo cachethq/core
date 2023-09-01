@@ -41,8 +41,8 @@ Route::delete('/metrics/{metric}', [MetricController::class, 'destroy'])->name('
 
 Route::get('/metrics/{metric}/points', [MetricPointController::class, 'index'])->name('metrics.points.index');
 Route::post('/metrics/{metric}/points', [MetricPointController::class, 'store'])->name('metrics.points.store');
-Route::get('/metrics/{metric}/points/{metricPoint}', [MetricPointController::class, 'store'])->name('metrics.points.show');
-Route::delete('/metrics/{metric}/points', [MetricPointController::class, 'destroy'])->name('metrics.points.destroy');
+Route::get('/metrics/{metric}/points/{metricPoint}', [MetricPointController::class, 'show'])->name('metrics.points.show')->scopeBindings();
+Route::delete('/metrics/{metric}/points/{metricPoint}', [MetricPointController::class, 'destroy'])->name('metrics.points.destroy');
 
 Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.index');
 Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store');

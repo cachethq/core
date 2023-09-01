@@ -2,10 +2,15 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\Metric\CreateMetricPoint;
+use Cachet\Actions\Metric\DeleteMetricPoint;
+use Cachet\Http\Resources\MetricPoint as MetricPointResource;
+use Cachet\Http\Requests\CreateMetricPointRequest;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
-use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class MetricPointController extends Controller
 {
@@ -14,15 +19,23 @@ class MetricPointController extends Controller
      */
     public function index(Metric $metric)
     {
-        //
+        $points = QueryBuilder::for(MetricPoint::class)
+            ->where('metric_id', $metric->id)
+            ->allowedIncludes(['metric'])
+            ->allowedSorts(['name', 'order', 'id'])
+            ->simplePaginate(request('per_page', 15));
+
+        return MetricPointResource::collection($points);
     }
 
     /**
      * Create Metric Point.
      */
-    public function store(Request $request, Metric $metric)
+    public function store(CreateMetricPointRequest $request, Metric $metric)
     {
-        //
+        CreateMetricPoint::run($metric, $request->validated());
+
+        return MetricPointResource::make($metric->fresh());
     }
 
     /**
@@ -30,7 +43,9 @@ class MetricPointController extends Controller
      */
     public function show(Metric $metric, MetricPoint $metricPoint)
     {
-        //
+        return MetricPointResource::make($metricPoint)
+            ->response()
+            ->setStatusCode(Response::HTTP_OK);
     }
 
     /**
@@ -38,6 +53,8 @@ class MetricPointController extends Controller
      */
     public function destroy(Metric $metric, MetricPoint $metricPoint)
     {
-        //
+        DeleteMetricPoint::run($metricPoint);
+
+        return response()->noContent();
     }
 }

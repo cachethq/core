@@ -47,7 +47,7 @@ class Metric extends Model
     /**
      * Get the metrics points.
      */
-    public function points(): HasMany
+    public function metricPoints(): HasMany
     {
         return $this->hasMany(MetricPoint::class);
     }

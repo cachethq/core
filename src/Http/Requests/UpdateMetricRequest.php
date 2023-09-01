@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Requests;
 
+use Cachet\Rules\FactorOfSixty;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateMetricRequest extends FormRequest
@@ -11,7 +12,7 @@ class UpdateMetricRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,11 @@ class UpdateMetricRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['string', 'max:255'],
+            'suffix' => ['string', 'max:255'],
+            'description' => ['string'],
+            'default_value' => ['float'],
+            'threshold' => ['int', 'min:0', 'max:60', new FactorOfSixty()],
         ];
     }
 }
