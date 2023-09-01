@@ -3,7 +3,6 @@
 namespace Cachet\Models;
 
 use Cachet\Enums\ComponentGroupVisibilityEnum;
-use Cachet\Enums\ResourceVisibilityEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
