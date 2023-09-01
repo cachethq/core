@@ -37,7 +37,7 @@ class Metric extends JsonApiResource
     public function toRelationships(Request $request): array
     {
         return [
-            'points' => fn() => MetricPoint::collection('points'),
+            'points' => fn () => MetricPoint::collection('points'),
         ];
     }
 }

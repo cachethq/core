@@ -2,6 +2,7 @@
 
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
+
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 
