@@ -10,7 +10,6 @@ use Cachet\Http\Requests\UpdateIncidentUpdateRequest;
 use Cachet\Http\Resources\IncidentUpdate as IncidentUpdateResource;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentUpdate;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;

@@ -2,6 +2,7 @@
 
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentUpdate;
+
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\putJson;
