@@ -16,3 +16,14 @@ it('can create delete an incident', function () {
 
     Event::assertDispatched(IncidentDeleted::class, fn ($event) => $event->incident->is($incident));
 });
+
+it('deletes related incident updates', function () {
+    $incident = Incident::factory()->hasIncidentUpdates(2)->create();
+
+    DeleteIncident::run($incident);
+
+    expect(Incident::find($incident->id))->toBeNull();
+    $this->assertDatabaseMissing('incident_updates', [
+        'incident_id' => $incident->id,
+    ]);
+});

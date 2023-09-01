@@ -8,7 +8,7 @@ use Cachet\Models\IncidentUpdate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\IncidentUpdate>
+ * @extends Factory<IncidentUpdate>
  */
 class IncidentUpdateFactory extends Factory
 {
