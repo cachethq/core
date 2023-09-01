@@ -16,7 +16,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ScheduleController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List Schedules.
      */
     public function index()
     {
@@ -30,7 +30,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create Schedule.
      */
     public function store(CreateScheduleRequest $request)
     {
@@ -42,7 +42,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get Schedule.
      */
     public function show(Schedule $schedule)
     {
@@ -52,7 +52,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update Schedule.
      */
     public function update(UpdateScheduleRequest $request, Schedule $schedule)
     {
@@ -63,7 +63,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete Schedule.
      */
     public function destroy(Schedule $schedule)
     {

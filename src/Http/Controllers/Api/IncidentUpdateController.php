@@ -17,7 +17,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class IncidentUpdateController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List Incident Updates.
      */
     public function index(Incident $incident)
     {
@@ -31,7 +31,7 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create Incident Update.
      */
     public function store(CreateIncidentUpdateRequest $request, Incident $incident)
     {
@@ -41,7 +41,7 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get Incident Update.
      */
     public function show(Incident $incident, IncidentUpdate $incidentUpdate)
     {
@@ -51,7 +51,7 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update Incident Update.
      */
     public function update(UpdateIncidentUpdateRequest $request, Incident $incident, IncidentUpdate $incidentUpdate)
     {
@@ -61,7 +61,7 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete Incident Update.
      */
     public function destroy(Incident $incident, IncidentUpdate $incidentUpdate)
     {

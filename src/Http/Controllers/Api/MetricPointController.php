@@ -10,7 +10,7 @@ use Illuminate\Routing\Controller;
 class MetricPointController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List Metric Points.
      */
     public function index(Metric $metric)
     {
@@ -18,7 +18,7 @@ class MetricPointController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create Metric Point.
      */
     public function store(Request $request, Metric $metric)
     {
@@ -26,7 +26,7 @@ class MetricPointController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get Metric Point.
      */
     public function show(Metric $metric, MetricPoint $metricPoint)
     {
@@ -34,7 +34,7 @@ class MetricPointController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete Metric Point.
      */
     public function destroy(Metric $metric, MetricPoint $metricPoint)
     {

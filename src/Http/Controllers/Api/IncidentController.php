@@ -16,7 +16,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class IncidentController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List Incidents.
      */
     public function index()
     {
@@ -30,7 +30,7 @@ class IncidentController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create Incident.
      */
     public function store(CreateIncidentRequest $request)
     {
@@ -40,7 +40,7 @@ class IncidentController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get Incident.
      */
     public function show(Incident $incident)
     {
@@ -50,7 +50,7 @@ class IncidentController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update Incident.
      */
     public function update(UpdateIncidentRequest $request, Incident $incident)
     {
@@ -60,7 +60,7 @@ class IncidentController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete Incident.
      */
     public function destroy(Incident $incident)
     {

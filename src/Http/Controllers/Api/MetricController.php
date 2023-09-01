@@ -14,7 +14,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class MetricController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List Metrics.
      */
     public function index()
     {
@@ -28,7 +28,7 @@ class MetricController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create Metric.
      */
     public function store(CreateMetricRequest $request)
     {
@@ -38,7 +38,7 @@ class MetricController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get Metric.
      */
     public function show(Metric $metric)
     {
@@ -48,7 +48,7 @@ class MetricController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update Metric.
      */
     public function update(UpdateMetricRequest $request, Metric $metric)
     {
@@ -56,7 +56,7 @@ class MetricController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete Metric.
      */
     public function destroy(Metric $metric)
     {

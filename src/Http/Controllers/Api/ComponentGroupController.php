@@ -16,7 +16,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ComponentGroupController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List Component Groups.
      */
     public function index()
     {
@@ -29,7 +29,7 @@ class ComponentGroupController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create Component Group.
      */
     public function store(CreateComponentGroupRequest $request)
     {
@@ -39,7 +39,7 @@ class ComponentGroupController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get Component Group.
      */
     public function show(ComponentGroup $componentGroup)
     {
@@ -49,7 +49,7 @@ class ComponentGroupController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update Component Group
      */
     public function update(UpdateComponentGroupRequest $request, ComponentGroup $componentGroup)
     {
@@ -59,7 +59,7 @@ class ComponentGroupController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete Component Group.
      */
     public function destroy(ComponentGroup $componentGroup)
     {
