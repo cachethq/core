@@ -2,6 +2,7 @@
 
 use Cachet\Models\Component;
 
+use Cachet\Models\ComponentGroup;
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -69,6 +70,40 @@ it('can create a component', function () {
         'name' => 'Test',
         'description' => 'This is a new component, created by the API.',
         'order' => 2,
+    ]);
+});
+
+it('can create a component and attach to a component group', function () {
+    $componentGroup = ComponentGroup::factory()->create();
+    $response = postJson('/status/api/components', [
+        'name' => 'Test',
+        'description' => 'This is a new component, created by the API.',
+        'component_group_id' => $componentGroup->id,
+    ]);
+
+    $response->assertCreated();
+    $response->assertJsonFragment([
+        'name' => 'Test',
+    ]);
+    $this->assertDatabaseHas('components', [
+        'name' => 'Test',
+        'description' => 'This is a new component, created by the API.',
+        'component_group_id' => $componentGroup->id,
+    ]);
+});
+
+it('cannot attach a new component to a component group that does not exist', function () {
+    $response = postJson('/status/api/components', [
+        'name' => 'Test',
+        'description' => 'This is a new component, created by the API.',
+        'component_group_id' => 1,
+    ]);
+
+    $response->assertUnprocessable();
+    $this->assertDatabaseMissing('components', [
+        'name' => 'Test',
+        'description' => 'This is a new component, created by the API.',
+        'component_group_id' => 1,
     ]);
 });
 

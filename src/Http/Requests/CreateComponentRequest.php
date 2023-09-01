@@ -31,6 +31,7 @@ class CreateComponentRequest extends FormRequest
             'order' => ['int', 'min:0'],
             'group' => ['int', 'min:0'],
             'enabled' => ['boolean'],
+            'component_group_id' => ['nullable', 'int', 'exists:component_groups,id'],
         ];
     }
 }
