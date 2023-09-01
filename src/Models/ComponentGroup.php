@@ -2,6 +2,7 @@
 
 namespace Cachet\Models;
 
+use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +14,7 @@ class ComponentGroup extends Model
 
     protected $casts = [
         'order' => 'int',
-        'visible' => ResourceVisibilityEnum::class,
+        'visible' => ComponentGroupVisibilityEnum::class,
     ];
 
     protected $fillable = [

@@ -19,7 +19,6 @@ class Component extends Model
     protected $casts = [
         'status' => ComponentStatusEnum::class,
         'order' => 'int',
-        'component_group_id' => 'int',
         'enabled' => 'bool',
         'meta' => 'json',
     ];
