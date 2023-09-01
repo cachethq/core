@@ -44,7 +44,7 @@ class ComponentController extends Controller
      */
     public function show(Component $component)
     {
-          return ComponentResource::make($component)
+        return ComponentResource::make($component)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }
