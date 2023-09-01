@@ -11,7 +11,7 @@ class DeleteIncident
 
     public function handle(Incident $incident)
     {
-        // @todo remove updates with incident.
+        $incident->incidentUpdates()->delete();
 
         $incident->delete();
     }
