@@ -8,5 +8,7 @@ it('can delete an incident update', function () {
 
     DeleteIncidentUpdate::run($incidentUpdate);
 
-    expect(IncidentUpdate::find($incidentUpdate->id))->toBeNull();
+    $this->assertDatabaseMissing('incident_updates', [
+        'id' => $incidentUpdate->id,
+    ]);
 });

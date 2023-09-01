@@ -12,7 +12,9 @@ it('can delete components', function () {
 
     DeleteComponent::run($component);
 
-    expect(Component::find($component->id))->toBeNull();
+    $this->assertSoftDeleted('components', [
+        'id' => $component->id,
+    ]);
 
     Event::assertDispatched(ComponentDeleted::class, fn ($event) => $event->component->is($component));
 });

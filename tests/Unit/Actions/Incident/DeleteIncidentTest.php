@@ -12,7 +12,9 @@ it('can create delete an incident', function () {
 
     DeleteIncident::run($incident);
 
-    expect(Incident::find($incident->id))->toBeNull();
+    $this->assertSoftDeleted('incidents', [
+        'id' => $incident->id,
+    ]);
 
     Event::assertDispatched(IncidentDeleted::class, fn ($event) => $event->incident->is($incident));
 });
@@ -22,7 +24,9 @@ it('deletes related incident updates', function () {
 
     DeleteIncident::run($incident);
 
-    expect(Incident::find($incident->id))->toBeNull();
+    $this->assertSoftDeleted('incidents', [
+        'id' => $incident->id,
+    ]);
     $this->assertDatabaseMissing('incident_updates', [
         'incident_id' => $incident->id,
     ]);

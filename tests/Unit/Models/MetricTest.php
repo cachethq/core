@@ -3,15 +3,15 @@
 use Cachet\Models\Metric;
 
 it('has points', function () {
-    $metric = Metric::factory()->hasPoints(2)->create();
+    $metric = Metric::factory()->hasMetricPoints(2)->create();
 
-    expect($metric->points)->toHaveCount(2);
+    expect($metric->metricPoints)->toHaveCount(2);
 });
 
 it('calculates value when using counter', function ($value, $counter, $expected) {
-    $metric = Metric::factory()->hasPoints(1, ['value' => $value, 'counter' => $counter])->create();
+    $metric = Metric::factory()->hasMetricPoints(1, ['value' => $value, 'counter' => $counter])->create();
 
-    expect($metric->points->first()->calculated_value)->toBe($expected);
+    expect($metric->metricPoints->first()->calculated_value)->toBe($expected);
 })->with([
     // value, counter, expected
     [1, 2, 2.0],

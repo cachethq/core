@@ -9,7 +9,7 @@ class DeleteComponent
 {
     use AsAction;
 
-    public function handle(Component $component)
+    public function handle(Component $component): void
     {
         $component->delete();
     }

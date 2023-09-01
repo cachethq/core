@@ -8,5 +8,7 @@ it('can delete schedules', function () {
 
     DeleteSchedule::run($schedule);
 
-    expect(Schedule::find($schedule->id))->toBeNull();
+    $this->assertSoftDeleted('schedules', [
+        'id' => $schedule->id,
+    ]);
 });
