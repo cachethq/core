@@ -2,7 +2,9 @@
 
 namespace Cachet\Http\Requests;
 
+use Cachet\Enums\IncidentStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateIncidentRequest extends FormRequest
 {
@@ -24,6 +26,11 @@ class CreateIncidentRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string'],
+            'status' => ['required', Rule::enum(IncidentStatusEnum::class)],
+            'visible' => ['boolean'],
+            'stickied' => ['boolean'],
+            'notifications' => ['boolean'],
+            'occurred_at' => ['nullable', 'string'],
         ];
     }
 }
