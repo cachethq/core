@@ -42,10 +42,6 @@ class MetricController extends Controller
      */
     public function show(Metric $metric)
     {
-        $metric = QueryBuilder::for($metric)
-            ->allowedIncludes(['points'])
-            ->first();
-
         return MetricResource::make($metric)
             ->response()
             ->setStatusCode(Response::HTTP_OK);

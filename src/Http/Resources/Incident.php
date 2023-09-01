@@ -15,10 +15,13 @@ class Incident extends JsonApiResource
             'name' => $this->name,
             'message' => $this->message,
             'component_id' => $this->component_id,
-            'status' => $this->status,
             'visible' => $this->visible,
             'stickied' => $this->stickied,
             'notifications' => $this->notifications,
+            'status' => [
+                'human' => $this->status->getName(),
+                'value' => $this->status->value,
+            ],
             'occurred' => [
                 'human' => optional($this->occurred_at)->diffForHumans(),
                 'string' => optional($this->occurred_at)->toDateTimeString(),

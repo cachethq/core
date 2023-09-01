@@ -67,9 +67,6 @@ class ComponentGroupController extends Controller
      */
     public function destroy(ComponentGroup $componentGroup)
     {
-        // @todo - should we stop if a component group contains components?
-        // @todo - should we offer a flag to delete all components within the group?
-
         DeleteComponentGroup::run($componentGroup);
 
         return response()->noContent();
