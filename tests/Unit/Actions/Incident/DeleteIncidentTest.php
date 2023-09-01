@@ -25,5 +25,5 @@ it('deletes related incident updates', function () {
     expect(Incident::find($incident->id))->toBeNull();
     $this->assertDatabaseMissing('incident_updates', [
         'incident_id' => $incident->id,
-    ])
+    ]);
 });
