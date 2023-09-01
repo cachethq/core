@@ -66,7 +66,7 @@ it('can create an incident', function () {
     $response->assertJsonFragment($payload);
 });
 
-it('cannot create an incident with bad data', function ($payload) {
+it('cannot create an incident with bad data', function (array $payload) {
     $response = postJson('/status/api/incidents', $payload);
 
     $response->assertUnprocessable();
@@ -79,7 +79,7 @@ it('cannot create an incident with bad data', function ($payload) {
 it('can update an incident', function () {
     $incident = Incident::factory()->create();
 
-    $response = putJson('/status/api/incidents/'.$incident->id, $payload = [
+    $response = putJson('/status/api/incidents/'.$incident->id, [
         'name' => 'New Incident Occurred',
         'message' => 'Something went wrong.',
         'status' => 2,
@@ -87,6 +87,31 @@ it('can update an incident', function () {
 
     $response->assertOk();
 });
+
+it('can update an incident while passing null data', function (array $payload) {
+    $incident = Incident::factory()->create();
+
+    $response = putJson('/status/api/incidents/'.$incident->id, $payload);
+
+    $response->assertJsonFragment([
+        'name' => 'Updated Incident',
+        'status' => 1,
+    ]);
+})->with([
+    fn() => ['name' => 'Updated Incident', 'status' => 1],
+]);
+
+it('cannot update an incident with bad data', function (array $payload) {
+    $incident = Incident::factory()->create();
+
+    $response = putJson('/status/api/incidents/'.$incident->id, $payload);
+
+    $response->assertUnprocessable();
+    $response->assertInvalid(array_keys($response->json('errors')));
+})->with([
+    fn() => ['name' => null, 'message' => null],
+    fn() => ['name' => 'New Incident', 'message' => null, 'status' => 999],
+]);
 
 it('can delete an incident', function () {
     $incident = Incident::factory()->create();
