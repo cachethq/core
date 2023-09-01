@@ -15,10 +15,10 @@ enum IncidentStatusEnum: int
     public function getName(): string
     {
         return match ($this->value) {
-            self::investigating->value => 'Investigating',
-            self::identified->value => 'Identified',
-            self::watching->value => 'Watching',
-            self::fixed->value => 'Fixed',
+            self::investigating->value => __('Investigating'),
+            self::identified->value => __('Identified'),
+            self::watching->value => __('Watching'),
+            self::fixed->value => __('Fixed'),
         };
     }
 }

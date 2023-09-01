@@ -64,7 +64,17 @@ it('can create an incident', function () {
     ]);
 
     $response->assertCreated();
-    $response->assertJsonFragment($payload);
+    $response->assertJson([
+        'data' => [
+            'attributes' => [
+                'name' => 'New Incident Occurred',
+                'message' => 'Something went wrong.',
+                'status' => [
+                    'value' => 2,
+                ],
+            ],
+        ],
+    ]);
 });
 
 it('cannot create an incident with bad data', function (array $payload) {
@@ -94,9 +104,15 @@ it('can update an incident while passing null data', function (array $payload) {
 
     $response = putJson('/status/api/incidents/'.$incident->id, $payload);
 
-    $response->assertJsonFragment([
-        'name' => 'Updated Incident',
-        'status' => 1,
+    $response->assertJson([
+        'data' => [
+            'attributes' => [
+                'name' => 'Updated Incident',
+                'status' => [
+                    'value' => 1,
+                ],
+            ],
+        ],
     ]);
 })->with([
     fn () => ['name' => 'Updated Incident', 'status' => 1],
