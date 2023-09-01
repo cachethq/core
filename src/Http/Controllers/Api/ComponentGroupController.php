@@ -43,10 +43,6 @@ class ComponentGroupController extends Controller
      */
     public function show(ComponentGroup $componentGroup)
     {
-        $componentGroup = QueryBuilder::for($componentGroup)
-            ->allowedIncludes(['components'])
-            ->first();
-
         return ComponentGroupResource::make($componentGroup)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
