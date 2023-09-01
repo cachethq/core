@@ -3,8 +3,10 @@
 namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Models\Incident;
+use Cachet\Models\IncidentUpdate;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class IncidentController extends Controller
 {

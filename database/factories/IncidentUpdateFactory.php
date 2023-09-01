@@ -2,6 +2,8 @@
 
 namespace Cachet\Database\Factories;
 
+use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Incident;
 use Cachet\Models\IncidentUpdate;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,7 +22,10 @@ class IncidentUpdateFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'incident_id' => Incident::factory(),
+            'status' => IncidentStatusEnum::identified->value,
+            'message' => fake()->paragraph,
+            'user_id' => 1, // @todo decide how to handle storing of users... nullable?
         ];
     }
 }

@@ -29,9 +29,9 @@ Route::delete('/incidents/{incident}', [IncidentController::class, 'destroy'])->
 
 Route::get('/incidents/{incident}/updates', [IncidentUpdateController::class, 'index'])->name('incidents.updates.index');
 Route::post('/incidents/{incident}/updates', [IncidentUpdateController::class, 'store'])->name('incidents.updates.store');
-Route::get('/incidents/{incident}/updates/{incidentUpdate}', [IncidentUpdateController::class, 'show'])->name('incidents.updates.show');
-Route::put('/incidents/{incident}/updates/{incidentUpdate}', [IncidentUpdateController::class, 'update'])->name('incidents.updates.update');
-Route::delete('/incidents/{incident}/updates/{incidentUpdate}', [IncidentUpdateController::class, 'destroy'])->name('incidents.updates.destroy');
+Route::get('/incidents/{incident}/updates/{incidentUpdate}', [IncidentUpdateController::class, 'show'])->name('incidents.updates.show')->scopeBindings();
+Route::put('/incidents/{incident}/updates/{incidentUpdate}', [IncidentUpdateController::class, 'update'])->name('incidents.updates.update')->scopeBindings();
+Route::delete('/incidents/{incident}/updates/{incidentUpdate}', [IncidentUpdateController::class, 'destroy'])->name('incidents.updates.destroy')->scopeBindings();
 
 Route::get('/metrics', [MetricController::class, 'index'])->name('metrics.index');
 Route::post('/metrics', [MetricController::class, 'store'])->name('metrics.store');

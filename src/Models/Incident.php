@@ -57,7 +57,7 @@ class Incident extends Model
     /**
      * Get the updates for this incident.
      */
-    public function updates(): HasMany
+    public function incidentUpdates(): HasMany
     {
         return $this->hasMany(IncidentUpdate::class);
     }
