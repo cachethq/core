@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Models\Incident;
+
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -72,8 +73,8 @@ it('cannot create an incident with bad data', function (array $payload) {
     $response->assertUnprocessable();
     $response->assertInvalid(array_keys($response->json('errors')));
 })->with([
-    fn() => ['name' => null, 'message' => null],
-    fn() => ['name' => 'New Incident', 'message' => null, 'status' => 999],
+    fn () => ['name' => null, 'message' => null],
+    fn () => ['name' => 'New Incident', 'message' => null, 'status' => 999],
 ]);
 
 it('can update an incident', function () {
@@ -98,7 +99,7 @@ it('can update an incident while passing null data', function (array $payload) {
         'status' => 1,
     ]);
 })->with([
-    fn() => ['name' => 'Updated Incident', 'status' => 1],
+    fn () => ['name' => 'Updated Incident', 'status' => 1],
 ]);
 
 it('cannot update an incident with bad data', function (array $payload) {
@@ -109,8 +110,8 @@ it('cannot update an incident with bad data', function (array $payload) {
     $response->assertUnprocessable();
     $response->assertInvalid(array_keys($response->json('errors')));
 })->with([
-    fn() => ['name' => null, 'message' => null],
-    fn() => ['name' => 'New Incident', 'message' => null, 'status' => 999],
+    fn () => ['name' => null, 'message' => null],
+    fn () => ['name' => 'New Incident', 'message' => null, 'status' => 999],
 ]);
 
 it('can delete an incident', function () {

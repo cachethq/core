@@ -37,9 +37,9 @@ class Incident extends JsonApiResource
     public function toRelationships(Request $request)
     {
         return [
-            'component' => fn() => Component::make($this->component),
-            'updates' => fn() => IncidentUpdate::collection($this->updates),
-            'user' => fn() => Component::make($this->user),
+            'component' => fn () => Component::make($this->component),
+            'updates' => fn () => IncidentUpdate::collection($this->updates),
+            'user' => fn () => Component::make($this->user),
         ];
     }
 }
