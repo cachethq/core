@@ -3,6 +3,7 @@
 namespace Cachet\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateComponentGroupRequest extends FormRequest
 {
@@ -25,6 +26,8 @@ class UpdateComponentGroupRequest extends FormRequest
             'name' => ['string', 'max:255'],
             'order' => ['int', 'min:0'],
             'visible' => ['bool'],
+            'components' => ['array'],
+            'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
         ];
     }
 }

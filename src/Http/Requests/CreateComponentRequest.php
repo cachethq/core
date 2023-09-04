@@ -29,9 +29,8 @@ class CreateComponentRequest extends FormRequest
             'status' => [Rule::enum(ComponentStatusEnum::class)],
             'link' => ['string'],
             'order' => ['int', 'min:0'],
-            'group' => ['int', 'min:0'],
             'enabled' => ['boolean'],
-            'component_group_id' => ['nullable', 'int', 'exists:component_groups,id'],
+            'component_group_id' => ['int', 'min:0', Rule::exists('component_groups', 'id')],
         ];
     }
 }

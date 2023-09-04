@@ -70,6 +70,7 @@ it('can create a component', function () {
         'name' => 'Test',
         'description' => 'This is a new component, created by the API.',
         'order' => 2,
+        'component_group_id' => null,
     ]);
 });
 
@@ -126,6 +127,47 @@ it('can update a component', function () {
         'name' => 'Updated Component Name',
         'description' => 'This is an updated component.',
         'order' => 10,
+    ]);
+});
+
+it('can update a component and attach it to a component group', function () {
+    $componentGroup = ComponentGroup::factory()->create();
+    $component = Component::factory()->create([
+        'order' => 10,
+    ]);
+
+    $response = putJson('/status/api/components/'.$component->id, [
+        'name' => 'Updated Component Name',
+        'description' => 'This is an updated component.',
+        'component_group_id' => $componentGroup->id,
+    ]);
+
+    $response->assertOk();
+    $response->assertJsonFragment([
+        'name' => 'Updated Component Name',
+        'order' => 10,
+    ]);
+    $this->assertDatabaseHas('components', [
+        'name' => 'Updated Component Name',
+        'description' => 'This is an updated component.',
+        'order' => 10,
+        'component_group_id' => $componentGroup->id,
+    ]);
+});
+
+it('cannot update a component and attach it to a component group that does not exist', function () {
+    $component = Component::factory()->create();
+
+    $response = putJson('/status/api/components/'.$component->id, [
+        'name' => 'Updated Component Name',
+        'description' => 'This is an updated component.',
+        'component_group_id' => 1,
+    ]);
+
+    $response->assertUnprocessable();
+    $this->assertDatabaseMissing('components', [
+        'id' => $component->id,
+        'component_group_id' => 1,
     ]);
 });
 

@@ -18,8 +18,6 @@ class UpdateComponentRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
     public function rules(): array
     {
@@ -29,7 +27,7 @@ class UpdateComponentRequest extends FormRequest
             'status' => [Rule::enum(ComponentStatusEnum::class)],
             'link' => ['string'],
             'order' => ['int', 'min:0'],
-            'group' => ['int', 'min:0'],
+            'component_group_id' => ['int', 'min:0', Rule::exists('component_groups', 'id')],
             'enabled' => ['boolean'],
         ];
     }

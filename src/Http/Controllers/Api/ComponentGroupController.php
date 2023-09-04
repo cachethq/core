@@ -33,7 +33,9 @@ class ComponentGroupController extends Controller
      */
     public function store(CreateComponentGroupRequest $request)
     {
-        $componentGroup = CreateComponentGroup::run($request->validated());
+        [$data, $components] = [$request->except('components'), $request->validated('components')];
+
+        $componentGroup = CreateComponentGroup::run($data, $components);
 
         return ComponentGroupResource::make($componentGroup);
     }
@@ -53,7 +55,9 @@ class ComponentGroupController extends Controller
      */
     public function update(UpdateComponentGroupRequest $request, ComponentGroup $componentGroup)
     {
-        UpdateComponentGroup::run($componentGroup, $request->validated());
+        [$data, $components] = [$request->except('components'), $request->validated('components')];
+
+        UpdateComponentGroup::run($componentGroup, $data, $components);
 
         return ComponentGroupResource::make($componentGroup->fresh());
     }

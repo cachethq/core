@@ -2,6 +2,7 @@
 
 use Cachet\Actions\ComponentGroup\CreateComponentGroup;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Cachet\Models\Component;
 
 it('can create a component group with just a name', function () {
     $data = [
@@ -29,4 +30,18 @@ it('can create a component group with a name, order and visibility', function ()
         ->name->toBe($data['name'])
         ->order->toBe($data['order'])
         ->visible->toBe(ComponentGroupVisibilityEnum::expanded);
+});
+
+it('can create a component group and add components', function () {
+    $data = [
+        'name' => 'Services',
+    ];
+
+    $components = Component::factory()->count(3)->create();
+
+    $componentGroup = CreateComponentGroup::run($data, $components->pluck('id')->values()->all());
+
+    $this->assertDatabaseHas('components', [
+        'component_group_id' => $componentGroup->id,
+    ]);
 });

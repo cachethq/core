@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 
 use function Pest\Laravel\deleteJson;
@@ -68,6 +69,26 @@ it('can create a component group', function () {
     ]);
 });
 
+it('can create a component group and attach existing components', function () {
+    $components = Component::factory()->create();
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'components' => $components->pluck('id')->values()->all(),
+    ]);
+
+    $response->assertCreated();
+    $response->assertJsonFragment([
+        'name' => 'New Group',
+    ]);
+    $this->assertDatabaseHas('component_groups', [
+        'name' => 'New Group',
+    ]);
+    $this->assertDatabaseHas('components', [
+        'component_group_id' => $response->json('data.id'),
+    ]);
+});
+
 it('can update a component group', function () {
     $componentGroup = ComponentGroup::factory()->create();
 
@@ -81,6 +102,27 @@ it('can update a component group', function () {
     ]);
     $this->assertDatabaseHas('component_groups', [
         'name' => 'Updated Component Group Name',
+    ]);
+});
+
+it('can update a component group with components', function () {
+    $components = Component::factory()->count(3)->create();
+    $componentGroup = ComponentGroup::factory()->create();
+
+    $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
+        'name' => 'Updated Component Group Name',
+        'components' => $components->pluck('id')->values()->all(),
+    ]);
+
+    $response->assertOk();
+    $response->assertJsonFragment([
+        'name' => 'Updated Component Group Name',
+    ]);
+    $this->assertDatabaseHas('component_groups', [
+        'name' => 'Updated Component Group Name',
+    ]);
+    $this->assertDatabaseHas('components', [
+        'component_group_id' => $response->json('data.id'),
     ]);
 });
 
