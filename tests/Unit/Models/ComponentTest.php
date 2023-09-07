@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 
@@ -26,4 +27,37 @@ it('casts meta to json', function () {
         ->meta->toBe([
             'foo' => 'bar',
         ]);
+});
+
+it('can scope to disabled components', function () {
+    Component::factory()->sequence([
+        'enabled' => true,
+    ], [
+        'enabled' => false,
+    ])->count(2)->create();
+
+    expect(Component::query()->count())->toEqual(2)
+        ->and(Component::query()->disabled()->count())->toEqual(1);
+});
+
+it('can scope to enabled components', function () {
+    Component::factory()->sequence([
+        'enabled' => true,
+    ], [
+        'enabled' => false,
+    ])->count(2)->create();
+
+    expect(Component::query()->count())->toEqual(2)
+        ->and(Component::query()->enabled()->count())->toEqual(1);
+});
+
+it('can scope to components with a specific status', function () {
+    Component::factory()->sequence([
+        'status' => ComponentStatusEnum::operational,
+    ], [
+        'status' => ComponentStatusEnum::performance_issues,
+    ])->count(2)->create();
+
+    expect(Component::query()->count())->toEqual(2)
+        ->and(Component::query()->status(ComponentStatusEnum::performance_issues)->count())->toEqual(1);
 });

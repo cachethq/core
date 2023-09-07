@@ -6,6 +6,7 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -68,5 +69,21 @@ class Incident extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class);
+    }
+
+    /**
+     * Scope to a specific status.
+     */
+    public function scopeStatus(Builder $query, IncidentStatusEnum $status): Builder
+    {
+        return $query->where('status', $status);
+    }
+
+    /**
+     * Scope to stickied incidents.
+     */
+    public function scopeStickied(Builder $query): Builder
+    {
+        return $query->where('stickied', true);
     }
 }

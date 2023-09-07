@@ -21,6 +21,9 @@ class IncidentUpdate extends Model
         'user_id',
     ];
 
+    /**
+     * Get the incident that the update belongs to.
+     */
     public function incident(): BelongsTo
     {
         return $this->belongsTo(Incident::class);

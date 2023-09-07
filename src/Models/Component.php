@@ -6,6 +6,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -54,5 +55,29 @@ class Component extends Model
     public function incidents(): HasMany
     {
         return $this->hasMany(Incident::class);
+    }
+
+    /**
+     * Scope to disabled components only.
+     */
+    public function scopeDisabled(Builder $query): Builder
+    {
+        return $query->where('enabled', false);
+    }
+
+    /**
+     * Scope to enabled components only.
+     */
+    public function scopeEnabled(Builder $query): Builder
+    {
+        return $query->where('enabled', true);
+    }
+
+    /**
+     * Scope to a specific status.
+     */
+    public function scopeStatus(Builder $query, ComponentStatusEnum $status): Builder
+    {
+        return $query->where('status', $status);
     }
 }

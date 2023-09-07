@@ -3,6 +3,7 @@
 namespace Cachet\Models;
 
 use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -28,5 +29,13 @@ class ComponentGroup extends Model
     public function components(): HasMany
     {
         return $this->hasMany(Component::class);
+    }
+
+    /**
+     * Scope component groups to a specific visibility.
+     */
+    public function scopeVisibility($query, ComponentGroupVisibilityEnum $visibility): Builder
+    {
+        return $query->where('visible', $visibility);
     }
 }
