@@ -11,7 +11,7 @@ use function Pest\Laravel\putJson;
 it('can list component groups', function () {
     ComponentGroup::factory(2)->hasComponents(2)->create();
 
-    $response = getJson('/status/api/component-groups?includes=components');
+    $response = getJson('/status/api/component-groups');
 
     $response->assertOk();
     $response->assertJsonCount(2, 'data');
