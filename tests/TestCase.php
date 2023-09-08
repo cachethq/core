@@ -3,13 +3,16 @@
 namespace Cachet\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
 
+use function Orchestra\Testbench\workbench_path;
+
 abstract class TestCase extends Orchestra
 {
-    use DatabaseMigrations, WithWorkbench;
+    use RefreshDatabase, WithLaravelMigrations, WithWorkbench;
 
     protected function setUp(): void
     {
@@ -22,7 +25,7 @@ abstract class TestCase extends Orchestra
 
     protected function defineDatabaseMigrations()
     {
-        $this->loadMigrationsFrom(realpath(__DIR__.'/Migrations'));
+        $this->loadMigrationsFrom(workbench_path('database/migrations'));
     }
 
     /**
@@ -31,17 +34,8 @@ abstract class TestCase extends Orchestra
     protected function defineEnvironment($app)
     {
         $app['config']->set([
-            'database.default' => 'sqlite',
-
-            'database.connections.sqlite' => [
-                'driver' => 'sqlite',
-                'database' => ':memory:',
-                'prefix' => '',
-            ],
+            'database.default' => 'testing',
+            // 'query-builder.request_data_source' => 'body',
         ]);
-
-        //        $app['config']->set([
-        //            'query-builder.request_data_source' => 'body',
-        //        ]);
     }
 }

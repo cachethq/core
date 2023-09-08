@@ -1,9 +1,9 @@
 <?php
 
 use Cachet\Cachet;
-use Cachet\Tests\Factories\UserFactory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
+use Workbench\Database\Factories\UserFactory;
 
 it('can get the current version of Cachet', function () {
     expect(Cachet::version())->toBeString()->toBe('3.x-dev');

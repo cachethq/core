@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Tests\Factories;
+namespace Workbench\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
