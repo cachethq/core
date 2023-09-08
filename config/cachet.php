@@ -23,6 +23,8 @@ return [
      */
     'path' => env('CACHET_PATH', 'status'),
 
+    'guard' => env('CACHET_GUARD', null),
+
     /*
      |--------------------------------------------------------------------------
      | Cachet Domain

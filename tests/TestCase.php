@@ -20,13 +20,24 @@ abstract class TestCase extends Orchestra
         );
     }
 
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadMigrationsFrom(realpath(__DIR__.'/Migrations'));
+    }
+
     /**
      * @param  \Illuminate\Foundation\Application  $app
      */
     protected function defineEnvironment($app)
     {
         $app['config']->set([
-            'database.default' => 'testing',
+            'database.default' => 'sqlite',
+
+            'database.connections.sqlite' => [
+                'driver' => 'sqlite',
+                'database' => ':memory:',
+                'prefix' => '',
+            ],
         ]);
 
         //        $app['config']->set([

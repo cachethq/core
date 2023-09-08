@@ -60,7 +60,9 @@ class CachetCoreServiceProvider extends ServiceProvider
             $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         });
 
-        Cachet::routes();
+        Cachet::routes()
+            ->withAuthenticationRoutes()
+            ->register();
     }
 
     /**
@@ -90,7 +92,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         ], 'cachet-config');
 
         $this->publishes([
-            __DIR__.'/../resources/views/dashboard.blade.php' => resource_path('views/vendor/cachet/app.blade.php'),
+            __DIR__ . '/../resources/views/dashboard.blade.php' => resource_path('views/vendor/cachet/app.blade.php'),
         ], 'cachet-views');
 
         $this->publishes([
