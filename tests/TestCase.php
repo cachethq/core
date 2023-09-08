@@ -3,12 +3,12 @@
 namespace Cachet\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Orchestra\Workbench\Workbench;
+
+use function Orchestra\Testbench\workbench_path;
 
 abstract class TestCase extends Orchestra
 {
@@ -25,7 +25,7 @@ abstract class TestCase extends Orchestra
 
     protected function defineDatabaseMigrations()
     {
-        $this->loadMigrationsFrom(Workbench::path('database/migrations'));
+        $this->loadMigrationsFrom(workbench_path('database/migrations'));
     }
 
     /**
