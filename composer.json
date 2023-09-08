@@ -49,7 +49,7 @@
         "psr-4": {
             "Cachet\\Tests\\": "tests",
             "Workbench\\App\\": "workbench/app/",
-            "Workbench\\Database\\": "workbench/database/"
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/"
         }
     },
     "scripts": {
