@@ -12,7 +12,7 @@ use function Orchestra\Testbench\workbench_path;
 
 abstract class TestCase extends Orchestra
 {
-    use RefreshDatabase, WithLaravelMigrations, WithWorkbench;
+    use RefreshDatabase, WithWorkbench;
 
     protected function setUp(): void
     {
@@ -21,11 +21,6 @@ abstract class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Cachet\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
-    }
-
-    protected function defineDatabaseMigrations()
-    {
-        $this->loadMigrationsFrom(workbench_path('database/migrations'));
     }
 
     /**
