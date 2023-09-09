@@ -8,8 +8,6 @@ use Orchestra\Testbench\Concerns\WithLaravelMigrations;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
 
-use function Orchestra\Testbench\workbench_path;
-
 abstract class TestCase extends Orchestra
 {
     use RefreshDatabase, WithWorkbench;
