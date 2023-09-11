@@ -18,3 +18,13 @@ it('can retrieve the user from auth resolver', function () {
     expect($user)->is(Cachet::user());
     expect(Cachet::user($request))->toBeNull();
 });
+
+it('can retrieve the user from the request', function () {
+    $user = UserFactory::new()->create();
+
+    $request = Request::create('/', 'GET');
+    $request->setUserResolver(fn () => $user);
+
+    expect($user)->is(Cachet::user($request));
+    expect(Cachet::user())->toBeNull();
+});
