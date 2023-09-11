@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use Cachet\Http\Controllers\HealthController;
+use Cachet\Http\Controllers\LoginController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,24 @@ class PendingRouteRegistration
 
                 $router->get('/health', HealthController::class)->name('health');
             });
+    }
+
+    public function withAuthenticationRoutes($middleware = ['cachet'])
+    {
+        Cachet::withAuthentication();
+
+        Route::namespace('Cachet\\Http\\Controllers')
+            ->domain(config('cachet.domain', null))
+            ->middleware($middleware)
+            ->prefix(Cachet::path())
+            ->as('cachet.')
+            ->group(function (Router $router) {
+                $router->get('/login', [LoginController::class, 'showLoginForm'])->name('cachet.login');
+
+                // @todo post login form.
+            });
+
+        return $this;
     }
 
     /**

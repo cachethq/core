@@ -5,11 +5,12 @@ env:
   - APP_NAME=Cachet
   - SEND_QUERIES_TO_RAY=false
 
-migrations: true
+migrations:
+  - workbench/database/migrations
 
 workbench:
   start: '/status'
-  install: false
+  install: true
   welcome: true
   sync:
     - from: public/build
