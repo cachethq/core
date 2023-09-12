@@ -5,6 +5,7 @@ use Cachet\Models\MetricPoint;
 
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 
 it('can list metric points', function () {
     $metric = Metric::factory()->hasMetricPoints(2)->create();
@@ -41,6 +42,21 @@ it('can get a metric point', function () {
     $response->assertOk();
     $response->assertJsonFragment([
         'id' => $metricPoint->id,
+    ]);
+});
+
+it('can create a metric point', function () {
+    $metric = Metric::factory()->create();
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points', [
+        'value' => 10,
+    ]);
+
+    $response->assertCreated();
+    $response->assertJsonFragment([
+        'value' => 10,
+        'counter' => 1,
+        'calculated_value' => 10,
     ]);
 });
 

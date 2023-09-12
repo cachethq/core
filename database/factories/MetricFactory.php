@@ -25,9 +25,10 @@ class MetricFactory extends Factory
             'name' => 'Cups of coffee',
             'suffix' => 'cups',
             'description' => 'How many cups of coffee consumed by the team.',
-            'default_value' => 0,
+            'default_value' => 1,
             'calc_type' => MetricTypeEnum::sum->value,
             'default_view' => MetricViewEnum::today->value,
+            'threshold' => 5, // 5 minutes.
         ];
     }
 }

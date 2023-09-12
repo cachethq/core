@@ -22,6 +22,11 @@ class MetricPoint extends Model
         'deleted' => MetricPointDeleted::class,
     ];
 
+    protected $fillable = [
+        'value',
+        'counter',
+    ];
+
     public function calculatedValue(): Attribute
     {
         return Attribute::make(
@@ -35,5 +40,13 @@ class MetricPoint extends Model
     public function metric(): BelongsTo
     {
         return $this->belongsTo(Metric::class);
+    }
+
+    /**
+     * Determine if the metric point was created within the threshold.
+     */
+    public function withinThreshold(int $threshold): bool
+    {
+        return $this->created_at->diffInMinutes(now()->startOfMinute()) < $threshold;
     }
 }
