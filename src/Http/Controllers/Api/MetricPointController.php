@@ -33,9 +33,11 @@ class MetricPointController extends Controller
      */
     public function store(CreateMetricPointRequest $request, Metric $metric)
     {
-        CreateMetricPoint::run($metric, $request->validated());
+        $metricPoint = CreateMetricPoint::run($metric, $request->validated());
 
-        return MetricPointResource::make($metric->fresh());
+        return MetricPointResource::make($metricPoint)
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**

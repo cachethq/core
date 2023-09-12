@@ -51,4 +51,12 @@ class Metric extends Model
     {
         return $this->hasMany(MetricPoint::class);
     }
+
+    /**
+     * Get the most recent metric points.
+     */
+    public function recentMetricPoints(int $points = 15): HasMany
+    {
+        return $this->metricPoints()->latest()->limit($points);
+    }
 }

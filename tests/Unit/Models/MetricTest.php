@@ -8,7 +8,13 @@ it('has points', function () {
     expect($metric->metricPoints)->toHaveCount(2);
 });
 
-it('calculates value when using counter', function ($value, $counter, $expected) {
+it('can retrieve only the most recent points', function () {
+    $metric = Metric::factory()->hasMetricPoints(10)->create();
+
+    expect($metric->recentMetricPoints(5)->get())->toHaveCount(5);
+});
+
+it('calculates counted values', function ($value, $counter, $expected) {
     $metric = Metric::factory()->hasMetricPoints(1, ['value' => $value, 'counter' => $counter])->create();
 
     expect($metric->metricPoints->first()->calculated_value)->toBe($expected);

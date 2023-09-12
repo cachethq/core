@@ -2,8 +2,11 @@
 
 use Cachet\Actions\Metric\CreateMetric;
 use Cachet\Enums\MetricTypeEnum;
+use Cachet\Events\Metrics\MetricCreated;
+use Illuminate\Support\Facades\Event;
 
 it('can create a metric', function () {
+    Event::fake();
     $data = [
         'name' => 'Foo',
         'suffix' => 'Bar',
@@ -24,4 +27,6 @@ it('can create a metric', function () {
         ->calc_type->toBe(MetricTypeEnum::sum)
         ->display_chart->toBe(true)
         ->places->toBe(1);
+
+    Event::assertDispatched(MetricCreated::class);
 });
