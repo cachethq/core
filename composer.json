@@ -28,7 +28,7 @@
         "illuminate/support": "^10.0",
         "inertiajs/inertia-laravel": "^0.6.9",
         "lorisleiva/laravel-actions": "^2.7",
-        "spatie/laravel-query-builder": "^5.2",
+        "spatie/laravel-query-builder": "^5.5",
         "tightenco/ziggy": "^1.6",
         "timacdonald/json-api": "^v1.0.0-beta.4",
         "twig/twig": "^3.0"
