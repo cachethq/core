@@ -46,7 +46,7 @@ it('creates a metric point with a default value', function () {
 it('increments the counter if within the metric\'s threshold', function () {
     Event::fake();
     $metric = Metric::factory()->hasMetricPoints(1, [
-        'created_at' => now()->addMinute(),
+        'created_at' => now()->startOfMinute(),
     ])->create([
         'threshold' => 1,
     ]);
