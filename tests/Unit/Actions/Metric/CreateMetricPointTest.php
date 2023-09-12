@@ -15,7 +15,9 @@ it('creates a metric point if it is the first point', function () {
         'value' => 1,
     ]);
 
-    expect($point)->toBeInstanceOf(MetricPoint::class);
+    expect($point)
+        ->toBeInstanceOf(MetricPoint::class)
+        ->created_at->toBeInstanceOf(\DateTime::class);
     $this->assertDatabaseHas('metric_points', [
         'metric_id' => $metric->id,
         'value' => 1,
@@ -86,3 +88,26 @@ it('creates a metric point if it is outside of the metric\'s threshold', functio
     $this->assertDatabaseCount('metric_points', 2);
     Event::assertDispatched(MetricPointCreated::class);
 });
+
+it('creates a metric point for a given timestamp', function ($timestamp) {
+    Event::fake();
+    $metric = Metric::factory()->hasMetricPoints(1, [
+        'created_at' => now()->subHour()->startOfMinute(),
+    ])->create([
+        'threshold' => 1,
+    ]);
+
+    $point = CreateMetricPoint::run($metric, [
+        'value' => 1,
+        'timestamp' => $timestamp,
+    ]);
+
+    expect($point)
+        ->toBeInstanceOf(MetricPoint::class)
+        ->created_at->isSameAs(Carbon\Carbon::parse($timestamp));
+})->with([
+    now()->addWeek()->startOfMinute()->unix(),
+    now()->subHour()->startOfMinute()->toAtomString(),
+    now()->subHour()->startOfMinute()->toDateTime(),
+    now()->subHour()->startOfMinute()->toDateTimeString(),
+]);
