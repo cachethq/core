@@ -4,6 +4,7 @@ use Cachet\Actions\Metric\CreateMetricPoint;
 use Cachet\Events\Metrics\MetricPointCreated;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 
 it('creates a metric point if it is the first point', function () {
@@ -17,7 +18,7 @@ it('creates a metric point if it is the first point', function () {
 
     expect($point)
         ->toBeInstanceOf(MetricPoint::class)
-        ->created_at->toBeInstanceOf(\DateTime::class);
+        ->created_at->toBeInstanceOf(DateTime::class);
     $this->assertDatabaseHas('metric_points', [
         'metric_id' => $metric->id,
         'value' => 1,
@@ -104,10 +105,23 @@ it('creates a metric point for a given timestamp', function ($timestamp) {
 
     expect($point)
         ->toBeInstanceOf(MetricPoint::class)
-        ->created_at->isSameAs(Carbon\Carbon::parse($timestamp));
+        ->created_at->isSameAs(Carbon::parse($timestamp));
 })->with([
     now()->addWeek()->startOfMinute()->unix(),
     now()->subHour()->startOfMinute()->toAtomString(),
     now()->subHour()->startOfMinute()->toDateTime(),
     now()->subHour()->startOfMinute()->toDateTimeString(),
+]);
+
+it('rounds created_at into 30 second intervals', function (string $timestamp, string $expected) {
+    $metric = Metric::factory()->create();
+
+    Carbon::setTestNow(Carbon::parse($timestamp));
+
+    $point = $metric->metricPoints()->create(['value' => 1, 'created_at' => $timestamp]);
+
+    expect($point->created_at)->toDateTimeString()->toBe($expected);
+})->with([
+    ['2023-09-13 12:34:15', '2023-09-13 12:34:30'],
+    ['2023-09-13 12:34:45', '2023-09-13 12:35:00']
 ]);

@@ -36,6 +36,26 @@ class MetricPoint extends Model
         );
     }
 
+    public function createdAt(): Attribute
+    {
+        return Attribute::make(
+            set: function ($createdAt) {
+                if (! $createdAt) {
+                    return;
+                }
+
+                if (! $createdAt instanceof DateTime) {
+                    $createdAt = Carbon::parse($createdAt);
+                }
+
+                $timestamp = $createdAt->unix();
+                $timestamp = 30 * round($timestamp / 30);
+
+                return Carbon::createFromTimestamp($timestamp);
+            }
+        );
+    }
+
     /**
      * Get the metric the point belongs to.
      */
