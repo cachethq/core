@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use Cachet\View\Components\Footer;
+use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,8 @@ class CachetCoreServiceProvider extends ServiceProvider
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
             'User-Agent', Cachet::USER_AGENT
         ));
+
+        AboutCommand::add('Cachet', fn () => ['Version' => Cachet::version()]);
     }
 
     /**
