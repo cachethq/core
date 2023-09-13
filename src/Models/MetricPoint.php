@@ -36,6 +36,9 @@ class MetricPoint extends Model
         );
     }
 
+    /**
+     * Override the created_at column to round the value into a 30-second interval.
+     */
     public function createdAt(): Attribute
     {
         return Attribute::make(
