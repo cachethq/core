@@ -8,11 +8,17 @@ use Illuminate\Routing\Controller;
 
 class GeneralController extends Controller
 {
+    /**
+     * Ping the API.
+     */
     public function ping(): JsonResponse
     {
         return response()->json(['data' => 'Pong!']);
     }
 
+    /**
+     * Get the Cachet version.
+     */
     public function version(): JsonResponse
     {
         return response()->json([
@@ -22,6 +28,9 @@ class GeneralController extends Controller
         ]);
     }
 
+    /**
+     * Get the Cachet status and message.
+     */
     public function status(): JsonResponse
     {
         return response()->json([
