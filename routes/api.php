@@ -2,6 +2,7 @@
 
 use Cachet\Http\Controllers\Api\ComponentController;
 use Cachet\Http\Controllers\Api\ComponentGroupController;
+use Cachet\Http\Controllers\Api\GeneralController;
 use Cachet\Http\Controllers\Api\IncidentController;
 use Cachet\Http\Controllers\Api\IncidentUpdateController;
 use Cachet\Http\Controllers\Api\MetricController;
@@ -49,3 +50,6 @@ Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules
 Route::get('/schedules/{schedule}', [ScheduleController::class, 'show'])->name('schedules.show');
 Route::put('/schedules/{schedule}', [ScheduleController::class, 'update'])->name('schedules.update');
 Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('metrics.destroy');
+
+Route::get('/ping', [GeneralController::class, 'ping'])->name('ping');
+Route::get('/version', [GeneralController::class, 'version'])->name('version');
