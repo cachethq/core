@@ -4,6 +4,7 @@ namespace Cachet;
 
 use Cachet\View\Components\Footer;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -38,6 +39,10 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
+
+        Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
+            'User-Agent', Cachet::USER_AGENT
+        ));
     }
 
     /**
