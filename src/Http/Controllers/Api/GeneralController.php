@@ -35,8 +35,8 @@ class GeneralController extends Controller
     {
         return response()->json([
             'data' => [
-//                'status' => Cachet::status(),
-//                'message' => Cachet::statusMessage(),
+                //                'status' => Cachet::status(),
+                //                'message' => Cachet::statusMessage(),
             ],
         ]);
     }
