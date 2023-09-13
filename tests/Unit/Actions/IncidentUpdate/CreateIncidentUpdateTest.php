@@ -16,4 +16,22 @@ it('can create an incident update', function () {
 
     expect($incidentUpdate)
         ->message->toBe($data['message']);
-})->todo('Need to figure out the user_id issue.');
+});
+
+it('updates the incident when the status is changed', function () {
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+    ]);
+
+    $data = [
+        'message' => 'This is an update message.',
+        'status' => IncidentStatusEnum::identified,
+    ];
+
+    $incidentUpdate = CreateIncidentUpdate::run($incident, $data);
+
+    expect($incidentUpdate)
+        ->message->toBe($data['message'])
+        ->and($incident->fresh())
+        ->status->toEqual(IncidentStatusEnum::identified);
+});
