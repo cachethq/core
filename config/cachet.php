@@ -76,4 +76,6 @@ return [
     'major_outage' => 50.0,
 
     'beacon' => env('CACHET_BEACON', true),
+
+    'docker' => env('CACHET_DOCKER', false),
 ];
