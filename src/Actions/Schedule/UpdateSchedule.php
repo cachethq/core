@@ -14,9 +14,10 @@ class UpdateSchedule
         $schedule->update($data);
 
         if ($components) {
-            $components = collect($components)->map(function ($component) {
-                return ['component_id' => $component['id'], 'component_status' => $component['status']];
-            })->all();
+            $components = collect($components)->map(fn ($component) => [
+                'component_id' => $component['id'],
+                'component_status' => $component['status'],
+            ])->all();
 
             $schedule->components()->sync($components);
         }
