@@ -17,10 +17,8 @@ class Cachet
 
     /**
      * Cachet is being used to authenticate users.
-     *
-     * @var bool
      */
-    public static $withAuthentication = false;
+    public static bool $withAuthentication = false;
 
     /**
      * Get the current user using `cachet.guard`.
@@ -48,10 +46,8 @@ class Cachet
 
     /**
      * Enable Cachet's authentication routes.
-     *
-     * @return static
      */
-    public static function withAuthentication()
+    public static function withAuthentication(): static
     {
         static::$withAuthentication = true;
 
