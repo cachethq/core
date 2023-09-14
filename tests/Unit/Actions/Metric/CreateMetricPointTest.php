@@ -123,5 +123,5 @@ it('rounds created_at into 30 second intervals', function (string $timestamp, st
     expect($point->created_at)->toDateTimeString()->toBe($expected);
 })->with([
     ['2023-09-13 12:34:15', '2023-09-13 12:34:30'],
-    ['2023-09-13 12:34:45', '2023-09-13 12:35:00']
+    ['2023-09-13 12:34:45', '2023-09-13 12:35:00'],
 ]);
