@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
 
@@ -109,6 +110,44 @@ it('can sort schedules by completed at date', function () {
     $response->assertJsonPath('data.1.attributes.id', 4);
     $response->assertJsonPath('data.2.attributes.id', 1);
     $response->assertJsonPath('data.3.attributes.id', 3);
+});
+
+it('can filter schedules by name', function () {
+    Schedule::factory(20)->create();
+    $schedule = Schedule::factory()->create([
+        'name' => 'Name to filter by.',
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'name' => 'Name to filter by.',
+        ],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
+});
+
+it('can filter schedules by status', function () {
+    Schedule::factory(20)->create([
+        'status' => ScheduleStatusEnum::upcoming
+    ]);
+    $schedule = Schedule::factory()->create([
+        'status' => ScheduleStatusEnum::complete,
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => ScheduleStatusEnum::complete->value,
+        ],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
 });
 
 it('can get a schedule', function () {
