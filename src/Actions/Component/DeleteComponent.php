@@ -11,6 +11,8 @@ class DeleteComponent
 
     public function handle(Component $component): void
     {
+        $component->subscribers()->detach();
+
         $component->delete();
     }
 }
