@@ -31,6 +31,26 @@ class ComponentFactory extends Factory
     }
 
     /**
+     * Create a component that is enabled.
+     */
+    public function enabled(): self
+    {
+        return $this->state([
+            'enabled' => true,
+        ]);
+    }
+
+    /**
+     * Create a component that is disabled
+     */
+    public function disabled(): self
+    {
+        return $this->state([
+            'enabled' => false,
+        ]);
+    }
+
+    /**
      * Provide the component with additional meta.
      */
     public function withMeta(): self
