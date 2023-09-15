@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 
 use function Pest\Laravel\deleteJson;
@@ -98,6 +99,64 @@ it('can sort incidents by status', function () {
     $response->assertJsonPath('data.2.attributes.id', 3);
     $response->assertJsonPath('data.3.attributes.id', 1);
     $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can filter incidents by name', function () {
+    Incident::factory(20)->create();
+    $incident = Incident::factory()->create([
+        'name' => 'Name to filter by.',
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'name' => 'Name to filter by.',
+        ],
+    ]);
+
+    $response = getJson('/status/api/incidents?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incident->id);
+});
+
+it('can filter incidents by status', function () {
+    Incident::factory(20)->create([
+        'status' => IncidentStatusEnum::investigating
+    ]);
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::identified
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => IncidentStatusEnum::identified->value,
+        ],
+    ]);
+
+    $response = getJson('/status/api/incidents?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incident->id);
+});
+
+it('can filter incidents by occurred at date', function () {
+    Incident::factory(20)->create([
+        'occurred_at' => '2019-01-01',
+    ]);
+    $incident = Incident::factory()->create([
+        'occurred_at' => '2023-01-01',
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'occurred_at' => '2023-01-01',
+        ],
+    ]);
+
+    $response = getJson('/status/api/incidents?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incident->id);
 });
 
 it('can get an incident', function () {
