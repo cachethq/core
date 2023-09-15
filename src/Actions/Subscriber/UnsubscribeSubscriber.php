@@ -12,7 +12,7 @@ class UnsubscribeSubscriber
 
     public function handle(Subscriber $subscriber): void
     {
-        $subscriber->subscriptions()->delete();
+        $subscriber->components()->delete();
 
         SubscriberUnsubscribed::dispatch($subscriber);
 

@@ -54,13 +54,13 @@ it('can create a subscriber with components', function () {
 
     $subscriber = CreateSubscriber::run('james@alt-three.com', components: [
         $componentA->id, $componentB->id,
-    ]);
+    ], verified: true);
 
     expect($subscriber)
         ->email->toBe('james@alt-three.com')
         ->global->toBeFalse()
         ->verified_at->toBeInstanceOf(DateTime::class)
-        ->subscriptions->toBeEmpty();
+        ->components->toHaveCount(2);
 
     Event::assertDispatched(SubscriberCreated::class);
 });

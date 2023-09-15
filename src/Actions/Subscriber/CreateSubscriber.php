@@ -20,7 +20,7 @@ class CreateSubscriber
             'verified_at' => $verified ? now() : null,
         ]);
 
-        $subscriber->subscriptions()->saveMany($components);
+        $subscriber->components()->attach($components);
 
         return $subscriber;
     }

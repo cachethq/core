@@ -34,9 +34,9 @@ class Subscriber extends Model
     /**
      * Get the subscriber's component subscriptions.
      */
-    public function subscriptions(): HasMany
+    public function components(): BelongsToMany
     {
-        return $this->hasMany(Subscription::class);
+        return $this->belongsToMany(Component::class, 'subscriptions');
     }
 
     /**

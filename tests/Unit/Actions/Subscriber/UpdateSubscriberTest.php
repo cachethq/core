@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Actions\Subscriber\UpdateSubscriber;
+use Cachet\Models\Component;
 use Cachet\Models\Subscriber;
 
 it('can update a subscriber\'s email address', function () {
@@ -24,7 +25,7 @@ it('can update a subscriber without passing an email address', function () {
         ->verified_at->not()->toBeNull();
 });
 
-it('updating a subscriber but not changing email does not reset the verified_at column', function () {
+it('does not reset the verified_at column when updating a subscriber without changing email', function () {
     $subscriber = Subscriber::factory()->verified()->create([
         'email' => 'james@alt-three.com',
     ]);
@@ -36,7 +37,7 @@ it('updating a subscriber but not changing email does not reset the verified_at 
         ->verified_at->not()->toBeNull();
 });
 
-it('changing a subscriber\'s email resets the verified_at and verify_code columns', function () {
+it('resets the verified_at and verify_code columns when changing email', function () {
     $subscriber = Subscriber::factory()->verified()->create([
         'email' => 'james@alt-three.com',
     ]);
@@ -49,4 +50,21 @@ it('changing a subscriber\'s email resets the verified_at and verify_code column
         ->email->toBe('james@cachethq.io')
         ->verified_at->toBeNull()
         ->verify_code->not()->toBe($verifyCode);
+});
+
+it('can update a subscriber\'s component subscriptions', function () {
+    [$componentA, $componentB] = Component::factory()->count(2)->create();
+    $subscriber = Subscriber::factory()->hasComponents()->create();
+
+    expect($subscriber->components)
+        ->toHaveCount(1);
+
+    UpdateSubscriber::run($subscriber, components: [
+        $componentA->id, $componentB->id,
+    ]);
+
+    expect($subscriber->fresh())
+        ->components->toHaveCount(2)
+        ->and($subscriber->components()->first())
+        ->toBeInstanceOf(Component::class);
 });

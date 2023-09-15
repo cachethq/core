@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Events\Subscribers\SubscriberVerified;
+use Cachet\Models\Component;
 use Cachet\Models\Subscriber;
 use Illuminate\Support\Facades\Event;
 
@@ -38,13 +39,11 @@ it('can reset the verification status', function () {
         ->verify_code->not()->toBe($verifyCode);
 });
 
-it('has subscriptions', function () {
-    $subscriber = Subscriber::factory()->hasSubscriptions()->create();
+it('has components', function () {
+    $subscriber = Subscriber::factory()->hasComponents()->create();
 
     expect($subscriber)
-        ->subscriptions->toHaveCount(1)
-        ->and($subscriber->subscriptions()->first())
-        ->toMatchArray([
-            'subscriber_id' => $subscriber->id,
-        ]);
+        ->components->toHaveCount(1)
+        ->and($subscriber->components()->first())
+        ->toBeInstanceOf(Component::class);
 });
