@@ -18,3 +18,18 @@ it('can delete components', function () {
 
     Event::assertDispatched(ComponentDeleted::class, fn ($event) => $event->component->is($component));
 });
+
+it('deletes attached subscriptions when deleted', function () {
+    $component = Component::factory()->hasSubscribers(1, ['email' => 'james@alt-three.com'])->create();
+    $subscriber = $component->subscribers()->first();
+
+    $this->assertDatabaseHas('subscriptions', [
+        'subscriber_id' => $subscriber->id,
+    ]);
+
+    DeleteComponent::run($component);
+
+    $this->assertDatabaseMissing('subscriptions', [
+        'subscriber_id' => $subscriber->id,
+    ]);
+});
