@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentUpdate;
 
@@ -80,6 +81,29 @@ it('can sort incident updates by created date', function () {
     $response->assertJsonPath('data.1.attributes.id', 4);
     $response->assertJsonPath('data.2.attributes.id', 1);
     $response->assertJsonPath('data.3.attributes.id', 3);
+});
+
+it('can filter incident updates by status', function () {
+    $incident = Incident::factory()->hasIncidentUpdates(20)->create([
+        'status' => IncidentStatusEnum::investigating
+    ]);
+
+    $incidentUpdate = IncidentUpdate::factory()->for($incident)->create([
+        'status' => IncidentStatusEnum::watching
+    ]);
+
+    $incident = Incident::query()->first();
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => IncidentStatusEnum::watching->value,
+        ],
+    ]);
+
+    $response = getJson("/status/api/incidents/{$incident->id}/updates?$query");
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incidentUpdate->id);
 });
 
 it('can get an incident update', function () {
