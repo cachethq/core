@@ -26,13 +26,14 @@ it('does not list more than 15 component groups by default', function () {
     $response->assertJsonCount(15, 'data');
 });
 
-it('can list more than 15 components', function () {
-    ComponentGroup::factory(20)->create();
+it('sorts component groups by id by default', function () {
+    $groups = ComponentGroup::factory(5)->hasComponents(2)->create();
 
-    $response = getJson('/status/api/component-groups?per_page=18');
+    $response = getJson('/status/api/component-groups');
 
-    $response->assertOk();
-    $response->assertJsonCount(18, 'data');
+    $response->assertSeeInOrder(
+        $groups->sortBy('id')->take(5)->pluck('id')->all()
+    );
 });
 
 it('can get a component group', function () {
@@ -140,7 +141,7 @@ it('can delete a component group', function () {
 it('updates components group id when a group is deleted', function () {
     $componentGroup = ComponentGroup::factory()->hasComponents(2)->create();
 
-    $response = deleteJson('/status/api/component-groups/'.$componentGroup->id);
+    $response = deleteJson('/status/api/component-groups/' . $componentGroup->id);
 
     $response->assertNoContent();
     $this->assertDatabaseMissing('component_groups', [

@@ -35,6 +35,54 @@ it('can list more than 15 components', function () {
     $response->assertJsonCount(18, 'data');
 });
 
+it('sorts components by id by default', function () {
+    Component::factory(5)->create();
+
+    $response = getJson('/status/api/components');
+
+    $response->assertJsonPath('data.0.attributes.id', 1);
+    $response->assertJsonPath('data.1.attributes.id', 2);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 4);
+    $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can sort components by name', function () {
+    Component::factory(5)->sequence(
+        ['name' => 'e'],
+        ['name' => 'b'],
+        ['name' => 'a'],
+        ['name' => 'd'],
+        ['name' => 'c'],
+    )->create();
+
+    $response = getJson('/status/api/components?sort=name');
+
+    $response->assertJsonPath('data.0.attributes.id', 3);
+    $response->assertJsonPath('data.1.attributes.id', 2);
+    $response->assertJsonPath('data.2.attributes.id', 5);
+    $response->assertJsonPath('data.3.attributes.id', 4);
+    $response->assertJsonPath('data.4.attributes.id', 1);
+});
+
+it('can sort components by order', function () {
+    Component::factory(5)->sequence(
+        ['order' => 5],
+        ['order' => 1],
+        ['order' => 3],
+        ['order' => 2],
+        ['order' => 4],
+    )->create();
+
+    $response = getJson('/status/api/components?sort=order');
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 4);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 5);
+    $response->assertJsonPath('data.4.attributes.id', 1);
+});
+
 it('can get a component', function () {
     $component = Component::factory()->create();
 

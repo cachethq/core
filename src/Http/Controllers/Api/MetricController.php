@@ -9,6 +9,7 @@ use Cachet\Http\Requests\CreateMetricRequest;
 use Cachet\Http\Requests\UpdateMetricRequest;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -21,6 +22,9 @@ class MetricController extends Controller
     public function index()
     {
         $metrics = QueryBuilder::for(Metric::class)
+            ->when(! request('sort'), function (Builder $builder) {
+                $builder->orderByDesc('created_at');
+            })
             ->allowedIncludes(['points'])
             ->allowedFilters(['name', 'calc_type'])
             ->allowedSorts(['name', 'order', 'id'])

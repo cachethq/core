@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<IncidentUpdate>
+ *
+ * @method IncidentUpdateFactory forIncident(...$sequence)
  */
 class IncidentUpdateFactory extends Factory
 {
