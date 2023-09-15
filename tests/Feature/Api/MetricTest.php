@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\MetricTypeEnum;
 use Cachet\Models\Metric;
 
 use function Pest\Laravel\deleteJson;
@@ -98,6 +99,44 @@ it('can sort metrics by order', function () {
     $response->assertJsonPath('data.2.attributes.id', 1);
     $response->assertJsonPath('data.3.attributes.id', 4);
     $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can filter metrics by name', function () {
+    Metric::factory(20)->create();
+    $metric = Metric::factory()->create([
+        'name' => 'Name to filter by.',
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'name' => 'Name to filter by.',
+        ],
+    ]);
+
+    $response = getJson('/status/api/metrics?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $metric->id);
+});
+
+it('can filter metrics by calculation type', function () {
+    Metric::factory(20)->create([
+        'calc_type' => MetricTypeEnum::sum,
+    ]);
+    $metric = Metric::factory()->create([
+        'calc_type' => MetricTypeEnum::average,
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'calc_type' => MetricTypeEnum::average->value,
+        ],
+    ]);
+
+    $response = getJson('/status/api/metrics?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $metric->id);
 });
 
 it('can get a metric', function () {
