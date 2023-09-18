@@ -26,6 +26,15 @@ it('does not list more than 15 component groups by default', function () {
     $response->assertJsonCount(15, 'data');
 });
 
+it('can list more than 15 components', function () {
+    ComponentGroup::factory(20)->create();
+
+    $response = getJson('/status/api/component-groups?per_page=18');
+
+    $response->assertOk();
+    $response->assertJsonCount(18, 'data');
+});
+
 it('sorts component groups by id by default', function () {
     $groups = ComponentGroup::factory(5)->hasComponents(2)->create();
 
