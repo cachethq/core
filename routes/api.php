@@ -49,7 +49,7 @@ Route::get('/schedules', [ScheduleController::class, 'index'])->name('schedules.
 Route::post('/schedules', [ScheduleController::class, 'store'])->name('schedules.store');
 Route::get('/schedules/{schedule}', [ScheduleController::class, 'show'])->name('schedules.show');
 Route::put('/schedules/{schedule}', [ScheduleController::class, 'update'])->name('schedules.update');
-Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('metrics.destroy');
+Route::delete('/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('schedules.destroy');
 
 Route::get('/ping', [GeneralController::class, 'ping'])->name('ping');
 Route::get('/version', [GeneralController::class, 'version'])->name('version');
