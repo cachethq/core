@@ -92,7 +92,7 @@ it('can filter components by name', function () {
 
     $query = http_build_query([
         'filter' => [
-            'name' => 'Name to Filter by.'
+            'name' => 'Name to Filter by.',
         ],
     ]);
 
@@ -112,7 +112,7 @@ it('can filter components by status', function () {
 
     $query = http_build_query([
         'filter' => [
-            'status' => ComponentStatusEnum::major_outage->value
+            'status' => ComponentStatusEnum::major_outage->value,
         ],
     ]);
 

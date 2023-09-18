@@ -85,11 +85,11 @@ it('can sort incident updates by created date', function () {
 
 it('can filter incident updates by status', function () {
     $incident = Incident::factory()->hasIncidentUpdates(20)->create([
-        'status' => IncidentStatusEnum::investigating
+        'status' => IncidentStatusEnum::investigating,
     ]);
 
     $incidentUpdate = IncidentUpdate::factory()->for($incident)->create([
-        'status' => IncidentStatusEnum::watching
+        'status' => IncidentStatusEnum::watching,
     ]);
 
     $incident = Incident::query()->first();

@@ -132,7 +132,7 @@ it('can filter schedules by name', function () {
 
 it('can filter schedules by status', function () {
     Schedule::factory(20)->create([
-        'status' => ScheduleStatusEnum::upcoming
+        'status' => ScheduleStatusEnum::upcoming,
     ]);
     $schedule = Schedule::factory()->create([
         'status' => ScheduleStatusEnum::complete,

@@ -121,10 +121,10 @@ it('can filter incidents by name', function () {
 
 it('can filter incidents by status', function () {
     Incident::factory(20)->create([
-        'status' => IncidentStatusEnum::investigating
+        'status' => IncidentStatusEnum::investigating,
     ]);
     $incident = Incident::factory()->create([
-        'status' => IncidentStatusEnum::identified
+        'status' => IncidentStatusEnum::identified,
     ]);
 
     $query = http_build_query([
