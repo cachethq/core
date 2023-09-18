@@ -150,7 +150,7 @@ it('can delete a component group', function () {
 it('updates components group id when a group is deleted', function () {
     $componentGroup = ComponentGroup::factory()->hasComponents(2)->create();
 
-    $response = deleteJson('/status/api/component-groups/' . $componentGroup->id);
+    $response = deleteJson('/status/api/component-groups/'.$componentGroup->id);
 
     $response->assertNoContent();
     $this->assertDatabaseMissing('component_groups', [
