@@ -2,7 +2,9 @@
 
 namespace Cachet\Http\Requests;
 
+use Cachet\Enums\IncidentTemplateEngineEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateIncidentTemplateRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdateIncidentTemplateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,10 @@ class UpdateIncidentTemplateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['string', 'max:255'],
+            'slug' => ['string'],
+            'template' => ['string'],
+            'engine' => [Rule::enum(IncidentTemplateEngineEnum::class)],
         ];
     }
 }

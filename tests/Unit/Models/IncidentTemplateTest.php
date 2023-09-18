@@ -2,10 +2,6 @@
 
 use Cachet\Models\IncidentTemplate;
 
-// @todo allow for a template slug to be automatically generated.
-// @todo allow for templates to be rendered with twig (migrate existing templates to have a `engine` field).
-// @todo allow for templates to be rendered with blade (set `engine` to `blade` using enum).
-
 it('can fetch data', function () {
     $template = IncidentTemplate::factory()->create([
         'name' => 'Incident Template',
@@ -16,4 +12,30 @@ it('can fetch data', function () {
         'name' => 'Incident Template',
         'slug' => 'incident-template',
     ])->template->not()->toBeNull();
+});
+
+it('can render a twig template', function () {
+    $template = IncidentTemplate::factory()->twig()->create([
+        'template' => 'Hello, {{ name }}!',
+    ]);
+
+    $output = $template->render([
+        'name' => 'James Brooks',
+    ]);
+
+    expect($output)
+        ->toBe('Hello, James Brooks!');
+});
+
+it('can render a blade template', function () {
+    $template = IncidentTemplate::factory()->blade()->create([
+        'template' => 'Hello, {{ $name }}!',
+    ]);
+
+    $output = $template->render([
+        'name' => 'James Brooks',
+    ]);
+
+    expect($output)
+        ->toBe('Hello, James Brooks!');
 });

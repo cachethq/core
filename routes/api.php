@@ -4,6 +4,7 @@ use Cachet\Http\Controllers\Api\ComponentController;
 use Cachet\Http\Controllers\Api\ComponentGroupController;
 use Cachet\Http\Controllers\Api\GeneralController;
 use Cachet\Http\Controllers\Api\IncidentController;
+use Cachet\Http\Controllers\Api\IncidentTemplateController;
 use Cachet\Http\Controllers\Api\IncidentUpdateController;
 use Cachet\Http\Controllers\Api\MetricController;
 use Cachet\Http\Controllers\Api\MetricPointController;
@@ -33,6 +34,12 @@ Route::post('/incidents/{incident}/updates', [IncidentUpdateController::class, '
 Route::get('/incidents/{incident}/updates/{incidentUpdate}', [IncidentUpdateController::class, 'show'])->name('incidents.updates.show')->scopeBindings();
 Route::put('/incidents/{incident}/updates/{incidentUpdate}', [IncidentUpdateController::class, 'update'])->name('incidents.updates.update')->scopeBindings();
 Route::delete('/incidents/{incident}/updates/{incidentUpdate}', [IncidentUpdateController::class, 'destroy'])->name('incidents.updates.destroy')->scopeBindings();
+
+Route::get('/incident-templates', [IncidentTemplateController::class, 'index'])->name('incident-templates.index');
+Route::post('/incident-templates', [IncidentTemplateController::class, 'store'])->name('incident-templates.store');
+Route::get('/incident-templates/{incidentTemplate}', [IncidentTemplateController::class, 'show'])->name('incident-templates.show');
+Route::put('/incident-templates/{incidentTemplate}', [IncidentTemplateController::class, 'update'])->name('incident-templates.update');
+Route::delete('/incident-templates/{incidentTemplate}', [IncidentTemplateController::class, 'destroy'])->name('incident-templates.destroy');
 
 Route::get('/metrics', [MetricController::class, 'index'])->name('metrics.index');
 Route::post('/metrics', [MetricController::class, 'store'])->name('metrics.store');
