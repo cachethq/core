@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 
 use function Pest\Laravel\deleteJson;
@@ -32,6 +33,130 @@ it('can list more than 15 incidents', function () {
 
     $response->assertOk();
     $response->assertJsonCount(18, 'data');
+});
+
+it('sorts incidents by created at descending by default', function () {
+    $incidents = Incident::factory(5)->sequence(
+        ['created_at' => '2020-01-01'],
+        ['created_at' => '2021-01-01'],
+        ['created_at' => '2022-01-01'],
+        ['created_at' => '2023-01-01'],
+        ['created_at' => '2023-02-01'],
+    )->create();
+
+    $response = getJson('/status/api/incidents');
+
+    $response->assertJsonPath('data.0.attributes.id', $incidents->last()->id);
+    $response->assertJsonPath('data.1.attributes.id', $incidents->skip(3)->first()->id);
+    $response->assertJsonPath('data.2.attributes.id', $incidents->skip(2)->first()->id);
+    $response->assertJsonPath('data.3.attributes.id', $incidents->skip(1)->first()->id);
+    $response->assertJsonPath('data.4.attributes.id', $incidents->first()->id);
+});
+
+it('can sort incidents by ID', function () {
+    Incident::factory(5)->create();
+
+    $response = getJson('/status/api/incidents?sort=id');
+
+    $response->assertJsonPath('data.0.attributes.id', 1);
+    $response->assertJsonPath('data.1.attributes.id', 2);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 4);
+    $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can sort incidents by name', function () {
+    Incident::factory(5)->sequence(
+        ['name' => 'c', 'created_at' => '2020-01-01'],
+        ['name' => 'a', 'created_at' => '2021-01-01'],
+        ['name' => 'b', 'created_at' => '2022-01-01'],
+        ['name' => 'e', 'created_at' => '2023-01-01'],
+        ['name' => 'd', 'created_at' => '2023-02-01'],
+    )->create();
+
+    $response = getJson('/status/api/incidents?sort=name');
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 3);
+    $response->assertJsonPath('data.2.attributes.id', 1);
+    $response->assertJsonPath('data.3.attributes.id', 5);
+    $response->assertJsonPath('data.4.attributes.id', 4);
+});
+
+it('can sort incidents by status', function () {
+    Incident::factory(5)->sequence(
+        ['status' => 3, 'created_at' => '2020-01-01'],
+        ['status' => 1, 'created_at' => '2021-01-01'],
+        ['status' => 2, 'created_at' => '2022-01-01'],
+        ['status' => 1, 'created_at' => '2023-01-01'],
+        ['status' => 4, 'created_at' => '2023-02-01'],
+    )->create();
+
+    $response = getJson('/status/api/incidents?sort=status');
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 4);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 1);
+    $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can filter incidents by name', function () {
+    Incident::factory(20)->create();
+    $incident = Incident::factory()->create([
+        'name' => 'Name to filter by.',
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'name' => 'Name to filter by.',
+        ],
+    ]);
+
+    $response = getJson('/status/api/incidents?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incident->id);
+});
+
+it('can filter incidents by status', function () {
+    Incident::factory(20)->create([
+        'status' => IncidentStatusEnum::investigating
+    ]);
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::identified
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => IncidentStatusEnum::identified->value,
+        ],
+    ]);
+
+    $response = getJson('/status/api/incidents?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incident->id);
+});
+
+it('can filter incidents by occurred at date', function () {
+    Incident::factory(20)->create([
+        'occurred_at' => '2019-01-01',
+    ]);
+    $incident = Incident::factory()->create([
+        'occurred_at' => '2023-01-01',
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'occurred_at' => '2023-01-01',
+        ],
+    ]);
+
+    $response = getJson('/status/api/incidents?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incident->id);
 });
 
 it('can get an incident', function () {

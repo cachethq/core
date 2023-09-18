@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 
@@ -33,6 +34,120 @@ it('can list more than 15 components', function () {
 
     $response->assertOk();
     $response->assertJsonCount(18, 'data');
+});
+
+it('sorts components by id by default', function () {
+    Component::factory(5)->create();
+
+    $response = getJson('/status/api/components');
+
+    $response->assertJsonPath('data.0.attributes.id', 1);
+    $response->assertJsonPath('data.1.attributes.id', 2);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 4);
+    $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can sort components by name', function () {
+    Component::factory(5)->sequence(
+        ['name' => 'e'],
+        ['name' => 'b'],
+        ['name' => 'a'],
+        ['name' => 'd'],
+        ['name' => 'c'],
+    )->create();
+
+    $response = getJson('/status/api/components?sort=name');
+
+    $response->assertJsonPath('data.0.attributes.id', 3);
+    $response->assertJsonPath('data.1.attributes.id', 2);
+    $response->assertJsonPath('data.2.attributes.id', 5);
+    $response->assertJsonPath('data.3.attributes.id', 4);
+    $response->assertJsonPath('data.4.attributes.id', 1);
+});
+
+it('can sort components by order', function () {
+    Component::factory(5)->sequence(
+        ['order' => 5],
+        ['order' => 1],
+        ['order' => 3],
+        ['order' => 2],
+        ['order' => 4],
+    )->create();
+
+    $response = getJson('/status/api/components?sort=order');
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 4);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 5);
+    $response->assertJsonPath('data.4.attributes.id', 1);
+});
+
+it('can filter components by name', function () {
+    Component::factory(20)->create();
+    $component = Component::factory()->create([
+        'name' => 'Name to Filter by.',
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'name' => 'Name to Filter by.'
+        ],
+    ]);
+
+    $response = getJson('/status/api/components?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $component->id);
+});
+
+it('can filter components by status', function () {
+    Component::factory(19)->create([
+        'status' => ComponentStatusEnum::performance_issues,
+    ]);
+    $component = Component::factory()->create([
+        'status' => ComponentStatusEnum::major_outage,
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => ComponentStatusEnum::major_outage->value
+        ],
+    ]);
+
+    $response = getJson('/status/api/components?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $component->id);
+});
+
+it('can filter components by enabled', function () {
+    Component::factory(20)->disabled()->create();
+    $component = Component::factory()->enabled()->create();
+
+    $query = http_build_query([
+        'filter' => ['enabled' => true],
+    ]);
+
+    $response = getJson('/status/api/components?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $component->id);
+});
+
+it('can filter components by disabled', function () {
+    Component::factory(20)->disabled()->create();
+    $component = Component::factory()->enabled()->create();
+
+    $query = http_build_query([
+        'filter' => ['enabled' => false],
+    ]);
+
+    $response = getJson('/status/api/components?per_page=25&'.$query);
+
+    $response->assertJsonCount(20, 'data');
+    $response->assertJsonMissing(['id' => $component->id]);
 });
 
 it('can get a component', function () {

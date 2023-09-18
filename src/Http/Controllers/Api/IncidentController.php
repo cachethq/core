@@ -9,6 +9,7 @@ use Cachet\Http\Requests\CreateIncidentRequest;
 use Cachet\Http\Requests\UpdateIncidentRequest;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -21,6 +22,9 @@ class IncidentController extends Controller
     public function index()
     {
         $incidents = QueryBuilder::for(Incident::class)
+            ->when(! request('sort'), function (Builder $builder) {
+                $builder->orderByDesc('created_at');
+            })
             ->allowedIncludes(['updates'])
             ->allowedFilters(['name', 'status', 'occurred_at'])
             ->allowedSorts(['name', 'status', 'id'])

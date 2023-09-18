@@ -35,6 +35,16 @@ it('can list more than 15 components', function () {
     $response->assertJsonCount(18, 'data');
 });
 
+it('sorts component groups by id by default', function () {
+    $groups = ComponentGroup::factory(5)->hasComponents(2)->create();
+
+    $response = getJson('/status/api/component-groups');
+
+    $response->assertSeeInOrder(
+        $groups->sortBy('id')->take(5)->pluck('id')->all()
+    );
+});
+
 it('can get a component group', function () {
     $componentGroup = ComponentGroup::factory()->create();
 

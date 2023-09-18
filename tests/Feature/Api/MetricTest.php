@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\MetricTypeEnum;
 use Cachet\Models\Metric;
 
 use function Pest\Laravel\deleteJson;
@@ -32,6 +33,110 @@ it('can list more than 15 metrics', function () {
 
     $response->assertOk();
     $response->assertJsonCount(18, 'data');
+});
+
+it('sorts metrics by created at descending by default', function () {
+    Metric::factory(5)->sequence(
+        ['created_at' => '2020-01-01'],
+        ['created_at' => '2021-01-01'],
+        ['created_at' => '2022-01-01'],
+        ['created_at' => '2023-01-01'],
+        ['created_at' => '2023-02-01'],
+    )->create();
+
+    $response = getJson('/status/api/metrics');
+
+    $response->assertJsonPath('data.0.attributes.id', 5);
+    $response->assertJsonPath('data.1.attributes.id', 4);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 2);
+    $response->assertJsonPath('data.4.attributes.id', 1);
+});
+
+it('can sort metrics by ID', function () {
+    Metric::factory(5)->create();
+
+    $response = getJson('/status/api/metrics?sort=id');
+
+    $response->assertJsonPath('data.0.attributes.id', 1);
+    $response->assertJsonPath('data.1.attributes.id', 2);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 4);
+    $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can sort metrics by name', function () {
+    Metric::factory(5)->sequence(
+        ['name' => 'c', 'created_at' => '2020-01-01'],
+        ['name' => 'a', 'created_at' => '2021-01-01'],
+        ['name' => 'b', 'created_at' => '2022-01-01'],
+        ['name' => 'e', 'created_at' => '2023-01-01'],
+        ['name' => 'd', 'created_at' => '2023-02-01'],
+    )->create();
+
+    $response = getJson('/status/api/metrics?sort=name');
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 3);
+    $response->assertJsonPath('data.2.attributes.id', 1);
+    $response->assertJsonPath('data.3.attributes.id', 5);
+    $response->assertJsonPath('data.4.attributes.id', 4);
+});
+
+it('can sort metrics by order', function () {
+    Metric::factory(5)->sequence(
+        ['order' => 3, 'created_at' => '2020-01-01'],
+        ['order' => 1, 'created_at' => '2021-01-01'],
+        ['order' => 2, 'created_at' => '2022-01-01'],
+        ['order' => 4, 'created_at' => '2023-01-01'],
+        ['order' => 5, 'created_at' => '2023-02-01'],
+    )->create();
+
+    $response = getJson('/status/api/metrics?sort=order');
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 3);
+    $response->assertJsonPath('data.2.attributes.id', 1);
+    $response->assertJsonPath('data.3.attributes.id', 4);
+    $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can filter metrics by name', function () {
+    Metric::factory(20)->create();
+    $metric = Metric::factory()->create([
+        'name' => 'Name to filter by.',
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'name' => 'Name to filter by.',
+        ],
+    ]);
+
+    $response = getJson('/status/api/metrics?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $metric->id);
+});
+
+it('can filter metrics by calculation type', function () {
+    Metric::factory(20)->create([
+        'calc_type' => MetricTypeEnum::sum,
+    ]);
+    $metric = Metric::factory()->create([
+        'calc_type' => MetricTypeEnum::average,
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'calc_type' => MetricTypeEnum::average->value,
+        ],
+    ]);
+
+    $response = getJson('/status/api/metrics?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $metric->id);
 });
 
 it('can get a metric', function () {

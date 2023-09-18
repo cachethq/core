@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
 
@@ -33,6 +34,120 @@ it('can list more than 15 schedules', function () {
 
     $response->assertOk();
     $response->assertJsonCount(18, 'data');
+});
+
+it('sorts schedules by id by default', function () {
+    Schedule::factory(5)->create();
+
+    $response = getJson('/status/api/schedules');
+
+    $response->assertJsonPath('data.0.attributes.id', 1);
+    $response->assertJsonPath('data.1.attributes.id', 2);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 4);
+    $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can sort schedules by name', function () {
+    Schedule::factory(5)->sequence(
+        ['name' => 'c'],
+        ['name' => 'a'],
+        ['name' => 'b'],
+        ['name' => 'e'],
+        ['name' => 'd'],
+    )->create();
+
+    $response = getJson('/status/api/schedules?sort=name');
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 3);
+    $response->assertJsonPath('data.2.attributes.id', 1);
+    $response->assertJsonPath('data.3.attributes.id', 5);
+    $response->assertJsonPath('data.4.attributes.id', 4);
+});
+
+it('can sort schedules by status', function () {
+    Schedule::factory(3)->sequence(
+        ['status' => 1],
+        ['status' => 2],
+        ['status' => 0],
+    )->create();
+
+    $response = getJson('/status/api/schedules?sort=status');
+
+    $response->assertJsonPath('data.0.attributes.id', 3);
+    $response->assertJsonPath('data.1.attributes.id', 1);
+    $response->assertJsonPath('data.2.attributes.id', 2);
+});
+
+it('can sort schedules by scheduled at date', function () {
+    Schedule::factory(4)->sequence(
+        ['scheduled_at' => '2022-01-01'],
+        ['scheduled_at' => '2020-01-01'],
+        ['scheduled_at' => '2023-01-01'],
+        ['scheduled_at' => '2021-01-01'],
+    )->create();
+
+    $response = getJson('/status/api/schedules?sort=scheduled_at');
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 4);
+    $response->assertJsonPath('data.2.attributes.id', 1);
+    $response->assertJsonPath('data.3.attributes.id', 3);
+});
+
+it('can sort schedules by completed at date', function () {
+    Schedule::factory(4)->sequence(
+        ['completed_at' => '2022-01-01'],
+        ['completed_at' => '2020-01-01'],
+        ['completed_at' => '2023-01-01'],
+        ['completed_at' => '2021-01-01'],
+    )->create();
+
+    $response = getJson('/status/api/schedules?sort=completed_at');
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 4);
+    $response->assertJsonPath('data.2.attributes.id', 1);
+    $response->assertJsonPath('data.3.attributes.id', 3);
+});
+
+it('can filter schedules by name', function () {
+    Schedule::factory(20)->create();
+    $schedule = Schedule::factory()->create([
+        'name' => 'Name to filter by.',
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'name' => 'Name to filter by.',
+        ],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
+});
+
+it('can filter schedules by status', function () {
+    Schedule::factory(20)->create([
+        'status' => ScheduleStatusEnum::upcoming
+    ]);
+    $schedule = Schedule::factory()->create([
+        'status' => ScheduleStatusEnum::complete,
+    ]);
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => ScheduleStatusEnum::complete->value,
+        ],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
 });
 
 it('can get a schedule', function () {

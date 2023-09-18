@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentUpdate;
 
@@ -32,6 +33,77 @@ it('can list more than 15 incident updates', function () {
 
     $response->assertOk();
     $response->assertJsonCount(18, 'data');
+});
+
+it('sorts incident updates by id by default', function () {
+    $incident = Incident::factory()->hasIncidentUpdates(20)->create();
+
+    $response = getJson("/status/api/incidents/{$incident->id}/updates");
+
+    $response->assertJsonPath('data.0.attributes.id', 1);
+    $response->assertJsonPath('data.1.attributes.id', 2);
+    $response->assertJsonPath('data.2.attributes.id', 3);
+    $response->assertJsonPath('data.3.attributes.id', 4);
+    $response->assertJsonPath('data.4.attributes.id', 5);
+});
+
+it('can sort incident updates by status', function () {
+    IncidentUpdate::factory(5)->sequence(
+        ['status' => 3],
+        ['status' => 1],
+        ['status' => 4],
+        ['status' => 2],
+    )->forIncident()->create();
+
+    $incident = Incident::query()->first();
+
+    $response = getJson("/status/api/incidents/{$incident->id}/updates?sort=status");
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 4);
+    $response->assertJsonPath('data.2.attributes.id', 1);
+    $response->assertJsonPath('data.4.attributes.id', 3);
+});
+
+it('can sort incident updates by created date', function () {
+    IncidentUpdate::factory(4)->sequence(
+        ['created_at' => '2022-01-01'],
+        ['created_at' => '2020-01-01'],
+        ['created_at' => '2023-01-01'],
+        ['created_at' => '2021-01-01'],
+    )->forIncident()->create();
+
+    $incident = Incident::query()->first();
+
+    $response = getJson("/status/api/incidents/{$incident->id}/updates?sort=created_at");
+
+    $response->assertJsonPath('data.0.attributes.id', 2);
+    $response->assertJsonPath('data.1.attributes.id', 4);
+    $response->assertJsonPath('data.2.attributes.id', 1);
+    $response->assertJsonPath('data.3.attributes.id', 3);
+});
+
+it('can filter incident updates by status', function () {
+    $incident = Incident::factory()->hasIncidentUpdates(20)->create([
+        'status' => IncidentStatusEnum::investigating
+    ]);
+
+    $incidentUpdate = IncidentUpdate::factory()->for($incident)->create([
+        'status' => IncidentStatusEnum::watching
+    ]);
+
+    $incident = Incident::query()->first();
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => IncidentStatusEnum::watching->value,
+        ],
+    ]);
+
+    $response = getJson("/status/api/incidents/{$incident->id}/updates?$query");
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incidentUpdate->id);
 });
 
 it('can get an incident update', function () {
