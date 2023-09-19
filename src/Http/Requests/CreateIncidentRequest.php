@@ -44,6 +44,14 @@ class CreateIncidentRequest extends FormRequest
      */
     public function validationData(): array
     {
+        dd(array_merge(parent::validationData(), [
+            'template_vars' => $this->input('template_vars', []),
+            'visible' => $this->boolean('visible'),
+            'notifications' => $this->boolean('notifications'),
+            'stickied' => $this->boolean('stickied'),
+            'component_status' => $this->enum('component_status', ComponentStatusEnum::class),
+        ]));
+
         return array_merge(parent::validationData(), [
             'template_vars' => $this->input('template_vars', []),
             'visible' => $this->boolean('visible'),

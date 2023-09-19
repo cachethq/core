@@ -36,12 +36,12 @@ class CreateIncident
                 'name' => $data['name'],
                 'status' => $data['status'],
                 'message' => $data['message'] ?? null,
-                'visible' => $data['visible'],
-                'notify' => $data['notifications'],
-                'stickied' => $data['stickied'],
+                'visible' => $data['visible'] ?? false,
+                'notify' => $data['notifications'] ?? false,
+                'stickied' => $data['stickied'] ?? false,
                 'occurred_at' => $data['occurred_at'] ?? Carbon::now(),
                 'component' => isset($data['component_id']) ? Component::find($data['component_id']) : null,
-                'component_status' => $data['component_status'],
+                'component_status' => $data['component_status'] ?? null,
             ],
         ]);
 
