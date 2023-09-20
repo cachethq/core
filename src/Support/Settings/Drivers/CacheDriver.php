@@ -20,9 +20,9 @@ class CacheDriver implements Driver
         });
     }
 
-    public function set(string $key, $value = null)
+    public function set(string $key, $value = null): mixed
     {
-        $this->eloquent->set($key, $value);
+        return $this->eloquent->set($key, $value);
     }
 
     public function has(string $key): bool
