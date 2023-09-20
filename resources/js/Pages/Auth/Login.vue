@@ -25,7 +25,7 @@
       </div>
 
       <div class="text-sm leading-6">
-        <a href="#" class="font-semibold text-primary-600 hover:text-primary-500">Forgot password?</a>
+        <Link href="/status/forgot-password" class="font-semibold text-primary-600 hover:text-primary-500">Forgot password?</Link>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { Head } from '@inertiajs/vue3'
+import { Head, Link } from '@inertiajs/vue3'
 import Authentication from '@/Layouts/Authentication.vue'
 import Input from '@/Components/Input.vue'
 import Button from '@/Components/Button.vue'
@@ -49,6 +49,7 @@ export default {
     Label,
     Button,
     Head,
+    Link,
     Input,
   },
   layout: [Authentication],
