@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 it('is immutable', function () {
     $dto = new class(
-        name: 'My Data Instance',
+        name: 'My Data Object',
     ) extends Data {
         public function __construct(
             public readonly string $name,
@@ -29,11 +29,25 @@ it('can be built from an array', function () {
     };
 
     $dto = MyData::fromArray(data: $data = [
-        'name' => 'My Data Instance',
+        'name' => 'My Data Object',
     ]);
 
     expect($dto)
         ->name->toBe($data['name']);
+});
+
+it('can be built from an JSON string', function () {
+    class MyData extends Data {
+        public function __construct(
+            public readonly string $name,
+        ) {
+        }
+    };
+
+    $dto = MyData::fromJson(json: $json = '{"name": "My Data Object"}');
+
+    expect($dto)
+        ->name->toBe('My Data Object');
 });
 
 it('can be handle snake case array keys when being built from an array', function () {
@@ -46,7 +60,7 @@ it('can be handle snake case array keys when being built from an array', functio
     };
 
     $dto = MyData::fromArray(data: $data = [
-        'name' => 'My Data Instance',
+        'name' => 'My Data Object',
         'snake_case_test' => 'Foo',
     ]);
 
@@ -64,7 +78,7 @@ it('can be built from a request', function () {
     };
 
     $request = new FormRequest(request: $data = [
-        'name' => 'My Data Instance',
+        'name' => 'My Data Object',
     ]);
 
     $request->setValidator(Validator::make($data, [
@@ -79,7 +93,7 @@ it('can be built from a request', function () {
 
 it('can be cast to an array', function () {
     $dto = new class (
-        name: 'My Data Instance',
+        name: 'My Data Object',
     ) extends Data {
         public function __construct(
             public readonly string $name,
@@ -89,6 +103,6 @@ it('can be cast to an array', function () {
 
     expect($dto->toArray())
         ->toEqual([
-            'name' => 'My Data Instance',
+            'name' => 'My Data Object',
         ]);
 });

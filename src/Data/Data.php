@@ -32,6 +32,16 @@ abstract class Data implements Arrayable, \ArrayAccess, \JsonSerializable, \Stri
     }
 
     /**
+     * Create a new data object from a json string.
+     */
+    public static function fromJson(string $json): static
+    {
+        return static::fromArray(
+            json_decode($json, associative: true, flags: JSON_THROW_ON_ERROR),
+        );
+    }
+
+    /**
      * Determine if a given index exists on the data object.
      */
     public function offsetExists(mixed $offset): bool
@@ -86,9 +96,9 @@ abstract class Data implements Arrayable, \ArrayAccess, \JsonSerializable, \Stri
     /**
      * Get the data to be serialized into JSON.
      */
-    public function jsonSerialize(): array
+    public function jsonSerialize(): string
     {
-        return $this->toArray();
+        return json_encode($this->toArray());
     }
 
     /**
@@ -96,6 +106,6 @@ abstract class Data implements Arrayable, \ArrayAccess, \JsonSerializable, \Stri
      */
     public function __toString(): string
     {
-        return json_encode($this->jsonSerialize());
+        return $this->jsonSerialize();
     }
 }
