@@ -2,6 +2,7 @@
 
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
+use Cachet\Models\IncidentTemplate;
 
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
@@ -202,6 +203,29 @@ it('can create an incident', function () {
     ]);
 });
 
+it('can create an incident with a template', function () {
+    $incidentTemplate = IncidentTemplate::factory()->twig()->create();
+
+    $response = postJson('/status/api/incidents', [
+        'name' => 'New Incident Occurred',
+        'template' => $incidentTemplate->slug,
+        'status' => 2,
+    ]);
+
+    $response->assertCreated();
+    $response->assertJson([
+        'data' => [
+            'attributes' => [
+                'name' => 'New Incident Occurred',
+                'message' => "Hey,\n\nA new incident has been reported:\n\nName: New Incident Occurred\n",
+                'status' => [
+                    'value' => 2,
+                ],
+            ],
+        ],
+    ]);
+});
+
 it('cannot create an incident with bad data', function (array $payload) {
     $response = postJson('/status/api/incidents', $payload);
 
@@ -210,6 +234,7 @@ it('cannot create an incident with bad data', function (array $payload) {
 })->with([
     fn () => ['name' => null, 'message' => null],
     fn () => ['name' => 'New Incident', 'message' => null, 'status' => 999],
+    fn () => ['name' => 'New Incident', 'template' => 123, 'status' => 999],
 ]);
 
 it('can update an incident', function () {

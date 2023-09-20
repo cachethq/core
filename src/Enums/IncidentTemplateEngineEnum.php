@@ -2,8 +2,8 @@
 
 namespace Cachet\Enums;
 
-enum IncidentTemplateEngineEnum
+enum IncidentTemplateEngineEnum: string
 {
-    case blade;
-    case twig;
+    case blade = 'blade';
+    case twig = 'twig';
 }
