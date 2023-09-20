@@ -3,7 +3,7 @@
 namespace Cachet;
 
 use Cachet\Http\Controllers\Auth\AuthenticatedSessionController;
-use Cachet\Http\Controllers\Auth\LoginController;
+use Cachet\Http\Controllers\Auth\PasswordResetLinkController;
 use Cachet\Http\Controllers\Dashboard\DashboardController;
 use Cachet\Http\Controllers\HealthController;
 use Cachet\Http\Controllers\Setup\SetupController;
@@ -55,8 +55,11 @@ class PendingRouteRegistration
             ->prefix(Cachet::path())
             ->as('cachet.')
             ->group(function (Router $router) {
-                $router->get('/login', [AuthenticatedSessionController::class, 'show'])->name('cachet.login');
-                $router->post('/login', [AuthenticatedSessionController::class, 'store'])->name('cachet.login.post');
+                $router->get('/login', [AuthenticatedSessionController::class, 'show'])->name('login');
+                $router->post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.post');
+
+                $router->get('/forgot-password', [PasswordResetLinkController::class, 'show'])->name('password.request');
+                $router->post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
             });
 
         return $this;

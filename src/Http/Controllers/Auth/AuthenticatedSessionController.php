@@ -13,7 +13,7 @@ use Inertia\Response;
 class AuthenticatedSessionController extends Controller
 {
     /**
-     * Create a new login controller instance.
+     * Create a new authenticated session controller instance.
      */
     public function __construct()
     {

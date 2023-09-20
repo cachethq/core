@@ -2,7 +2,6 @@
 
 namespace Cachet\Http\Controllers\Dashboard;
 
-use Cachet\Cachet;
 use Cachet\Models\Component;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
