@@ -11,7 +11,7 @@
     </div>
 
     <div class="border-t py-12 dark:border-gray-700">
-      <div class="mt-4 flex items-center justify-center gap-2">
+      <div class="flex items-center justify-center gap-2">
         <div class="text-sm tracking-tight text-gray-400">Powered by</div>
         <a href="https://cachethq.io" :title="`Cachet ${$page.props.cachet_version}`" rel="noreferrer nofollow">
           <CachetLogo class="h-8 w-auto" />
