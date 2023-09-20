@@ -2,8 +2,10 @@
 
 namespace Cachet;
 
+use Cachet\Http\Controllers\Auth\AuthenticatedSessionController;
+use Cachet\Http\Controllers\Auth\LoginController;
+use Cachet\Http\Controllers\Dashboard\DashboardController;
 use Cachet\Http\Controllers\HealthController;
-use Cachet\Http\Controllers\LoginController;
 use Cachet\Http\Controllers\Setup\SetupController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
 use Illuminate\Routing\Router;
@@ -32,6 +34,8 @@ class PendingRouteRegistration
                 $router->get('/', [StatusPageController::class, 'index'])->name('status-page');
                 $router->get('/incidents/{incident}', [StatusPageController::class, 'show'])->name('status-page.incident');
 
+                $router->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
                 $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
                 $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');
 
@@ -51,9 +55,8 @@ class PendingRouteRegistration
             ->prefix(Cachet::path())
             ->as('cachet.')
             ->group(function (Router $router) {
-                $router->get('/login', [LoginController::class, 'showLoginForm'])->name('cachet.login');
-
-                // @todo post login form.
+                $router->get('/login', [AuthenticatedSessionController::class, 'show'])->name('cachet.login');
+                $router->post('/login', [AuthenticatedSessionController::class, 'store'])->name('cachet.login.post');
             });
 
         return $this;
