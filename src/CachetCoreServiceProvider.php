@@ -2,6 +2,7 @@
 
 namespace Cachet;
 
+use Cachet\Support\Settings\Setting;
 use Cachet\View\Components\Footer;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Facades\Blade;
@@ -39,6 +40,7 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->registerResources();
         $this->registerPublishing();
+        $this->registerSettings();
         $this->registerBladeComponents();
 
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
@@ -113,5 +115,10 @@ class CachetCoreServiceProvider extends ServiceProvider
         Blade::componentNamespace('Cachet\\View\\Components', 'cachet');
 
         Blade::component('footer', Footer::class);
+    }
+
+    private function registerSettings(): void
+    {
+        $this->app->singleton(Setting::class, fn ($app) => new Support\Settings\SettingManager($app));
     }
 }
