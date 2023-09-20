@@ -12,21 +12,26 @@ it('is immutable', function () {
     ) extends Data {
         public function __construct(
             public readonly string $name,
-        ) {
+        )
+        {
         }
     };
 
-    expect(fn () => $dto->name = 'foo')
+    expect(fn() => $dto->name = 'foo')
         ->toThrow(\Error::class, 'Cannot modify readonly property Cachet\Data\Data@anonymous::$name');
 });
 
 it('can be built from an array', function () {
-    class MyData extends Data {
+    class MyData extends Data
+    {
         public function __construct(
             public readonly string $name,
-        ) {
+        )
+        {
         }
-    };
+    }
+
+    ;
 
     $dto = MyData::fromArray(data: $data = [
         'name' => 'My Data Object',
@@ -37,27 +42,35 @@ it('can be built from an array', function () {
 });
 
 it('can be built from an JSON string', function () {
-    class MyData extends Data {
+    class MyData extends Data
+    {
         public function __construct(
             public readonly string $name,
-        ) {
+        )
+        {
         }
-    };
+    }
 
-    $dto = MyData::fromJson(json: $json = '{"name": "My Data Object"}');
+    ;
+
+    $dto = MyData::fromJson(json: '{"name": "My Data Object"}');
 
     expect($dto)
         ->name->toBe('My Data Object');
 });
 
 it('can be handle snake case array keys when being built from an array', function () {
-    class MyData extends Data {
+    class MyData extends Data
+    {
         public function __construct(
             public readonly string $name,
             public readonly string $snakeCaseTest,
-        ) {
+        )
+        {
         }
-    };
+    }
+
+    ;
 
     $dto = MyData::fromArray(data: $data = [
         'name' => 'My Data Object',
@@ -70,12 +83,16 @@ it('can be handle snake case array keys when being built from an array', functio
 });
 
 it('can be built from a request', function () {
-    class MyData extends Data {
+    class MyData extends Data
+    {
         public function __construct(
             public readonly string $name,
-        ) {
+        )
+        {
         }
-    };
+    }
+
+    ;
 
     $request = new FormRequest(request: $data = [
         'name' => 'My Data Object',
@@ -97,7 +114,8 @@ it('can be cast to an array', function () {
     ) extends Data {
         public function __construct(
             public readonly string $name,
-        ) {
+        )
+        {
         }
     };;
 
@@ -105,4 +123,26 @@ it('can be cast to an array', function () {
         ->toEqual([
             'name' => 'My Data Object',
         ]);
+});
+
+it('can be cast to a JSON string', function () {
+    $dto = new class (
+        name: 'My Data Object',
+    ) extends Data {
+        public function __construct(
+            public readonly string $name,
+        )
+        {
+        }
+    };;
+
+    expect($dto->jsonSerialize())
+        ->toBeJson()
+        ->toEqual('{"name":"My Data Object"}')
+        ->and((string)$dto)
+        ->toBeJson()
+        ->toEqual('{"name":"My Data Object"}')
+        ->and(strval($dto))
+        ->toBeJson()
+        ->toEqual('{"name":"My Data Object"}');
 });
