@@ -6,6 +6,15 @@ use Cachet\Enums\ComponentStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * @property string $name
+ * @property ?string $description
+ * @property ?ComponentStatusEnum $status
+ * @property ?string $link
+ * @property ?int $order
+ * @property ?bool $enabled
+ * @property ?int $component_group_id
+ */
 class CreateComponentRequest extends FormRequest
 {
     /**
