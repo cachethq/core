@@ -19,9 +19,9 @@
     </div>
 
     <div class="flex items-center justify-between">
-      <div class="flex items-center">
+      <div class="flex items-center gap-3">
         <input id="remember-me" v-model="form.remember" name="remember-me" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-primary-600 focus:ring-primary-600" />
-        <label for="remember-me" class="ml-3 block text-sm leading-6 text-gray-900">Remember me</label>
+        <Label for="remember-me">Remember Me</Label>
       </div>
 
       <div class="text-sm leading-6">
