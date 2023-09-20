@@ -4,8 +4,8 @@ namespace Cachet\Tests\Architecture;
 
 use Cachet\Data\Data;
 
-test('Data objects should be final classes and extend the base Cachet\Data\Data class')
-    ->expect('Cachet\DTOs')
+test('data objects test')
+    ->expect('Cachet\Data')
     ->toBeClasses()
     ->toBeFinal()
     ->ignoring(Data::class)
