@@ -45,7 +45,10 @@ class PendingRouteRegistration
             });
     }
 
-    public function withAuthenticationRoutes($middleware = ['cachet'])
+    /**
+     * Register Cachet's authentication routes.
+     */
+    public function withAuthenticationRoutes($middleware = ['cachet']): self
     {
         Cachet::withAuthentication();
 
@@ -60,6 +63,8 @@ class PendingRouteRegistration
 
                 $router->get('/forgot-password', [PasswordResetLinkController::class, 'show'])->name('password.request');
                 $router->post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+
+                $router->post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
             });
 
         return $this;
