@@ -43,6 +43,14 @@ This package provides the core functionality of Cachet and may be installed into
     ```
 5. Make your changes to the frontend. Currently, HMR is not enabled so manual refreshes are needed.
 
+### Dashboard Credentials
+
+When running Cachet via the `composer start` command, Workbench will seed a user that you can use to log in to the dashboard.
+Login to the account at `/status/login` and use credentials:
+
+- **Email:** `test@test.com`
+- **Password:** `test123
+
 ## Security Vulnerabilities
 
 Please review our [security policy](https://github.com/cachethq/cachet/security/policy) on how to report security vulnerabilities.
