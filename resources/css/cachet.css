@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .button {
+        @apply flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
+    }
+
+    .button--primary {
+        @apply bg-primary-600 hover:bg-primary-600 focus-visible:outline-primary-600;
+    }
+
+    .button--secondary {
+        @apply bg-zinc-300 hover:bg-zinc-400 text-zinc-800 focus-visible:outline-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-400 focus-visible:outline-zinc-800;
+    }
+}

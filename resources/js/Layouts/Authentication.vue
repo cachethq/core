@@ -5,7 +5,7 @@
     </div>
 
     <div class="justify-self-start flex-1">
-      <div class="px-8 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-gray-800 rounded-lg shadow-lg border dark:border-gray-700">
+      <div class="px-8 py-12 lg:px-8 sm:mx-auto sm:w-full sm:max-w-sm bg-white dark:bg-zinc-950 rounded-lg shadow-lg border dark:border-gray-700">
         <slot />
       </div>
     </div>
