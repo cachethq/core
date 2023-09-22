@@ -32,7 +32,7 @@ abstract class Data implements Arrayable, \ArrayAccess, \JsonSerializable, \Stri
     }
 
     /**
-     * Create a new data object from a json string.
+     * Create a new data object from a JSON string.
      */
     public static function fromJson(string $json): static
     {
