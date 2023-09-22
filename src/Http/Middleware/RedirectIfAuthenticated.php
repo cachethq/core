@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Http\Middleware;
 
 use Cachet\Cachet;

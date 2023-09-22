@@ -1,17 +1,49 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\MetricFactory;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Events\Metrics\MetricCreated;
 use Cachet\Events\Metrics\MetricDeleted;
 use Cachet\Events\Metrics\MetricUpdated;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Properties
+ *
+ * @property-read int $id
+ * @property string $name
+ * @property string $suffix
+ * @property string $description
+ * @property int $status
+ * @property string $default_value
+ * @property int $threshold
+ * @property MetricTypeEnum $calc_type
+ * @property bool $display_chart
+ * @property int $places
+ * @property MetricViewEnum $default_view
+ * @property ResourceVisibilityEnum $visible
+ * @property int $order
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
+ * Relationships
+ * @property Collection<array-key, MetricPoint> $metricPoints
+ * @property Collection<array-key, MetricPoint> $recentMetricPoints
+ *
+ * Methods
+ *
+ * @method static MetricFactory factory($count = null, $state = [])
+ */
 class Metric extends Model
 {
     use HasFactory;

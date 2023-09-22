@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet;
 
 use Cachet\Http\Middleware\RedirectIfAuthenticated;
@@ -13,12 +15,12 @@ class Cachet
      *
      * @var string
      */
-    const USER_AGENT = 'Cachet/1.0';
+    public const USER_AGENT = 'Cachet/1.0';
 
     /**
      * Cachet is being used to authenticate users.
      */
-    public static bool $withAuthentication = false;
+    protected static bool $withAuthentication = false;
 
     /**
      * Get the current user using `cachet.guard`.
@@ -47,11 +49,17 @@ class Cachet
     /**
      * Enable Cachet's authentication routes.
      */
-    public static function withAuthentication(): static
+    public static function withAuthentication(): void
     {
         static::$withAuthentication = true;
+    }
 
-        return new static();
+    /**
+     * Determine if Cachet is being used to authenticate users.
+     */
+    public static function hasAuthentication(): bool
+    {
+        return static::$withAuthentication;
     }
 
     /**

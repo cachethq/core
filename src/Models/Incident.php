@@ -1,12 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Models;
 
+use App\Models\User;
+use Cachet\Database\Factories\IncidentFactory;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,6 +20,35 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Properties
+ *
+ * @property-read int $id
+ * @property string $guid
+ * @property int $user_id
+ * @property int $component_id
+ * @property string $name
+ * @property string $message
+ * @property IncidentStatusEnum $status
+ * @property bool $visible
+ * @property bool $stickied
+ * @property array $notifications
+ * @property Carbon $scheduled_at
+ * @property Carbon $occurred_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
+ *
+ * Relationships
+ * @property ?User $user
+ * @property Component $component
+ * @property Collection<array-key, Component> $components
+ * @property Collection<array-key, IncidentUpdate> $incidentUpdates
+ *
+ * Methods
+ *
+ * @method static IncidentFactory factory($count = null, $state = [])
+ */
 class Incident extends Model
 {
     use HasFactory, SoftDeletes;

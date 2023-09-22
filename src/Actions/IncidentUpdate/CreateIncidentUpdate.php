@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Actions\IncidentUpdate;
 
 use Cachet\Actions\Incident\UpdateIncident;

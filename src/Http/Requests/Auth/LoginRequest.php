@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Http\Requests\Auth;
 
 use Illuminate\Auth\Events\Lockout;

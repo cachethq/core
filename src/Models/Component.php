@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,10 +19,36 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * Properties
+ *
+ * @property-read int $id
+ * @property int $component_group_id
+ * @property string $name
+ * @property string $description
+ * @property string $link
+ * @property ComponentStatusEnum $status
+ * @property int $order
+ * @property bool $enabled
+ * @property array $meta
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Carbon $deleted_at
+ *
+ * Relationships
+ * @property ?ComponentGroup $group
+ * @property Collection<array-key, Incident> $incidents
+ * @property Collection<array-key, Subscriber> $subscribers
+ *
+ * Methods
+ *
+ * @method static ComponentFactory factory($count = null, $state = [])
+ */
 class Component extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /** @var array<string, string> */
     protected $casts = [
         'status' => ComponentStatusEnum::class,
         'order' => 'int',
@@ -25,6 +56,7 @@ class Component extends Model
         'meta' => 'json',
     ];
 
+    /** @var array<array-key, string> */
     protected $fillable = [
         'name',
         'description',
@@ -36,6 +68,7 @@ class Component extends Model
         'meta',
     ];
 
+    /** @var array<string, class-string> */
     protected $dispatchesEvents = [
         'created' => ComponentCreated::class,
         'deleted' => ComponentDeleted::class,

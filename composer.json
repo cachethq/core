@@ -36,6 +36,9 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
+        "laravel/pint": "^1.13",
+        "nunomaduro/larastan": "^2.6",
+        "nunomaduro/phpinsights": "^2.8",
         "orchestra/testbench": "^8.10",
         "pestphp/pest": "^2.13",
         "pestphp/pest-plugin-laravel": "^2.2",
@@ -57,6 +60,9 @@
     "scripts": {
         "post-autoload-dump": "@prepare",
         "test": "vendor/bin/pest",
+        "format": "vendor/bin/pint --dirty",
+        "analyse": "vendor/bin/phpstan",
+        "complexity": "vendor/bin/phpinsights",
         "canvas": "@php vendor/bin/canvas",
         "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
@@ -74,7 +80,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
     "extra": {

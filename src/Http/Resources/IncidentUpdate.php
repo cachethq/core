@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Http\Resources;
 
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/**
+ * @mixin \Cachet\Models\IncidentUpdate
+ */
 class IncidentUpdate extends JsonApiResource
 {
     public function toAttributes(Request $request): array

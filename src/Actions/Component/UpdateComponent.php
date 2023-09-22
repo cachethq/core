@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Actions\Component;
 
 use Cachet\Events\Components\ComponentStatusWasChanged;

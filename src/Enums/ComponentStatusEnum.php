@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Enums;
 
 enum ComponentStatusEnum: int
@@ -19,7 +21,6 @@ enum ComponentStatusEnum: int
             self::performance_issues->value => __('Performance Issues'),
             self::partial_outage->value => __('Partial Outage'),
             self::major_outage->value => __('Major Outage'),
-            default => __('Unknown Component Status'),
         };
     }
 }

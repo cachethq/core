@@ -1,0 +1,351 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:allowedIncludes\\(\\)\\.$#"
+			count: 1
+			path: src/Http/Controllers/Api/IncidentController.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:allowedFilters\\(\\)\\.$#"
+			count: 1
+			path: src/Http/Controllers/Api/IncidentUpdateController.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:allowedIncludes\\(\\)\\.$#"
+			count: 1
+			path: src/Http/Controllers/Api/MetricController.php
+
+		-
+			message: "#^Call to an undefined method Illuminate\\\\Database\\\\Eloquent\\\\Builder\\:\\:allowedIncludes\\(\\)\\.$#"
+			count: 1
+			path: src/Http/Controllers/Api/MetricPointController.php
+
+		-
+			message: "#^Class App\\\\Models\\\\User not found\\.$#"
+			count: 1
+			path: src/Http/Requests/ProfileUpdateRequest.php
+
+		-
+			message: "#^Class App\\\\Models\\\\User not found\\.$#"
+			count: 1
+			path: src/Models/Incident.php
+
+		-
+			message: "#^Call to an undefined method DateTime\\:\\:unix\\(\\)\\.$#"
+			count: 1
+			path: src/Models/MetricPoint.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/ActionsTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/CommandsTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/EnumsTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/EventsTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/GlobalsTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/Http/ControllersTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/Http/MiddlewareTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/Http/RequestsTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/Http/ResourcesTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/JobsTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/ModelsTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/RulesTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\|Pest\\\\Support\\\\HigherOrderTapProxy\\:\\:expect\\(\\)\\.$#"
+			count: 1
+			path: tests/Architecture/ViewTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 10
+			path: tests/Feature/Api/ComponentGroupTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 7
+			path: tests/Feature/Api/ComponentTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\PendingCalls\\\\TestCall\\:\\:get\\(\\)\\.$#"
+			count: 2
+			path: tests/Feature/Api/GeneralTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 3
+			path: tests/Feature/Api/IncidentUpdateTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 1
+			path: tests/Feature/Api/MetricPointTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 4
+			path: tests/Feature/Api/MetricTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 3
+			path: tests/Feature/Api/ScheduleTest.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$id\\.$#"
+			count: 1
+			path: tests/Feature/CachetTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\Expectation\\<Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Illuminate\\\\Database\\\\Eloquent\\\\Model\\>\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null\\>\\:\\:is\\(\\)\\.$#"
+			count: 2
+			path: tests/Feature/CachetTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 1
+			path: tests/Feature/HealthTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 2
+			path: tests/Unit/Actions/Component/CreateComponentTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 3
+			path: tests/Unit/Actions/Component/DeleteComponentTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 1
+			path: tests/Unit/Actions/Component/UpdateComponentTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 2
+			path: tests/Unit/Actions/ComponentGroup/CreateComponentGroupTest.php
+
+		-
+			message: "#^Method Pest\\\\PendingCalls\\\\TestCall\\:\\:todo\\(\\) invoked with 1 parameter, 0 required\\.$#"
+			count: 1
+			path: tests/Unit/Actions/ComponentGroup/CreateComponentGroupTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 1
+			path: tests/Unit/Actions/ComponentGroup/CreateComponentGroupTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 3
+			path: tests/Unit/Actions/ComponentGroup/DeleteComponentGroupTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 2
+			path: tests/Unit/Actions/ComponentGroup/UpdateComponentGroupTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 2
+			path: tests/Unit/Actions/ComponentGroup/UpdateComponentGroupTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 2
+			path: tests/Unit/Actions/Incident/CreateIncidentTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 3
+			path: tests/Unit/Actions/Incident/DeleteIncidentTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 1
+			path: tests/Unit/Actions/Incident/UpdateIncidentTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$message\\.$#"
+			count: 2
+			path: tests/Unit/Actions/IncidentUpdate/CreateIncidentUpdateTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 1
+			path: tests/Unit/Actions/IncidentUpdate/DeleteIncidentUpdateTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$message\\.$#"
+			count: 1
+			path: tests/Unit/Actions/IncidentUpdate/UpdateIncidentUpdateTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Mixins\\\\Expectation\\<mixed\\>\\:\\:\\$created_at\\.$#"
+			count: 2
+			path: tests/Unit/Actions/Metric/CreateMetricPointTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\Expectation\\<mixed\\>\\:\\:toDateTimeString\\(\\)\\.$#"
+			count: 1
+			path: tests/Unit/Actions/Metric/CreateMetricPointTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 8
+			path: tests/Unit/Actions/Metric/CreateMetricPointTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 1
+			path: tests/Unit/Actions/Metric/CreateMetricTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 1
+			path: tests/Unit/Actions/Metric/DeleteMetricPointTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 1
+			path: tests/Unit/Actions/Metric/DeleteMetricTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 1
+			path: tests/Unit/Actions/Metric/UpdateMetricTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 2
+			path: tests/Unit/Actions/Schedule/CreateScheduleTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 2
+			path: tests/Unit/Actions/Schedule/CreateScheduleTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 1
+			path: tests/Unit/Actions/Schedule/DeleteScheduleTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$components\\.$#"
+			count: 1
+			path: tests/Unit/Actions/Schedule/UpdateScheduleTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 1
+			path: tests/Unit/Actions/Schedule/UpdateScheduleTest.php
+
+		-
+			message: "#^Undefined variable\\: \\$this$#"
+			count: 2
+			path: tests/Unit/Actions/Schedule/UpdateScheduleTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$email\\.$#"
+			count: 4
+			path: tests/Unit/Actions/Subscriber/CreateSubscriberTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$components\\.$#"
+			count: 1
+			path: tests/Unit/Actions/Subscriber/UpdateSubscriberTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$email\\.$#"
+			count: 4
+			path: tests/Unit/Actions/Subscriber/UpdateSubscriberTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$meta\\.$#"
+			count: 1
+			path: tests/Unit/Models/ComponentTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Mixins\\\\Expectation\\<mixed\\>\\:\\:\\$name\\.$#"
+			count: 1
+			path: tests/Unit/Models/ComponentTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Mixins\\\\Expectation\\<mixed\\>\\:\\:\\$template\\.$#"
+			count: 1
+			path: tests/Unit/Models/IncidentTemplateTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$components\\.$#"
+			count: 1
+			path: tests/Unit/Models/ScheduleTest.php
+
+		-
+			message: "#^Call to an undefined method Pest\\\\Mixins\\\\Expectation\\<Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<int, Cachet\\\\Models\\\\Schedule\\>\\|null\\>\\:\\:first\\(\\)\\.$#"
+			count: 3
+			path: tests/Unit/Models/ScheduleTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$components\\.$#"
+			count: 1
+			path: tests/Unit/Models/SubscriberTest.php
+
+		-
+			message: "#^Access to an undefined property Pest\\\\Expectation\\<mixed\\>\\:\\:\\$verified_at\\.$#"
+			count: 3
+			path: tests/Unit/Models/SubscriberTest.php
+
+		-
+			message: "#^Parameter \\#1 \\.\\.\\.\\$data of method Pest\\\\PendingCalls\\\\TestCall\\:\\:with\\(\\) expects array\\<Closure\\|iterable\\<int\\|string, mixed\\>\\|string\\>\\|Closure\\|string, array\\{1, 2, 5, 10, 15, 30, 60\\} given\\.$#"
+			count: 1
+			path: tests/Unit/Rules/FactorOfSixtyTest.php
+
+		-
+			message: "#^Parameter \\#1 \\.\\.\\.\\$data of method Pest\\\\PendingCalls\\\\TestCall\\:\\:with\\(\\) expects array\\<Closure\\|iterable\\<int\\|string, mixed\\>\\|string\\>\\|Closure\\|string, array\\{9, 11, 13, 17, 19, 23, 29, 31, \\.\\.\\.\\} given\\.$#"
+			count: 1
+			path: tests/Unit/Rules/FactorOfSixtyTest.php

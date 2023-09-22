@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Events\Beacon;
 
 use Illuminate\Foundation\Events\Dispatchable;

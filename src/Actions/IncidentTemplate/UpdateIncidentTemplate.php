@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Actions\IncidentTemplate;
 
 use Cachet\Models\IncidentTemplate;
@@ -9,7 +11,7 @@ class UpdateIncidentTemplate
 {
     use AsAction;
 
-    public function handle(IncidentTemplate $incidentTemplate): IncidentTemplate
+    public function handle(IncidentTemplate $incidentTemplate): void
     {
         //
     }

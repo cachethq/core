@@ -1,15 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\SubscriberFactory;
 use Cachet\Events\Subscribers\SubscriberCreated;
 use Cachet\Events\Subscribers\SubscriberUnsubscribed;
 use Cachet\Events\Subscribers\SubscriberVerified;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Str;
 
+/**
+ * Properties
+ *
+ * @property-read int $id
+ * @property string $email
+ * @property ?string $verify_code
+ * @property ?Carbon $verified_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ *
+ * Relationships
+ * @property Collection<array-key, Component> $components
+ *
+ * Methods
+ *
+ * @method static SubscriberFactory factory($count = null, $state = [])
+ */
 class Subscriber extends Model
 {
     use HasFactory;

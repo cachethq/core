@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Events\Incidents;
 
 use Cachet\Models\Incident;

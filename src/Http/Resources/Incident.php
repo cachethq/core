@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Cachet\Http\Resources;
 
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
+use TiMacDonald\JsonApi\JsonApiResourceCollection;
 
+/**
+ * @mixin \Cachet\Models\Incident
+ */
 class Incident extends JsonApiResource
 {
     public function toAttributes(Request $request): array
@@ -37,11 +43,14 @@ class Incident extends JsonApiResource
         ];
     }
 
-    public function toRelationships(Request $request)
+    /**
+     * @return array<string, (callable(): JsonApiResourceCollection)>
+     */
+    public function toRelationships(Request $request): array
     {
         return [
             'component' => fn () => Component::make($this->component),
-            'updates' => fn () => IncidentUpdate::collection($this->updates),
+            'updates' => fn () => IncidentUpdate::collection($this->incidentUpdates),
             'user' => fn () => Component::make($this->user),
         ];
     }
