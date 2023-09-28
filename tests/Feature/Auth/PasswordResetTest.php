@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Auth\Notifications\ResetPassword;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Notification;
 use Workbench\Database\Factories\UserFactory;
 
