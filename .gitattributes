@@ -8,5 +8,5 @@
 /phpunit.xml.dist   export-ignore
 /tests              export-ignore
 /.editorconfig      export-ignore
-/workbench export-ignore
-/testbench.yaml export-ignore
+/workbench          export-ignore
+/testbench.yaml     export-ignore
