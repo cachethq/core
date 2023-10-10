@@ -3,7 +3,6 @@
 namespace Cachet\Http\Middleware;
 
 use Closure;
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate as BaseAuthenticationMiddleware;
 
 class Authenticate extends BaseAuthenticationMiddleware
