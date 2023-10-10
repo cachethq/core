@@ -29,6 +29,7 @@ abstract class TestCase extends Orchestra
     protected function defineEnvironment($app)
     {
         $app['config']->set([
+            'auth.providers.users.model' => 'Workbench\\App\\User',
             'database.default' => 'testing',
             // 'query-builder.request_data_source' => 'body',
         ]);

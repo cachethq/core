@@ -3,10 +3,12 @@ providers:
 
 env:
   - APP_NAME=Cachet
-  - SEND_QUERIES_TO_RAY=false
 
 migrations:
   - workbench/database/migrations
+
+seeders:
+  - Workbench\Database\Seeders\DatabaseSeeder
 
 workbench:
   start: '/status'
@@ -23,3 +25,7 @@ workbench:
   assets:
     - query-builder-config
     - cachet-assets
+
+purge:
+  directories:
+    - public/vendor

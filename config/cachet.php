@@ -1,5 +1,8 @@
 <?php
 
+use Cachet\Http\Middleware\Authenticate;
+use Cachet\Http\Middleware\HandleInertiaRequests;
+
 return [
 
     /*
@@ -58,11 +61,16 @@ return [
      */
     'middleware' => [
         'web',
-        \Cachet\Http\Middleware\HandleInertiaRequests::class,
+        HandleInertiaRequests::class,
     ],
 
     'api_middleware' => [
         'api',
+    ],
+
+    'dashboard_middleware' => [
+        'cachet',
+        Authenticate::class,
     ],
 
     /*

@@ -36,6 +36,7 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         Route::middlewareGroup('cachet', config('cachet.middleware', []));
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
+        Route::middlewareGroup('cachet:dashboard', config('cachet.dashboard_middleware', []));
 
         $this->registerResources();
         $this->registerPublishing();

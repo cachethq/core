@@ -2,8 +2,14 @@
 
 namespace Cachet;
 
+use Cachet\Http\Controllers\Auth\AuthenticatedSessionController;
+use Cachet\Http\Controllers\Auth\EmailVerificationNotificationController;
+use Cachet\Http\Controllers\Auth\EmailVerificationPromptController;
+use Cachet\Http\Controllers\Auth\NewPasswordController;
+use Cachet\Http\Controllers\Auth\PasswordResetLinkController;
+use Cachet\Http\Controllers\Auth\VerifyEmailController;
+use Cachet\Http\Controllers\Dashboard\DashboardController;
 use Cachet\Http\Controllers\HealthController;
-use Cachet\Http\Controllers\LoginController;
 use Cachet\Http\Controllers\Setup\SetupController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
 use Illuminate\Routing\Router;
@@ -32,6 +38,8 @@ class PendingRouteRegistration
                 $router->get('/', [StatusPageController::class, 'index'])->name('status-page');
                 $router->get('/incidents/{incident}', [StatusPageController::class, 'show'])->name('status-page.incident');
 
+                $router->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
                 $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
                 $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');
 
@@ -41,7 +49,10 @@ class PendingRouteRegistration
             });
     }
 
-    public function withAuthenticationRoutes($middleware = ['cachet'])
+    /**
+     * Register Cachet's authentication routes.
+     */
+    public function withAuthenticationRoutes($middleware = ['cachet']): self
     {
         Cachet::withAuthentication();
 
@@ -51,9 +62,23 @@ class PendingRouteRegistration
             ->prefix(Cachet::path())
             ->as('cachet.')
             ->group(function (Router $router) {
-                $router->get('/login', [LoginController::class, 'showLoginForm'])->name('cachet.login');
+                $router->get('/login', [AuthenticatedSessionController::class, 'show'])->name('login');
+                $router->post('/login', [AuthenticatedSessionController::class, 'store'])->name('login.post');
 
-                // @todo post login form.
+                $router->get('/forgot-password', [PasswordResetLinkController::class, 'show'])->name('password.request');
+                $router->post('/forgot-password', [PasswordResetLinkController::class, 'store'])->name('password.email');
+
+                $router->get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
+                $router->post('/reset-password', [NewPasswordController::class, 'store'])->name('password.store');
+
+                // @todo Make these routes auth protected.
+                $router->get('/verify-email', EmailVerificationPromptController::class)->name('verification.notice');
+                $router->get('/verify-email/{id}/{hash}', VerifyEmailController::class)->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
+                $router->post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+                    ->middleware('throttle:6,1')
+                    ->name('verification.send');
+
+                $router->post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
             });
 
         return $this;
