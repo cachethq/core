@@ -13,7 +13,9 @@ seeders:
 workbench:
   start: '/status'
   install: true
-  welcome: true
+  discovers:
+    config: true
+    web: true
   sync:
     - from: public/build
       to: public/vendor/cachethq/cachet
