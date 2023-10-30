@@ -9,8 +9,8 @@ export default defineConfig({
         'resources/css/cachet.css',
         'resources/js/cachet.js',
       ],
-      publicDirectory: 'vendor/orchestra/testbench-core/laravel/public/vendor/cachethq',
-      buildDirectory: 'cachet',
+      // publicDirectory: 'vendor/orchestra/testbench-core/laravel/public/vendor/cachethq',
+      // buildDirectory: 'cachet',
     }),
     vue({
       template: {
