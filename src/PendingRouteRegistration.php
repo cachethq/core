@@ -9,6 +9,7 @@ use Cachet\Http\Controllers\Auth\NewPasswordController;
 use Cachet\Http\Controllers\Auth\PasswordResetLinkController;
 use Cachet\Http\Controllers\Auth\VerifyEmailController;
 use Cachet\Http\Controllers\Dashboard\DashboardController;
+use Cachet\Http\Controllers\Dashboard\KitchenSinkController;
 use Cachet\Http\Controllers\HealthController;
 use Cachet\Http\Controllers\Setup\SetupController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
@@ -38,7 +39,10 @@ class PendingRouteRegistration
                 $router->get('/', [StatusPageController::class, 'index'])->name('status-page');
                 $router->get('/incidents/{incident}', [StatusPageController::class, 'show'])->name('status-page.incident');
 
-                $router->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+                $router->prefix('/dashboard')->name('dashboard.')->group(function () use ($router) {
+                    $router->get('/', [DashboardController::class, 'index'])->name('index');
+                    $router->get('/kitchen-sink', [KitchenSinkController::class, 'index'])->name('kitchen-sink');
+                });
 
                 $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
                 $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');

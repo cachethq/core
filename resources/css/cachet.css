@@ -11,6 +11,10 @@
         @apply bg-primary-600 hover:bg-primary-600 focus-visible:outline-primary-600;
     }
 
+    .button--danger {
+        @apply bg-red-600 hover:bg-red-700 text-red-100 focus-visible:outline-red-300 dark:bg-red-800 dark:hover:bg-red-700 dark:text-red-400 focus-visible:outline-red-800;
+    }
+
     .button--secondary {
         @apply bg-zinc-300 hover:bg-zinc-400 text-zinc-800 focus-visible:outline-zinc-300 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-400 focus-visible:outline-zinc-800;
     }
