@@ -15,7 +15,7 @@ class HandleInertiaRequests extends Middleware
      *
      * @var string
      */
-    protected $rootView = 'cachet::dashboard';
+    protected $rootView = 'cachet::dashboard.index';
 
     /**
      * Determines the current asset version.

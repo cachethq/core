@@ -22,6 +22,26 @@ module.exports = {
           '800': '#027227',
           '900': '#01561a',
         },
+        background: {
+          light: 'var(--background-light)',
+          dark: 'var(--background-dark)',
+        },
+        base: {
+          light: 'var(--text-light)',
+          dark: 'var(--text-dark)',
+        },
+        divider: {
+          light: 'var(--divider-light)',
+          dark: 'var(--divider-dark)',
+        },
+        panel: {
+          light: 'var(--panel-light)',
+          dark: 'var(--panel-dark)',
+        },
+        'panel-header': {
+          light: 'var(--panel-header-light)',
+          dark: 'var(--panel-header-dark)',
+        },
       },
     },
   },

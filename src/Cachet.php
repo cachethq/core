@@ -21,6 +21,20 @@ class Cachet
     public static bool $withAuthentication = false;
 
     /**
+     * Get the default CSS variables.
+     *
+     * @return array<string, array<string,string>>
+     */
+    public static function cssVariables(): array
+    {
+        return [
+            // Variable => [Light, Dark]
+            'background' => ['#F9FAFB', '#18181B'],
+            'text' => ['#3F3F46', '#D4D4D8'],
+        ];
+    }
+
+    /**
      * Get the current user using `cachet.guard`.
      */
     public static function user(Request $request = null)

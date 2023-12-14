@@ -12,7 +12,7 @@
     @vite('resources/js/cachet.js', 'vendor/cachethq/cachet')
 </head>
 
-<body class="antialiased bg-gray-50 dark:bg-gray-950">
+<body class="antialiased bg-zinc-50 dark:bg-zinc-950">
     @inertia
 </body>
 </html>
