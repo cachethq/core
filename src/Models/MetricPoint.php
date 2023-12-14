@@ -70,7 +70,7 @@ class MetricPoint extends Model
     /**
      * Determine if the metric point was created within the threshold.
      */
-    public function withinThreshold(int $threshold, string|int|DateTime $timestamp = null): bool
+    public function withinThreshold(int $threshold, string|int|DateTime|null $timestamp = null): bool
     {
         $now = Carbon::parse($timestamp) ?? now();
 

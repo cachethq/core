@@ -37,7 +37,7 @@ class Cachet
     /**
      * Get the current user using `cachet.guard`.
      */
-    public static function user(Request $request = null)
+    public static function user(?Request $request = null)
     {
         $guard = config('cachet.guard');
 
