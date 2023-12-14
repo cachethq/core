@@ -20,7 +20,8 @@ class SettingFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => 'app_name',
+            'value' => 'Cachet',
         ];
     }
 }
