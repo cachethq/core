@@ -1,0 +1,23 @@
+{
+    "Admin": "Admin",
+    "User": "User",
+    "Performance Issues": "Performance Issues",
+    "Upcoming": "Upcoming",
+    "Complete": "Complete",
+    "In Progress": "In Progress",
+    "Last Hour": "Last Hour",
+    "Today": "Today",
+    "Week": "Week",
+    "Month": "Month",
+    "Always expanded": "Always expanded",
+    "Always collapsed": "Always collapsed",
+    "Collapsed unless there is an incident in the group": "Collapsed unless there is an incident in the group",
+    "Operational": "Operational",
+    "Partial Outage": "Partial Outage",
+    "Major Outage": "Major Outage",
+    "Unknown Component Status": "Unknown Component Status",
+    "Investigating": "Investigating",
+    "Identified": "Identified",
+    "Watching": "Watching",
+    "Fixed": "Fixed"
+}
