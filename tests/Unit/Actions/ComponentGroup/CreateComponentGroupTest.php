@@ -9,7 +9,7 @@ it('can create a component group with just a name', function () {
         'name' => 'Services',
     ];
 
-    $componentGroup = CreateComponentGroup::run($data);
+    $componentGroup = app(CreateComponentGroup::class)->handle($data);
 
     expect($componentGroup)
         ->name->toBe($data['name'])
@@ -24,7 +24,7 @@ it('can create a component group with a name, order and visibility', function ()
         'visible' => ComponentGroupVisibilityEnum::expanded,
     ];
 
-    $componentGroup = CreateComponentGroup::run($data);
+    $componentGroup = app(CreateComponentGroup::class)->handle($data);
 
     expect($componentGroup)
         ->name->toBe($data['name'])
@@ -39,7 +39,7 @@ it('can create a component group and add components', function () {
 
     $components = Component::factory()->count(3)->create();
 
-    $componentGroup = CreateComponentGroup::run($data, $components->pluck('id')->values()->all());
+    $componentGroup = app(CreateComponentGroup::class)->handle($data, $components->pluck('id')->values()->all());
 
     $this->assertDatabaseHas('components', [
         'component_group_id' => $componentGroup->id,

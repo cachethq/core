@@ -20,7 +20,7 @@ it('can update a component', function () {
         'description' => 'My updated component description.',
     ];
 
-    UpdateComponent::run(
+    app(UpdateComponent::class)->handle(
         $component,
         $data
     );
@@ -42,7 +42,7 @@ it('dispatches ComponentStatusWasChanged when the status is changed', function (
         'status' => ComponentStatusEnum::operational,
     ]);
 
-    UpdateComponent::run($component, [
+    app(UpdateComponent::class)->handle($component, [
         'status' => ComponentStatusEnum::major_outage,
     ]);
 

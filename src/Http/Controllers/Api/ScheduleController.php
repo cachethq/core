@@ -32,11 +32,11 @@ class ScheduleController extends Controller
     /**
      * Create Schedule.
      */
-    public function store(CreateScheduleRequest $request)
+    public function store(CreateScheduleRequest $request, CreateSchedule $createScheduleAction)
     {
         [$data, $components] = [$request->except('components'), $request->input('components')];
 
-        $schedule = CreateSchedule::run($data, $components);
+        $schedule = $createScheduleAction->handle($data, $components);
 
         return ScheduleResource::make($schedule);
     }
@@ -54,10 +54,10 @@ class ScheduleController extends Controller
     /**
      * Update Schedule.
      */
-    public function update(UpdateScheduleRequest $request, Schedule $schedule)
+    public function update(UpdateScheduleRequest $request, Schedule $schedule, UpdateSchedule $updateScheduleAction)
     {
         [$data, $components] = [$request->except('components'), $request->input('components')];
-        UpdateSchedule::run($schedule, $data, $components);
+        $updateScheduleAction->handle($schedule, $data, $components);
 
         return ScheduleResource::make($schedule->fresh());
     }
@@ -65,9 +65,9 @@ class ScheduleController extends Controller
     /**
      * Delete Schedule.
      */
-    public function destroy(Schedule $schedule)
+    public function destroy(Schedule $schedule, DeleteSchedule $deleteScheduleAction)
     {
-        DeleteSchedule::run($schedule);
+        $deleteScheduleAction->handle($schedule);
 
         return response()->noContent();
     }

@@ -32,9 +32,9 @@ class ComponentController extends Controller
     /**
      * Create Component.
      */
-    public function store(CreateComponentRequest $request)
+    public function store(CreateComponentRequest $request, CreateComponent $createComponentAction)
     {
-        $component = CreateComponent::run($request->validated());
+        $component = $createComponentAction->handle($request->validated());
 
         return ComponentResource::make($component);
     }
@@ -52,9 +52,9 @@ class ComponentController extends Controller
     /**
      * Update Component.
      */
-    public function update(UpdateComponentRequest $request, Component $component)
+    public function update(UpdateComponentRequest $request, Component $component, UpdateComponent $updateComponentAction)
     {
-        UpdateComponent::run($component, $request->validated());
+        $updateComponentAction->handle($component, $request->validated());
 
         return ComponentResource::make($component->fresh());
     }
@@ -62,12 +62,12 @@ class ComponentController extends Controller
     /**
      * Delete Component.
      */
-    public function destroy(Component $component)
+    public function destroy(Component $component, DeleteComponent $deleteComponentAction)
     {
         // @todo what happens to incidents linked to this component?
         // @todo re-calculate existing component orders?
 
-        DeleteComponent::run($component);
+        $deleteComponentAction->handle($component);
 
         return response()->noContent();
     }

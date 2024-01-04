@@ -10,7 +10,7 @@ it('can update an incident update', function () {
         'message' => 'Incident Updated',
     ];
 
-    UpdateIncidentUpdate::run($incidentUpdate, $data);
+    app(UpdateIncidentUpdate::class)->handle($incidentUpdate, $data);
 
     expect($incidentUpdate)
         ->message->toBe($data['message'])

@@ -11,7 +11,7 @@ it('can update a component group with just a name', function () {
         'name' => 'Services',
     ];
 
-    $componentGroup = UpdateComponentGroup::run($componentGroup, $data);
+    $componentGroup = app(UpdateComponentGroup::class)->handle($componentGroup, $data);
 
     expect($componentGroup)
         ->name->toBe($data['name']);
@@ -25,7 +25,7 @@ it('can update a component group without touching components', function () {
         'name' => 'Services',
     ];
 
-    $componentGroup = UpdateComponentGroup::run($componentGroup, $data);
+    $componentGroup = app(UpdateComponentGroup::class)->handle($componentGroup, $data);
 
     expect($componentGroup)
         ->name->toBe($data['name']);
@@ -38,7 +38,7 @@ it('can update a component group with components', function () {
     $components = Component::factory()->count(3)->create();
     $componentGroup = ComponentGroup::factory()->create();
 
-    $componentGroup = UpdateComponentGroup::run($componentGroup, [], $components->pluck('id')->values()->all());
+    $componentGroup = app(UpdateComponentGroup::class)->handle($componentGroup, [], $components->pluck('id')->values()->all());
 
     $this->assertDatabaseHas('components', [
         'component_group_id' => $componentGroup->id,

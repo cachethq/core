@@ -36,7 +36,7 @@ class ComponentController extends Controller
      */
     public function store(CreateComponentRequest $request): RedirectResponse
     {
-        CreateComponent::run(
+        app(CreateComponent::class)->handle(
             name: $request->input('name'),
             description: $request->input('description'),
             link: $request->input('link'),
@@ -78,7 +78,7 @@ class ComponentController extends Controller
      */
     public function destroy(Component $component): RedirectResponse
     {
-        DeleteComponent::run($component);
+        app(DeleteComponent::class)->handle($component);
 
         return redirect()->back();
     }

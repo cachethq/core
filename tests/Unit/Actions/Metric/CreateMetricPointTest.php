@@ -12,7 +12,7 @@ it('creates a metric point if it is the first point', function () {
 
     $metric = Metric::factory()->create();
 
-    $point = CreateMetricPoint::run($metric, [
+    $point = app(CreateMetricPoint::class)->handle($metric, [
         'value' => 1,
     ]);
 
@@ -34,7 +34,7 @@ it('creates a metric point with a default value', function () {
         'default_value' => 1234,
     ]);
 
-    $point = CreateMetricPoint::run($metric);
+    $point = app(CreateMetricPoint::class)->handle($metric);
 
     expect($point)->toBeInstanceOf(MetricPoint::class);
     $this->assertDatabaseHas('metric_points', [
@@ -54,7 +54,7 @@ it('increments the counter if within the metric\'s threshold', function () {
         'threshold' => 1,
     ]);
 
-    $point = CreateMetricPoint::run($metric, [
+    $point = app(CreateMetricPoint::class)->handle($metric, [
         'value' => 1,
     ]);
 
@@ -76,7 +76,7 @@ it('creates a metric point if it is outside of the metric\'s threshold', functio
         'threshold' => 1,
     ]);
 
-    $point = CreateMetricPoint::run($metric, [
+    $point = app(CreateMetricPoint::class)->handle($metric, [
         'value' => 1,
     ]);
 
@@ -98,7 +98,7 @@ it('creates a metric point for a given timestamp', function ($timestamp) {
         'threshold' => 1,
     ]);
 
-    $point = CreateMetricPoint::run($metric, [
+    $point = app(CreateMetricPoint::class)->handle($metric, [
         'value' => 1,
         'timestamp' => $timestamp,
     ]);

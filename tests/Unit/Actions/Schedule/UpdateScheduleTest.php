@@ -12,7 +12,7 @@ it('can update a schedule', function () {
         'name' => 'Schedule Updated',
     ];
 
-    UpdateSchedule::run($schedule, $data);
+    app(UpdateSchedule::class)->handle($schedule, $data);
 
     expect($schedule)
         ->name->toBe($data['name']);
@@ -22,7 +22,7 @@ it('can update a schedule with components', function () {
     $schedule = Schedule::factory()->create();
     [$componentA, $componentB] = Component::factory()->count(2)->create();
 
-    UpdateSchedule::run($schedule, [], [
+    app(UpdateSchedule::class)->handle($schedule, [], [
         ['id' => $componentA->id, 'status' => ComponentStatusEnum::performance_issues],
         ['id' => $componentB->id, 'status' => ComponentStatusEnum::major_outage],
     ]);

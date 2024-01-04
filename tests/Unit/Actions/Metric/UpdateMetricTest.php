@@ -13,7 +13,7 @@ it('can update a metric', function () {
         'name' => 'Updated Metric',
     ];
 
-    $metric = UpdateMetric::run($metric, $data);
+    $metric = app(UpdateMetric::class)->handle($metric, $data);
 
     expect($metric)
         ->name->toBe($data['name']);

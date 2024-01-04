@@ -3,12 +3,9 @@
 namespace Cachet\Actions\Schedule;
 
 use Cachet\Models\Schedule;
-use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateSchedule
 {
-    use AsAction;
-
     public function handle(Schedule $schedule, array $data = [], ?array $components = []): Schedule
     {
         $schedule->update($data);
