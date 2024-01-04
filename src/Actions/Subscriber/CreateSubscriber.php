@@ -4,12 +4,9 @@ namespace Cachet\Actions\Subscriber;
 
 use Cachet\Models\Subscriber;
 use Illuminate\Support\Str;
-use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateSubscriber
 {
-    use AsAction;
-
     public function handle(string $email, bool $global = false, array $components = [], bool $verified = false): Subscriber
     {
         $subscriber = Subscriber::firstOrCreate([

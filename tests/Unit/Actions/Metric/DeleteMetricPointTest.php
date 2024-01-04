@@ -9,7 +9,7 @@ it('can delete a metric point', function () {
     Event::fake();
     $metricPoint = MetricPoint::factory()->create();
 
-    DeleteMetricPoint::run($metricPoint);
+    app(DeleteMetricPoint::class)->handle($metricPoint);
 
     $this->assertDatabaseMissing('metric_points', [
         'id' => $metricPoint->id,
