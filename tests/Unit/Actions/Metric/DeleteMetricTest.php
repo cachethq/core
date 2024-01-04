@@ -9,7 +9,7 @@ it('can delete a metric', function () {
     Event::fake();
     $metric = Metric::factory()->create();
 
-    DeleteMetric::run($metric);
+    app(DeleteMetric::class)->handle($metric);
 
     $this->assertDatabaseMissing('metrics', [
         'id' => $metric->id,

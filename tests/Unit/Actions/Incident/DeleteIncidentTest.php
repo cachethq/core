@@ -10,7 +10,7 @@ it('can create delete an incident', function () {
 
     $incident = Incident::factory()->create();
 
-    DeleteIncident::run($incident);
+    app(DeleteIncident::class)->handle($incident);
 
     $this->assertSoftDeleted('incidents', [
         'id' => $incident->id,
@@ -22,7 +22,7 @@ it('can create delete an incident', function () {
 it('deletes related incident updates', function () {
     $incident = Incident::factory()->hasIncidentUpdates(2)->create();
 
-    DeleteIncident::run($incident);
+    app(DeleteIncident::class)->handle($incident);
 
     $this->assertSoftDeleted('incidents', [
         'id' => $incident->id,

@@ -36,9 +36,9 @@ class MetricController extends Controller
     /**
      * Create Metric.
      */
-    public function store(CreateMetricRequest $request)
+    public function store(CreateMetricRequest $request, CreateMetric $createMetricAction)
     {
-        $metric = CreateMetric::run($request->validated());
+        $metric = $createMetricAction->handle($request->validated());
 
         return MetricResource::make($metric);
     }
@@ -56,9 +56,9 @@ class MetricController extends Controller
     /**
      * Update Metric.
      */
-    public function update(UpdateMetricRequest $request, Metric $metric)
+    public function update(UpdateMetricRequest $request, Metric $metric, UpdateMetric $updateMetricAction)
     {
-        UpdateMetric::run($metric, $request->validated());
+        $updateMetricAction->handle($metric, $request->validated());
 
         return MetricResource::make($metric->fresh());
     }
@@ -66,9 +66,9 @@ class MetricController extends Controller
     /**
      * Delete Metric.
      */
-    public function destroy(Metric $metric)
+    public function destroy(Metric $metric, DeleteMetric $deleteMetricAction)
     {
-        DeleteMetric::run($metric);
+        $deleteMetricAction->handle($metric);
 
         return response()->noContent();
     }

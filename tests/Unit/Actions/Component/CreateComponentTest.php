@@ -15,7 +15,7 @@ it('can create a component', function () {
         'description' => 'My component description',
     ];
 
-    $component = CreateComponent::run($data);
+    $component = app(CreateComponent::class)->handle($data);
 
     expect($component)
         ->name->toBe($data['name'])
@@ -31,7 +31,7 @@ it('can create a component with a given status', function () {
         'status' => ComponentStatusEnum::performance_issues,
     ];
 
-    $component = CreateComponent::run($data);
+    $component = app(CreateComponent::class)->handle($data);
 
     expect($component)
         ->name->toBe($data['name'])

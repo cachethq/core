@@ -10,7 +10,7 @@ it('can unsubscribe a subscriber', function () {
 
     $subscriber = Subscriber::factory()->create();
 
-    UnsubscribeSubscriber::run($subscriber);
+    app(UnsubscribeSubscriber::class)->handle($subscriber);
 
     expect($subscriber->fresh())
         ->toBeNull();

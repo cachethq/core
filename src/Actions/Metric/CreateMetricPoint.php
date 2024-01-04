@@ -4,12 +4,9 @@ namespace Cachet\Actions\Metric;
 
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
-use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateMetricPoint
 {
-    use AsAction;
-
     public function handle(Metric $metric, array $data = []): MetricPoint
     {
         $lastPoint = $metric->metricPoints()->latest()->first();
