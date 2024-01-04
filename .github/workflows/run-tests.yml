@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer require "illuminate/contracts=^${{ matrix.laravel }}" --no-update
-         composer update --prefer-dist --no-interaction --no-progress
+          composer update --prefer-dist --no-interaction --no-progress
 
       - name: Install frontend dependencies
         run: npm ci
