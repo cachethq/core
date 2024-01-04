@@ -33,8 +33,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+          composer require "illuminate/contracts=^${{ matrix.laravel }}" --no-update
+         composer update --prefer-dist --no-interaction --no-progress
 
       - name: Install frontend dependencies
         run: npm ci
