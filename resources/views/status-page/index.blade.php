@@ -10,7 +10,7 @@
                     <p>
                         This is the demo instance of <a href="https://cachethq.io/" target="_blank">Cachet</a>. The open-source status page system.
                     </p>
-                    {{-- format-ignore-end --}}
+                {{-- format-ignore-end --}}
             </div>
         </div>
 
