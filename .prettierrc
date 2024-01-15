@@ -1,8 +1,17 @@
 {
-    "printWidth": 10000,
-    "semi": false,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "all",
-    "htmlWhitespaceSensitivity": "css"
+  "printWidth": 10000,
+  "semi": false,
+  "singleQuote": true,
+  "tabWidth": 4,
+  "trailingComma": "all",
+  "htmlWhitespaceSensitivity": "css",
+  "plugins": ["prettier-plugin-blade", "prettier-plugin-tailwindcss"],
+  "overrides": [
+    {
+      "files": ["*.blade.php"],
+      "options": {
+        "parser": "blade"
+      }
+    }
+  ]
 }
