@@ -41,7 +41,7 @@
                         <div class="font-semibold leading-6">Forge</div>
                         <div class="mt-1 text-sm text-zinc-500">Deployments made easy.</div>
                     </div>
-                    <x-cachet::badge type="operational" />
+                    <x-cachet::badge type="partial-outage" />
                 </div>
             </li>
             <li class="px-4 py-3">
@@ -50,7 +50,7 @@
                         <div class="font-semibold leading-6">Vapor</div>
                         <div class="mt-1 text-sm text-zinc-500">Deployments made easy.</div>
                     </div>
-                    <x-cachet::badge type="operational" />
+                    <x-cachet::badge type="major-outage" />
                 </div>
             </li>
         </ul>

@@ -9,7 +9,7 @@
                     <span class="text-xs text-zinc-500">3 Days Ago — Friday 1st December 2023, 14:00</span>
                 </div>
                 <div>
-                    <x-cachet::badge />
+                    <x-cachet::badge type="performance-issues" />
                 </div>
             </div>
             <p class="mt-5 text-sm">We're investigating an issue with our monkeys not performing as they should be. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras porttitor sapien ac est rutrum varius. Morbi quis sem auctor, dapibus massa id, sagittis arcu.</p>
