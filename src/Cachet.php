@@ -16,11 +16,6 @@ class Cachet
     const USER_AGENT = 'Cachet/1.0';
 
     /**
-     * Cachet is being used to authenticate users.
-     */
-    public static bool $withAuthentication = false;
-
-    /**
      * Get the default CSS variables.
      *
      * @return array<string, array<string,string>>
@@ -56,16 +51,6 @@ class Cachet
         Route::aliasMiddleware('cachet.guest', RedirectIfAuthenticated::class);
 
         return new PendingRouteRegistration();
-    }
-
-    /**
-     * Enable Cachet's authentication routes.
-     */
-    public static function withAuthentication(): static
-    {
-        static::$withAuthentication = true;
-
-        return new static();
     }
 
     /**

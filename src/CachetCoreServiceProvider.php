@@ -70,7 +70,6 @@ class CachetCoreServiceProvider extends ServiceProvider
         });
 
         Cachet::routes()
-            ->withAuthenticationRoutes()
             ->register();
     }
 
