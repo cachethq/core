@@ -1,6 +1,5 @@
 <?php
 
-use Cachet\Http\Middleware\Authenticate;
 use Cachet\Http\Middleware\HandleInertiaRequests;
 
 return [

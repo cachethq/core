@@ -2,12 +2,9 @@
 
 namespace Cachet;
 
-use Composer\InstalledVersions;
-use Doctrine\Common\Cache\Cache;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class CachetServiceProvider extends ServiceProvider
