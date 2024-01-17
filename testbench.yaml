@@ -17,7 +17,7 @@ workbench:
     config: true
     web: true
   sync:
-    - from: public/build
+    - from: public
       to: public/vendor/cachethq/cachet
   build:
     - asset-publish
