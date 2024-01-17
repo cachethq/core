@@ -3,6 +3,7 @@
 namespace Cachet\Http\Controllers\StatusPage;
 
 use Cachet\Cachet;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Illuminate\View\View;
 
@@ -14,6 +15,7 @@ class StatusPageController
     public function index(): View
     {
         return view('cachet::status-page.index', [
+            'componentGroups' => ComponentGroup::with('components')->get(),
             'cachetVersion' => Cachet::version(),
         ]);
     }

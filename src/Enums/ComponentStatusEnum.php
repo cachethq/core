@@ -12,6 +12,7 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
     case performance_issues = 2;
     case partial_outage = 3;
     case major_outage = 4;
+    case unknown = 5;
 
     public function getLabel(): string
     {

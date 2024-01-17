@@ -13,6 +13,7 @@
         <title>{{ $title ?? config('cachet.title', 'Cachet') }}</title>
 
         @vite(['resources/css/cachet.css', 'resources/js/cachet.js'], 'vendor/cachethq/cachet/build')
+        @filamentStyles
 
         <style type="text/css">
             /* Cachet custom styles */

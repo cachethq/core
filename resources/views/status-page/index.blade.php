@@ -17,8 +17,9 @@
         <div class="mt-6 space-y-10">
             <x-cachet::status-bar/>
 
-            <x-cachet::component-group title="Laravel"/>
-            <x-cachet::component-group title="Cachet"/>
+            @foreach($componentGroups as $componentGroup)
+                <x-cachet::component-group :component-group="$componentGroup"/>
+            @endforeach
 
             <x-cachet::maintenance/>
 
