@@ -36,8 +36,18 @@ class ComponentGroup extends Model
     /**
      * Scope component groups to a specific visibility.
      */
-    public function scopeVisibility($query, ComponentGroupVisibilityEnum $visibility): Builder
+    public function scopeVisibility(Builder $query, ResourceVisibilityEnum $visibility): Builder
     {
         return $query->where('visible', $visibility);
+    }
+
+    public function scopeGuests(Builder $query): Builder
+    {
+        return $query->whereIn('visible', ResourceVisibilityEnum::visibleToGuests());
+    }
+
+    public function scopeUsers(Builder $query): Builder
+    {
+        return $query->whereIn('visible', ResourceVisibilityEnum::visibleToUsers());
     }
 }
