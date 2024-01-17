@@ -9,6 +9,9 @@
     <a href="https://github.com/cachethq/core/actions">
         <img src="https://github.com/cachethq/core/workflows/run-tests/badge.svg" alt="Build Status">
     </a>
+    <a href="https://github.com/cachethq/cacheth/?sponsor=1">
+        <img src="https://img.shields.io/github/sponsors/cachethq" alt="GitHub Sponsors">
+    </a>
     <a href="https://packagist.org/packages/cachethq/core">
         <img src="https://img.shields.io/packagist/dt/cachethq/core" alt="Total Downloads">
     </a>
@@ -46,10 +49,10 @@ This package provides the core functionality of Cachet and may be installed into
 ### Dashboard Credentials
 
 When running Cachet via the `composer start` command, Workbench will seed a user that you can use to log in to the dashboard.
-Login to the account at `/status/login` and use credentials:
+Login to the account at `/status/dashboard` and use credentials:
 
 - **Email:** `test@test.com`
-- **Password:** `test123
+- **Password:** `test123`
 
 ## Security Vulnerabilities
 
