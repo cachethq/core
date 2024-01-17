@@ -2,14 +2,6 @@
 
 namespace Cachet;
 
-use Cachet\Http\Controllers\Auth\AuthenticatedSessionController;
-use Cachet\Http\Controllers\Auth\EmailVerificationNotificationController;
-use Cachet\Http\Controllers\Auth\EmailVerificationPromptController;
-use Cachet\Http\Controllers\Auth\NewPasswordController;
-use Cachet\Http\Controllers\Auth\PasswordResetLinkController;
-use Cachet\Http\Controllers\Auth\VerifyEmailController;
-use Cachet\Http\Controllers\Dashboard\DashboardController;
-use Cachet\Http\Controllers\Dashboard\KitchenSinkController;
 use Cachet\Http\Controllers\HealthController;
 use Cachet\Http\Controllers\Setup\SetupController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
