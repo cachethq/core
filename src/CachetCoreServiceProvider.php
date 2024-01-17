@@ -2,7 +2,6 @@
 
 namespace Cachet;
 
-use Cachet\View\Components\Footer;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Http;
