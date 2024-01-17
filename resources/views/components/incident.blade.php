@@ -23,7 +23,7 @@
             <div class="flex flex-col divide-y px-4 dark:divide-zinc-700">
                 <div class="relative py-4">
                     <div class="absolute -left-[calc(28px+10px+13px)] top-4 flex h-7 w-7 items-center justify-center rounded-full bg-orange-200">
-                        <x-cachet::icons.unknown class="h-5 w-5" />
+                        @svg('cachet-unknown', 'h-5 w-5')
                     </div>
                     <h3 class="text-lg font-semibold">Incident Update Title</h3>
                     <span class="text-xs text-zinc-500">3 Days Ago — Friday 1st December 2023, 14:00</span>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="relative py-4">
                     <div class="absolute -left-[calc(28px+10px+13px)] top-4 flex h-7 w-7 items-center justify-center rounded-full bg-red-200">
-                        <x-cachet::icons.partial-outage class="h-5 w-5" />
+                        @svg('cachet-incident-investigating', 'h-5 w-5')
                     </div>
                     <h3 class="text-lg font-semibold">Incident Update Title</h3>
                     <span class="text-xs text-zinc-500">3 Days Ago — Friday 1st December 2023, 14:00</span>

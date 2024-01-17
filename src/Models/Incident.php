@@ -3,15 +3,16 @@
 namespace Cachet\Models;
 
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Incident extends Model
@@ -20,7 +21,7 @@ class Incident extends Model
 
     protected $casts = [
         'status' => IncidentStatusEnum::class,
-        'visible' => 'bool',
+        'visible' => ResourceVisibilityEnum::class,
         'stickied' => 'bool',
         'scheduled_at' => 'datetime',
         'occurred_at' => 'datetime',
@@ -66,9 +67,9 @@ class Incident extends Model
     /**
      * Get the user that created the incident.
      */
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(\Workbench\App\User::class);
     }
 
     /**

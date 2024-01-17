@@ -19,7 +19,7 @@ class Incident extends JsonApiResource
             'stickied' => $this->stickied,
             'notifications' => $this->notifications,
             'status' => [
-                'human' => $this->status->getName(),
+                'human' => $this->status->getLabel(),
                 'value' => $this->status->value,
             ],
             'occurred' => [

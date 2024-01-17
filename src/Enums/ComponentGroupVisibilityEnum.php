@@ -2,16 +2,15 @@
 
 namespace Cachet\Enums;
 
-enum ComponentGroupVisibilityEnum: int
+use Filament\Support\Contracts\HasLabel;
+
+enum ComponentGroupVisibilityEnum: int implements HasLabel
 {
     case expanded = 0;
     case collapsed = 1;
     case collapsed_unless_incident = 2;
 
-    /**
-     * Get the human-readable name of the enum value.
-     */
-    public function getName(): string
+    public function getLabel(): string
     {
         return match ($this->value) {
             self::expanded->value => __('Always expanded'),

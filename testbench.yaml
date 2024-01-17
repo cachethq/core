@@ -21,6 +21,7 @@ workbench:
       to: public/vendor/cachethq/cachet
   build:
     - asset-publish
+    - filament:assets
     - create-sqlite-db
     - db:wipe
     - migrate:refresh

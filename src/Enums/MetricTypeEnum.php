@@ -2,8 +2,27 @@
 
 namespace Cachet\Enums;
 
-enum MetricTypeEnum: int
+use Filament\Support\Contracts\HasIcon;
+use Filament\Support\Contracts\HasLabel;
+
+enum MetricTypeEnum: int implements HasIcon, HasLabel
 {
     case sum = 0;
     case average = 1;
+
+    public function getIcon(): ?string
+    {
+        return match ($this) {
+            self::sum => 'cachet-metrics',
+            self::average => 'cachet-metrics',
+        };
+    }
+
+    public function getLabel(): ?string
+    {
+        return match ($this) {
+            self::sum => __('Sum'),
+            self::average => __('Average'),
+        };
+    }
 }

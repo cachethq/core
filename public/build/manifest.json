@@ -8,5 +8,10 @@
     "file": "assets/cachet.6977faaa.css",
     "src": "resources/css/cachet.css",
     "isEntry": true
+  },
+  "resources/css/dashboard/theme.css": {
+    "file": "assets/theme.c49c6bb2.css",
+    "src": "resources/css/dashboard/theme.css",
+    "isEntry": true
   }
 }
