@@ -31,6 +31,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->brandLogo(fn () => view('cachet::components.logo'))
             ->colors([
                 'primary' => Color::rgb('rgb(4, 193, 71)'),
+                'purple' => Color::Purple,
             ])
             ->viteTheme('resources/css/dashboard/theme.css', 'vendor/cachethq/cachet/build')
             ->discoverResources(__DIR__.'/Filament/Resources', 'Cachet\\Filament\\Resources')
