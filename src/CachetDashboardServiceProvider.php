@@ -32,7 +32,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->colors([
                 'primary' => Color::rgb('rgb(4, 193, 71)'),
             ])
-            ->viteTheme('resources/css/dashboard/theme.css', 'vendor/cachethq/cachet')
+            ->viteTheme('resources/css/dashboard/theme.css', 'vendor/cachethq/cachet/build')
             ->discoverResources(__DIR__.'/Filament/Resources', 'Cachet\\Filament\\Resources')
             ->discoverPages(__DIR__.'/Filament/Pages', 'Cachet\\Filament\\Pages')
             ->discoverWidgets(__DIR__.'/Filament/Widgets', 'Cachet\\Filament\\Widgets')
