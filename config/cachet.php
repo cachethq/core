@@ -1,7 +1,5 @@
 <?php
 
-use Cachet\Http\Middleware\HandleInertiaRequests;
-
 return [
 
     /*
@@ -60,7 +58,6 @@ return [
      */
     'middleware' => [
         'web',
-        HandleInertiaRequests::class,
     ],
 
     'api_middleware' => [
