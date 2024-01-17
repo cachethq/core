@@ -111,7 +111,5 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerBladeComponents(): void
     {
         Blade::componentNamespace('Cachet\\View\\Components', 'cachet');
-
-        Blade::component('footer', Footer::class);
     }
 }
