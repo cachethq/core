@@ -2,6 +2,7 @@
 
 namespace Cachet;
 
+use BladeUI\Icons\Factory;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Http;
@@ -18,6 +19,13 @@ class CachetCoreServiceProvider extends ServiceProvider
         if (! defined('CACHET_PATH')) {
             define('CACHET_PATH', realpath(__DIR__.'/../'));
         }
+
+        $this->callAfterResolving(Factory::class, function (Factory $factory) {
+            $factory->add('cachet', [
+                'path' => __DIR__.'/../resources/svg',
+                'prefix' => 'cachet',
+            ]);
+        });
     }
 
     /**
@@ -35,7 +43,6 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         Route::middlewareGroup('cachet', config('cachet.middleware', []));
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
-        Route::middlewareGroup('cachet:dashboard', config('cachet.dashboard_middleware', []));
 
         $this->registerResources();
         $this->registerPublishing();

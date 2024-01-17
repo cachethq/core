@@ -7,10 +7,7 @@ enum UserLevelEnum: int
     case admin = 1;
     case user = 2;
 
-    /**
-     * Get the human-readable name of the enum value.
-     */
-    public function getName(): string
+    public function getLabel(): string
     {
         return match ($this->value) {
             self::admin->value => __('Admin'),

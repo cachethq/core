@@ -5,6 +5,7 @@
 
     <div class="flex flex-col gap-14">
         <x-cachet::incident />
+
         <x-cachet::incident />
     </div>
 </div>

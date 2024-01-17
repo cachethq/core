@@ -13,7 +13,7 @@ class IncidentUpdate extends JsonApiResource
             'id' => $this->id,
             'message' => $this->message,
             'status' => [
-                'human' => $this->status->getName(),
+                'human' => $this->status->getLabel(),
                 'value' => $this->status->value,
             ],
             'created' => [

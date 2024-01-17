@@ -6,7 +6,7 @@
             <h3 class="text-lg font-semibold">
                 {{ $title }}
             </h3>
-            <x-cachet::icons.chevron-up ::class="!$disclosure.isOpen && 'rotate-180'" class="h-6 w-6 transition" />
+            <x-heroicon-o-chevron-up ::class="!$disclosure.isOpen && 'rotate-180'" class="h-6 w-6 transition" />
         </button>
         <a href="#" class="rounded border border-zinc-800 px-2 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-600 dark:text-zinc-400">4 incidents</a>
     </div>
@@ -20,11 +20,11 @@
                             <div class="font-semibold leading-6">Envoyer</div>
                             <div x-data x-popover class="flex items-center">
                                 <button x-ref="anchor" x-popover:button>
-                                    <x-cachet::icons.info class="h-5 w-5 text-zinc-500 dark:text-zinc-300" />
+                                    <x-heroicon-o-question-mark-circle class="h-5 w-5 text-zinc-500 dark:text-zinc-300" />
                                 </button>
                                 <div x-popover:panel x-cloak x-transition.opacity x-anchor.right.offset.8="$refs.anchor" class="rounded bg-white px-2 py-1 text-xs font-medium text-zinc-800 drop-shadow dark:text-zinc-800">
                                     <span class="pointer-events-none absolute -left-1 top-1.5 h-3 w-3 rotate-45 bg-white"></span>
-                                    <p class="relative">Updated Thursday 7th September 2023 13:30:03</p>
+                                    <p class="relative">Updated Monday 1st January 2024 13:30:03</p>
                                 </div>
                             </div>
                         </div>

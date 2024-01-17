@@ -16,7 +16,7 @@
                     </div>
                     <div class="flex flex-wrap items-center gap-1 text-xs text-zinc-500 md:flex-col md:flex-nowrap md:items-end md:text-right md:text-sm">
                         <span class="flex items-center gap-2">
-                            <x-cachet::icons.clock class="h-5 w-5" />
+                            @svg('cachet-clock', 'h-5 w-5')
                             <span>2 minutes ago</span>
                         </span>
                         <span class="md:hidden">&middot;</span>

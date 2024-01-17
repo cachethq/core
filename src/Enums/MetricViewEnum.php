@@ -2,7 +2,9 @@
 
 namespace Cachet\Enums;
 
-enum MetricViewEnum: int
+use Filament\Support\Contracts\HasLabel;
+
+enum MetricViewEnum: int implements HasLabel
 {
     case last_hour = 0;
     case today = 1;
@@ -12,7 +14,7 @@ enum MetricViewEnum: int
     /**
      * Get the human-readable name for the metric view.
      */
-    public function getName(): string
+    public function getLabel(): string
     {
         return match ($this) {
             self::last_hour => __('Last Hour'),

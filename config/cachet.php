@@ -68,11 +68,6 @@ return [
         'api',
     ],
 
-    'dashboard_middleware' => [
-        'cachet',
-        Authenticate::class,
-    ],
-
     /*
      |--------------------------------------------------------------------------
      | Cachet Major Outage Threshold
