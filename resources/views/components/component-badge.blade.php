@@ -7,9 +7,9 @@
     ]),
 ]) }}>
     <div {{ $attributes->class([
-        'flex items-center gap-1 rounded-full px-2 py-1 text-sm font-semibold leading-tight shadow bg-custom-400',
+        'flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold leading-tight shadow bg-custom-400',
     ]) }}>
-        @svg($icon, 'h-6 w-6 dark:text-zinc-700')
+        @svg($icon, 'h-5 w-5 dark:text-zinc-700')
 
         <div class="dark:text-zinc-700">{{ $label }}</div>
     </div>
