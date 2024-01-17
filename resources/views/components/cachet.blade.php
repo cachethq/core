@@ -1,10 +1,13 @@
+@props([
+    'title',
+])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-background-light text-base-light dark:bg-background-dark dark:text-base-dark">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-        <title>{{ config('cachet.title', 'Cachet') }}</title>
+        <title>{{ $title ?? config('cachet.title', 'Cachet') }}</title>
 
         @vite(['resources/css/cachet.css', 'resources/js/cachet.js'], 'vendor/cachethq/cachet')
 
@@ -19,6 +22,6 @@
         </style>
     </head>
     <body class="antialiased">
-        @yield('content')
+        {{ $slot }}
     </body>
 </html>
