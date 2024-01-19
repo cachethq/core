@@ -75,7 +75,7 @@ class CachetServiceProvider extends ServiceProvider
             ], ['cachet', 'cachet-views']);
 
             $this->publishes([
-                __DIR__.'/../public/build/' => public_path('vendor/cachethq/cachet'),
+                __DIR__.'/../public/' => public_path('vendor/cachethq/cachet'),
             ], ['cachet', 'cachet-assets']);
         }
     }
