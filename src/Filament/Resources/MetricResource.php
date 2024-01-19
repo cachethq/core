@@ -3,6 +3,7 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Enums\MetricTypeEnum;
+use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\MetricResource\Pages;
 use Cachet\Models\Metric;
@@ -44,10 +45,11 @@ class MetricResource extends Resource
                         ->required()
                         ->numeric()
                         ->default(2),
-                    Forms\Components\TextInput::make('default_view')
+                    Forms\Components\ToggleButtons::make('default_view')
+                        ->options(MetricViewEnum::class)
+                        ->inline()
                         ->required()
-                        ->numeric()
-                        ->default(1),
+                        ->default(MetricViewEnum::last_hour),
                     Forms\Components\TextInput::make('threshold')
                         ->required()
                         ->numeric()

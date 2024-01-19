@@ -111,4 +111,9 @@ class ComponentResource extends Resource
             'edit' => Pages\EditComponent::route('/{record}/edit'),
         ];
     }
+
+    public static function getLabel(): ?string
+    {
+        return __('Component');
+    }
 }

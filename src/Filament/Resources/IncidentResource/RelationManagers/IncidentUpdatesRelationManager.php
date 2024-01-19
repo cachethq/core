@@ -20,6 +20,25 @@ class IncidentUpdatesRelationManager extends RelationManager
                 Forms\Components\MarkdownEditor::make('message')
                     ->required()
                     ->columnSpanFull(),
+                Forms\Components\Select::make('user_id')
+                    ->hint(__('The user who reported the incident.'))
+                    ->relationship('user', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('email')
+                            ->required()
+                            ->email()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('password')
+                            ->required()
+                            ->password()
+                            ->confirmed()
+                            ->minLength(8),
+                    ]),
                 Forms\Components\ToggleButtons::make('status')
                     ->inline()
                     ->columnSpanFull()
@@ -37,9 +56,9 @@ class IncidentUpdatesRelationManager extends RelationManager
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->badge()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('user.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -51,7 +70,8 @@ class IncidentUpdatesRelationManager extends RelationManager
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->options(IncidentStatusEnum::class),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),

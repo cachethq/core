@@ -99,4 +99,9 @@ class IncidentTemplateResource extends Resource
             'edit' => Pages\EditIncidentTemplate::route('/{record}/edit'),
         ];
     }
+
+    public static function getLabel(): ?string
+    {
+        return __('Incident Template');
+    }
 }

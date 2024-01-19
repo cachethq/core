@@ -54,6 +54,7 @@ class IncidentResource extends Resource
                         ->preload(),
                     Forms\Components\DateTimePicker::make('occurred_at'),
                     Forms\Components\Select::make('user_id')
+                        ->hint(__('The user who reported the incident.'))
                         ->relationship('user', 'name')
                         ->searchable()
                         ->preload()
@@ -168,5 +169,10 @@ class IncidentResource extends Resource
             'create' => Pages\CreateIncident::route('/create'),
             'edit' => Pages\EditIncident::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        return __('Incident');
     }
 }

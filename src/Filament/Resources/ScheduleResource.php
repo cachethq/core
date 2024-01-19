@@ -104,4 +104,9 @@ class ScheduleResource extends Resource
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
         ];
     }
+
+    public static function getLabel(): ?string
+    {
+        return __('Schedule');
+    }
 }

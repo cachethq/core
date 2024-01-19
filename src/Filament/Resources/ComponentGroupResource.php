@@ -22,7 +22,7 @@ class ComponentGroupResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()->columns(3)->schema([
+                Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
                         ->maxLength(255),
@@ -31,10 +31,12 @@ class ComponentGroupResource extends Resource
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
-                    Forms\Components\Select::make('collapsed')
+                    Forms\Components\ToggleButtons::make('collapsed')
                         ->required()
+                        ->inline()
                         ->options(ComponentGroupVisibilityEnum::class)
-                        ->default(false),
+                        ->default(ComponentGroupVisibilityEnum::expanded)
+                        ->columnSpanFull(),
                 ]),
             ]);
     }
@@ -86,5 +88,10 @@ class ComponentGroupResource extends Resource
             'create' => Pages\CreateComponentGroup::route('/create'),
             'edit' => Pages\EditComponentGroup::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        return __('Component Group');
     }
 }

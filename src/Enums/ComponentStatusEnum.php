@@ -21,7 +21,7 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::performance_issues => __('Performance Issues'),
             self::partial_outage => __('Partial Outage'),
             self::major_outage => __('Major Outage'),
-            default => __('Unknown Component Status'),
+            default => __('Unknown'),
         };
     }
 
@@ -43,7 +43,7 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::performance_issues => 'info',
             self::partial_outage => 'warning',
             self::major_outage => 'danger',
-            default => 'secondary',
+            default => 'purple',
         };
     }
 }

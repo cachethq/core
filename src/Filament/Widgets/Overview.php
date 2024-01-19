@@ -21,21 +21,21 @@ class Overview extends BaseWidget
         return [
             Stat::make('Total Incidents', Incident::count())
                 ->description(__('Total number of reported incidents.'))
-                ->chart(DB::table('incidents')->select(DB::raw('count(*) as total'), 'created_at')->groupBy('created_at')->get()->pluck('total')->toArray())
+                ->chart(DB::table('incidents')->selectRaw('count(*) as total')->groupByRaw('date(created_at)')->get()->pluck('total')->toArray())
                 ->icon('cachet-incident')
-                ->chartColor('primary')
+                ->chartColor('info')
                 ->color('gray'),
 
             Stat::make('Metric Points', MetricPoint::count())
-                ->description(__('Total number of metric points.'))
-                ->chart(DB::table('metric_points')->select(DB::raw('count(*) as total'), 'created_at')->groupBy('created_at')->get()->pluck('total')->toArray())
+                ->description(__('Recent metric points.'))
+                ->chart(DB::table('metric_points')->selectRaw('count(*) as total')->groupBy('created_at')->get()->pluck('total')->toArray())
                 ->icon('cachet-metrics')
                 ->chartColor('info')
                 ->color('gray'),
 
             Stat::make('Total Subscribers', Subscriber::count())
                 ->description(__('Total number of subscribers.'))
-                ->chart(DB::table('subscribers')->select(DB::raw('count(*) as total'), 'created_at')->groupBy('created_at')->get()->pluck('total')->toArray())
+                ->chart(DB::table('subscribers')->selectRaw('count(*) as total')->groupByRaw('date(created_at)')->get()->pluck('total')->toArray())
                 ->icon('cachet-subscribers')
                 ->chartColor('info')
                 ->color('gray'),
