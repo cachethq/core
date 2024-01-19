@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
+        $user = User::create([
             'name' => 'Cachet Demo',
             'email' => 'test@test.com',
             'password' => bcrypt('test123'),
@@ -65,10 +65,37 @@ class DatabaseSeeder extends Seeder
             'default_value' => 0,
         ]);
 
-        $metric->metricPoints()->createMany(Arr::map(range(1, 60), fn ($i) => [
+        $metric->metricPoints()->createMany(Arr::map(range(1, 60), fn (int $i) => [
             'value' => random_int(1, 100),
-            'created_at' => now()->subMinutes($i),
+            'created_at' => now()->subMinutes(random_int(0, $i*60)),
         ]));
+
+        tap(Incident::create([
+            'name' => 'DNS Provider Outage',
+            'message' => 'We\'re investigating an issue with our DNS provider causing the site to be offline.',
+            'status' => IncidentStatusEnum::fixed,
+            'visible' => ResourceVisibilityEnum::guest,
+            'guid' => Str::uuid(),
+            'user_id' => $user->id,
+            'created_at' => $timestamp = now()->subDay(),
+            'updated_at' => $timestamp,
+        ]), function (Incident $incident) use ($user) {
+            $incident->incidentUpdates()->create([
+                'status' => IncidentStatusEnum::identified,
+                'message' => 'We\'ve confirmed the issue is with our DNS provider. We\'re waiting on them to provide an ETA.',
+                'user_id' => $user->id,
+                'created_at' => $timestamp = $incident->created_at->addMinutes(30),
+                'updated_at' => $timestamp,
+            ]);
+
+            $incident->incidentUpdates()->create([
+                'status' => IncidentStatusEnum::fixed,
+                'message' => 'Our DNS provider has fixed the issue. We will continue to monitor the situation.',
+                'user_id' => $user->id,
+                'created_at' => $timestamp = $incident->created_at->addMinutes(45),
+                'updated_at' => $timestamp,
+            ]);
+        });
 
         $incident = Incident::create([
             'name' => 'Documentation Performance Degradation',
@@ -84,5 +111,12 @@ class DatabaseSeeder extends Seeder
             'status' => IncidentStatusEnum::identified,
             'message' => 'We\'ve identified the issue and are working on a fix.',
         ]);
+
+//        IncidentTemplate::create([
+//            'name' => 'Third-Party Service Outage',
+//            'slug' => 'third-party-service-outage',
+//            'template' => 'We\'re investigating an issue with a third-party provider ({{ name }}) causing our services to be offline.',
+//            'engine' => IncidentTemplateEngineEnum::twig,
+//        ]);
     }
 }
