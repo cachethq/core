@@ -47,6 +47,10 @@ class Status
 
     public function majorOutage(): bool
     {
+        if ($this->components()->total === 0) {
+            return false;
+        }
+
         $majorOutageRate = (int) config('cachet.major_outage_rate', 25);
 
         return ($this->components()->majorOutage / $this->components()->total) * 100 >= $majorOutageRate;
