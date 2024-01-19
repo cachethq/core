@@ -89,14 +89,14 @@ class Status
             ->selectRaw('sum(case when ? not in (latest_incident_updates.status, incidents.status) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed])
             ->joinSub(function (Builder $query) {
                 $query
-                    ->select('incident_id', 'status', 'latest_update_id')
+                    ->select('latest_updates.incident_id', 'latest_updates.status', 'latest_updates.latest_update_id')
                     ->from('incident_updates')
                     ->joinSub(function (Builder $query) {
                         $query->select('incident_id')
                             ->selectRaw('max(id) as latest_update_id')
                             ->from('incident_updates')
                             ->groupBy('incident_id');
-                    }, 'subquery', 'subquery.incident_id', '=', 'incident_updates.incident_id');
+                    }, 'latest_updates', 'latest_updates.incident_id', '=', 'incident_updates.incident_id');
             }, 'latest_incident_updates', 'latest_incident_updates.incident_id', '=', 'incidents.id')
             ->first();
     }
