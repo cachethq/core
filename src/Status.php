@@ -92,7 +92,7 @@ class Status
                     ->select('latest_updates.incident_id', 'latest_updates.status', 'latest_updates.latest_update_id')
                     ->from('incident_updates')
                     ->joinSub(function (Builder $query) {
-                        $query->select('incident_id')
+                        $query->select('incident_id', 'status')
                             ->selectRaw('max(id) as latest_update_id')
                             ->from('incident_updates')
                             ->groupBy('incident_id');
