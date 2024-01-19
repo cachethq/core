@@ -5,7 +5,7 @@ namespace Cachet\Enums;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum ComponentGroupVisibilityEnum: int implements HasLabel, HasIcon
+enum ComponentGroupVisibilityEnum: int implements HasIcon, HasLabel
 {
     case expanded = 0;
     case collapsed = 1;

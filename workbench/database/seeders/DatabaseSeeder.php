@@ -67,7 +67,7 @@ class DatabaseSeeder extends Seeder
 
         $metric->metricPoints()->createMany(Arr::map(range(1, 60), fn (int $i) => [
             'value' => random_int(1, 100),
-            'created_at' => now()->subMinutes(random_int(0, $i*60)),
+            'created_at' => now()->subMinutes(random_int(0, $i * 60)),
         ]));
 
         tap(Incident::create([
@@ -112,11 +112,11 @@ class DatabaseSeeder extends Seeder
             'message' => 'We\'ve identified the issue and are working on a fix.',
         ]);
 
-//        IncidentTemplate::create([
-//            'name' => 'Third-Party Service Outage',
-//            'slug' => 'third-party-service-outage',
-//            'template' => 'We\'re investigating an issue with a third-party provider ({{ name }}) causing our services to be offline.',
-//            'engine' => IncidentTemplateEngineEnum::twig,
-//        ]);
+        //        IncidentTemplate::create([
+        //            'name' => 'Third-Party Service Outage',
+        //            'slug' => 'third-party-service-outage',
+        //            'template' => 'We\'re investigating an issue with a third-party provider ({{ name }}) causing our services to be offline.',
+        //            'engine' => IncidentTemplateEngineEnum::twig,
+        //        ]);
     }
 }

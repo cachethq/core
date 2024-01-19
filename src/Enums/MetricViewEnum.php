@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum MetricViewEnum: int implements HasLabel, HasIcon, HasColor
+enum MetricViewEnum: int implements HasColor, HasIcon, HasLabel
 {
     case last_hour = 0;
     case today = 1;
@@ -25,7 +25,7 @@ enum MetricViewEnum: int implements HasLabel, HasIcon, HasColor
 
     public function getIcon(): ?string
     {
-        return match($this) {
+        return match ($this) {
             self::last_hour => 'cachet-metrics',
             self::today => 'heroicon-m-clock',
             self::week => 'heroicon-m-calendar',
