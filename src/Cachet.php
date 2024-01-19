@@ -62,6 +62,14 @@ class Cachet
     }
 
     /**
+     * Get the URI path prefix used by Cachet's dashboard.
+     */
+    public static function dashboardPath(): string
+    {
+        return config('cachet.dashboard_path', static::path().'/dashboard');
+    }
+
+    /**
      * Get the version of Cachet.
      */
     public static function version(): string

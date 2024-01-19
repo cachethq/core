@@ -39,20 +39,20 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->discoverPages(__DIR__.'/Filament/Pages', 'Cachet\\Filament\\Pages')
             ->discoverWidgets(__DIR__.'/Filament/Widgets', 'Cachet\\Filament\\Widgets')
             ->navigationGroups([
-                NavigationGroup::make('Settings')
+                NavigationGroup::make(__('Settings'))
                     ->collapsed()
                     ->icon('cachet-settings'),
-                NavigationGroup::make('Resources')
+                NavigationGroup::make(__('Resources'))
                     ->collapsible(false),
             ])
             ->navigationItems([
-                NavigationItem::make('Status Page')
-//                    ->url(route('cachet.status-page'))
-                    ->group('Resources')
+                NavigationItem::make(__('Status Page'))
+                    ->url(Cachet::path())
+                    ->group(__('Resources'))
                     ->icon('cachet-component-performance-issues'),
                 NavigationItem::make('Documentation')
                     ->url('https://docs.cachethq.io')
-                    ->group('Resources')
+                    ->group(__('Resources'))
                     ->icon('heroicon-o-book-open'),
             ])
             ->middleware([
@@ -69,6 +69,6 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->path('/status/dashboard');
+            ->path(Cachet::dashboardPath());
     }
 }
