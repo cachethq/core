@@ -28,4 +28,9 @@ class IncidentUpdate extends Model
     {
         return $this->belongsTo(Incident::class);
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(config('cachet.user_model'));
+    }
 }

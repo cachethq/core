@@ -69,7 +69,7 @@ class Incident extends Model
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(\Workbench\App\User::class);
+        return $this->belongsTo(config('cachet.user_model'));
     }
 
     /**
@@ -78,6 +78,11 @@ class Incident extends Model
     public function scopeStatus(Builder $query, IncidentStatusEnum $status): Builder
     {
         return $query->where('status', $status);
+    }
+
+    public function scopeUnresolved(Builder $builder): Builder
+    {
+        return $this->whereIn('status', IncidentStatusEnum::unresolved());
     }
 
     /**

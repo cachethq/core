@@ -27,6 +27,16 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | The User Model.
+     |--------------------------------------------------------------------------
+     |
+     | This is the model that will be used to authenticate users. This model
+     | must be an instance of Illuminate\Foundation\Auth\User.
+     */
+    'user_model' => App\Models\User::class,
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Domain
      |--------------------------------------------------------------------------
      |
@@ -72,7 +82,7 @@ return [
      | This is the threshold at which a major outage is declared.
      |
      */
-    'major_outage' => 50.0,
+    'major_outage' => 25.0,
 
     'beacon' => env('CACHET_BEACON', true),
 ];
