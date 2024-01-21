@@ -25,7 +25,7 @@
             }
         </style>
     </head>
-    <body class="antialiased">
+    <body class="flex min-h-screen flex-col items-stretch antialiased">
         {{ $slot }}
     </body>
 </html>
