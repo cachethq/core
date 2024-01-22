@@ -43,7 +43,8 @@
     "autoload": {
         "psr-4": {
             "Cachet\\": "src",
-            "Cachet\\Database\\Factories\\": "database/factories"
+            "Cachet\\Database\\Factories\\": "database/factories",
+            "Cachet\\Database\\Seeders\\": "database/seeders"
         }
     },
     "autoload-dev": {
