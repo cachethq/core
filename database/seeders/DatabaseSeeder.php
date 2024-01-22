@@ -7,11 +7,14 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Metric;
+use Cachet\Models\Schedule;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
@@ -21,6 +24,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('users')->truncate();
+        DB::table('incidents')->truncate();
+        DB::table('incident_updates')->truncate();
+        DB::table('components')->truncate();
+        DB::table('component_groups')->truncate();
+        DB::table('schedules')->truncate();
+        DB::table('metrics')->truncate();
+        DB::table('metric_points')->truncate();
+
         /** @var \Illuminate\Foundation\Auth\User $userModel */
         $userModel = config('cachet.user_model');
 
@@ -29,6 +41,13 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@test.com',
             'password' => bcrypt('test123'),
             'email_verified_at' => now(),
+        ]);
+
+        Schedule::create([
+            'name' => 'Database Maintenance',
+            'message' => 'We will be conducting maintenance on our database servers. You may experience degraded performance during this time.',
+            'scheduled_at' => now()->addHours(6),
+            'status' => ScheduleStatusEnum::upcoming,
         ]);
 
         $componentGroup = ComponentGroup::create([
