@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@test.com',
             'password' => bcrypt('test123'),
             'email_verified_at' => now(),
-            'active' => true,
         ]);
 
         $componentGroup = ComponentGroup::create([
