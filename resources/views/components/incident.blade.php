@@ -9,7 +9,7 @@
                     <span class="text-xs text-zinc-500">3 Days Ago — Friday 1st December 2023, 14:00</span>
                 </div>
                 <div>
-{{--                    <x-cachet::badge type="performance-issues" />--}}
+                    <x-cachet::incident-badge type="fixed" />
                 </div>
             </div>
             <p class="mt-5 text-sm">We're investigating an issue with our monkeys not performing as they should be. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras porttitor sapien ac est rutrum varius. Morbi quis sem auctor, dapibus massa id, sagittis arcu.</p>
@@ -31,7 +31,7 @@
                     <div class="prose-sm mt-2.5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus ad amet autem blanditiis, consectetur cupiditate delectus dolore dolorem dolores maxime nesciunt non quis tempora, unde ut velit voluptates voluptatibus voluptatum.</div>
                 </div>
                 <div class="relative py-4">
-                    <div class="absolute -left-[calc(28px+10px+13px)] top-4 flex h-7 w-7 items-center justify-center rounded-full bg-red-200">
+                    <div class="absolute -left-[calc(28px+10px+13px)] top-4 flex h-7 w-7 items-center justify-center rounded-full bg-red-200 dark:text-zinc-900">
                         @svg('cachet-incident-investigating', 'h-5 w-5')
                     </div>
                     <h3 class="text-lg font-semibold">Incident Update Title</h3>
