@@ -85,19 +85,19 @@ class Status
         return $this->incidents ??= Incident::query()
             ->toBase()
             ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when ? in (latest_incident_updates.status, incidents.status) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed])
-            ->selectRaw('sum(case when ? not in (latest_incident_updates.status, incidents.status) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed])
+            ->selectRaw('sum(case when ? in (incidents.status, latest_update.status) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed])
+            ->selectRaw('sum(case when ? not in (incidents.status, latest_update.status) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed])
             ->joinSub(function (Builder $query) {
                 $query
-                    ->select('latest_updates.incident_id', 'latest_updates.status', 'latest_updates.latest_update_id')
-                    ->from('incident_updates')
+                    ->select('iu1.incident_id', 'iu1.status')
+                    ->from('incident_updates', 'iu1')
                     ->joinSub(function (Builder $query) {
-                        $query->select('incident_id', 'status')
-                            ->selectRaw('max(id) as latest_update_id')
+                        $query->select('incident_id')
+                            ->selectRaw('max(id) as max_id')
                             ->from('incident_updates')
                             ->groupBy('incident_id');
-                    }, 'latest_updates', 'latest_updates.incident_id', '=', 'incident_updates.incident_id');
-            }, 'latest_incident_updates', 'latest_incident_updates.incident_id', '=', 'incidents.id')
+                    }, 'iu2', 'iu1.id', '=', 'iu2.max_id');
+            }, 'latest_update', 'latest_update.incident_id', '=', 'incidents.id')
             ->first();
     }
 }
