@@ -13,7 +13,6 @@ use Cachet\Models\Metric;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Workbench\App\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -22,7 +21,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user = User::create([
+        /** @var \Illuminate\Foundation\Auth\User $userModel */
+        $userModel = config('cachet.user_model');
+
+        $user = $userModel::create([
             'name' => 'Cachet Demo',
             'email' => 'test@test.com',
             'password' => bcrypt('test123'),
