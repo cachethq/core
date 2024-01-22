@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\StatusPage;
 use Cachet\Cachet;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 use Illuminate\View\View;
 
 class StatusPageController
@@ -19,6 +20,8 @@ class StatusPageController
                 ->when(auth()->check(), fn ($query) => $query->users(), fn ($query) => $query->guests())
                 ->whereHas('components')
                 ->get(),
+
+            'schedules' => Schedule::query()->inTheFuture()->orderBy('scheduled_at')->get(),
 
             'cachetVersion' => Cachet::version(),
         ]);

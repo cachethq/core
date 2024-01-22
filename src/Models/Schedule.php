@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class Schedule extends Model
 {
@@ -37,6 +38,14 @@ class Schedule extends Model
             Component::class,
             'schedule_components',
         );
+    }
+
+    /**
+     * Render the Markdown message.
+     */
+    public function formattedMessage(): string
+    {
+        return Str::of($this->message)->markdown();
     }
 
     /**

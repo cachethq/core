@@ -21,7 +21,9 @@
                 <x-cachet::component-group :component-group="$componentGroup"/>
             @endforeach
 
-            <x-cachet::maintenance/>
+            @if($schedules->isNotEmpty())
+            <x-cachet::schedules :schedules="$schedules" />
+            @endif
 
             <x-cachet::incidents/>
         </div>
