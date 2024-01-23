@@ -15,6 +15,9 @@
         @vite(['resources/css/cachet.css', 'resources/js/cachet.js'], 'vendor/cachethq/cachet/build')
         @filamentStyles
 
+        <!-- Custom Cachet Header -->
+        {!! $cachet_header !!}
+
         <style type="text/css">
             /* Cachet custom styles */
             :root {
@@ -27,5 +30,8 @@
     </head>
     <body class="flex min-h-screen flex-col items-stretch antialiased">
         {{ $slot }}
+
+        <!-- Custom Cachet Footer -->
+        {!! $cachet_footer !!}
     </body>
 </html>

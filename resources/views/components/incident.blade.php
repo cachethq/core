@@ -17,12 +17,12 @@
         <div class="relative">
             <div class="absolute inset-y-0 -left-9">
                 <div class="ml-3.5 h-full border-l-2 border-dashed dark:border-zinc-700"></div>
-                <div class="absolute inset-x-0 top-0 h-24 w-full bg-gradient-to-t from-transparent to-zinc-50 dark:from-transparent dark:to-gray-900"></div>
-                <div class="absolute inset-x-0 bottom-0 h-24 w-full bg-gradient-to-b from-transparent to-zinc-50 dark:from-transparent dark:to-gray-900"></div>
+                <div class="absolute inset-x-0 top-0 h-24 w-full bg-gradient-to-t from-transparent to-zinc-50 dark:from-transparent dark:to-zinc-900"></div>
+                <div class="absolute inset-x-0 bottom-0 h-24 w-full bg-gradient-to-b from-transparent to-zinc-50 dark:from-transparent dark:to-zinc-900"></div>
             </div>
             <div class="flex flex-col divide-y px-4 dark:divide-zinc-700">
                 <div class="relative py-4">
-                    <div class="absolute -left-[calc(28px+10px+13px)] top-4 flex h-7 w-7 items-center justify-center rounded-full bg-orange-200">
+                    <div class="absolute -left-[calc(28px+10px+13px)] top-4 flex h-7 w-7 items-center justify-center rounded-full bg-orange-200 dark:text-zinc-900">
                         @svg('cachet-unknown', 'h-5 w-5')
                     </div>
                     <h3 class="text-lg font-semibold">Incident Update Title</h3>
