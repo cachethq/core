@@ -1,7 +1,6 @@
 \<?php
 
-use Cachet\Models\Setting;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\LaravelSettings\Migrations\SettingsMigration;
 
@@ -13,7 +12,7 @@ return new class extends SettingsMigration
     public function up(): void
     {
         // If there are existing settings, we're upgrading from Cachet 2.x.
-        if (Setting::count() > 0) {
+        if (DB::table('settings')->count() > 0) {
             return;
         }
 

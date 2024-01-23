@@ -1,8 +1,7 @@
 <?php
 
-use Cachet\Models\Setting;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 return new class extends Migration
@@ -13,19 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         // If there are no settings, then there's nothing to migrate.
-        if (Setting::count() === 0) {
+        if (DB::table('settings')->count() === 0) {
             return;
         }
 
-        Setting::query()->chunk(10, function (Collection $settings) {
-            $settings->each(function (Setting $setting) {
-                $setting->update([
+        DB::table('settings')
+            ->get()
+            ->each(function ($setting) {
+                DB::table('settings')->select('id', 'name', 'value')->where('id', $setting->id)->update([
                     'name' => $this->settingName($setting->name),
                     'group' => $this->settingGroup($setting->name),
                     'value' => json_encode($setting->value),
                 ]);
             });
-        });
     }
 
     private function settingName(string $name): string
