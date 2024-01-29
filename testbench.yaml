@@ -1,5 +1,6 @@
 providers:
   - Cachet\CachetCoreServiceProvider
+  - Spatie\LaravelSettings\LaravelSettingsServiceProvider
 
 env:
   - APP_NAME=Cachet
