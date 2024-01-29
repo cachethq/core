@@ -24,7 +24,7 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
 
     public static function fromString(string $value): self
     {
-        return match($value) {
+        return match ($value) {
             'investigating' => self::investigating,
             'identified' => self::identified,
             'watching' => self::watching,
