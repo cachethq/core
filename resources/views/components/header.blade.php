@@ -1,8 +1,12 @@
 <div class="flex items-center justify-between border-b border-zinc-200 px-8 py-6 dark:border-zinc-700">
     <div>
         <a href="{{ route('cachet.status-page') }}" class="transition hover:opacity-80">
+            @if($appBanner)
+            <img src="{{ asset($appBanner) }}" alt="{{ $siteName }}" class="h-8 w-auto" />
+            @else
             <x-cachet::logo class="hidden h-8 w-auto sm:block" />
             <x-cachet::logomark class="h-8 w-auto sm:hidden" />
+            @endif
         </a>
     </div>
 

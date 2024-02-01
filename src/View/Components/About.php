@@ -2,18 +2,18 @@
 
 namespace Cachet\View\Components;
 
-use Cachet\Cachet;
 use Cachet\Settings\AppSettings;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Str;
 use Illuminate\View\Component;
 
-class Footer extends Component
+class About extends Component
 {
     /**
      * Create a new component instance.
      */
-    public function __construct(private AppSettings $appSettings)
+    public function __construct(private AppSettings $settings)
     {
         //
     }
@@ -23,9 +23,8 @@ class Footer extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('cachet::components.footer', [
-            'showSupport' => $this->appSettings->show_support,
-            'cachetVersion' => Cachet::version(),
+        return view('cachet::components.about', [
+            'about' => Str::of($this->settings->about)->markdown(),
         ]);
     }
 }

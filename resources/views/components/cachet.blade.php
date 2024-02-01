@@ -1,6 +1,3 @@
-@props([
-    'title',
-])
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-background-light text-base-light dark:bg-background-dark dark:text-base-dark">
     <head>
@@ -15,6 +12,13 @@
         @vite(['resources/css/cachet.css', 'resources/js/cachet.js'], 'vendor/cachethq/cachet/build')
         @filamentStyles
 
+        @if($refresh_rate)
+        <meta http-equiv="refresh" content="{{ $refresh_rate }}">
+        @endif
+
+        <!-- Custom Cachet Header -->
+        {!! $cachet_header !!}
+
         <style type="text/css">
             /* Cachet custom styles */
             :root {
@@ -27,5 +31,8 @@
     </head>
     <body class="flex min-h-screen flex-col items-stretch antialiased">
         {{ $slot }}
+
+        <!-- Custom Cachet Footer -->
+        {!! $cachet_footer !!}
     </body>
 </html>
