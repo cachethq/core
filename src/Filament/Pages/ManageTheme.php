@@ -18,22 +18,19 @@ class ManageTheme extends SettingsPage
         return $form
             ->schema([
                 Forms\Components\Section::make()->columns(2)->schema([
-                    Forms\Components\FileUpload::make('banner_image')
+                    Forms\Components\FileUpload::make('app_banner')
                         ->label(__('Banner Image'))
                         ->columnSpanFull(),
-                    Forms\Components\ColorPicker::make('banner_background')
-                        ->label(__('Banner Background Color')),
-                    Forms\Components\TextInput::make('banner_padding')
-                        ->label(__('Banner Padding'))
-                        ->placeholder('40px 0'),
                 ]),
 
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\ColorPicker::make('primary')
-                        ->label(__('Primary')),
+                        ->label(__('Primary'))
+                        ->rgba(),
 
                     Forms\Components\ColorPicker::make('secondary')
-                        ->label(__('Secondary')),
+                        ->label(__('Secondary'))
+                        ->rgba(),
                 ]),
             ]);
     }

@@ -6,7 +6,7 @@ use Spatie\LaravelSettings\Settings;
 
 class ThemeSettings extends Settings
 {
-    public ?string $banner_image;
+    public ?string $app_banner;
 
     public static function group(): string
     {

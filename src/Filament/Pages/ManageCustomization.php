@@ -20,15 +20,18 @@ class ManageCustomization extends SettingsPage
                 Forms\Components\Section::make()->columns(1)->schema([
                     Forms\Components\Textarea::make('header')
                         ->label(__('Custom Header HTML'))
-                        ->rows(8),
+                        ->rows(8)
+                        ->extraAttributes(['class' => 'font-mono']),
                     Forms\Components\Textarea::make('footer')
                         ->label(__('Custom Footer HTML'))
-                        ->rows(8),
+                        ->rows(8)
+                        ->extraAttributes(['class' => 'font-mono']),
                 ]),
                 Forms\Components\Section::make()->columns(1)->schema([
                     Forms\Components\Textarea::make('stylesheet')
                         ->label(__('Custom CSS'))
-                        ->rows(8),
+                        ->rows(8)
+                        ->extraAttributes(['class' => 'font-mono']),
                 ]),
             ]);
     }
