@@ -1,6 +1,5 @@
 \<?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\LaravelSettings\Migrations\SettingsMigration;
 
@@ -11,26 +10,26 @@ return new class extends SettingsMigration
      */
     public function up(): void
     {
-        // If there are existing settings, we're upgrading from Cachet 2.x.
-        if (DB::table('settings')->count() > 0) {
-            return;
-        }
-
         // Cachet settings...
-        $this->migrator->add('app.install_id', Str::random(40));
-        $this->migrator->add('app.name', 'Cachet');
-        $this->migrator->add('app.domain');
-        $this->migrator->add('app.about');
-        $this->migrator->add('app.timezone', 'UTC');
-        $this->migrator->add('app.locale', 'en');
-        $this->migrator->add('app.incident_days', 7);
+        rescue(fn () => $this->migrator->add('app.install_id', Str::random(40)));
+        rescue(fn () => $this->migrator->add('app.name', 'Cachet'));
+        rescue(fn () => $this->migrator->add('app.domain'));
+        rescue(fn () => $this->migrator->add('app.about'));
+        rescue(fn () => $this->migrator->add('app.timezone', 'UTC'));
+        rescue(fn () => $this->migrator->add('app.locale', 'en'));
+        rescue(fn () => $this->migrator->add('app.incident_days', 7));
+        rescue(fn () => $this->migrator->add('app.refresh_rate'));
+        rescue(fn () => $this->migrator->add('app.display_graphs', true));
+        rescue(fn () => $this->migrator->add('app.show_support', true));
+        rescue(fn () => $this->migrator->add('app.show_timezone', false));
+        rescue(fn () => $this->migrator->add('app.only_disrupted_days', false));
 
         // Customization settings...
-        $this->migrator->add('customization.header');
-        $this->migrator->add('customization.footer');
-        $this->migrator->add('customization.stylesheet');
+        rescue(fn () => $this->migrator->add('customization.header'));
+        rescue(fn () => $this->migrator->add('customization.footer'));
+        rescue(fn () => $this->migrator->add('customization.stylesheet'));
 
         // Theme settings...
-        $this->migrator->add('theme.banner_image');
+        rescue(fn () => $this->migrator->add('theme.app_banner'));
     }
 };
