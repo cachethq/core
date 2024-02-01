@@ -8,6 +8,7 @@ use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
+use Cachet\Settings\AppSettings;
 use Illuminate\Support\Facades\Http;
 
 class SendBeaconJob
@@ -24,7 +25,7 @@ class SendBeaconJob
         }
 
         $request = Http::asJson()->post('https://cachethq.io/beacon', [
-            'install_id' => null, // @todo Figure out this again.
+            'install_id' => app(AppSettings::class)->install_id,
             'version' => Cachet::version(),
             'docker' => config('cachet.docker'),
             'database' => config('database.default'),
