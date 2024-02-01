@@ -30,13 +30,13 @@ class ManageCachet extends SettingsPage
                         ->label(__('Timezone'))
                         ->options(fn () => collect(timezone_identifiers_list())
                             ->mapToGroups(
-                                fn($timezone) => [
+                                fn ($timezone) => [
                                     Str::of($timezone)
-                                        ->before("/")
-                                        ->toString() => [$timezone => $timezone]
+                                        ->before('/')
+                                        ->toString() => [$timezone => $timezone],
                                 ]
                             )
-                            ->map(fn($group) => $group->collapse()))
+                            ->map(fn ($group) => $group->collapse()))
                         ->searchable()
                         ->suffixIcon('heroicon-o-globe-alt'),
 
