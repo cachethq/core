@@ -1,4 +1,4 @@
-\<?php
+<?php
 
 use Illuminate\Support\Str;
 use Spatie\LaravelSettings\Migrations\SettingsMigration;
