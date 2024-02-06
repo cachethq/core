@@ -23,7 +23,7 @@ it('API routes are rate limited to 300 requests a minute', function () {
 });
 
 test('API rate limiting can be configured via config', function (int $limit) {
-    $this->app['config']->set(['cachet.rate_limit' => $limit]);
+    $this->app['config']->set(['cachet.api_rate_limit' => $limit]);
 
     for ($i = 0; $i <= $limit; $i++) {
         $response = getJson('test');

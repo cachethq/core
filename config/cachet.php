@@ -84,7 +84,7 @@ return [
      | adjust the limit as needed by your application.
      |
      */
-    'rate_limit' => env('CACHET_API_RATE_LIMIT', 300),
+    'api_rate_limit' => env('CACHET_API_RATE_LIMIT', 300),
 
     /*
      |--------------------------------------------------------------------------

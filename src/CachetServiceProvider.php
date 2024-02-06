@@ -42,7 +42,7 @@ class CachetServiceProvider extends ServiceProvider
     private function configureRateLimiting(): void
     {
         RateLimiter::for('cachet-api', function ($request) {
-            return Limit::perMinute(config('cachet.rate_limit', 300))
+            return Limit::perMinute(config('cachet.api_rate_limit', 300))
                 ->by(optional($request->user())->id ?: $request->ip());
         });
     }
