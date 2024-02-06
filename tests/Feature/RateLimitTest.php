@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Pest\Expectation;
 use function Pest\Laravel\getJson;
@@ -8,8 +7,6 @@ use function Pest\Laravel\getJson;
 beforeEach(function () {
     Route::get('/test', fn () => response()->json())
         ->middleware('throttle:cachet-api');
-
-    RateLimiter::clear(md5('cachet-api'));
 });
 
 it('API routes are rate limited to 300 requests a minute', function () {
