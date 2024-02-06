@@ -3,9 +3,11 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -64,7 +66,19 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
 
+        $this->configureRateLimiting();
         $this->registerRoutes();
+    }
+
+    /**
+     * Configure the rate limiting for the application.
+     */
+    private function configureRateLimiting(): void
+    {
+        RateLimiter::for('cachet-api', function ($request) {
+            return Limit::perMinute(config('cachet.rate_limit', 300))
+                ->by(optional($request->user())->id ?: $request->ip());
+        });
     }
 
     /**
@@ -89,7 +103,7 @@ class CachetCoreServiceProvider extends ServiceProvider
             'domain' => config('cachet.domain', null),
             'as' => 'cachet.api.',
             'prefix' => Cachet::path().'/api',
-            'middleware' => 'cachet:api',
+            'middleware' => ['cachet:api', 'throttle:cachet-api'],
         ];
     }
 
