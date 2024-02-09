@@ -141,7 +141,7 @@ class DatabaseSeeder extends Seeder
         //        ]);
 
         $customizationSettings = app(CustomizationSettings::class);
-        $customizationSettings->header = <<<HTML
+        $customizationSettings->header = <<<'HTML'
 <script src="https://cdn.usefathom.com/script.js" data-site="NQKCLYJJ" defer></script>
 HTML;
         $customizationSettings->save();
