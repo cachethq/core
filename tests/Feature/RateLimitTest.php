@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Pest\Expectation;
+
 use function Pest\Laravel\getJson;
 
 beforeEach(function () {
