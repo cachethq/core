@@ -12,6 +12,7 @@ use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
+use Cachet\Settings\CustomizationSettings;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -138,5 +139,11 @@ class DatabaseSeeder extends Seeder
         //            'template' => 'We\'re investigating an issue with a third-party provider ({{ name }}) causing our services to be offline.',
         //            'engine' => IncidentTemplateEngineEnum::twig,
         //        ]);
+
+        $customizationSettings = app(CustomizationSettings::class);
+        $customizationSettings->header = <<<HTML
+<script src="https://cdn.usefathom.com/script.js" data-site="NQKCLYJJ" defer></script>
+HTML;
+        $customizationSettings->save();
     }
 }
