@@ -2,9 +2,11 @@
 
 namespace Cachet;
 
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class CachetServiceProvider extends ServiceProvider
@@ -26,10 +28,23 @@ class CachetServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->configureRateLimiting();
+
         $this->registerRoutes();
         $this->registerResources();
         $this->registerPublishing();
         $this->registerCommands();
+    }
+
+    /**
+     * Configure the rate limiting for the application.
+     */
+    private function configureRateLimiting(): void
+    {
+        RateLimiter::for('cachet-api', function ($request) {
+            return Limit::perMinute(config('cachet.api_rate_limit', 300))
+                ->by(optional($request->user())->id ?: $request->ip());
+        });
     }
 
     /**
@@ -42,7 +57,7 @@ class CachetServiceProvider extends ServiceProvider
                 'domain' => config('cachet.domain', null),
                 'as' => 'cachet.api.',
                 'prefix' => Cachet::path().'/api',
-                'middleware' => 'cachet:api',
+                'middleware' => ['cachet:api', 'throttle:cachet-api'],
             ], function (Router $router) {
                 $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
             });

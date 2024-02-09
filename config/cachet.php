@@ -76,6 +76,18 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet API Rate Limit (attempts per minute)
+     |--------------------------------------------------------------------------
+     |
+     | This is the rate limit for the Cachet API. By default, the API is rate
+     | limited to 300 requests a minute (or 5 requests a second). You can
+     | adjust the limit as needed by your application.
+     |
+     */
+    'api_rate_limit' => env('CACHET_API_RATE_LIMIT', 300),
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Major Outage Threshold
      |--------------------------------------------------------------------------
      |
