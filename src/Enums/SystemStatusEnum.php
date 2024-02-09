@@ -5,12 +5,12 @@ namespace Cachet\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum SystemStatusEnum implements HasColor, HasLabel
+enum SystemStatusEnum: string implements HasColor, HasLabel
 {
-    case operational;
-    case performance_issues;
-    case partial_outage;
-    case major_outage;
+    case operational = 'operational';
+    case performance_issues = 'performance_issues';
+    case partial_outage = 'partial_outage';
+    case major_outage = 'major_outage';
 
     public function getLabel(): ?string
     {

@@ -27,4 +27,5 @@ Route::apiResource('metrics.points', MetricPointController::class)
     ->scoped();
 
 Route::get('/ping', [GeneralController::class, 'ping'])->name('ping');
+Route::get('/status', [GeneralController::class, 'status'])->name('status');
 Route::get('/version', [GeneralController::class, 'version'])->name('version');
