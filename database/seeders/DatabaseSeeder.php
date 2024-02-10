@@ -100,6 +100,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => $user->id,
             'created_at' => $timestamp = now()->subDay(),
             'updated_at' => $timestamp,
+            'occurred_at' => $timestamp,
         ]), function (Incident $incident) use ($user) {
             $incident->incidentUpdates()->create([
                 'status' => IncidentStatusEnum::identified,
@@ -126,6 +127,7 @@ class DatabaseSeeder extends Seeder
             'guid' => Str::uuid(),
             'created_at' => $timestamp = now()->subMinutes(30),
             'updated_at' => $timestamp,
+            'occurred_at' => $timestamp,
         ]);
 
         $incident->incidentUpdates()->create([
