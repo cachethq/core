@@ -22,6 +22,7 @@ class ComponentGroup extends Model
     protected $fillable = [
         'name',
         'order',
+        'collapsed',
         'visible',
     ];
 
@@ -49,5 +50,30 @@ class ComponentGroup extends Model
     public function scopeUsers(Builder $query): Builder
     {
         return $query->whereIn('visible', ResourceVisibilityEnum::visibleToUsers());
+    }
+
+    public function isCollapsible(): bool
+    {
+        return match ($this->collapsed) {
+            ComponentGroupVisibilityEnum::collapsed,
+            ComponentGroupVisibilityEnum::collapsed_unless_incident => true,
+            default => false,
+        };
+    }
+
+    public function isExpanded(): bool
+    {
+        return match ($this->collapsed) {
+            ComponentGroupVisibilityEnum::collapsed => false,
+            ComponentGroupVisibilityEnum::collapsed_unless_incident => $this->hasActiveIncident(),
+            ComponentGroupVisibilityEnum::expanded => true,
+        };
+    }
+
+    public function hasActiveIncident(): bool
+    {
+        return Incident::query()
+            ->whereIn('component_id', $this->components->pluck('id'))
+            ->exists();
     }
 }
