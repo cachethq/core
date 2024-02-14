@@ -3,9 +3,9 @@
         <h2 class="text-2xl font-semibold">Past Incidents</h2>
     </div>
 
-    <div class="flex flex-col gap-14">
-        <x-cachet::incident />
-
-        <x-cachet::incident />
+    <div class="flex flex-col gap-14 w-full">
+        @foreach ($incidents as $date => $incident)
+        <x-cachet::incident :date="$date" :incidents="$incident" />
+        @endforeach
     </div>
 </div>

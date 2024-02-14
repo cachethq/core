@@ -6,8 +6,8 @@
     "An optional link to the component.": "An optional link to the component.",
     "Average": "Average",
     "Collapsed unless active incident": "Collapsed unless active incident",
-    "Complete": "Complete",
     "Complete Maintenance": "Complete Maintenance",
+    "Complete": "Complete",
     "Component Group": "Component Group",
     "Custom CSS": "Custom CSS",
     "Custom Footer HTML": "Custom Footer HTML",
@@ -22,6 +22,7 @@
     "Major Outage": "Major Outage",
     "Metric Type": "Metric Type",
     "Month": "Month",
+    "No incidents reported.": "No incidents reported."
     "Notified Subscribers": "Notified Subscribers",
     "Operational": "Operational",
     "Partial Outage": "Partial Outage",
@@ -45,8 +46,8 @@
     "Updated :timestamp": "Updated :timestamp",
     "User": "User",
     "Users": "Users",
-    "View Details": "View Details",
     "Verify": "Verify",
+    "View Details": "View Details",
     "Watching": "Watching",
     "Week": "Week"
 }

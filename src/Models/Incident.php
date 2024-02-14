@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Incident extends Model
 {
@@ -91,5 +92,13 @@ class Incident extends Model
     public function scopeStickied(Builder $query): Builder
     {
         return $query->where('stickied', true);
+    }
+
+    /**
+     * Render the Markdown message.
+     */
+    public function formattedMessage(): string
+    {
+        return Str::of($this->message)->markdown();
     }
 }
