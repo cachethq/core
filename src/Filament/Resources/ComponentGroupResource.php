@@ -25,12 +25,14 @@ class ComponentGroupResource extends Resource
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->columnSpanFull(),
                     Forms\Components\ToggleButtons::make('visible')
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
-                        ->required(),
+                        ->required()
+                        ->columnSpanFull(),
                     Forms\Components\ToggleButtons::make('collapsed')
                         ->required()
                         ->inline()
