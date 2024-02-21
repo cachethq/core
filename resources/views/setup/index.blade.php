@@ -58,12 +58,12 @@
                 </div>
                 <div class="mt-5 flex items-center justify-end gap-5">
                     <button class="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-white px-3 py-2 font-semibold text-zinc-800 transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900/50">
-                        @svg('cachet-chevron-right', 'rotate-180 w-4 h-4')
+                        @svg('cachet-chevron-right', 'rotate-180 size-4')
                         <span>Back</span>
                     </button>
                     <button class="inline-flex items-center gap-2 rounded-lg border border-transparent bg-primary-500 px-3 py-2 font-semibold text-zinc-800 transition hover:bg-primary-600">
                         <span>Next</span>
-                        @svg('cachet-chevron-right', 'w-4 h-4')
+                        @svg('cachet-chevron-right', 'size-4')
                     </button>
                 </div>
             </form>
