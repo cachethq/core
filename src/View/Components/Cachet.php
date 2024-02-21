@@ -19,7 +19,7 @@ class Cachet extends Component
         private ?string $title = null
     ) {
         if ($this->title) {
-            $this->title = $this->title . ' - ' . ($this->appSettings->name ?: config('cachet.title'));
+            $this->title = $this->title.' - '.($this->appSettings->name ?: config('cachet.title'));
         }
 
         $this->title ??= ($this->appSettings->name ?? config('cachet.title'));
