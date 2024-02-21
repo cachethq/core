@@ -12,6 +12,7 @@ use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
+use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
@@ -141,6 +142,17 @@ class DatabaseSeeder extends Seeder
         //            'template' => 'We\'re investigating an issue with a third-party provider ({{ name }}) causing our services to be offline.',
         //            'engine' => IncidentTemplateEngineEnum::twig,
         //        ]);
+
+        $appSettings = app(AppSettings::class);
+        $appSettings->about = <<<'ABOUT'
+Cachet is a **beautiful** and **powerful** open-source status page system.
+
+To access the [dashboard](/dashboard), use the following credentials:
+- `test@test.com`
+- `test123`
+ABOUT;
+        $appSettings->name = 'Cachet v3.x Demo';
+        $appSettings->save();
 
         $customizationSettings = app(CustomizationSettings::class);
         $customizationSettings->header = <<<'HTML'
