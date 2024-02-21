@@ -42,6 +42,7 @@ class Incidents extends Component
                 collect($startDate->toPeriod($endDate))
                     ->keyBy(fn ($period) => $period->toDateString())
                     ->map(fn ($period) => [])
-            );
+            )
+            ->sortKeysDesc();
     }
 }
