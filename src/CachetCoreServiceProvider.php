@@ -3,8 +3,11 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Settings\AppSettings;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
@@ -22,12 +25,7 @@ class CachetCoreServiceProvider extends ServiceProvider
             define('CACHET_PATH', realpath(__DIR__.'/../'));
         }
 
-        $this->callAfterResolving(Factory::class, function (Factory $factory) {
-            $factory->add('cachet', [
-                'path' => __DIR__.'/../resources/svg',
-                'prefix' => 'cachet',
-            ]);
-        });
+        $this->app->singleton(Cachet::class);
     }
 
     /**
@@ -35,10 +33,6 @@ class CachetCoreServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if ($this->app->runningInConsole()) {
-            $this->app->register(CachetServiceProvider::class);
-        }
-
         if (! $this->app->configurationIsCached()) {
             $this->mergeConfigFrom(__DIR__.'/../config/cachet.php', 'cachet');
         }
@@ -46,6 +40,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         Route::middlewareGroup('cachet', config('cachet.middleware', []));
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
 
+        $this->registerCommands();
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
@@ -53,8 +48,6 @@ class CachetCoreServiceProvider extends ServiceProvider
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
             'User-Agent', Cachet::USER_AGENT
         ));
-
-        AboutCommand::add('Cachet', fn () => ['Version' => Cachet::version()]);
     }
 
     /**
@@ -86,12 +79,19 @@ class CachetCoreServiceProvider extends ServiceProvider
      */
     private function registerRoutes(): void
     {
-        Route::group($this->routeConfiguration(), function () {
-            $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
-        });
+        $this->callAfterResolving('router', function (Router $router, Application $application) {
+            $router->group([
+                'domain' => config('cachet.domain'),
+                'as' => 'cachet.api.',
+                'prefix' => Cachet::path().'/api',
+                'middleware' => ['cachet:api', 'throttle:cachet-api'],
+            ], function (Router $router) {
+                $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+            });
 
-        Cachet::routes()
-            ->register();
+            Cachet::routes()
+                ->register();
+        });
     }
 
     /**
@@ -118,19 +118,44 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__.'/../config/cachet.php' => config_path('cachet.php'),
-        ], 'cachet-config');
+        ], ['cachet', 'cachet-config']);
 
         $this->publishes([
-            __DIR__.'/../resources/views/dashboard.blade.php' => resource_path('views/vendor/cachet/app.blade.php'),
-        ], 'cachet-views');
+            __DIR__.'/../resources/views/status-page/index.blade.php' => resource_path('views/vendor/cachet/status-page/index.blade.php'),
+        ], ['cachet', 'cachet-views']);
 
         $this->publishes([
             __DIR__.'/../public/' => public_path('vendor/cachethq/cachet'),
-        ], 'cachet-assets');
+        ], ['cachet', 'cachet-assets']);
     }
 
+    /**
+     * Register the package's Blade components.
+     */
     private function registerBladeComponents(): void
     {
         Blade::componentNamespace('Cachet\\View\\Components', 'cachet');
+
+        $this->callAfterResolving(Factory::class, function (Factory $factory) {
+            $factory->add('cachet', [
+                'path' => __DIR__.'/../resources/svg',
+                'prefix' => 'cachet',
+            ]);
+        });
+    }
+
+    /**
+     * Register the package's commands.
+     */
+    private function registerCommands(): void
+    {
+        if ($this->app->runningInConsole()) {
+            AboutCommand::add('Cachet', fn () => [
+                'Beacon' => AboutCommand::format(config('cachet.beacon'), console: fn ($value) => $value ? '<fg=yellow;options=bold>ENABLED</>' : 'OFF'),
+                'Enabled' => AboutCommand::format(config('cachet.enabled'), console: fn ($value) => $value ? '<fg=yellow;options=bold>ENABLED</>' : 'OFF'),
+                'Install ID' => app(AppSettings::class)->install_id,
+                'Version' => app(Cachet::class)->version(),
+            ]);
+        }
     }
 }
