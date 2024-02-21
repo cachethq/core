@@ -6,6 +6,8 @@ use Spatie\LaravelSettings\Settings;
 
 class AppSettings extends Settings
 {
+    public string $install_id;
+
     public ?string $name = 'Cachet';
 
     public ?string $about;
