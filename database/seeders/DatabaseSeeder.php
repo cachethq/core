@@ -152,6 +152,8 @@ Cachet is a **beautiful** and **powerful** open-source status page system.
 To access the [dashboard](/dashboard), use the following credentials:
 - `test@test.com`
 - `test123`
+
+Please [consider sponsoring](https://github.com/cachethq/cachet?sponsor=1) the continued development of Cachet.
 ABOUT;
         $appSettings->name = 'Cachet v3.x Demo';
         $appSettings->save();
