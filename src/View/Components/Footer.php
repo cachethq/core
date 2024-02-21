@@ -26,6 +26,8 @@ class Footer extends Component
         return view('cachet::components.footer', [
             'showSupport' => $this->appSettings->show_support,
             'cachetVersion' => Cachet::version(),
+            'showTimezone' => $this->appSettings->show_timezone,
+            'timezone' => $this->appSettings->timezone,
         ]);
     }
 }
