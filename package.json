@@ -21,7 +21,7 @@
         "prettier": "^3.0.1",
         "prettier-plugin-blade": "^2.0.0",
         "prettier-plugin-tailwindcss": "^0.5.11",
-        "tailwindcss": "^3.2.4",
+        "tailwindcss": "^3.4.1",
         "vite": "^3.0.0",
         "vue": "^3.3.4",
         "vue-loader": "^17.0.1"
