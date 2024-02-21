@@ -42,18 +42,6 @@ module.exports = {
           light: 'var(--text-light)',
           dark: 'var(--text-dark)',
         },
-        divider: {
-          light: 'var(--divider-light)',
-          dark: 'var(--divider-dark)',
-        },
-        panel: {
-          light: 'var(--panel-light)',
-          dark: 'var(--panel-dark)',
-        },
-        'panel-header': {
-          light: 'var(--panel-header-light)',
-          dark: 'var(--panel-header-dark)',
-        },
       },
     },
   },
