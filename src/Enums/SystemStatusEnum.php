@@ -3,9 +3,10 @@
 namespace Cachet\Enums;
 
 use Filament\Support\Contracts\HasColor;
+use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum SystemStatusEnum implements HasColor, HasLabel
+enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
 {
     case operational;
     case performance_issues;
@@ -27,6 +28,16 @@ enum SystemStatusEnum implements HasColor, HasLabel
             self::operational => 'success',
             self::partial_outage => 'warning',
             self::major_outage => 'danger',
+        };
+    }
+
+    public function getIcon(): ?string
+    {
+        return match ($this) {
+            self::operational => 'cachet-incident-fixed',
+            self::partial_outage => 'cachet-component-partial-outage',
+            self::major_outage => 'cachet-component-major-outage',
+            default => 'cachet-unknown',
         };
     }
 }
