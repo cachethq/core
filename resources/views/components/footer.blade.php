@@ -11,7 +11,7 @@
     </div>
     @endif
     @if($showTimezone)
-    <div class="flex gap-1">
+    <div>
         All times are shown in
         <span class="font-semibold">{{ $timezone }}</span>.
     </div>
