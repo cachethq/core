@@ -41,8 +41,9 @@ class Incidents extends Component
                 // Back-fill any missing dates...
                 collect($startDate->toPeriod($endDate))
                     ->keyBy(fn ($period) => $period->toDateString())
-                    ->map(fn ($period) => [])
+                    ->map(fn ($period) => collect())
             )
+            ->when($this->appSettings->only_disrupted_days, fn ($collection) => $collection->filter(fn ($incidents) => $incidents->isNotEmpty()))
             ->sortKeysDesc();
     }
 }
