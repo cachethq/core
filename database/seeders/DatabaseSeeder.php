@@ -156,12 +156,18 @@ To access the [dashboard](/dashboard), use the following credentials:
 Please [consider sponsoring](https://github.com/cachethq/cachet?sponsor=1) the continued development of Cachet.
 ABOUT;
         $appSettings->name = 'Cachet v3.x Demo';
+        $appSettings->refresh_rate = null;
+        $appSettings->show_support = true;
+        $appSettings->show_timezone = true;
+        $appSettings->only_disrupted_days = false;
         $appSettings->save();
 
         $customizationSettings = app(CustomizationSettings::class);
         $customizationSettings->header = <<<'HTML'
 <script src="https://cdn.usefathom.com/script.js" data-site="NQKCLYJJ" defer></script>
 HTML;
+        $customizationSettings->footer = '';
+        $customizationSettings->stylesheet = '';
         $customizationSettings->save();
     }
 }
