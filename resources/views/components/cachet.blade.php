@@ -7,7 +7,7 @@
         <link rel="shortcut icon" href="{{ asset('vendor/cachethq/cachet/favicon.ico') }}" />
         <link rel="apple-touch-icon" href="{{ asset('vendor/cachethq/cachet/apple-touch-icon.png') }}" />
 
-        <title>{{ $title ?? config('cachet.title', 'Cachet') }}</title>
+        <title>{{ $title ?: config('cachet.title', 'Cachet') }}</title>
 
         @vite(['resources/css/cachet.css', 'resources/js/cachet.js'], 'vendor/cachethq/cachet/build')
         @filamentStyles

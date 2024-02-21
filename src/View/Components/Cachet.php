@@ -10,16 +10,19 @@ use Illuminate\View\Component;
 
 class Cachet extends Component
 {
-    public string $title;
-
     /**
      * Create a new component instance.
      */
     public function __construct(
         private AppSettings $appSettings,
         private CustomizationSettings $customizationSettings,
+        private ?string $title = null
     ) {
-        $this->title ??= $this->appSettings->name ?? config('cachet.title');
+        if ($this->title) {
+            $this->title = $this->title . ' - ' . ($this->appSettings->name ?: config('cachet.title'));
+        }
+
+        $this->title ??= ($this->appSettings->name ?? config('cachet.title'));
     }
 
     /**
@@ -28,6 +31,7 @@ class Cachet extends Component
     public function render(): View|Closure|string
     {
         return view('cachet::components.cachet', [
+            'title' => $this->title,
             'cachet_header' => $this->customizationSettings->header,
             'cachet_footer' => $this->customizationSettings->footer,
             'refresh_rate' => $this->appSettings->refresh_rate,
