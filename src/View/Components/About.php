@@ -24,7 +24,7 @@ class About extends Component
     public function render(): View|Closure|string
     {
         return view('cachet::components.about', [
-            'about' => Str::of($this->settings->about)->trim()->markdown(),
+            'about' => Str::of($this->settings->about)->trim()->markdown()->toString(),
         ]);
     }
 }
