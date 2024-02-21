@@ -11,7 +11,9 @@
             <div class="text-xs font-medium">{{ $incident->components->pluck('name')->join(', ') }}</div>
             <div class="flex justify-between">
                 <div class="flex flex-col">
-                    <h3 class="text-xl font-semibold">{{ $incident->name}}</h3>
+                    <h3 class="text-base md:text-xl break-words font-semibold">
+                        <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
+                    </h3>
                     <span class="text-xs text-zinc-500">{{ $incident->occurred_at->diffForHumans() }} — {{ $incident->occurred_at->toDayDateTimeString() }}</span>
                 </div>
                 <div>

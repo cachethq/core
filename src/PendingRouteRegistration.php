@@ -29,7 +29,7 @@ class PendingRouteRegistration
             ->as('cachet.')
             ->group(function (Router $router) {
                 $router->get('/', [StatusPageController::class, 'index'])->name('status-page');
-                $router->get('/incidents/{incident}', [StatusPageController::class, 'show'])->name('status-page.incident');
+                $router->get('/incidents/{incident:guid}', [StatusPageController::class, 'show'])->name('status-page.incident');
 
                 $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
                 $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');

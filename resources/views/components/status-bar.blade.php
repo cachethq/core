@@ -1,4 +1,4 @@
-<div {{ $attributes->class(['rounded-md p-4 bg-custom-100'])->style([
+<div {{ $attributes->class(['rounded-md p-4 bg-custom-100 dark:bg-custom-400'])->style([
     Illuminate\Support\Arr::toCssStyles([
         \Filament\Support\get_color_css_variables(
             $color,
