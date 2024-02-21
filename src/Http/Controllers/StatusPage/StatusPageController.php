@@ -15,7 +15,8 @@ class StatusPageController
     public function index(): View
     {
         return view('cachet::status-page.index', [
-            'componentGroups' => ComponentGroup::with(['components' => fn ($query) => $query->orderBy('order')])
+            'componentGroups' => ComponentGroup::query()
+                ->with(['components' => fn ($query) => $query->orderBy('order')->withCount('incidents')])
                 ->when(auth()->check(), fn ($query) => $query->users(), fn ($query) => $query->guests())
                 ->whereHas('components')
                 ->get(),
