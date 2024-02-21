@@ -2,7 +2,7 @@
 
 <div x-data x-disclosure {{ $attributes
     ->merge(array_filter([
-        'default-open' => $componentGroup->isExpanded() ,
+        'default-open' => $componentGroup->isExpanded(),
     ]))
     ->class(['overflow-hidden rounded-lg border shadow dark:border-zinc-700'])
     }}>

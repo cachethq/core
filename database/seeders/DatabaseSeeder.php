@@ -2,6 +2,7 @@
 
 namespace Cachet\Database\Seeders;
 
+use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\MetricTypeEnum;
@@ -54,6 +55,7 @@ class DatabaseSeeder extends Seeder
 
         $componentGroup = ComponentGroup::create([
             'name' => 'Checkmango',
+            'collapsed' => ComponentGroupVisibilityEnum::expanded,
             'visible' => ResourceVisibilityEnum::guest,
         ]);
 
