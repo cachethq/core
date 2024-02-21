@@ -34,7 +34,7 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
     public function getIcon(): ?string
     {
         return match ($this) {
-            self::operational => 'cachet-incident-fixed',
+            self::operational => 'heroicon-m-check-circle',
             self::partial_outage => 'cachet-component-partial-outage',
             self::major_outage => 'cachet-component-major-outage',
             default => 'cachet-unknown',
