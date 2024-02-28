@@ -28,9 +28,11 @@ class Incidents extends Component
                 $endDate,
                 $this->appSettings->only_disrupted_days
             ),
-            'from' => $startDate->clone()->subDays($incidentDays)->toDateString(),
-            'to' => $startDate->clone()->addDays($incidentDays)->toDateString(),
-            'canPageForward' => $startDate->clone()->addDays($incidentDays)->isBefore(now()),
+            'from' => $startDate->toDateString(),
+            'to' => $endDate->toDateString(),
+            'nextPeriodFrom' => $startDate->clone()->subDays($incidentDays + 1)->toDateString(),
+            'nextPeriodTo' => $startDate->clone()->addDays($incidentDays + 1)->toDateString(),
+            'canPageForward' => $startDate->clone()->isBefore(now()),
         ]);
     }
 

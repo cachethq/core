@@ -19,12 +19,12 @@
     </div>
 
     <div class="flex justify-between">
-        <a href="{{ route('cachet.status-page', ['from' => $from]) }}" class="text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
+        <a href="{{ route('cachet.status-page', ['from' => $nextPeriodFrom]) }}" class="text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
             {{ __('Previous Incidents') }}
         </a>
 
         @if($canPageForward)
-        <a href="{{ route('cachet.status-page', ['from' => $to]) }}" class="text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
+        <a href="{{ route('cachet.status-page', ['from' => $nextPeriodTo]) }}" class="text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
             {{ __('Newer Incidents') }}
         </a>
         @endif
