@@ -30,6 +30,7 @@ class Incidents extends Component
             ),
             'from' => $startDate->clone()->subDays($incidentDays)->toDateString(),
             'to' => $startDate->clone()->addDays($incidentDays)->toDateString(),
+            'canPageForward' => $startDate->clone()->addDays($incidentDays)->isBefore(now()),
         ]);
     }
 

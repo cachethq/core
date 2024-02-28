@@ -14,8 +14,10 @@
             {{ __('Previous Incidents') }}
         </a>
 
+        @if($canPageForward)
         <a href="{{ route('cachet.status-page', ['from' => $to]) }}" class="text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
             {{ __('Newer Incidents') }}
         </a>
+        @endif
     </div>
 </div>
