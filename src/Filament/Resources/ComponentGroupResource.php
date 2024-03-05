@@ -5,6 +5,7 @@ namespace Cachet\Filament\Resources;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\ComponentGroupResource\Pages;
+use Cachet\Filament\Resources\ComponentResource\RelationManagers\ComponentsRelationManager;
 use Cachet\Models\ComponentGroup;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -79,7 +80,7 @@ class ComponentGroupResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ComponentsRelationManager::class,
         ];
     }
 
