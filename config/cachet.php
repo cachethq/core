@@ -108,13 +108,5 @@ return [
      */
     'beacon' => env('CACHET_BEACON', true),
 
-    /*
-     |--------------------------------------------------------------------------
-     | Cachet Docker
-     |--------------------------------------------------------------------------
-     |
-     | Determines whether Cachet is running from within a Docker instance.
-     |
-     */
     'docker' => env('CACHET_DOCKER', false),
 ];
