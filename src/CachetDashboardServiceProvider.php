@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class CachetDashboardServiceProvider extends PanelProvider
@@ -29,7 +30,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->default()
             ->login()
             ->passwordReset()
-            ->brandLogo(fn () => view('cachet::components.logo'))
+            ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->colors([
                 'primary' => Color::rgb('rgb(4, 193, 71)'),
                 'purple' => Color::Purple,
