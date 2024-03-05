@@ -10,6 +10,7 @@ use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -54,10 +55,11 @@ class CachetDashboardServiceProvider extends PanelProvider
                     ->icon('cachet-component-performance-issues'),
                 NavigationItem::make('Documentation')
                     ->label(__('Documentation'))
-                    ->url('https://docs.cachethq.io')
+                    ->url('https://docs.cachethq.io/?ref=cachet-dashboard')
                     ->group(__('Resources'))
                     ->icon('heroicon-o-book-open'),
             ])
+            ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('cachet::filament.widgets.add-incident-button'))
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
