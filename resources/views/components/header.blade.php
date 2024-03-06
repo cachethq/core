@@ -11,7 +11,7 @@
     </div>
 
     <div class="flex items-center gap-2.5 sm:gap-5">
-        <a href="#" class="text-sm font-medium text-zinc-800 transition hover:text-zinc-700 dark:text-white dark:text-zinc-500 dark:hover:text-zinc-300 sm:text-base">Dashboard</a>
+        <a href="{{ Cachet\Cachet::dashboardPath() }}" class="text-sm font-medium text-zinc-800 transition hover:text-zinc-700 dark:text-white dark:text-zinc-500 dark:hover:text-zinc-300 sm:text-base">{{ __('Dashboard') }}</a>
         {{-- Condition Button. --}}
 {{--        <a href="{{ route('cachet.dashboard.index') }}" class="text-sm font-medium text-zinc-800 transition hover:text-zinc-700 dark:text-white dark:text-zinc-500 dark:hover:text-zinc-300 sm:text-base">Logout</a>--}}
         {{-- Conditional Button. --}}

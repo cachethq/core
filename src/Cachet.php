@@ -58,7 +58,7 @@ class Cachet
      */
     public static function path(): string
     {
-        return config('cachet.path', '/status');
+        return config('cachet.path', 'status');
     }
 
     /**
@@ -66,7 +66,7 @@ class Cachet
      */
     public static function dashboardPath(): string
     {
-        return config('cachet.dashboard_path', static::path().'/dashboard');
+        return config('cachet.dashboard_path', static::path().'dashboard');
     }
 
     /**
