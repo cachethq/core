@@ -32,7 +32,6 @@
         "nesbot/carbon": "^2.70",
         "spatie/laravel-query-builder": "^5.5",
         "spatie/laravel-settings": "^3.2",
-        "tightenco/ziggy": "^1.6",
         "timacdonald/json-api": "^v1.0.0-beta.4",
         "twig/twig": "^3.0"
     },
