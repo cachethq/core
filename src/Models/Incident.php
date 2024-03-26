@@ -81,9 +81,9 @@ class Incident extends Model
         return $query->where('status', $status);
     }
 
-    public function scopeUnresolved(Builder $builder): Builder
+    public function scopeUnresolved(Builder $query): Builder
     {
-        return $this->whereIn('status', IncidentStatusEnum::unresolved());
+        return $query->whereIn('status', IncidentStatusEnum::unresolved());
     }
 
     /**
