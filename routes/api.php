@@ -4,6 +4,7 @@ use Cachet\Http\Controllers\Api\ComponentController;
 use Cachet\Http\Controllers\Api\ComponentGroupController;
 use Cachet\Http\Controllers\Api\GeneralController;
 use Cachet\Http\Controllers\Api\IncidentController;
+use Cachet\Http\Controllers\Api\IncidentTemplateController;
 use Cachet\Http\Controllers\Api\IncidentUpdateController;
 use Cachet\Http\Controllers\Api\MetricController;
 use Cachet\Http\Controllers\Api\MetricPointController;
@@ -14,6 +15,7 @@ Route::apiResources([
     'components' => ComponentController::class,
     'component-groups' => ComponentGroupController::class,
     'incidents' => IncidentController::class,
+    'incident-templates' => IncidentTemplateController::class,
     'metrics' => MetricController::class,
     'schedules' => ScheduleController::class,
 ]);
