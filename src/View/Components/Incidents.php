@@ -37,6 +37,10 @@ class Incidents extends Component
         ]);
     }
 
+    /**
+     * Fetch the incidents that occurred between the given start and end date.
+     * Incidents will be grouped by days.
+     */
     private function incidents(Carbon $startDate, Carbon $endDate, bool $onlyDisruptedDays = false): Collection
     {
         return Incident::query()
