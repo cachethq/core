@@ -31,11 +31,11 @@ class ComponentGroupController extends Controller
     /**
      * Create Component Group.
      */
-    public function store(CreateComponentGroupRequest $request)
+    public function store(CreateComponentGroupRequest $request, CreateComponentGroup $createComponentGroupAction)
     {
         [$data, $components] = [$request->except('components'), $request->validated('components')];
 
-        $componentGroup = CreateComponentGroup::run($data, $components);
+        $componentGroup = $createComponentGroupAction->handle($data, $components);
 
         return ComponentGroupResource::make($componentGroup);
     }
@@ -53,11 +53,11 @@ class ComponentGroupController extends Controller
     /**
      * Update Component Group
      */
-    public function update(UpdateComponentGroupRequest $request, ComponentGroup $componentGroup)
+    public function update(UpdateComponentGroupRequest $request, ComponentGroup $componentGroup, UpdateComponentGroup $updateComponentGroupAction)
     {
         [$data, $components] = [$request->except('components'), $request->validated('components')];
 
-        UpdateComponentGroup::run($componentGroup, $data, $components);
+        $updateComponentGroupAction->handle($componentGroup, $data, $components);
 
         return ComponentGroupResource::make($componentGroup->fresh());
     }
@@ -65,9 +65,9 @@ class ComponentGroupController extends Controller
     /**
      * Delete Component Group.
      */
-    public function destroy(ComponentGroup $componentGroup)
+    public function destroy(ComponentGroup $componentGroup, DeleteComponentGroup $deleteComponentGroupAction)
     {
-        DeleteComponentGroup::run($componentGroup);
+        $deleteComponentGroupAction->handle($componentGroup);
 
         return response()->noContent();
     }

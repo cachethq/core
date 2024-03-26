@@ -1,25 +1,35 @@
 providers:
   - Cachet\CachetCoreServiceProvider
+  - Spatie\LaravelSettings\LaravelSettingsServiceProvider
 
 env:
   - APP_NAME=Cachet
-  - SEND_QUERIES_TO_RAY=false
 
 migrations:
   - workbench/database/migrations
 
+seeders:
+  - Workbench\Database\Seeders\DatabaseSeeder
+
 workbench:
   start: '/status'
   install: true
-  welcome: true
+  discovers:
+    config: true
+    web: true
   sync:
-    - from: public/build
+    - from: public
       to: public/vendor/cachethq/cachet
   build:
     - asset-publish
+    - filament:assets
     - create-sqlite-db
     - db:wipe
     - migrate:refresh
   assets:
     - query-builder-config
     - cachet-assets
+
+purge:
+  directories:
+    - public/vendor

@@ -3,13 +3,10 @@
 namespace Cachet\Actions\Subscriber;
 
 use Cachet\Models\Subscriber;
-use Lorisleiva\Actions\Concerns\AsAction;
 
 class UpdateSubscriber
 {
-    use AsAction;
-
-    public function handle(Subscriber $subscriber, string $email = null, bool $global = false, array $components = []): Subscriber
+    public function handle(Subscriber $subscriber, ?string $email = null, bool $global = false, array $components = []): Subscriber
     {
         $subscriber->update(array_filter([
             'email' => $email,

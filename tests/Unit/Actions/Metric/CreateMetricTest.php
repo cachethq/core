@@ -17,7 +17,7 @@ it('can create a metric', function () {
         'places' => 1,
     ];
 
-    $metric = CreateMetric::run($data);
+    $metric = app(CreateMetric::class)->handle($data);
 
     expect($metric)
         ->name->toBe('Foo')

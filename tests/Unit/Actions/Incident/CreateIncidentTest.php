@@ -16,7 +16,7 @@ it('can create an incident', function () {
         'message' => 'This is an incident message.',
     ];
 
-    $incident = CreateIncident::run($data);
+    $incident = app(CreateIncident::class)->handle($data);
 
     expect($incident)
         ->name->toBe($data['name'])
@@ -32,7 +32,7 @@ it('can create an incident with a given status', function () {
         'status' => IncidentStatusEnum::investigating,
     ];
 
-    $incident = CreateIncident::run($data);
+    $incident = app(CreateIncident::class)->handle($data);
 
     expect($incident)
         ->name->toBe($data['name'])
@@ -57,7 +57,7 @@ it('can create an incident with a twig template', function () {
         'status' => IncidentStatusEnum::investigating,
     ];
 
-    $incident = CreateIncident::run($data);
+    $incident = app(CreateIncident::class)->handle($data);
 
     expect($incident)
         ->name->toBe($data['name'])
@@ -81,7 +81,7 @@ it('can create an incident with a blade template', function () {
         'status' => IncidentStatusEnum::investigating,
     ];
 
-    $incident = CreateIncident::run($data);
+    $incident = app(CreateIncident::class)->handle($data);
 
     expect($incident)
         ->name->toBe($data['name'])

@@ -3,7 +3,7 @@
 namespace Cachet;
 
 use Cachet\Http\Controllers\HealthController;
-use Cachet\Http\Controllers\LoginController;
+use Cachet\Http\Controllers\Setup\SetupController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -29,30 +29,15 @@ class PendingRouteRegistration
             ->as('cachet.')
             ->group(function (Router $router) {
                 $router->get('/', [StatusPageController::class, 'index'])->name('status-page');
-                $router->get('/incidents/{incident}', [StatusPageController::class, 'show'])->name('status-page.incident');
+                $router->get('/incidents/{incident:guid}', [StatusPageController::class, 'show'])->name('status-page.incident');
+
+                $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
+                $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');
 
                 // @todo subscription routes... subscribe, manage subscriptions, unsubscribe
 
                 $router->get('/health', HealthController::class)->name('health');
             });
-    }
-
-    public function withAuthenticationRoutes($middleware = ['cachet'])
-    {
-        Cachet::withAuthentication();
-
-        Route::namespace('Cachet\\Http\\Controllers')
-            ->domain(config('cachet.domain', null))
-            ->middleware($middleware)
-            ->prefix(Cachet::path())
-            ->as('cachet.')
-            ->group(function (Router $router) {
-                $router->get('/login', [LoginController::class, 'showLoginForm'])->name('cachet.login');
-
-                // @todo post login form.
-            });
-
-        return $this;
     }
 
     /**

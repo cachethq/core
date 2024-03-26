@@ -36,9 +36,9 @@ class IncidentController extends Controller
     /**
      * Create Incident.
      */
-    public function store(CreateIncidentRequest $request)
+    public function store(CreateIncidentRequest $request, CreateIncident $createIncidentAction)
     {
-        $incident = CreateIncident::run($request->validated());
+        $incident = $createIncidentAction->handle($request->validated());
 
         return IncidentResource::make($incident);
     }
@@ -56,9 +56,9 @@ class IncidentController extends Controller
     /**
      * Update Incident.
      */
-    public function update(UpdateIncidentRequest $request, Incident $incident)
+    public function update(UpdateIncidentRequest $request, Incident $incident, UpdateIncident $updateIncidentAction)
     {
-        UpdateIncident::run($incident, $request->validated());
+        $updateIncidentAction->handle($incident, $request->validated());
 
         return IncidentResource::make($incident->fresh());
     }
@@ -66,9 +66,9 @@ class IncidentController extends Controller
     /**
      * Delete Incident.
      */
-    public function destroy(Incident $incident)
+    public function destroy(Incident $incident, DeleteIncident $deleteIncidentAction)
     {
-        DeleteIncident::run($incident);
+        $deleteIncidentAction->handle($incident);
 
         return response()->noContent();
     }

@@ -1,0 +1,17 @@
+{
+  "resources/js/cachet.js": {
+    "file": "assets/cachet.6122e927.js",
+    "src": "resources/js/cachet.js",
+    "isEntry": true
+  },
+  "resources/css/cachet.css": {
+    "file": "assets/cachet.edf050ed.css",
+    "src": "resources/css/cachet.css",
+    "isEntry": true
+  },
+  "resources/css/dashboard/theme.css": {
+    "file": "assets/theme.d00998e2.css",
+    "src": "resources/css/dashboard/theme.css",
+    "isEntry": true
+  }
+}

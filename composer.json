@@ -21,22 +21,22 @@
     "require": {
         "php": "^8.1",
         "doctrine/dbal": "^3.6",
+        "filament/filament": "^3.2.23",
+        "filament/spatie-laravel-settings-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.8",
         "illuminate/console": "^10.0",
         "illuminate/database": "^10.0",
         "illuminate/events": "^10.0",
         "illuminate/queue": "^10.0",
         "illuminate/support": "^10.0",
-        "inertiajs/inertia-laravel": "^0.6.9",
-        "lorisleiva/laravel-actions": "^2.7",
         "nesbot/carbon": "^2.70",
         "spatie/laravel-query-builder": "^5.5",
-        "tightenco/ziggy": "^1.6",
+        "spatie/laravel-settings": "^3.2",
         "timacdonald/json-api": "^v1.0.0-beta.4",
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.10",
+        "orchestra/testbench": "^8.14",
         "pestphp/pest": "^2.13",
         "pestphp/pest-plugin-laravel": "^2.2",
         "spatie/laravel-ray": "^1.32"
@@ -44,14 +44,16 @@
     "autoload": {
         "psr-4": {
             "Cachet\\": "src",
-            "Cachet\\Database\\Factories\\": "database/factories"
+            "Cachet\\Database\\Factories\\": "database/factories",
+            "Cachet\\Database\\Seeders\\": "database/seeders"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "Cachet\\Tests\\": "tests",
             "Workbench\\App\\": "workbench/app/",
-            "Workbench\\Database\\Factories\\": "workbench/database/factories/"
+            "Workbench\\Database\\Factories\\": "workbench/database/factories/",
+            "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
         }
     },
     "scripts": {
@@ -83,7 +85,8 @@
         },
         "laravel": {
             "providers": [
-                "Cachet\\CachetCoreServiceProvider"
+                "Cachet\\CachetCoreServiceProvider",
+                "Cachet\\CachetDashboardServiceProvider"
             ]
         }
     },

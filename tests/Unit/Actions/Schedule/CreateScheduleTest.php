@@ -11,7 +11,7 @@ it('can create a schedule without components', function () {
         'scheduled_at' => '2023-09-01 12:00:00',
     ];
 
-    $schedule = CreateSchedule::run($data);
+    $schedule = app(CreateSchedule::class)->handle($data);
 
     expect($schedule)
         ->name->toBe($data['name'])
@@ -29,7 +29,7 @@ it('can create a schedule with components', function () {
 
     [$componentA, $componentB] = Component::factory()->count(2)->create();
 
-    $schedule = CreateSchedule::run($data, [
+    $schedule = app(CreateSchedule::class)->handle($data, [
         ['id' => $componentA->id, 'status' => 3], // Partial Outage
         ['id' => $componentB->id, 'status' => 4], // Major Outage
     ]);

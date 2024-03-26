@@ -6,7 +6,7 @@ use Cachet\Models\IncidentTemplate;
 it('can delete an incident template', function () {
     $incidentTemplate = IncidentTemplate::factory()->create();
 
-    DeleteIncidentTemplate::run($incidentTemplate);
+    app(DeleteIncidentTemplate::class)->handle($incidentTemplate);
 
     expect($incidentTemplate->fresh())->toBeNull();
 });

@@ -10,7 +10,7 @@ it('can delete components', function () {
 
     $component = Component::factory()->create();
 
-    DeleteComponent::run($component);
+    app(DeleteComponent::class)->handle($component);
 
     $this->assertSoftDeleted('components', [
         'id' => $component->id,
@@ -27,7 +27,7 @@ it('deletes attached subscriptions when deleted', function () {
         'subscriber_id' => $subscriber->id,
     ]);
 
-    DeleteComponent::run($component);
+    app(DeleteComponent::class)->handle($component);
 
     $this->assertDatabaseMissing('subscriptions', [
         'subscriber_id' => $subscriber->id,

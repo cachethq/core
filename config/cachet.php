@@ -27,6 +27,16 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | The User Model.
+     |--------------------------------------------------------------------------
+     |
+     | This is the model that will be used to authenticate users. This model
+     | must be an instance of Illuminate\Foundation\Auth\User.
+     */
+    'user_model' => App\Models\User::class,
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Domain
      |--------------------------------------------------------------------------
      |
@@ -58,12 +68,23 @@ return [
      */
     'middleware' => [
         'web',
-        \Cachet\Http\Middleware\HandleInertiaRequests::class,
     ],
 
     'api_middleware' => [
         'api',
     ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet API Rate Limit (attempts per minute)
+     |--------------------------------------------------------------------------
+     |
+     | This is the rate limit for the Cachet API. By default, the API is rate
+     | limited to 300 requests a minute (or 5 requests a second). You can
+     | adjust the limit as needed by your application.
+     |
+     */
+    'api_rate_limit' => env('CACHET_API_RATE_LIMIT', 300),
 
     /*
      |--------------------------------------------------------------------------
@@ -73,7 +94,9 @@ return [
      | This is the threshold at which a major outage is declared.
      |
      */
-    'major_outage' => 50.0,
+    'major_outage' => 25.0,
 
     'beacon' => env('CACHET_BEACON', true),
+
+    'docker' => env('CACHET_DOCKER', false),
 ];

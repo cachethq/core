@@ -31,9 +31,9 @@ class MetricPointController extends Controller
     /**
      * Create Metric Point.
      */
-    public function store(CreateMetricPointRequest $request, Metric $metric)
+    public function store(CreateMetricPointRequest $request, Metric $metric, CreateMetricPoint $createMetricPointAction)
     {
-        $metricPoint = CreateMetricPoint::run($metric, $request->validated());
+        $metricPoint = $createMetricPointAction->handle($metric, $request->validated());
 
         return MetricPointResource::make($metricPoint)
             ->response()
@@ -53,9 +53,9 @@ class MetricPointController extends Controller
     /**
      * Delete Metric Point.
      */
-    public function destroy(Metric $metric, MetricPoint $metricPoint)
+    public function destroy(Metric $metric, MetricPoint $metricPoint, DeleteMetricPoint $deleteMetricPointAction)
     {
-        DeleteMetricPoint::run($metricPoint);
+        $deleteMetricPointAction->handle($metricPoint);
 
         return response()->noContent();
     }

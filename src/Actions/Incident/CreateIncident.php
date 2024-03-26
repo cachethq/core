@@ -7,12 +7,9 @@ use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use Lorisleiva\Actions\Concerns\AsAction;
 
 class CreateIncident
 {
-    use AsAction;
-
     public function handle(array $incident): Incident
     {
         if (isset($incident['template'])) {

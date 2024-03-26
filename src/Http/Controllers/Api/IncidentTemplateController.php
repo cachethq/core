@@ -33,7 +33,7 @@ class IncidentTemplateController extends Controller
      */
     public function store(CreateIncidentTemplateRequest $request)
     {
-        $template = CreateIncidentTemplate::run($request->validated());
+        $template = app(CreateIncidentTemplate::class)->handle($request->validated());
 
         return IncidentTemplateResource::make($template);
     }
@@ -53,7 +53,7 @@ class IncidentTemplateController extends Controller
      */
     public function update(UpdateIncidentTemplateRequest $request, IncidentTemplate $incidentTemplate)
     {
-        UpdateIncidentTemplate::run($incidentTemplate, $request->validated());
+        app(UpdateIncidentTemplate::class)->handle($incidentTemplate, $request->validated());
 
         return IncidentTemplateResource::make($incidentTemplate->fresh());
     }
@@ -63,7 +63,7 @@ class IncidentTemplateController extends Controller
      */
     public function destroy(IncidentTemplate $incidentTemplate)
     {
-        DeleteIncidentTemplate::run($incidentTemplate);
+        app(DeleteIncidentTemplate::class)->handle($incidentTemplate);
 
         return response()->noContent();
     }

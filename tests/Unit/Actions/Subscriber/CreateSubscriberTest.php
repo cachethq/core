@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Event;
 it('can create a subscriber', function () {
     Event::fake();
 
-    $subscriber = CreateSubscriber::run('james@alt-three.com');
+    $subscriber = app(CreateSubscriber::class)->handle('james@alt-three.com');
 
     expect($subscriber)
         ->email->toBe('james@alt-three.com')
@@ -22,7 +22,7 @@ it('can create a subscriber', function () {
 it('can create a global subscriber', function () {
     Event::fake();
 
-    $subscriber = CreateSubscriber::run('james@alt-three.com', global: true);
+    $subscriber = app(CreateSubscriber::class)->handle('james@alt-three.com', global: true);
 
     expect($subscriber)
         ->email->toBe('james@alt-three.com')
@@ -36,7 +36,7 @@ it('can create a global subscriber', function () {
 it('can create a verified subscriber', function () {
     Event::fake();
 
-    $subscriber = CreateSubscriber::run('james@alt-three.com', verified: true);
+    $subscriber = app(CreateSubscriber::class)->handle('james@alt-three.com', verified: true);
 
     expect($subscriber)
         ->email->toBe('james@alt-three.com')
@@ -52,7 +52,7 @@ it('can create a subscriber with components', function () {
 
     [$componentA, $componentB] = Component::factory()->count(2)->create();
 
-    $subscriber = CreateSubscriber::run('james@alt-three.com', components: [
+    $subscriber = app(CreateSubscriber::class)->handle('james@alt-three.com', components: [
         $componentA->id, $componentB->id,
     ], verified: true);
 

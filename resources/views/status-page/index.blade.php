@@ -1,15 +1,21 @@
-@extends('cachet::layouts.status-page')
-
-@section('content')
+<x-cachet::cachet>
     <x-cachet::header />
 
-    <div class="max-w-5xl mt-4 mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col gap-y-4 py-4 -mt-4">
-            <x-cachet::status-bar />
+    <div class="container mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 flex flex-col space-y-6">
+        <x-cachet::status-bar />
 
-            <x-cachet::component-group />
-        </div>
+        <x-cachet::about />
+
+        @foreach($componentGroups as $componentGroup)
+        <x-cachet::component-group :component-group="$componentGroup"/>
+        @endforeach
+
+        @if($schedules->isNotEmpty())
+        <x-cachet::schedules :schedules="$schedules" />
+        @endif
+
+        <x-cachet::incidents />
     </div>
 
     <x-cachet::footer />
-@endsection
+</x-cachet::cachet>

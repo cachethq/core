@@ -7,7 +7,7 @@ use Cachet\Models\ComponentGroup;
 it('can delete a component group', function () {
     $componentGroup = ComponentGroup::factory()->create();
 
-    DeleteComponentGroup::run($componentGroup);
+    app(DeleteComponentGroup::class)->handle($componentGroup);
 
     $this->assertDatabaseMissing('component_groups', [
         'id' => $componentGroup->id,
@@ -18,7 +18,7 @@ it('resets the component_group_id for components in a deleted component group', 
     $component = Component::factory()->forGroup()->create();
     $componentGroupId = $component->component_group_id;
 
-    DeleteComponentGroup::run($component->group);
+    app(DeleteComponentGroup::class)->handle($component->group);
 
     $this->assertDatabaseMissing('component_groups', [
         'id' => $componentGroupId,
