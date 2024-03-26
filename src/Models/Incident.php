@@ -48,6 +48,15 @@ class Incident extends Model
         'occurred_at',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        self::creating(function (Incident $model) {
+            $model->guid = Str::uuid();
+        });
+    }
+
     /**
      * Get the components impacted by this incident.
      */

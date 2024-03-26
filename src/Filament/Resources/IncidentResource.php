@@ -75,12 +75,6 @@ class IncidentResource extends Resource
                     Forms\Components\Toggle::make('notifications')
                         ->label(__('Send notifications to subscribers.'))
                         ->required(),
-                    Forms\Components\TextInput::make('guid')
-                        ->required()
-                        ->default(fn () => (string) Str::uuid())
-                        ->unique(ignoreRecord: true)
-                        ->maxLength(36)
-                        ->hidden(),
                 ]),
             ]);
     }

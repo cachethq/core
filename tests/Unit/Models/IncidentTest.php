@@ -9,6 +9,12 @@ it('can have multiple components', function () {
     expect($incident->components)->toHaveCount(2);
 });
 
+it('will set default guid', function () {
+    $incident = Incident::factory()->state(['guid' => null])->create();
+
+    expect($incident)->guid->not()->toBeNull();
+});
+
 it('can scope to a specific status', function () {
     Incident::factory()->sequence(
         ['status' => IncidentStatusEnum::investigating],
