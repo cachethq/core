@@ -5,6 +5,7 @@ namespace Cachet\View\Components;
 use Cachet\Models\Incident;
 use Cachet\Settings\AppSettings;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\View\Component;
@@ -44,13 +45,21 @@ class Incidents extends Component
                 'incidentUpdates' => fn ($query) => $query->orderByDesc('created_at'),
             ])
             ->where('visible', '>=', ! auth()->check())
-            ->whereBetween('occurred_at', [
-                $endDate->startOfDay()->toDateTimeString(),
-                $startDate->endofDay()->toDateTimeString(),
-            ])
+            ->where(function (Builder $query) use ($endDate, $startDate) {
+                $query->whereBetween('occurred_at', [
+                    $endDate->startOfDay()->toDateTimeString(),
+                    $startDate->endofDay()->toDateTimeString(),
+                ])->orWhere(function (Builder $query) use ($endDate, $startDate) {
+                    $query->whereNull('occurred_at')->whereBetween('created_at', [
+                        $endDate->startOfDay()->toDateTimeString(),
+                        $startDate->endofDay()->toDateTimeString(),
+                    ]);
+                });
+            })
             ->orderBy('occurred_at', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get()
-            ->groupBy(fn (Incident $incident) => $incident->occurred_at?->toDateString())
+            ->groupBy(fn (Incident $incident) => $incident->timestamp->toDateString())
             ->union(
                 // Back-fill any missing dates...
                 collect($endDate->toPeriod($startDate))

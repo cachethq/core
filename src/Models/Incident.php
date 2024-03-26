@@ -8,6 +8,7 @@ use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -101,6 +102,11 @@ class Incident extends Model
     public function scopeStickied(Builder $query): Builder
     {
         return $query->where('stickied', true);
+    }
+
+    public function timestamp(): Attribute
+    {
+        return Attribute::get(fn () => $this->occurred_at ?: $this->created_at);
     }
 
     /**

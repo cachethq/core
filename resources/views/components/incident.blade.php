@@ -14,7 +14,7 @@
                     <h3 class="text-base md:text-xl break-words font-semibold">
                         <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
                     </h3>
-                    <span class="text-xs text-zinc-500">{{ $incident->occurred_at->diffForHumans() }} — {{ $incident->occurred_at->toDayDateTimeString() }}</span>
+                    <span class="text-xs text-zinc-500">{{ $incident->timestamp->diffForHumans() }} — {{ $incident->timestamp->toDayDateTimeString() }}</span>
                 </div>
                 <div>
                     <x-cachet::incident-badge :type="$incident->status" />
