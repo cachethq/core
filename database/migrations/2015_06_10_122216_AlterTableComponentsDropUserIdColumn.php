@@ -12,7 +12,10 @@ return new class extends Migration
     public function up()
     {
         Schema::table('components', function (Blueprint $table) {
-            $table->dropColumn('user_id');
+            // This seems to break in Laravel 11, so we'll conditionally delete the column.
+            if (Schema::hasColumn('components', 'user_id')) {
+                $table->dropColumn('user_id');
+            }
         });
     }
 
