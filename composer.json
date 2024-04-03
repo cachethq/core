@@ -30,13 +30,13 @@
         "illuminate/queue": "^10.0|^11.0",
         "illuminate/support": "^10.0|^11.0",
         "nesbot/carbon": "^2.70",
-        "spatie/laravel-query-builder": "^5.5",
-        "spatie/laravel-settings": "^3.2",
+        "spatie/laravel-query-builder": "^5.8",
+        "spatie/laravel-settings": "^3.3",
         "timacdonald/json-api": "^v1.0.0-beta.7",
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.0|^9.0",
+        "orchestra/testbench": "^8.2|^9.0",
         "pestphp/pest": "^2.13",
         "pestphp/pest-plugin-laravel": "^2.2",
         "spatie/laravel-ray": "^1.32"
