@@ -160,6 +160,8 @@ ABOUT;
         $appSettings->show_support = true;
         $appSettings->show_timezone = true;
         $appSettings->only_disrupted_days = false;
+        $appSettings->incident_days = 7;
+        $appSettings->timezone = 'UTC';
         $appSettings->save();
 
         $customizationSettings = app(CustomizationSettings::class);
