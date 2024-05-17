@@ -25,7 +25,7 @@
             type: 'line',
             data: {
                 datasets: [{
-                    label: this.metric.name,
+                    label: this.metric.suffix,
                     data: this.points[this.period],
                     fill: false,
                     borderColor: 'rgb(75, 192, 192)',
