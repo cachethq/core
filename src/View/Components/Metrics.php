@@ -25,12 +25,10 @@ class Metrics extends Component
 
         // Convert each metric point to Chart.js format (x, y)
         $metrics->each(function ($metric) {
-            $metric->metricPoints->transform(function ($point) {
-                return [
-                    'x' => $point->created_at->toIso8601String(),
-                    'y' => $point->value,
-                ];
-            });
+            $metric->metricPoints->transform(fn ($point) => [
+                'x' => $point->created_at->toIso8601String(),
+                'y' => $point->value,
+            ]);
         });
 
         return view('cachet::components.metrics', [
