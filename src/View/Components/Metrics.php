@@ -48,9 +48,7 @@ class Metrics extends Component
                 'metricPoints' => fn ($query) => $query->orderBy('created_at'),
             ])
             ->where('visible', '>=', !auth()->check())
-            ->whereHas('metricPoints', function (Builder $query) use ($startDate) {
-                $query->where('created_at', '>=', $startDate);
-            })
+            ->whereHas('metricPoints', fn (Builder $query) => $query->where('created_at', '>=', $startDate))
             ->orderBy('places', 'asc')
             ->get();
     }
