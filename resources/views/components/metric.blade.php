@@ -32,8 +32,8 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('chart', () => ({
-            metric: <?php echo json_encode($metric); ?>,
-            period: <?php echo json_encode($metric->defaultView); ?>,
+            metric: {{ Js::from($metric) }},
+            period: {{ Js::from($metric->defaultView) }},
             points: [
                 [],
                 [],
