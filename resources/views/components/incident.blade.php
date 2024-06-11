@@ -7,7 +7,11 @@
     <h3 class="text-xl font-semibold">{{ $date }}</h3>
     @forelse($incidents as $incident)
     <div class="ml-9 mt-5 divide-y rounded-lg border bg-white dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
-        <div class="flex flex-col rounded-t-lg bg-zinc-50 p-4 dark:bg-zinc-900">
+        <div @class([
+            'flex flex-col bg-zinc-50 p-4 dark:bg-zinc-900',
+            'rounded-t-lg' => $incident->incidentUpdates->isNotEmpty(),
+            'rounded-lg' => $incident->incidentUpdates->isEmpty(),
+        ])>
             <div class="text-xs font-medium">{{ $incident->components->pluck('name')->join(', ') }}</div>
             <div class="flex justify-between">
                 <div class="flex flex-col">
@@ -24,6 +28,7 @@
                 {!! $incident->formattedMessage() !!}
             </div>
         </div>
+        @if($incident->incidentUpdates->isNotEmpty())
         <div class="relative">
             <div class="absolute inset-y-0 -left-9">
                 <div class="ml-3.5 h-full border-l-2 border-dashed dark:border-zinc-700"></div>
@@ -42,6 +47,7 @@
                 </div>
                 @endforeach
             </div>
+            @endif
         </div>
     </div>
     @empty
