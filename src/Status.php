@@ -11,11 +11,14 @@ use Illuminate\Database\Query\Builder;
 
 class Status
 {
-    protected $components = null;
+    protected ?object $components = null;
 
-    protected $incidents = null;
+    protected ?object $incidents = null;
 
-    public function current()
+    /**
+     * @return array{status: string, label: string, color: string}
+     */
+    public function current(): array
     {
         $components = $this->components();
 
@@ -27,10 +30,10 @@ class Status
             ];
         }
 
-        if ($components->total - $components->operational === 0) {
+        if ((int) $components->total - (int) $components->operational === 0) {
             $incidents = $this->incidents();
 
-            if ($incidents->total === 0 || ($incidents->total > 0 && $incidents->unresolved === 0)) {
+            if ((int) $incidents->total === 0 || ((int) $incidents->total > 0 && (int) $incidents->unresolved === 0)) {
                 return [
                     'status' => SystemStatusEnum::operational,
                     'label' => SystemStatusEnum::operational->getLabel(),
@@ -48,19 +51,19 @@ class Status
 
     public function majorOutage(): bool
     {
-        if ($this->components()->total === 0) {
+        if ((int) $this->components()->total === 0) {
             return false;
         }
 
         $majorOutageRate = (int) config('cachet.major_outage_rate', 25);
 
-        return ($this->components()->majorOutage / $this->components()->total) * 100 >= $majorOutageRate;
+        return ((int) $this->components()->major_outage / (int) $this->components()->total) * 100 >= $majorOutageRate;
     }
 
     /**
      * Get an overview of the components.
      *
-     * @return object{total: int, operational: int, performanceIssues: int, partialOutage: int, majorOutage: int}
+     * @return object{total: int, operational: int, performance_issues: int, partial_outage: int, major_outage: int}
      */
     public function components()
     {
@@ -68,9 +71,9 @@ class Status
             ->toBase()
             ->selectRaw('count(*) as total')
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as operational', [ComponentStatusEnum::operational])
-            ->selectRaw('sum(case when status = ? then 1 else 0 end) as performanceIssues', [ComponentStatusEnum::performance_issues])
-            ->selectRaw('sum(case when status = ? then 1 else 0 end) as partialOutage', [ComponentStatusEnum::partial_outage])
-            ->selectRaw('sum(case when status = ? then 1 else 0 end) as majorOutage', [ComponentStatusEnum::major_outage])
+            ->selectRaw('sum(case when status = ? then 1 else 0 end) as performance_issues', [ComponentStatusEnum::performance_issues])
+            ->selectRaw('sum(case when status = ? then 1 else 0 end) as partial_outage', [ComponentStatusEnum::partial_outage])
+            ->selectRaw('sum(case when status = ? then 1 else 0 end) as major_outage', [ComponentStatusEnum::major_outage])
             // @todo Handle authenticated users.
             ->first();
     }
