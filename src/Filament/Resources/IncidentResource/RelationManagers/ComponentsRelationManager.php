@@ -9,8 +9,6 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ComponentsRelationManager extends RelationManager
 {
@@ -57,7 +55,7 @@ class ComponentsRelationManager extends RelationManager
                     ->model(Component::class),
             ])
             ->actions([
-//                Tables\Actions\EditAction::make(),
+                //                Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([

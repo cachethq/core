@@ -46,11 +46,11 @@ class IncidentResource extends Resource
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
-//                    Forms\Components\Select::make('component')
-//                        ->multiple()
-//                        ->relationship('components', 'name')
-//                        ->searchable()
-//                        ->preload(),
+                    //                    Forms\Components\Select::make('component')
+                    //                        ->multiple()
+                    //                        ->relationship('components', 'name')
+                    //                        ->searchable()
+                    //                        ->preload(),
                 ])
                     ->columnSpan(3),
                 Section::make()->schema([
