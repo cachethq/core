@@ -7,10 +7,7 @@ use Twig\Loader\ArrayLoader;
 
 class TwigRenderer implements Renderer
 {
-    public function __construct()
-    {
-
-    }
+    public function __construct() {}
 
     public function render(string $template, array $variables = []): string
     {
