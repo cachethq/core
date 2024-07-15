@@ -64,6 +64,8 @@ class Incident extends Model
     public function components(): BelongsToMany
     {
         return $this->belongsToMany(Component::class, 'incident_components')
+            ->using(IncidentComponent::class)
+            ->withTimestamps()
             ->withPivot(['status_id']);
     }
 

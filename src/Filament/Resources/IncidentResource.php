@@ -46,12 +46,13 @@ class IncidentResource extends Resource
                         ->required(),
                 ]),
                 Forms\Components\Section::make()->columns(2)->schema([
-                    Forms\Components\Select::make('component_id')
+                    Forms\Components\Select::make('component')
                         ->multiple()
                         ->relationship('components', 'name')
                         ->searchable()
                         ->preload(),
-                    Forms\Components\DateTimePicker::make('occurred_at'),
+                    Forms\Components\DateTimePicker::make('occurred_at')
+                        ->helperText(__('The incident\'s created timestamp will be used if left empty.')),
                     Forms\Components\Select::make('user_id')
                         ->hint(__('The user who reported the incident.'))
                         ->relationship('user', 'name')
