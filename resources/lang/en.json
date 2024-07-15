@@ -29,6 +29,7 @@
     "No incidents reported.": "No incidents reported.",
     "No incidents reported between :from and :to": "No incidents reported between :from and :to",
     "Notified Subscribers": "Notified Subscribers",
+    "Notify Subscribers?": "Notify Subscribers?",
     "Operational": "Operational",
     "Partial Outage": "Partial Outage",
     "Past Incidents": "Past Incidents",
@@ -36,7 +37,6 @@
     "Previous Incidents": "Previous Incidents",
     "Record Update": "Record Update",
     "Resources": "Resources",
-    "Send notifications to subscribers.": "Send notifications to subscribers.",
     "Settings": "Settings",
     "Setup Cachet": "Setup Cachet",
     "Showing :from - :to": "Showing :from - :to",
@@ -45,7 +45,6 @@
     "Sum": "Sum",
     "Support Cachet": "Support Cachet",
     "The incident's created timestamp will be used if left empty.": "The incident's created timestamp will be used if left empty.",
-    "The user who reported the incident.": "The user who reported the incident.",
     "Today": "Today",
     "Total number of reported incidents.": "Total number of reported incidents.",
     "Total number of subscribers.": "Total number of subscribers.",
@@ -58,5 +57,6 @@
     "Verify": "Verify",
     "View Details": "View Details",
     "Watching": "Watching",
-    "Week": "Week"
+    "Week": "Week",
+    "Who reported this incident.": "Who reported this incident."
 }
