@@ -30,6 +30,9 @@
         "@alpinejs/collapse": "^3.13.3",
         "@alpinejs/focus": "^3.13.3",
         "@alpinejs/ui": "^3.13.3-beta.4",
-        "alpinejs": "^3.13.3"
+        "alpinejs": "^3.13.3",
+        "chart.js": "^4.4.2",
+        "chartjs-adapter-moment": "^1.0.1",
+        "moment": "^2.30.1"
     }
 }
