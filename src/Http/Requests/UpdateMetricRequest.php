@@ -27,7 +27,7 @@ class UpdateMetricRequest extends FormRequest
             'suffix' => ['string', 'max:255'],
             'description' => ['string'],
             'default_value' => ['float'],
-            'threshold' => ['int', 'min:0', 'max:60', new FactorOfSixty()],
+            'threshold' => ['int', 'min:0', 'max:60', new FactorOfSixty],
         ];
     }
 }

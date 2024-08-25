@@ -50,7 +50,7 @@ class Cachet
     {
         Route::aliasMiddleware('cachet.guest', RedirectIfAuthenticated::class);
 
-        return new PendingRouteRegistration();
+        return new PendingRouteRegistration;
     }
 
     /**

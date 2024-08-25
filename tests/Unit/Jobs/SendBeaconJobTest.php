@@ -14,7 +14,7 @@ it('will not send the beacon if disabled', function () {
 
     config(['cachet.beacon' => false]);
 
-    dispatch(new SendBeaconJob());
+    dispatch(new SendBeaconJob);
 
     Http::assertNothingSent();
 });
@@ -31,7 +31,7 @@ it('sends telemetry data', function () {
     Metric::factory()->count(3)->create();
     Schedule::factory()->count(4)->create();
 
-    dispatch(new SendBeaconJob());
+    dispatch(new SendBeaconJob);
 
     Http::assertSent(function (Request $request) {
         return $request['version'] === Cachet::version() &&

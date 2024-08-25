@@ -33,6 +33,6 @@ class SendBeaconCommand extends Command
             return;
         }
 
-        dispatch(new SendBeaconJob());
+        dispatch(new SendBeaconJob);
     }
 }
