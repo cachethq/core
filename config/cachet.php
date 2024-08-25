@@ -96,7 +96,25 @@ return [
      */
     'major_outage' => 25.0,
 
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Beacon
+     |--------------------------------------------------------------------------
+     |
+     | Enable Cachet's telemetry. Cachet will only ever send anonymous data
+     | to the cachethq.io domain. This enables us to understand how Cachet
+     | is used.
+     |
+     */
     'beacon' => env('CACHET_BEACON', true),
 
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Docker
+     |--------------------------------------------------------------------------
+     |
+     | Determines whether Cachet is running from within a Docker instance.
+     |
+     */
     'docker' => env('CACHET_DOCKER', false),
 ];
