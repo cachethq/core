@@ -1,12 +1,17 @@
 <?php
 
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Component;
 use Cachet\Models\Incident;
 
 it('can have multiple components', function () {
-    $incident = Incident::factory()->hasComponents(2)->create();
+    $incident = Incident::factory()->create();
 
-    expect($incident->components)->toHaveCount(2);
+    $components = Component::factory(2)->create();
+    $incident->components()->attach($components, ['status' => IncidentStatusEnum::investigating->value]);
+
+    expect($incident->components)->toHaveCount(2)
+        ->and($incident->status)->toBeInstanceOf(IncidentStatusEnum::class);
 });
 
 it('will set default guid', function () {
