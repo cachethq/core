@@ -49,6 +49,9 @@ class Status
         ];
     }
 
+    /**
+     * Determine if there is a major outage.
+     */
     public function majorOutage(): bool
     {
         if ((int) $this->components()->total === 0) {
