@@ -10,7 +10,7 @@
                         <span>{{ $schedule->scheduled_at->toFormattedDayDateString() }}</span>
                     </div>
                 </div>
-                <div class="prose-sm md:prose-zinc mt-1">
+                <div class="prose-sm md:prose md:prose-zinc mt-1">
                     {!! $schedule->formattedMessage() !!}
                 </div>
             </div>
