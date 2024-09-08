@@ -1,5 +1,5 @@
 {
-    ":incidents Incidents": ":incidents Incidents",
+    ":incidents Incidents": ":incidents Incident|:incidents Incidents",
     "Admin": "Admin",
     "Always Hidden": "Always Hidden",
     "Always collapsed": "Always collapsed",
