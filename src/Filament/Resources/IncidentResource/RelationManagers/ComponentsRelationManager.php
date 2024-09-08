@@ -3,7 +3,6 @@
 namespace Cachet\Filament\Resources\IncidentResource\RelationManagers;
 
 use Cachet\Enums\ComponentStatusEnum;
-use Cachet\Models\Component;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
