@@ -41,7 +41,7 @@
                     <x-cachet::incident-update-status :update="$update" />
 {{--                    <h3 class="text-lg font-semibold">Incident Update Title</h3>--}}
                     <span class="text-xs text-zinc-500">{{ $update->created_at->diffForHumans() }} — {{ $update->created_at->toDayDateTimeString() }}</span>
-                    <div class="prose-sm md:prose-zinc mt-1">
+                    <div class="prose-sm md:prose md:prose-zinc mt-1">
                         {!! $update->formattedMessage() !!}
                     </div>
                 </div>
