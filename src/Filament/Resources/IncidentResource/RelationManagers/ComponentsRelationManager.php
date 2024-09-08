@@ -5,6 +5,7 @@ namespace Cachet\Filament\Resources\IncidentResource\RelationManagers;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
@@ -19,11 +20,9 @@ class ComponentsRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
+                    ->searchable(),
                 Forms\Components\ToggleButtons::make('status')
                     ->inline()
-                    ->columnSpanFull()
                     ->options(ComponentStatusEnum::class)
                     ->required(),
             ]);
@@ -52,7 +51,11 @@ class ComponentsRelationManager extends RelationManager
                             ->options(ComponentStatusEnum::class)
                             ->required(),
                     ])
-                    ->model(Component::class),
+                    ->preloadRecordSelect()
+                    ->recordSelect(
+                        fn (Select $select) => $select->placeholder(__('Select a component')),
+                    )
+                    ->multiple(),
             ])
             ->actions([
                 //                Tables\Actions\EditAction::make(),
