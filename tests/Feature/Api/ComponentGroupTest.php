@@ -65,7 +65,7 @@ it('can get a component group with components', function () {
     $response->assertJsonFragment(['id' => $componentGroup->id]);
 });
 
-it('can create a component group', function () {
+it('can create a component group without components', function () {
     $response = postJson('/status/api/component-groups', [
         'name' => 'New Group',
     ]);
