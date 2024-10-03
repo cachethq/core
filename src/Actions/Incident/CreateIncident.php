@@ -13,9 +13,13 @@ class CreateIncident
     public function handle(array $incident): Incident
     {
         if (isset($incident['template'])) {
-            $template = IncidentTemplate::where('slug', $incident['template'])->first();
+            $template = IncidentTemplate::query()
+                ->where('slug', $incident['template'])
+                ->first();
             $incident['message'] = $this->parseTemplate($template, $incident);
         }
+
+        // @todo Dispatch notification that incident was created.
 
         return Incident::create(array_merge(
             ['guid' => Str::uuid()],

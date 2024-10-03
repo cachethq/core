@@ -19,6 +19,8 @@ class CreateSchedule
             ])->all();
 
             $schedule->components()->sync($components);
+
+            // @todo Dispatch notification that maintenance was scheduled.
         });
     }
 }

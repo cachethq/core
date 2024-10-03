@@ -5,7 +5,7 @@ use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Models\Incident;
 use Illuminate\Support\Facades\Event;
 
-it('can create delete an incident', function () {
+it('can delete an incident', function () {
     Event::fake();
 
     $incident = Incident::factory()->create();
@@ -19,7 +19,7 @@ it('can create delete an incident', function () {
     Event::assertDispatched(IncidentDeleted::class, fn ($event) => $event->incident->is($incident));
 });
 
-it('deletes related incident updates', function () {
+it('deletes attached incident updates', function () {
     $incident = Incident::factory()->hasIncidentUpdates(2)->create();
 
     app(DeleteIncident::class)->handle($incident);

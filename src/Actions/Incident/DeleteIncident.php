@@ -6,7 +6,7 @@ use Cachet\Models\Incident;
 
 class DeleteIncident
 {
-    public function handle(Incident $incident)
+    public function handle(Incident $incident): void
     {
         $incident->incidentUpdates()->delete();
 

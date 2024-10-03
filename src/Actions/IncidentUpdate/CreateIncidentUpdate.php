@@ -19,6 +19,8 @@ class CreateIncidentUpdate
             ]);
         }
 
+        // @todo Dispatch notification that incident was updated.
+
         return $incidentUpdate;
     }
 }

@@ -19,6 +19,8 @@ class UpdateSchedule
             $schedule->components()->sync($components);
         }
 
+        // @todo Dispatch notification that maintenance was updated.
+
         return $schedule->fresh();
     }
 }
