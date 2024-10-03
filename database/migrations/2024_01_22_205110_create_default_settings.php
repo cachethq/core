@@ -23,6 +23,7 @@ return new class extends SettingsMigration
         rescue(fn () => $this->migrator->add('app.show_support', true));
         rescue(fn () => $this->migrator->add('app.show_timezone', false));
         rescue(fn () => $this->migrator->add('app.only_disrupted_days', false));
+        rescue(fn () => $this->migrator->add('app.dashboard_login_link', true));
 
         // Customization settings...
         rescue(fn () => $this->migrator->add('customization.header'));

@@ -66,6 +66,8 @@ class ManageCachet extends SettingsPage
                         ->label(__('Show Timezone')),
                     Forms\Components\Toggle::make('only_disrupted_days')
                         ->label(__('Only Show Disrupted Days')),
+                    Forms\Components\Toggle::make('dashboard_login_link')
+                        ->label(__('Show Dashboard Link')),
                 ]),
             ]);
     }

@@ -26,6 +26,7 @@ class Header extends Component
         return view('cachet::components.header', [
             'siteName' => $this->appSettings->name,
             'appBanner' => $this->themeSettings->app_banner,
+            'dashboardLoginLink' => $this->appSettings->dashboard_login_link,
         ]);
     }
 }

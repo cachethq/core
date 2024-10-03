@@ -10,6 +10,7 @@
         </a>
     </div>
 
+    @if ($dashboardLoginLink)
     <div class="flex items-center gap-2.5 sm:gap-5">
         <a href="{{ Cachet\Cachet::dashboardPath() }}" class="text-sm font-medium text-zinc-800 transition hover:text-zinc-700 dark:text-white dark:text-zinc-500 dark:hover:text-zinc-300 sm:text-base">{{ __('Dashboard') }}</a>
         {{-- Condition Button. --}}
@@ -17,4 +18,5 @@
         {{-- Conditional Button. --}}
 {{--        <a href="{{ route('cachet.dashboard.index') }}" class="rounded bg-primary-500 px-2 py-1 text-sm font-semibold text-zinc-800 transition hover:bg-primary-600">Subscribers</a>--}}
     </div>
+    @endif
 </div>

@@ -24,6 +24,8 @@ class AppSettings extends Settings
 
     public ?int $refresh_rate;
 
+    public bool $dashboard_login_link = true;
+
     public static function group(): string
     {
         return 'app';
