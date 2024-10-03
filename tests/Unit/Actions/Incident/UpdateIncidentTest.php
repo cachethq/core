@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Actions\Incident\UpdateIncident;
+use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Models\Incident;
 
 it('can update an incident', function () {
@@ -25,7 +26,5 @@ it('dispatches the IncidentUpdated event', function () {
         'name' => 'New Incident Title',
     ]);
 
-    Event::assertDispatched(IncidentUpdated::class, function (IncidentUpdated $event) use ($incident) {
-        return $event->incident->is($incident);
-    });
+    Event::assertDispatched(IncidentUpdated::class, fn (IncidentUpdated $event) => $event->incident->is($incident));
 });
