@@ -26,6 +26,8 @@ class AppSettings extends Settings
 
     public bool $dashboard_login_link = true;
 
+    public int $major_outage_threshold = 25;
+    
     public static function group(): string
     {
         return 'app';
