@@ -7,6 +7,7 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
+use Cachet\Settings\AppSettings;
 use Illuminate\Database\Query\Builder;
 
 class Status
@@ -58,7 +59,7 @@ class Status
             return false;
         }
 
-        $majorOutageRate = (int) config('cachet.major_outage_rate', 25);
+        $majorOutageRate = (int) app(AppSettings::class)->major_outage_threshold;
 
         return ((int) $this->components()->major_outage / (int) $this->components()->total) * 100 >= $majorOutageRate;
     }

@@ -47,6 +47,13 @@ class ManageCachet extends SettingsPage
                         ->maxValue(365)
                         ->step(1),
 
+                    Forms\Components\TextInput::make('major_outage_threshold')
+                        ->numeric()
+                        ->label(__('Major Outage Threshold'))
+                        ->minValue(1)
+                        ->maxValue(100)
+                        ->step(1),
+
                     Forms\Components\TextInput::make('refresh_rate')
                         ->numeric()
                         ->label(__('Automatically Refresh Page'))
