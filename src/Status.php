@@ -59,7 +59,7 @@ class Status
             return false;
         }
 
-        $majorOutageRate = (int) app(AppSettings::class)->major_outage_threshold;
+        $majorOutageRate = app(AppSettings::class)->major_outage_threshold;
 
         return ((int) $this->components()->major_outage / (int) $this->components()->total) * 100 >= $majorOutageRate;
     }

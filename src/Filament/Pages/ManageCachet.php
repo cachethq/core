@@ -52,7 +52,8 @@ class ManageCachet extends SettingsPage
                         ->label(__('Major Outage Threshold'))
                         ->minValue(1)
                         ->maxValue(100)
-                        ->step(1),
+                        ->step(1)
+                        ->suffix('%'),
 
                     Forms\Components\TextInput::make('refresh_rate')
                         ->numeric()
