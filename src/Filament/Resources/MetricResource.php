@@ -23,10 +23,11 @@ class MetricResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()->columns(2)->schema([
+                Forms\Components\Section::make()->columns(4)->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->columnSpan(3),
                     Forms\Components\TextInput::make('suffix')
                         ->required()
                         ->maxLength(255)
@@ -34,26 +35,33 @@ class MetricResource extends Resource
                     Forms\Components\MarkdownEditor::make('description')
                         ->maxLength(255)
                         ->columnSpanFull(),
-                    Forms\Components\TextInput::make('default_value')
-                        ->numeric(),
-                    Forms\Components\Select::make('calc_type')
-                        ->label(__('Metric Type'))
-                        ->required()
-                        ->options(MetricTypeEnum::class)
-                        ->default(MetricTypeEnum::sum),
-                    Forms\Components\TextInput::make('places')
-                        ->required()
-                        ->numeric()
-                        ->default(2),
                     Forms\Components\ToggleButtons::make('default_view')
                         ->options(MetricViewEnum::class)
                         ->inline()
                         ->required()
-                        ->default(MetricViewEnum::last_hour),
+                        ->default(MetricViewEnum::last_hour)
+                        ->columnSpanFull(),
+                    Forms\Components\TextInput::make('default_value')
+                        ->numeric()
+                        ->columnSpan(2),
+                    Forms\Components\Select::make('calc_type')
+                        ->label(__('Metric Type'))
+                        ->required()
+                        ->options(MetricTypeEnum::class)
+                        ->default(MetricTypeEnum::sum)
+                        ->columnSpan(2),
+                    Forms\Components\TextInput::make('places')
+                        ->required()
+                        ->numeric()
+                        ->default(2)
+                        ->columnSpan(2),
                     Forms\Components\TextInput::make('threshold')
                         ->required()
                         ->numeric()
-                        ->default(5),
+                        ->default(5)
+                        ->columnSpan(2),
+                ])->columnSpan(3),
+                Forms\Components\Section::make()->schema([
                     Forms\Components\ToggleButtons::make('visible')
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
@@ -62,8 +70,9 @@ class MetricResource extends Resource
                     Forms\Components\Toggle::make('display_chart')
                         ->default(true)
                         ->required(),
-                ]),
-            ]);
+
+                ])->columnSpan(1),
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -74,7 +83,8 @@ class MetricResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('suffix')
                     ->fontFamily('mono')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('default_value')
                     ->numeric()
                     ->sortable()
@@ -121,7 +131,9 @@ class MetricResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->reorderable('order')
+            ->defaultSort('order');
     }
 
     public static function getRelations(): array
