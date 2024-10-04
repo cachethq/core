@@ -29,7 +29,7 @@ class IncidentTemplateResource extends Resource
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
-                        ->live()
+                        ->live(debounce: 250)
                         ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                     Forms\Components\TextInput::make('slug')
                         ->required(),
@@ -37,6 +37,7 @@ class IncidentTemplateResource extends Resource
                         ->hint(fn (Get $get) => new HtmlString(Blade::render(match ($get('engine')) {
                             IncidentTemplateEngineEnum::twig => '<x-filament::link href="https://twig.symfony.com/doc/">Twig Documentation</x-filament::link>',
                             IncidentTemplateEngineEnum::blade => '<x-filament::link href="https://laravel.com/blade">Laravel Blade Documentation</x-filament::link>',
+                             default => null,
                         })))
                         ->required()
                         ->rows(8)
@@ -57,6 +58,10 @@ class IncidentTemplateResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('engine')
+                    ->sortable()
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
