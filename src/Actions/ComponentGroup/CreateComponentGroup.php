@@ -10,6 +10,9 @@ class CreateComponentGroup
     /**
      * Handle the action.
      */
+    /**
+     * Handle the action.
+     */
     public function handle(array $data, ?array $components = null): ComponentGroup
     {
         return tap(ComponentGroup::create($data), function (ComponentGroup $componentGroup) use ($components) {

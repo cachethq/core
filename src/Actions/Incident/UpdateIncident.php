@@ -7,6 +7,9 @@ use Cachet\Models\Incident;
 
 class UpdateIncident
 {
+    /**
+     * Handle the action.
+     */
     public function handle(Incident $incident, array $data): Incident
     {
         $incident->update($data);

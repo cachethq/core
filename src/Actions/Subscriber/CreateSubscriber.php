@@ -7,6 +7,9 @@ use Illuminate\Support\Str;
 
 class CreateSubscriber
 {
+    /**
+     * Handle the action.
+     */
     public function handle(string $email, bool $global = false, array $components = [], bool $verified = false): Subscriber
     {
         $subscriber = Subscriber::firstOrCreate([

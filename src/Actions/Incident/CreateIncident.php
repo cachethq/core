@@ -10,6 +10,9 @@ use Illuminate\Support\Str;
 
 class CreateIncident
 {
+    /**
+     * Handle the action.
+     */
     public function handle(array $incident): Incident
     {
         if (isset($incident['template'])) {

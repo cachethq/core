@@ -6,7 +6,10 @@ use Cachet\Models\Schedule;
 
 class DeleteSchedule
 {
-    public function handle(Schedule $schedule)
+    /**
+     * Handle the action.
+     */
+    public function handle(Schedule $schedule): void
     {
         $schedule->delete();
     }

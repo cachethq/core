@@ -7,6 +7,9 @@ use Cachet\Models\ComponentGroup;
 
 class UpdateComponentGroup
 {
+    /**
+     * Handle the action.
+     */
     public function handle(ComponentGroup $componentGroup, array $data = [], ?array $components = []): ComponentGroup
     {
         $componentGroup->update($data);

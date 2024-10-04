@@ -8,6 +8,9 @@ use Cachet\Models\IncidentUpdate;
 
 class CreateIncidentUpdate
 {
+    /**
+     * Handle the action.
+     */
     public function handle(Incident $incident, array $data): IncidentUpdate
     {
         $incidentUpdate = $incident->incidentUpdates()->create(array_merge(['user_id' => auth()->id()], $data));

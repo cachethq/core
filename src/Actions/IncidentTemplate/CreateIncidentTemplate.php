@@ -7,6 +7,9 @@ use Illuminate\Support\Str;
 
 class CreateIncidentTemplate
 {
+    /**
+     * Handle the action.
+     */
     public function handle(array $template): IncidentTemplate
     {
         $data = array_merge([

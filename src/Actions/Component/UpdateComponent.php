@@ -7,6 +7,9 @@ use Cachet\Models\Component;
 
 class UpdateComponent
 {
+    /**
+     * Handle the action.
+     */
     public function handle(Component $component, array $data): Component
     {
         $oldStatus = $component->status;
@@ -14,7 +17,11 @@ class UpdateComponent
         $component->update($data);
 
         if ($component->wasChanged('status')) {
-            ComponentStatusWasChanged::dispatch($component, $oldStatus, $component->status);
+            ComponentStatusWasChanged::dispatch(
+                component: $component,
+                oldStatus: $oldStatus,
+                newStatus: $component->status
+            );
         }
 
         return $component->fresh();

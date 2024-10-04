@@ -6,6 +6,9 @@ use Cachet\Models\Subscriber;
 
 class UpdateSubscriber
 {
+    /**
+     * Handle the action.
+     */
     public function handle(Subscriber $subscriber, ?string $email = null, bool $global = false, array $components = []): Subscriber
     {
         $subscriber->update(array_filter([
