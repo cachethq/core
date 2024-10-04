@@ -30,6 +30,11 @@ return new class extends SettingsMigration
         rescue(fn () => $this->migrator->add('customization.footer'));
         rescue(fn () => $this->migrator->add('customization.stylesheet'));
 
+        // Localization settings...
+        rescue(fn () => $this->migrator->add('localization.date_format', 'Y-m-d'));
+        rescue(fn () => $this->migrator->add('localization.timestamp_format', 'Y-m-d H:i:s'));
+        rescue(fn () => $this->migrator->add('localization.locale', 'en'));
+
         // Theme settings...
         rescue(fn () => $this->migrator->add('theme.app_banner'));
     }

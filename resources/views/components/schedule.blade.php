@@ -7,7 +7,7 @@
                     <h3 class="font-semibold leading-6">{{ $schedule->name }}</h3>
                     <div class="flex grow text-sm sm:text-xs gap-2 text-zinc-500 dark:text-zinc-400 items-center">
                         @svg('cachet-clock', 'size-4 hidden sm:block')
-                        <span>{{ $schedule->scheduled_at->toFormattedDayDateString() }}</span>
+                        <span>{{ $schedule->scheduled_at->format(app(\Cachet\Settings\LocalizationSettings::class)->timestamp_format) }}</span>
                     </div>
                 </div>
                 <div class="prose-sm md:prose md:prose-zinc dark:prose-invert mt-1">
