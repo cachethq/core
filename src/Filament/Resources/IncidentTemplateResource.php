@@ -29,7 +29,7 @@ class IncidentTemplateResource extends Resource
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
-                        ->live()
+                        ->live(debounce: 250)
                         ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                     Forms\Components\TextInput::make('slug')
                         ->required(),
