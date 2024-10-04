@@ -15,6 +15,10 @@ it('will determine there is a major outage when number of components exceeds def
         'status' => ComponentStatusEnum::major_outage->value,
     ]);
 
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::operational->value,
+    ]);
+
     assertTrue($status->majorOutage());
 });
 
