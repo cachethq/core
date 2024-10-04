@@ -10,7 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\View\Component;
 
-class Incidents extends Component
+class IncidentTimeline extends Component
 {
     public function __construct(private AppSettings $appSettings)
     {
@@ -23,7 +23,7 @@ class Incidents extends Component
         $startDate = Carbon::createFromFormat('Y-m-d', request('from', now()->toDateString()));
         $endDate = $startDate->clone()->subDays($incidentDays);
 
-        return view('cachet::components.incidents', [
+        return view('cachet::components.incident-timeline', [
             'incidents' => $this->incidents(
                 $startDate,
                 $endDate,
@@ -48,7 +48,7 @@ class Incidents extends Component
                 'components',
                 'incidentUpdates' => fn ($query) => $query->orderByDesc('created_at'),
             ])
-            ->where('visible', '>=', ! auth()->check())
+            ->visible(auth()->check())
             ->where(function (Builder $query) use ($endDate, $startDate) {
                 $query->whereBetween('occurred_at', [
                     $endDate->startOfDay()->toDateTimeString(),

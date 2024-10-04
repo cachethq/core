@@ -106,6 +106,17 @@ class Incident extends Model
         return $query->where('stickied', true);
     }
 
+    /**
+     * Scope to visible incidents.
+     */
+    public function scopeVisible(Builder $query, bool $authenticated = false): Builder
+    {
+        return $query->whereIn('visible', match ($authenticated) {
+            true => ResourceVisibilityEnum::visibleToUsers(),
+            default => ResourceVisibilityEnum::visibleToGuests(),
+        });
+    }
+
     public function timestamp(): Attribute
     {
         return Attribute::get(fn () => $this->occurred_at ?: $this->created_at);
