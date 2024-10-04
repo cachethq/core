@@ -5,12 +5,12 @@
             <div>
                 <div class="flex flex-col sm:flex-row gap-x-2 gap-y">
                     <h3 class="font-semibold leading-6">{{ $schedule->name }}</h3>
-                    <div class="flex grow text-sm sm:text-xs gap-2 text-gray-400 items-center">
+                    <div class="flex grow text-sm sm:text-xs gap-2 text-zinc-500 dark:text-zinc-400 items-center">
                         @svg('cachet-clock', 'size-4 hidden sm:block')
                         <span>{{ $schedule->scheduled_at->toFormattedDayDateString() }}</span>
                     </div>
                 </div>
-                <div class="prose-sm md:prose md:prose-zinc mt-1">
+                <div class="prose-sm md:prose md:prose-zinc dark:prose-invert mt-1">
                     {!! $schedule->formattedMessage() !!}
                 </div>
             </div>
