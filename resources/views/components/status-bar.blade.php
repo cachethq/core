@@ -2,7 +2,7 @@
     Illuminate\Support\Arr::toCssStyles([
         \Filament\Support\get_color_css_variables(
             $color,
-            shades: [100, 400, 800],
+            shades: [100, 200, 400, 800],
         ),
     ]),
 ]) }}>
