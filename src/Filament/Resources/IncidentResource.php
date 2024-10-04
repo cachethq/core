@@ -68,6 +68,12 @@ class IncidentResource extends Resource
                     Forms\Components\Toggle::make('stickied')
                         ->label(__('Sticky Incident?'))
                         ->required(),
+                    Forms\Components\TextInput::make('guid')
+                        ->label('Incident UUID')
+                        ->visibleOn(['edit'])
+                        ->disabled()
+                        ->readonly()
+                        ->columnSpanFull(),
                 ])
                     ->columnSpan(1),
             ])
