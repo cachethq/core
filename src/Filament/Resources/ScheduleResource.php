@@ -21,7 +21,7 @@ class ScheduleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()->columns(2)->schema([
+                Forms\Components\Section::make()->schema([
                     Forms\Components\TextInput::make('name')
                         ->required(),
                     Forms\Components\Select::make('status')
@@ -31,12 +31,15 @@ class ScheduleResource extends Resource
                         ->live(),
                     Forms\Components\MarkdownEditor::make('message')
                         ->columnSpanFull(),
+                ])->columnspan(3),
+                Forms\Components\Section::make()->schema([
                     Forms\Components\DateTimePicker::make('scheduled_at')
                         ->required(),
                     Forms\Components\DateTimePicker::make('completed_at')
-                        ->visible(fn (Forms\Get $get): bool => $get('status') === ScheduleStatusEnum::complete),
-                ]),
-            ]);
+                        ->visible(fn (Forms\Get $get): bool => $get('status') === ScheduleStatusEnum::complete)
+                        ->markAsRequired(fn (Forms\Get $get): bool => $get('status') === ScheduleStatusEnum::complete),
+                ])->columnSpan(1),
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
