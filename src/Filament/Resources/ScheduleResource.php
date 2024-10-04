@@ -72,7 +72,7 @@ class ScheduleResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('complete')
-                    ->visible(fn (Schedule $record): bool => in_array($record->status->value, ScheduleStatusEnum::incomplete()))
+                    ->disabled(fn (Schedule $record): bool => $record->status === ScheduleStatusEnum::complete)
                     ->label(__('Complete Maintenance'))
                     ->form([
                         Forms\Components\DateTimePicker::make('completed_at')
@@ -87,13 +87,6 @@ class ScheduleResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
