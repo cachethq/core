@@ -14,8 +14,8 @@ enum IncidentTemplateEngineEnum: string implements HasColor, HasIcon, HasLabel
     public function getColor(): string|array|null
     {
         return match ($this) {
-            self::blade => 'danger', // Would be good if we could use the Laravel color here...
-            self::twig => 'success',
+            self::blade => 'laravel',
+            self::twig => 'gray',
         };
     }
 

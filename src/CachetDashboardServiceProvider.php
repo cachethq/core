@@ -33,6 +33,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->colors([
                 'primary' => Color::rgb('rgb(4, 193, 71)'),
                 'purple' => Color::Purple,
+                'laravel' => Color::rgb('rgb(249, 50, 44)'),
             ])
             ->favicon('/vendor/cachethq/cachet/favicon.ico')
             ->viteTheme('resources/css/dashboard/theme.css', 'vendor/cachethq/cachet/build')
