@@ -4,7 +4,6 @@ providers:
 
 env:
   - APP_NAME=Cachet
-  - CACHET_PATH=/
 
 migrations:
   - workbench/database/migrations
@@ -13,7 +12,7 @@ seeders:
   - Workbench\Database\Seeders\DatabaseSeeder
 
 workbench:
-  start: '/'
+  start: '/status'
   install: true
   discovers:
     config: true
