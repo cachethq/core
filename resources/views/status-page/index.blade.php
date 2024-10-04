@@ -10,7 +10,7 @@
         <x-cachet::component-group :component-group="$componentGroup"/>
         @endforeach
 
-        @if($ungroupedComponents->isNotEmpty())
+        @if($ungroupedComponents->components->isNotEmpty())
         <x-cachet::component-group :component-group="$ungroupedComponents"/>
         @endif
 
