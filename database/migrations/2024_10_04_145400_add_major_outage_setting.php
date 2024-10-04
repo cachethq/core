@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
 use Spatie\LaravelSettings\Migrations\SettingsMigration;
 
 return new class extends SettingsMigration
