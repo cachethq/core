@@ -16,7 +16,7 @@ it('will determine there is a major outage when number of components exceeds def
     ]);
 
     assertTrue($status->majorOutage());
-})->only();
+});
 
 it('will determine there is not a major outage when number of components does not exceed default outage threshold of 25%', function () {
     $status = new Status();
@@ -30,4 +30,4 @@ it('will determine there is not a major outage when number of components does no
     ]);
 
     assertFalse($status->majorOutage());
-})->only();
+});
