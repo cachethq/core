@@ -24,8 +24,18 @@
                     <x-cachet::incident-badge :type="$incident->status" />
                 </div>
             </div>
-            <div class="mt-5 text-sm md:text-base w-1/2">
-                {!! $incident->formattedMessage() !!}
+            <div class="mt-5 text-sm md:text-base flex">
+                <div class="w-1/2">
+                    {!! $incident->formattedMessage() !!}
+                </div>
+                <div class="w-1/2 flex flex-wrap justify-end items-end">
+                    @if(auth()->check())
+                        <a href="{{ $incident->filamentDashboardEditUrl() }}" class="underline">View in Dashboard</a>
+                    @endif
+                    <p class="text-xs">
+                        Incident UUID: {{ $incident->guid }}
+                    </p>
+                </div>
             </div>
         </div>
         @if($incident->incidentUpdates->isNotEmpty())
