@@ -2,6 +2,7 @@
 
 namespace Cachet\Models;
 
+use Cachet\Concerns\HasVisibility;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Events\Incidents\IncidentCreated;
@@ -19,7 +20,7 @@ use Illuminate\Support\Str;
 
 class Incident extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasVisibility, SoftDeletes;
 
     protected $casts = [
         'status' => IncidentStatusEnum::class,
@@ -104,17 +105,6 @@ class Incident extends Model
     public function scopeStickied(Builder $query): Builder
     {
         return $query->where('stickied', true);
-    }
-
-    /**
-     * Scope to visible incidents.
-     */
-    public function scopeVisible(Builder $query, bool $authenticated = false): Builder
-    {
-        return $query->whereIn('visible', match ($authenticated) {
-            true => ResourceVisibilityEnum::visibleToUsers(),
-            default => ResourceVisibilityEnum::visibleToGuests(),
-        });
     }
 
     public function timestamp(): Attribute
