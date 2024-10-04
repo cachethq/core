@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Resources;
 
+use Cachet\Actions\IncidentUpdate\CreateIncidentUpdate as CreateIncidentUpdateAction;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\IncidentResource\Pages;
