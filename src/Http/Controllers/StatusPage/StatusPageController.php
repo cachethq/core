@@ -2,6 +2,9 @@
 
 namespace Cachet\Http\Controllers\StatusPage;
 
+use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
@@ -18,8 +21,16 @@ class StatusPageController
             'componentGroups' => ComponentGroup::query()
                 ->with(['components' => fn ($query) => $query->orderBy('order')->withCount('incidents')])
                 ->when(auth()->check(), fn ($query) => $query->users(), fn ($query) => $query->guests())
-                ->whereHas('components')
                 ->get(),
+            'ungroupedComponents' => (new ComponentGroup([
+                'name' => __('Other Components'),
+                'collapsed' => ComponentGroupVisibilityEnum::expanded,
+                'visible' => ResourceVisibilityEnum::guest,
+            ]))
+                ->setRelation(
+                    'components',
+                    Component::query()->whereNull('component_group_id')->orderBy('order')->withCount('incidents')->get()
+                ),
 
             'schedules' => Schedule::query()->inTheFuture()->orderBy('scheduled_at')->get(),
         ]);
