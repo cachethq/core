@@ -66,7 +66,7 @@ class Cachet
      */
     public static function dashboardPath(): string
     {
-        return config('cachet.dashboard_path', static::path().'dashboard');
+        return config('cachet.dashboard_path', app()->joinPaths(static::path(), 'dashboard'));
     }
 
     /**
