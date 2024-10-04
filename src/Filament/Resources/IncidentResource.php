@@ -115,20 +115,21 @@ class IncidentResource extends Resource
             ])
             ->actions([
                 Action::make('add-update')
+                    ->disabled(fn (Incident $record) => $record->status === IncidentStatusEnum::fixed)
                     ->label(__('Record Update'))
                     ->color('info')
-                    ->action(function (Incident $record, array $data) {
-                        //                        $update = $record->incidentUpdates()->create($data);
+                    ->action(function (CreateIncidentUpdateAction $createIncidentUpdate, Incident $record, array $data) {
+                        $createIncidentUpdate->handle($record, $data);
 
                         Notification::make()
-                            ->title('Incident Updated')
-                            ->body('Incident was updated...')
+                            ->title(__('Incident :name Updated', ['name' => $record->name]))
+                            ->body(__('A new incident update has been recorded.'))
                             ->success()
                             ->send();
                     })
                     ->form([
                         Forms\Components\MarkdownEditor::make('message')->required(),
-                        Forms\Components\ToggleButtons::make('Status')
+                        Forms\Components\ToggleButtons::make('status')
                             ->options(IncidentStatusEnum::class)
                             ->inline()
                             ->required(),
