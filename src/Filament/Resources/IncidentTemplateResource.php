@@ -37,7 +37,7 @@ class IncidentTemplateResource extends Resource
                         ->hint(fn (Get $get) => new HtmlString(Blade::render(match ($get('engine')) {
                             IncidentTemplateEngineEnum::twig => '<x-filament::link href="https://twig.symfony.com/doc/">Twig Documentation</x-filament::link>',
                             IncidentTemplateEngineEnum::blade => '<x-filament::link href="https://laravel.com/blade">Laravel Blade Documentation</x-filament::link>',
-                             default => null,
+                            default => null,
                         })))
                         ->required()
                         ->rows(8)
