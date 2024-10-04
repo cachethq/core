@@ -73,6 +73,7 @@ class MetricResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('suffix')
+                    ->fontFamily('mono')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('default_value')
                     ->numeric()
