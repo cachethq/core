@@ -62,6 +62,7 @@ class ComponentsRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->reorderable('order');
+            ->reorderable('order')
+            ->defaultSort('order');
     }
 }
