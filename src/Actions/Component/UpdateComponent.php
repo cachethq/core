@@ -18,9 +18,9 @@ class UpdateComponent
 
         if ($component->wasChanged('status')) {
             ComponentStatusWasChanged::dispatch(
-                component: $component,
-                oldStatus: $oldStatus,
-                newStatus: $component->status
+                $component,
+                $oldStatus,
+                $component->status
             );
         }
 
