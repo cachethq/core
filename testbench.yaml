@@ -4,6 +4,7 @@ providers:
 
 env:
   - APP_NAME=Cachet
+  - CACHET_PATH=/
 
 migrations:
   - workbench/database/migrations
