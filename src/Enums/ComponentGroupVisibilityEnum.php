@@ -2,10 +2,11 @@
 
 namespace Cachet\Enums;
 
+use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum ComponentGroupVisibilityEnum: int implements HasIcon, HasLabel
+enum ComponentGroupVisibilityEnum: int implements HasColor, HasIcon, HasLabel
 {
     case expanded = 0;
     case collapsed = 1;
@@ -27,5 +28,10 @@ enum ComponentGroupVisibilityEnum: int implements HasIcon, HasLabel
             self::collapsed => 'heroicon-o-chevron-up',
             self::collapsed_unless_incident => 'heroicon-o-chevron-up-down',
         };
+    }
+
+    public function getColor(): string|array|null
+    {
+        return 'gray';
     }
 }
