@@ -5,8 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\ComponentGroup\CreateComponentGroup;
 use Cachet\Actions\ComponentGroup\DeleteComponentGroup;
 use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
-use Cachet\Http\Requests\CreateComponentGroupRequest;
-use Cachet\Http\Requests\UpdateComponentGroupRequest;
+use Cachet\Data\ComponentGroup\ComponentGroupData;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
 use Illuminate\Http\Response;
@@ -31,11 +30,9 @@ class ComponentGroupController extends Controller
     /**
      * Create Component Group.
      */
-    public function store(CreateComponentGroupRequest $request, CreateComponentGroup $createComponentGroupAction)
+    public function store(ComponentGroupData $data, CreateComponentGroup $createComponentGroupAction)
     {
-        [$data, $components] = [$request->except('components'), $request->validated('components')];
-
-        $componentGroup = $createComponentGroupAction->handle($data, $components);
+        $componentGroup = $createComponentGroupAction->handle($data);
 
         return ComponentGroupResource::make($componentGroup);
     }
@@ -53,11 +50,9 @@ class ComponentGroupController extends Controller
     /**
      * Update Component Group
      */
-    public function update(UpdateComponentGroupRequest $request, ComponentGroup $componentGroup, UpdateComponentGroup $updateComponentGroupAction)
+    public function update(ComponentGroupData $data, ComponentGroup $componentGroup, UpdateComponentGroup $updateComponentGroupAction)
     {
-        [$data, $components] = [$request->except('components'), $request->validated('components')];
-
-        $updateComponentGroupAction->handle($componentGroup, $data, $components);
+        $updateComponentGroupAction->handle($componentGroup, $data);
 
         return ComponentGroupResource::make($componentGroup->fresh());
     }

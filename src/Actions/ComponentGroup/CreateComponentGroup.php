@@ -2,6 +2,7 @@
 
 namespace Cachet\Actions\ComponentGroup;
 
+use Cachet\Data\ComponentGroup\ComponentGroupData;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 
@@ -13,14 +14,16 @@ class CreateComponentGroup
     /**
      * Handle the action.
      */
-    public function handle(array $data, ?array $components = null): ComponentGroup
+    public function handle(ComponentGroupData $data): ComponentGroup
     {
-        return tap(ComponentGroup::create($data), function (ComponentGroup $componentGroup) use ($components) {
-            if (! $components) {
+        return tap(ComponentGroup::create(
+            $data->except('components')->toArray(),
+        ), function (ComponentGroup $componentGroup) use ($data) {
+            if (! $data->components) {
                 return;
             }
 
-            return Component::query()->whereIn('id', $components)->update([
+            Component::query()->whereIn('id', $data->components)->update([
                 'component_group_id' => $componentGroup->id,
             ]);
         });
