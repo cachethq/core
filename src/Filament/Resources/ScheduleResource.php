@@ -28,16 +28,21 @@ class ScheduleResource extends Resource
                         ->required()
                         ->options(ScheduleStatusEnum::class)
                         ->default(ScheduleStatusEnum::upcoming)
+                        ->afterStateUpdated(function (Forms\Set $set, int|ScheduleStatusEnum $state): void {
+                            if (ScheduleStatusEnum::parse($state) !== ScheduleStatusEnum::complete) {
+                                $set('completed_at', null);
+                            }
+                        })
                         ->live(),
                     Forms\Components\MarkdownEditor::make('message')
                         ->columnSpanFull(),
-                ])->columnspan(3),
+                ])->columnSpan(3),
                 Forms\Components\Section::make()->schema([
                     Forms\Components\DateTimePicker::make('scheduled_at')
                         ->required(),
                     Forms\Components\DateTimePicker::make('completed_at')
-                        ->visible(fn (Forms\Get $get): bool => $get('status') === ScheduleStatusEnum::complete)
-                        ->markAsRequired(fn (Forms\Get $get): bool => $get('status') === ScheduleStatusEnum::complete),
+                        ->visible(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete)
+                        ->required(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete)
                 ])->columnSpan(1),
             ])->columns(4);
     }
