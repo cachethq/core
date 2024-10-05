@@ -3,32 +3,34 @@
     'incidents',
 ])
 
-<div class="relative flex flex-col">
+<div class="relative flex flex-col gap-5">
     <h3 class="text-xl font-semibold">{{ $date }}</h3>
     @forelse($incidents as $incident)
-    <div class="mt-5 bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
+    <div class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
         <div @class([
-            'flex flex-col bg-zinc-50 p-4 dark:bg-zinc-900',
+            'flex flex-col bg-zinc-50 p-4 dark:bg-zinc-900 gap-2',
             'rounded-t-lg' => $incident->incidentUpdates->isNotEmpty(),
             'rounded-lg' => $incident->incidentUpdates->isEmpty(),
         ])>
             <div class="text-xs font-medium">{{ $incident->components->pluck('name')->join(', ') }}</div>
-            <div class="flex flex-col justify-between gap-2">
-                <div class="flex justify-end">
-                    <x-cachet::incident-badge :type="$incident->status" />
-                </div>
-                <div class="flex flex-col">
-                    <h3 class="max-w-full text-base font-semibold break-words md:text-xl">
+            <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse">
+                <div class="flex flex-col flex-1">
+                    <h3 class="max-w-full text-base font-semibold break-words sm:text-xl">
                         <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
                     </h3>
-                    <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ $incident->timestamp->diffForHumans() }} —
-                        {{ $incident->timestamp->toDayDateTimeString() }}</span>
+                    <span class="text-xs text-zinc-500 dark:text-zinc-400">
+                        {{ $incident->timestamp->diffForHumans() }} — {{ $incident->timestamp->toDayDateTimeString() }}
+                    </span>
+                </div>
+                <div class="flex justify-start sm:justify-end">
+                    <x-cachet::incident-badge :type="$incident->status" />
                 </div>
             </div>
-            <div class="w-1/2 mt-5 text-sm md:text-base">
+            <div class="prose-sm md:prose md:prose-zinc dark:text-zinc-100">
                 {!! $incident->formattedMessage() !!}
             </div>
         </div>
+
         @if($incident->incidentUpdates->isNotEmpty())
         <div class="relative">
             <div class="absolute inset-y-0 -left-9">
