@@ -16,4 +16,11 @@ class EditSchedule extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['completed_at'] = $data['completed_at'] ?? null;
+
+        return $data;
+    }
 }
