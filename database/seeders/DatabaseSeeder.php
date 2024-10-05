@@ -162,6 +162,7 @@ ABOUT;
         $appSettings->only_disrupted_days = false;
         $appSettings->incident_days = 7;
         $appSettings->timezone = 'UTC';
+        $appSettings->major_outage_threshold = 25;
         $appSettings->save();
 
         $customizationSettings = app(CustomizationSettings::class);
