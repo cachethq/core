@@ -18,7 +18,7 @@
                     <h3 class="text-base md:text-xl break-words font-semibold">
                         <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
                     </h3>
-                    <span class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-400">{{ $incident->timestamp->diffForHumans() }} — {{ $incident->timestamp->toDayDateTimeString() }}</span>
+                    <span class="text-xs text-zinc-500 dark:text-zinc-400 dark:text-zinc-400">{{ $incident->timestamp->diffForHumans() }} — {{ $incident->timestamp->format(app(\Cachet\Settings\LocalizationSettings::class)->timestamp_format) }}</span>
                 </div>
                 <div>
                     <x-cachet::incident-badge :type="$incident->status" />
@@ -40,7 +40,7 @@
                 <div class="relative py-4">
                     <x-cachet::incident-update-status :update="$update" />
 {{--                    <h3 class="text-lg font-semibold">Incident Update Title</h3>--}}
-                    <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ $update->created_at->diffForHumans() }} — {{ $update->created_at->toDayDateTimeString() }}</span>
+                    <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ $update->created_at->diffForHumans() }} — {{ $update->created_at->format(app(\Cachet\Settings\LocalizationSettings::class)->timestamp_format) }}</span>
                     <div class="prose-sm md:prose md:prose-zinc mt-1 dark:text-zinc-100">
                        {!! $update->formattedMessage() !!}
                     </div>

@@ -4,6 +4,7 @@ namespace Cachet\View\Components;
 
 use Cachet\Models\Incident;
 use Cachet\Settings\AppSettings;
+use Cachet\Settings\LocalizationSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
@@ -12,7 +13,7 @@ use Illuminate\View\Component;
 
 class IncidentTimeline extends Component
 {
-    public function __construct(private AppSettings $appSettings)
+    public function __construct(private AppSettings $appSettings, private LocalizationSettings $localizationSettings)
     {
         //
     }
@@ -29,8 +30,8 @@ class IncidentTimeline extends Component
                 $endDate,
                 $this->appSettings->only_disrupted_days
             ),
-            'from' => $startDate->toDateString(),
-            'to' => $endDate->toDateString(),
+            'from' => $startDate->format($this->localizationSettings->date_format),
+            'to' => $endDate->format($this->localizationSettings->date_format),
             'nextPeriodFrom' => $startDate->clone()->subDays($incidentDays + 1)->toDateString(),
             'nextPeriodTo' => $startDate->clone()->addDays($incidentDays + 1)->toDateString(),
             'canPageForward' => $startDate->clone()->isBefore(now()),
@@ -71,6 +72,10 @@ class IncidentTimeline extends Component
                     ->map(fn ($period) => collect())
             )
             ->when($onlyDisruptedDays, fn ($collection) => $collection->filter(fn ($incidents) => $incidents->isNotEmpty()))
-            ->sortKeysDesc();
+            ->sortKeysDesc()
+            // Format all the keys into a human-readable format.
+            ->mapWithKeys(fn ($incidents, $date) => [
+                Carbon::createFromFormat('Y-m-d', $date)->format($this->localizationSettings->date_format) => $incidents,
+            ]);
     }
 }
