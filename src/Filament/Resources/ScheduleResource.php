@@ -42,7 +42,7 @@ class ScheduleResource extends Resource
                         ->required(),
                     Forms\Components\DateTimePicker::make('completed_at')
                         ->visible(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete)
-                        ->required(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete)
+                        ->required(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete),
                 ])->columnSpan(1),
             ])->columns(4);
     }
