@@ -6,7 +6,7 @@
 
         <div class="flex flex-col gap-6">
             <div class="flex flex-col gap-14 w-full">
-                <x-cachet::incident :date="$incident->timestamp" :incidents="[$incident]" />
+                <x-cachet::incident :date="$incident->timestamp" :incidents="[$incident]" :show-incident-uuid="true" />
             </div>
         </div>
     </div>

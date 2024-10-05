@@ -1,6 +1,7 @@
 @props([
     'date',
     'incidents',
+    'showIncidentUuid' => false,
 ])
 
 <div class="relative flex flex-col">
@@ -32,9 +33,11 @@
                     @if(auth()->check())
                         <a href="{{ $incident->filamentDashboardEditUrl() }}" class="underline">View in Dashboard</a>
                     @endif
-                    <p class="text-xs">
-                        Incident UUID: {{ $incident->guid }}
-                    </p>
+                    @if($showIncidentUuid)
+                        <p class="text-xs">
+                            Incident UUID: {{ $incident->guid }}
+                        </p>
+                    @endif
                 </div>
             </div>
         </div>
