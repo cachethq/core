@@ -3,7 +3,6 @@
 namespace Workbench\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Workbench\App\User;
 
 class WorkbenchServiceProvider extends ServiceProvider
 {
@@ -14,7 +13,7 @@ class WorkbenchServiceProvider extends ServiceProvider
     {
         config([
             'cachet.path' => '/',
-            'cachet.user_model' => User::class,
+            'cachet.user_model' => \Workbench\App\User::class,
         ]);
     }
 
