@@ -1,10 +1,8 @@
 providers:
+  - Workbench\App\Providers\WorkbenchServiceProvider
   - Cachet\CachetCoreServiceProvider
   - Cachet\CachetDashboardServiceProvider
   - Spatie\LaravelSettings\LaravelSettingsServiceProvider
-
-env:
-  - APP_NAME=Cachet
 
 migrations:
   - workbench/database/migrations
