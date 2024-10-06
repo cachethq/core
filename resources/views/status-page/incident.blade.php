@@ -9,6 +9,10 @@
                 <x-cachet::incident :date="$incident->timestamp" :incidents="[$incident]" :show-incident-uuid="true" />
             </div>
         </div>
+
+        <p class="text-xs text-right">
+            Incident UUID: {{ $incident->guid }}
+        </p>
     </div>
 
     <x-cachet::footer />
