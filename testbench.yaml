@@ -7,9 +7,6 @@ providers:
 migrations:
   - workbench/database/migrations
 
-seeders:
-  - Workbench\Database\Seeders\DatabaseSeeder
-
 workbench:
   start: '/'
   install: true
@@ -24,7 +21,9 @@ workbench:
     - filament:assets
     - create-sqlite-db
     - db:wipe
-    - migrate:refresh
+    - migrate:refresh:
+        --seed: true
+        --seeder: Workbench\Database\Seeders\DatabaseSeeder
   assets:
     - query-builder-config
     - cachet-assets
