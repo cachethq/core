@@ -9,6 +9,7 @@ use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Enums\ScheduleStatusEnum;
+use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Metric;
@@ -76,6 +77,13 @@ class DatabaseSeeder extends Seeder
                 'link' => 'https://docs.checkmango.com',
                 'status' => ComponentStatusEnum::performance_issues,
             ],
+        ]);
+
+        Component::create([
+            'name' => 'Cachet',
+            'description' => 'The open-source status page system.',
+            'link' => 'https://cachethq.io',
+            'status' => ComponentStatusEnum::operational,
         ]);
 
         $metric = Metric::create([
