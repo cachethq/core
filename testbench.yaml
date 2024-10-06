@@ -1,5 +1,6 @@
 providers:
   - Cachet\CachetCoreServiceProvider
+  - Cachet\CachetDashboardServiceProvider
   - Spatie\LaravelSettings\LaravelSettingsServiceProvider
 
 env:
