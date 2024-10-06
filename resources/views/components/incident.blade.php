@@ -3,10 +3,10 @@
     'incidents',
 ])
 
-<div class="relative flex flex-col gap-5">
-    <h3 class="text-xl font-semibold">{{ $date }}</h3>
+<div class="relative flex flex-col gap-5" x-data="{ forDate: new Date(@js($date)) }">
+    <h3 class="text-xl font-semibold" x-html="forDate.toLocaleDateString()"></h3>
     @forelse($incidents as $incident)
-    <div class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
+    <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }" class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
         <div @class([
             'flex flex-col bg-zinc-50 p-4 dark:bg-zinc-900 gap-2',
             'rounded-t-lg' => $incident->incidentUpdates->isNotEmpty(),
@@ -19,7 +19,7 @@
                         <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
                     </h3>
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ $incident->timestamp->diffForHumans() }} — {{ $incident->timestamp->toDayDateTimeString() }}
+                        {{ $incident->timestamp->diffForHumans() }} — <span x-text="timestamp.toLocaleString()"></span>
                     </span>
                 </div>
                 <div class="flex justify-start sm:justify-end">
@@ -40,10 +40,12 @@
             </div>
             <div class="flex flex-col px-4 divide-y dark:divide-zinc-700">
                 @foreach ($incident->incidentUpdates as $update)
-                <div class="relative py-4">
+                <div class="relative py-4" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                     <x-cachet::incident-update-status :update="$update" />
 {{--                    <h3 class="text-lg font-semibold">Incident Update Title</h3>--}}
-                    <span class="text-xs text-zinc-500 dark:text-zinc-400">{{ $update->created_at->diffForHumans() }} — {{ $update->created_at->toDayDateTimeString() }}</span>
+                    <span class="text-xs text-zinc-500 dark:text-zinc-400">
+                        {{ $update->created_at->diffForHumans() }} — <span x-text="timestamp.toLocaleString()"></span>
+                    </span>
                     <div class="mt-1 prose-sm md:prose md:prose-zinc dark:text-zinc-100">
                        {!! $update->formattedMessage() !!}
                     </div>
