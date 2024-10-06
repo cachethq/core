@@ -1,7 +1,6 @@
 @props([
     'date',
     'incidents',
-    'showIncidentUuid' => false,
 ])
 
 <div class="relative flex flex-col gap-5" x-data="{ forDate: new Date(@js($date)) }">
@@ -30,6 +29,9 @@
             <div class="prose-sm md:prose md:prose-zinc dark:text-zinc-100">
                 {!! $incident->formattedMessage() !!}
             </div>
+            @if(auth()->check())
+                <a href="{{ $incident->filamentDashboardEditUrl() }}" class="underline text-right text-sm text-zinc-500 dark:text-zinc-400">View in Dashboard</a>
+            @endif
         </div>
 
         @if($incident->incidentUpdates->isNotEmpty())
