@@ -10,7 +10,7 @@ final class UpdateIncidentData extends BaseData
 {
     public function __construct(
         #[Max(255)]
-        public readonly string $name,
+        public readonly ?string $name = null,
         public readonly ?string $message = null,
         public readonly ?IncidentStatusEnum $status = null,
         public readonly ?bool $visible = null,

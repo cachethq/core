@@ -3,6 +3,8 @@
 namespace Cachet\Actions\IncidentUpdate;
 
 use Cachet\Actions\Incident\UpdateIncident;
+use Cachet\Data\Incident\UpdateIncidentData;
+use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentUpdate;
 
@@ -11,15 +13,17 @@ class CreateIncidentUpdate
     /**
      * Handle the action.
      */
-    public function handle(Incident $incident, array $data): IncidentUpdate
+    public function handle(Incident $incident, CreateIncidentUpdateData $data): IncidentUpdate
     {
-        $incidentUpdate = $incident->incidentUpdates()->create(array_merge(['user_id' => auth()->id()], $data));
+        $incidentUpdate = $incident->incidentUpdates()->create(array_merge([
+            'user_id' => auth()->id()
+        ], $data->toArray()));
 
         // Update the incident with the new status.
-        if ($incident->status !== $data['status']) {
-            app(UpdateIncident::class)->handle($incidentUpdate->incident, [
-                'status' => $data['status'],
-            ]);
+        if ($incident->status !== $data->status) {
+            app(UpdateIncident::class)->handle($incidentUpdate->incident, new UpdateIncidentData(
+                status: $data->status,
+            ));
         }
 
         // @todo Dispatch notification that incident was updated.
