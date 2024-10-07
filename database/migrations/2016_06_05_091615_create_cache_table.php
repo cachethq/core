@@ -13,6 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('cache')) {
+            return;
+        }
+
         Schema::create('cache', function (Blueprint $table) {
             $table->string('key')->unique();
             $table->text('value');
