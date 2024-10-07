@@ -32,9 +32,7 @@ class Components extends Widget implements HasForms
         $this->componentGroups = ComponentGroup::query()
             ->select(['id', 'name', 'collapsed', 'visible'])
             ->where('visible', '=', true)
-            ->with('components', function (HasMany $query) {
-                return $query->select(['id', 'component_group_id', 'name', 'status'])->where('enabled', '=', true);
-            })
+            ->with('components', fn (HasMany $query) => $this->loadComponents($query))
             ->get();
 
         $this->formData = $this->componentGroups->mapWithKeys(function (ComponentGroup $componentGroup) {
@@ -48,6 +46,7 @@ class Components extends Widget implements HasForms
     public function form(Form $form): Form
     {
         $schema = $this->componentGroups
+            ->loadMissing(['components' => fn (HasMany $query) => $this->loadComponents($query)])
             ->map(function (ComponentGroup $componentGroup): FilamentFormComponent {
                 return Section::make($componentGroup->name)
                     ->schema(function () use ($componentGroup) {
@@ -70,5 +69,11 @@ class Components extends Widget implements HasForms
             })->toArray();
 
         return $form->schema($schema)->statePath('formData');
+    }
+
+    private function loadComponents(HasMany $query)
+    {
+        return $query->select(['id', 'component_group_id', 'name', 'status', 'enabled'])
+                ->where('enabled', '=', true);
     }
 }

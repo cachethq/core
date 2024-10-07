@@ -83,8 +83,8 @@ it('can save status of component to have major outage', function () {
 
     $livewireComponent->set(
         'formData.' . $componentGroup->id . '.components.' . $component->id . '.status',
-        ComponentStatusEnum::major_outage
+        ComponentStatusEnum::major_outage->value
     );
 
-    assertEquals(ComponentStatusEnum::major_outage->value, $component->fresh()->status->value);
+    assertEquals(ComponentStatusEnum::major_outage, $component->fresh()->status);
 });
