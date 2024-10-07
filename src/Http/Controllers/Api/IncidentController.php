@@ -5,7 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Incident\CreateIncident;
 use Cachet\Actions\Incident\DeleteIncident;
 use Cachet\Actions\Incident\UpdateIncident;
-use Cachet\Http\Requests\CreateIncidentRequest;
+use Cachet\Data\Incident\CreateIncidentData;
 use Cachet\Http\Requests\UpdateIncidentRequest;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
@@ -36,9 +36,9 @@ class IncidentController extends Controller
     /**
      * Create Incident.
      */
-    public function store(CreateIncidentRequest $request, CreateIncident $createIncidentAction)
+    public function store(CreateIncidentData $data, CreateIncident $createIncidentAction)
     {
-        $incident = $createIncidentAction->handle($request->validated());
+        $incident = $createIncidentAction->handle($data);
 
         return IncidentResource::make($incident);
     }
