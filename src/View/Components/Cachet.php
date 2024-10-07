@@ -33,6 +33,7 @@ class Cachet extends Component
         return view('cachet::components.cachet', [
             'title' => $this->title,
             'cachet_header' => $this->customizationSettings->header,
+            'cachet_css' => $this->customizationSettings->stylesheet,
             'cachet_footer' => $this->customizationSettings->footer,
             'refresh_rate' => $this->appSettings->refresh_rate,
         ]);

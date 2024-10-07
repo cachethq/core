@@ -27,6 +27,8 @@
                     --{{ $key }}-dark: {{ $value[1] }};
                 @endforeach
             }
+
+            {!! $cachet_css !!}
         </style>
     </head>
     <body class="flex min-h-screen flex-col items-stretch antialiased">
