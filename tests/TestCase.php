@@ -28,6 +28,8 @@ abstract class TestCase extends Orchestra
         $app['config']->set([
             'auth.providers.users.model' => 'Workbench\\App\\User',
             'database.default' => 'testing',
+            'cachet.path' => 'status',
+            'cache.default' => 'array',
             // 'query-builder.request_data_source' => 'body',
         ]);
     }
