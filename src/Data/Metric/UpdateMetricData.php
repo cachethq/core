@@ -1,14 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Cachet\Data\Metric;
 
 use Cachet\Data\BaseData;
 use Cachet\Rules\FactorOfSixty;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\Rule;
 
 final class UpdateMetricData extends BaseData

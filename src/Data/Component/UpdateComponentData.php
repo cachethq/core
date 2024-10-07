@@ -7,7 +7,6 @@ use Cachet\Enums\ComponentStatusEnum;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Required;
 
 final class UpdateComponentData extends BaseData
 {

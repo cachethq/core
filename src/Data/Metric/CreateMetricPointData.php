@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Cachet\Data\Metric;
 
 use Cachet\Data\BaseData;

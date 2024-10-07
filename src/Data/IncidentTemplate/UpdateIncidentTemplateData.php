@@ -6,7 +6,6 @@ use Cachet\Data\BaseData;
 use Cachet\Enums\IncidentTemplateEngineEnum;
 use Illuminate\Support\Str;
 use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Required;
 
 final class UpdateIncidentTemplateData extends BaseData
 {
