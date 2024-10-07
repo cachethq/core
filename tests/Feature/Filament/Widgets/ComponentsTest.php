@@ -2,17 +2,19 @@
 
 namespace Tests\Feature\Filament\Widgets;
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Filament\Widgets\Components;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use function Pest\Livewire\livewire;
 use function PHPUnit\Framework\assertCount;
+use function PHPUnit\Framework\assertEquals;
 
 it('component smoke test', function () {
     $component = livewire(Components::class);
 
     $component->assertSuccessful();
-})->only();
+});
 
 it('will only show visible component groups', function () {
     ComponentGroup::factory()->create([
@@ -33,7 +35,7 @@ it('will only show visible component groups', function () {
 
     $component->assertSee('Test Component Group 1');
     $component->assertDontSee('Test Component Group 2');
-})->only();
+});
 
 it('will only show enabled components', function () {
     $componentGroup = ComponentGroup::factory()->create([
@@ -61,4 +63,28 @@ it('will only show enabled components', function () {
 
     $component->assertSee('Forge');
     $component->assertDontSee('Cloud');
-})->only();
+});
+
+it('can save status of component to have major outage', function () {
+    $componentGroup = ComponentGroup::factory()->create([
+        'name' => 'Laravel',
+        'visible' => true,
+    ]);
+
+    $component = Component::factory()->create([
+        'name' => 'Forge',
+        'component_group_id' => $componentGroup->id,
+        'status' => ComponentStatusEnum::operational,
+    ]);
+
+    $livewireComponent = livewire(Components::class);
+
+    $livewireComponent->assertSuccessful();
+
+    $livewireComponent->set(
+        'formData.' . $componentGroup->id . '.components.' . $component->id . '.status',
+        ComponentStatusEnum::major_outage
+    );
+
+    assertEquals(ComponentStatusEnum::major_outage, $component->fresh()->status);
+});
