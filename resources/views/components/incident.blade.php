@@ -13,7 +13,7 @@
             'rounded-lg' => $incident->incidentUpdates->isEmpty(),
         ])>
             <div class="text-xs font-medium">{{ $incident->components->pluck('name')->join(', ') }}</div>
-            <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-center">
+            <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-start sm:items-center">
                 <div class="flex flex-col flex-1">
                     <div class="flex gap-2 items-center">
                         <h3 class="max-w-full text-base font-semibold break-words sm:text-xl">
@@ -33,9 +33,7 @@
                     <x-cachet::incident-badge :type="$incident->status" />
                 </div>
             </div>
-            <div class="prose-sm md:prose md:prose-zinc dark:text-zinc-100">
-                {!! $incident->formattedMessage() !!}
-            </div>
+            <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $incident->formattedMessage() !!}</div>
         </div>
 
         @if($incident->incidentUpdates->isNotEmpty())
@@ -49,13 +47,11 @@
                 @foreach ($incident->incidentUpdates as $update)
                 <div class="relative py-4" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                     <x-cachet::incident-update-status :update="$update" />
-{{--                    <h3 class="text-lg font-semibold">Incident Update Title</h3>--}}
+                    <h3 class="text-lg font-semibold">{{ $update->status->getLabel() }}</h3>
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
                         {{ $update->created_at->diffForHumans() }} — <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
                     </span>
-                    <div class="mt-1 prose-sm md:prose md:prose-zinc dark:text-zinc-100">
-                       {!! $update->formattedMessage() !!}
-                    </div>
+                    <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
                 </div>
                 @endforeach
             </div>
@@ -63,7 +59,7 @@
         </div>
     </div>
     @empty
-        <div class="text-sm text-zinc-500 dark:text-zinc-400">
+        <div class="mt-1 prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline">
             {{ __('No incidents reported.') }}
         </div>
     @endforelse

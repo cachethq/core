@@ -3,7 +3,7 @@
         <div class="flex items-start gap-2.5 w-full">
             <span class="mt-1.5 h-3 w-3 shrink-0 rounded-full bg-orange-200 animate-pulse"></span>
             <div class="flex-1">
-                <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-center">
+                <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-start sm:items-center">
                     <div class="flex flex-col flex-1">
                         <h3 class="max-w-full text-base font-semibold break-words sm:text-xl">
                             {{ $schedule->name}}
@@ -16,9 +16,7 @@
                         <x-cachet::schedule-badge :schedule="$schedule" />
                     </div>
                 </div>
-                <div class="prose-sm md:prose md:prose-zinc dark:text-zinc-100">
-                    {!! $schedule->formattedMessage() !!}
-                </div>
+                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $schedule->formattedMessage() !!}</div>
             </div>
         </div>
     </div>

@@ -17,7 +17,7 @@
             </div>
             @if($component->link)
             <div class="mt-1 text-sm text-zinc-500">
-                <a href="{{ $component->link }}" class="text-zinc-700 underline dark:text-zinc-300">{{ __('View Details') }}</a>
+                <a href="{{ $component->link }}" class="text-zinc-700 underline dark:text-zinc-300" target="_blank" rel="nofollow noopener">{{ __('View Details') }}</a>
             </div>
             @endif
         </div>

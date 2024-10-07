@@ -123,7 +123,12 @@ class DatabaseSeeder extends Seeder
 
             $incident->incidentUpdates()->create([
                 'status' => IncidentStatusEnum::fixed,
-                'message' => 'Our DNS provider has fixed the issue. We will continue to monitor the situation.',
+                'message' => <<<'EOF'
+Our DNS provider has fixed the issue. We will continue to monitor the situation.
+
+For more information, please you can read our latest [blog post](https://blog.cachethq.io).
+EOF
+,
                 'user_id' => $user->id,
                 'created_at' => $timestamp = $incident->created_at->addMinutes(45),
                 'updated_at' => $timestamp,
