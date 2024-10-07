@@ -24,29 +24,27 @@ class Components extends Widget implements HasForms
     protected int|string|array $columnSpan = 'full';
 
     public Collection $formData;
+    public  Collection $componentGroups;
 
     public function mount(): void
     {
-        $this->formData = ComponentGroup::query()
-            ->select(['id'])
+        $this->componentGroups = ComponentGroup::query()
+            ->select(['id', 'name', 'collapsed', 'visible'])
             ->where('visible', '=', true)
-            ->with('components:id,component_group_id,status')
-            ->get()
-            ->mapWithKeys(function (ComponentGroup $componentGroup) {
-                $components = $componentGroup->components->mapWithKeys(function (Component $component) {
-                    return [$component->id => $component->only('status')];
-                });
-                return [$componentGroup->id => ['components' => $components]];
+            ->with('components:id,component_group_id,name,status')
+            ->get();
+
+        $this->formData = $this->componentGroups->mapWithKeys(function (ComponentGroup $componentGroup) {
+            $components = $componentGroup->components->mapWithKeys(function (Component $component) {
+                return [$component->id => $component->only('status')];
             });
+            return [$componentGroup->id => ['components' => $components]];
+        });
     }
 
     public function form(Form $form): Form
     {
-        $schema = ComponentGroup::query()
-            ->select(['id', 'name', 'collapsed'])
-            ->where('visible', '=', true)
-            ->with('components:id,component_group_id,status')
-            ->get()
+        $schema = $this->componentGroups
             ->map(function (ComponentGroup $componentGroup): FilamentFormComponent {
                 return Section::make($componentGroup->name)
                     ->schema(function () use ($componentGroup) {
