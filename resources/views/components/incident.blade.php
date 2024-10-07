@@ -19,7 +19,7 @@
                         <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
                     </h3>
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ $incident->timestamp->diffForHumans() }} — <time :datetime="timestamp.toISOString()" x-text="timestamp.toLocaleString()"></time>
+                        {{ $incident->timestamp->diffForHumans() }} — <time datetime="{{ $incident->timestamp->toISOString() }}" x-text="timestamp.toLocaleString()"></time>
                     </span>
                 </div>
                 <div class="flex justify-start sm:justify-end">
@@ -44,7 +44,7 @@
                     <x-cachet::incident-update-status :update="$update" />
 {{--                    <h3 class="text-lg font-semibold">Incident Update Title</h3>--}}
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ $update->created_at->diffForHumans() }} — <time :datetime="timestamp.toISOString()" x-text="timestamp.toLocaleString()"></time>
+                        {{ $update->created_at->diffForHumans() }} — <time datetime="{{ $update->created_at->toISOString() }}" x-text="timestamp.toLocaleString()"></time>
                     </span>
                     <div class="mt-1 prose-sm md:prose md:prose-zinc dark:text-zinc-100">
                        {!! $update->formattedMessage() !!}
