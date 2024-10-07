@@ -7,8 +7,6 @@ use Cachet\Actions\Metric\DeleteMetric;
 use Cachet\Actions\Metric\UpdateMetric;
 use Cachet\Data\Metric\CreateMetricData;
 use Cachet\Data\Metric\UpdateMetricData;
-use Cachet\Http\Requests\CreateMetricRequest;
-use Cachet\Http\Requests\UpdateMetricRequest;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
 use Illuminate\Database\Eloquent\Builder;
