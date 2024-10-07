@@ -13,6 +13,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Widgets\Widget;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 class Components extends Widget implements HasForms
@@ -31,7 +32,9 @@ class Components extends Widget implements HasForms
         $this->componentGroups = ComponentGroup::query()
             ->select(['id', 'name', 'collapsed', 'visible'])
             ->where('visible', '=', true)
-            ->with('components:id,component_group_id,name,status')
+            ->with('components', function (HasMany $query) {
+                return $query->select(['id', 'component_group_id', 'name', 'status'])->where('enabled', '=', true);
+            })
             ->get();
 
         $this->formData = $this->componentGroups->mapWithKeys(function (ComponentGroup $componentGroup) {

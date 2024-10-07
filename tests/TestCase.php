@@ -2,6 +2,8 @@
 
 namespace Cachet\Tests;
 
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Support\SupportServiceProvider;
@@ -32,6 +34,8 @@ abstract class TestCase extends Orchestra
             FilamentServiceProvider::class,
             FormsServiceProvider::class,
             SupportServiceProvider::class,
+            BladeIconsServiceProvider::class,
+            BladeHeroiconsServiceProvider::class,
             WidgetsServiceProvider::class,
         ]);
     }
