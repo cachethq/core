@@ -5,7 +5,7 @@
         </div>
         <div class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400" x-data="{ from: new Date(@js($from)), to: new Date(@js($to)) }">
             <div><x-heroicon-m-calendar class="size-4" /></div>
-            <div><span x-text="from.toLocaleString()"></span> &mdash; <span x-text="to.toLocaleString()"></span></div>
+            <div><time :datetime="from.toDateString()" x-text="from.toLocaleDateString()"></time> &mdash; <time :datetime="to.toDateString()" x-text="to.toLocaleDateString()"></time></div>
         </div>
     </div>
 
