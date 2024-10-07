@@ -86,5 +86,5 @@ it('can save status of component to have major outage', function () {
         ComponentStatusEnum::major_outage
     );
 
-    assertEquals(ComponentStatusEnum::major_outage, $component->fresh()->status);
+    assertEquals(ComponentStatusEnum::major_outage->value, $component->fresh()->status->value);
 });
