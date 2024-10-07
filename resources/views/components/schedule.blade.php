@@ -9,7 +9,7 @@
                             {{ $schedule->name}}
                         </h3>
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ $schedule->scheduled_at->diffForHumans() }} — <span x-text="timestamp.toLocaleString()"></span>
+                        {{ $schedule->scheduled_at->diffForHumans() }} — <time datetime="{{ $schedule->scheduled_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
                     </span>
                     </div>
                     <div class="flex justify-start sm:justify-end">
