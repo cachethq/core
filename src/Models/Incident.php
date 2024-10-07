@@ -8,6 +8,7 @@ use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
+use Cachet\Filament\Resources\IncidentResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -118,5 +119,13 @@ class Incident extends Model
     public function formattedMessage(): string
     {
         return Str::of($this->message)->markdown();
+    }
+
+    /**
+     * Get the URL to the incident page within the dashboard.
+     */
+    public function filamentDashboardEditUrl(): string
+    {
+        return IncidentResource::getUrl(name: 'edit', parameters: ['record' => $this->id]);
     }
 }

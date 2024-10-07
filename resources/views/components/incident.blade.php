@@ -15,9 +15,16 @@
             <div class="text-xs font-medium">{{ $incident->components->pluck('name')->join(', ') }}</div>
             <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-center">
                 <div class="flex flex-col flex-1">
-                    <h3 class="max-w-full text-base font-semibold break-words sm:text-xl">
-                        <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
-                    </h3>
+                    <div class="flex gap-2 items-center">
+                        <h3 class="max-w-full text-base font-semibold break-words sm:text-xl">
+                            <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
+                        </h3>
+                        @auth
+                            <a href="{{ $incident->filamentDashboardEditUrl() }}" class="underline text-right text-sm text-zinc-500 hover:text-zinc-400 dark:text-zinc-400 dark:hover:text-zinc-300" title="{{ __('Edit Incident') }}">
+                                <x-heroicon-m-pencil-square class="size-4" />
+                            </a>
+                        @endauth
+                    </div>
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
                         {{ $incident->timestamp->diffForHumans() }} — <time datetime="{{ $incident->timestamp->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
                     </span>

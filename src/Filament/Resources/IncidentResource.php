@@ -68,6 +68,12 @@ class IncidentResource extends Resource
                     Forms\Components\Toggle::make('stickied')
                         ->label(__('Sticky Incident?'))
                         ->required(),
+                    Forms\Components\TextInput::make('guid')
+                        ->label('Incident UUID')
+                        ->visibleOn(['edit'])
+                        ->disabled()
+                        ->readonly()
+                        ->columnSpanFull(),
                 ])
                     ->columnSpan(1),
             ])
@@ -135,6 +141,10 @@ class IncidentResource extends Resource
                             ->inline()
                             ->required(),
                     ]),
+                Action::make('view-incident')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Incident $record): string => route('cachet.status-page.incident', $record))
+                    ->label(__('View Incident')),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
