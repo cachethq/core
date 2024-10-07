@@ -7,7 +7,6 @@ use Cachet\Actions\Incident\DeleteIncident;
 use Cachet\Actions\Incident\UpdateIncident;
 use Cachet\Data\Incident\CreateIncidentData;
 use Cachet\Data\Incident\UpdateIncidentData;
-use Cachet\Http\Requests\UpdateIncidentRequest;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
 use Illuminate\Database\Eloquent\Builder;
