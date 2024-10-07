@@ -2,7 +2,6 @@
 
 namespace Cachet\View\Components;
 
-use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Schedule;
 use Closure;
 use Illuminate\Contracts\View\View;
