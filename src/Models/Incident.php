@@ -121,6 +121,9 @@ class Incident extends Model
         return Str::of($this->message)->markdown();
     }
 
+    /**
+     * Get the URL to the incident page within the dashboard.
+     */
     public function filamentDashboardEditUrl(): string
     {
         return IncidentResource::getUrl(name: 'edit', parameters: ['record' => $this->id]);
