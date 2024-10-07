@@ -14,10 +14,10 @@
             <x-heroicon-o-chevron-up ::class="!$disclosure.isOpen && 'rotate-180'" class="size-4 transition" />
         </button>
 
-        @if(($incidentCount = $componentGroup->components()->sum('incidents_count')) > 0)
-        <a href="#" class="rounded border border-zinc-800 px-2 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-600 dark:text-zinc-400">
-            {{ trans_choice(':incidents Incidents', $incidentCount, ['incidents' => $incidentCount]) }}
-        </a>
+        @if(($incidentCount = $componentGroup->components->sum('incidents_count')) > 0)
+        <span class="rounded border border-zinc-800 px-2 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-600 dark:text-zinc-400">
+            {{ trans_choice(':count Incident', $incidentCount) }}
+        </span>
         @endif
     </div>
 

@@ -53,9 +53,9 @@ class Component extends Model
     /**
      * Get the incidents for the component.
      */
-    public function incidents(): HasMany
+    public function incidents(): BelongsToMany
     {
-        return $this->hasMany(Incident::class);
+        return $this->belongsToMany(Incident::class, 'incident_components')->withPivot('status');
     }
 
     /**
