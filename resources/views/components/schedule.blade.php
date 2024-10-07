@@ -7,7 +7,7 @@
                     <h3 class="font-semibold leading-6">{{ $schedule->name }}</h3>
                     <div class="flex grow text-sm sm:text-xs gap-2 text-zinc-500 dark:text-zinc-400 items-center">
                         @svg('cachet-clock', 'size-4 hidden sm:block')
-                        <span x-text="timestamp.toLocaleString()"></span>
+                        <time :datetime="timestamp.toISOString()" x-text="timestamp.toLocaleString()"></time>
                     </div>
                 </div>
                 <div class="prose-sm md:prose md:prose-zinc dark:text-zinc-100">

@@ -4,7 +4,7 @@
 ])
 
 <div class="relative flex flex-col gap-5" x-data="{ forDate: new Date(@js($date)) }">
-    <h3 class="text-xl font-semibold" x-text="forDate.toLocaleString()"></h3>
+    <h3 class="text-xl font-semibold"><time :datetime="forDate.toDateString()" x-text="forDate.toLocaleDateString()"></time></h3>
     @forelse($incidents as $incident)
     <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }" class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
         <div @class([
@@ -19,7 +19,7 @@
                         <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
                     </h3>
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ $incident->timestamp->diffForHumans() }} — <span x-text="timestamp.toLocaleString()"></span>
+                        {{ $incident->timestamp->diffForHumans() }} — <time :datetime="timestamp.toISOString()" x-text="timestamp.toLocaleString()"></time>
                     </span>
                 </div>
                 <div class="flex justify-start sm:justify-end">
@@ -44,7 +44,7 @@
                     <x-cachet::incident-update-status :update="$update" />
 {{--                    <h3 class="text-lg font-semibold">Incident Update Title</h3>--}}
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ $update->created_at->diffForHumans() }} — <span x-text="timestamp.toLocaleString()"></span>
+                        {{ $update->created_at->diffForHumans() }} — <time :datetime="timestamp.toISOString()" x-text="timestamp.toLocaleString()"></time>
                     </span>
                     <div class="mt-1 prose-sm md:prose md:prose-zinc dark:text-zinc-100">
                        {!! $update->formattedMessage() !!}
