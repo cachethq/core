@@ -23,7 +23,7 @@ workbench:
     - db:wipe
     - migrate:refresh:
         --seed: true
-        --seeder: Workbench\Database\Seeders\DatabaseSeeder
+        --seeder: Cachet\Database\Seeders\DatabaseSeeder
   assets:
     - query-builder-config
     - cachet-assets
