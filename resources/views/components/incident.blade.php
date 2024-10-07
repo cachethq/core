@@ -13,7 +13,7 @@
             'rounded-lg' => $incident->incidentUpdates->isEmpty(),
         ])>
             <div class="text-xs font-medium">{{ $incident->components->pluck('name')->join(', ') }}</div>
-            <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse">
+            <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-center">
                 <div class="flex flex-col flex-1">
                     <h3 class="max-w-full text-base font-semibold break-words sm:text-xl">
                         <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
