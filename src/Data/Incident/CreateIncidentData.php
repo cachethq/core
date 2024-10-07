@@ -36,9 +36,9 @@ final class CreateIncidentData extends Data
     {
         return new self(
             name: $this->name,
+            status: $this->status,
             message: $message,
             template: $this->template,
-            status: $this->status,
             visible: $this->visible,
             stickied: $this->stickied,
             notifications: $this->notifications,

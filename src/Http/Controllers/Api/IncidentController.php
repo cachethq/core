@@ -6,6 +6,7 @@ use Cachet\Actions\Incident\CreateIncident;
 use Cachet\Actions\Incident\DeleteIncident;
 use Cachet\Actions\Incident\UpdateIncident;
 use Cachet\Data\Incident\CreateIncidentData;
+use Cachet\Data\Incident\UpdateIncidentData;
 use Cachet\Http\Requests\UpdateIncidentRequest;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
@@ -56,9 +57,9 @@ class IncidentController extends Controller
     /**
      * Update Incident.
      */
-    public function update(UpdateIncidentRequest $request, Incident $incident, UpdateIncident $updateIncidentAction)
+    public function update(UpdateIncidentData $data, Incident $incident, UpdateIncident $updateIncidentAction)
     {
-        $updateIncidentAction->handle($incident, $request->validated());
+        $updateIncidentAction->handle($incident, $data);
 
         return IncidentResource::make($incident->fresh());
     }
