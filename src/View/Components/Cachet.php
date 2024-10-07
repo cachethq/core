@@ -14,12 +14,12 @@ class Cachet extends Component
      * Create a new component instance.
      */
     public function __construct(
-        private AppSettings $appSettings,
-        private CustomizationSettings $customizationSettings,
+        private readonly AppSettings $appSettings,
+        private readonly CustomizationSettings $customizationSettings,
         private ?string $title = null
     ) {
         if ($this->title) {
-            $this->title .= ' - ' . ($this->appSettings->name ?: config('cachet.title'));
+            $this->title .= ' - '.($this->appSettings->name ?: config('cachet.title'));
         }
 
         $this->title ??= ($this->appSettings->name ?? config('cachet.title'));
@@ -32,6 +32,7 @@ class Cachet extends Component
     {
         return view('cachet::components.cachet', [
             'title' => $this->title,
+            'site_name' => $this->appSettings->name,
             'cachet_header' => $this->customizationSettings->header,
             'cachet_css' => $this->customizationSettings->stylesheet,
             'cachet_footer' => $this->customizationSettings->footer,
