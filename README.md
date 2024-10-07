@@ -49,7 +49,7 @@ This package provides the core functionality of Cachet and may be installed into
 ### Dashboard Credentials
 
 When running Cachet via the `composer start` command, Workbench will seed a user that you can use to log in to the dashboard.
-Login to the account at `/status/dashboard` and use credentials:
+Login to the account at `/dashboard` and use credentials:
 
 - **Email:** `test@test.com`
 - **Password:** `test123`
