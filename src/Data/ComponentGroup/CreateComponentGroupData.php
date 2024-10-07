@@ -4,11 +4,13 @@ namespace Cachet\Data\ComponentGroup;
 
 use Cachet\Data\BaseData;
 use Illuminate\Validation\Rule;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\ListType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\Sometimes;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateComponentGroupData extends BaseData
