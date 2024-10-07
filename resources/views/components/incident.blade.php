@@ -56,14 +56,14 @@
                     <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
                 </div>
                 @endforeach
-                    <div class="relative py-4" x-data="{ timestamp: new Date(@js($incident->created_at)) }">
-                        <x-cachet::incident-update-status :status="$incident->status" />
+                <div class="relative py-4" x-data="{ timestamp: new Date(@js($incident->created_at)) }">
+                    <x-cachet::incident-update-status />
 
-                        <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                            {{ $incident->created_at->diffForHumans() }} — <time datetime="{{ $incident->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
-                        </span>
-                        <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $incident->formattedMessage() !!}</div>
-                    </div>
+                    <span class="text-xs text-zinc-500 dark:text-zinc-400">
+                        {{ $incident->created_at->diffForHumans() }} — <time datetime="{{ $incident->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
+                    </span>
+                    <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $incident->formattedMessage() !!}</div>
+                </div>
             </div>
         </div>
     </div>
