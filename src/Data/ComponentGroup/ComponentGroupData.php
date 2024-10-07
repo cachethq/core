@@ -1,17 +1,15 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Cachet\Data\ComponentGroup;
 
+use Cachet\Data\BaseData;
 use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-final class ComponentGroupData extends Data
+final class ComponentGroupData extends BaseData
 {
     public function __construct(
         #[Max(255)]
@@ -28,10 +26,5 @@ final class ComponentGroupData extends Data
             'components' => ['array'],
             'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
         ];
-    }
-
-    public function toArray(): array
-    {
-        return array_filter(parent::toArray());
     }
 }

@@ -1,14 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Cachet\Data\Incident;
 
+use Cachet\Data\BaseData;
 use Cachet\Enums\IncidentStatusEnum;
 use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Data;
 
-final class UpdateIncidentData extends Data
+final class UpdateIncidentData extends BaseData
 {
     public function __construct(
         #[Max(255)]
@@ -20,9 +18,4 @@ final class UpdateIncidentData extends Data
         public readonly ?bool $notifications = null,
         public readonly ?string $occurredAt = null,
     ) {}
-
-    public function toArray(): array
-    {
-        return array_filter(parent::toArray());
-    }
 }

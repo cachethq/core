@@ -1,18 +1,16 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Cachet\Data\Incident;
 
+use Cachet\Data\BaseData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\RequiredWithout;
-use Spatie\LaravelData\Data;
 
-final class CreateIncidentData extends Data
+final class CreateIncidentData extends BaseData
 {
     public function __construct(
         #[Max(255)]
@@ -47,10 +45,5 @@ final class CreateIncidentData extends Data
             componentId: $this->componentId,
             componentStatus: $this->componentStatus,
         );
-    }
-
-    public function toArray(): array
-    {
-        return array_filter(parent::toArray());
     }
 }
