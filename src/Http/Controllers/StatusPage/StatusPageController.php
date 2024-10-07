@@ -19,7 +19,7 @@ class StatusPageController
     {
         return view('cachet::status-page.index', [
             'componentGroups' => ComponentGroup::query()
-                ->with(['components' => fn ($query) => $query->orderBy('order')->withCount('incidents')])
+                ->with(['components' => fn ($query) => $query->enabled()->orderBy('order')->withCount('incidents')])
                 ->visible(auth()->check())
                 ->when(auth()->check(), fn ($query) => $query->users(), fn ($query) => $query->guests())
                 ->get(),
@@ -31,6 +31,7 @@ class StatusPageController
                 ->setRelation(
                     'components',
                     Component::query()
+                        ->enabled()
                         ->whereNull('component_group_id')
                         ->orderBy('order')
                         ->withCount('incidents')
