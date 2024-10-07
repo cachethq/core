@@ -7,6 +7,7 @@ use Cachet\Data\Incident\UpdateIncidentData;
 use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentUpdate;
+use Spatie\LaravelData\Optional;
 
 class CreateIncidentUpdate
 {
@@ -22,6 +23,7 @@ class CreateIncidentUpdate
         // Update the incident with the new status.
         if ($incident->status !== $data->status) {
             app(UpdateIncident::class)->handle($incidentUpdate->incident, new UpdateIncidentData(
+                name: Optional::create(),
                 status: $data->status,
             ));
         }

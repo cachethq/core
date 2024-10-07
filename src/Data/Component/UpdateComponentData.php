@@ -13,7 +13,7 @@ final class UpdateComponentData extends BaseData
 {
     public function __construct(
         #[Max(255)]
-        public readonly string $name,
+        public readonly ?string $name = null,
         public readonly ?string $description = null,
         #[Enum(ComponentStatusEnum::class)]
         public readonly ?ComponentStatusEnum $status = null,

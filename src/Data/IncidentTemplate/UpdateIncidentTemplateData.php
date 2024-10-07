@@ -23,4 +23,11 @@ final class UpdateIncidentTemplateData extends BaseData
     {
         return $this->slug ?? Str::slug($this->name);
     }
+
+    public function toArray(): array
+    {
+        return array_merge(parent::toArray(), [
+            'slug' => $this->slug(),
+        ]);
+    }
 }

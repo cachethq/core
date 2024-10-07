@@ -11,15 +11,19 @@ use Spatie\LaravelData\Attributes\Validation\Required;
 
 final class CreateIncidentTemplateData extends BaseData
 {
+    private readonly ?string $slug;
+
     public function __construct(
         #[Max(255), Required]
         public readonly string $name,
         #[Required]
         public readonly string $template,
-        private readonly ?string $slug = null,
+        ?string $slug = null,
         #[Enum(IncidentTemplateEngineEnum::class)]
         public readonly ?IncidentTemplateEngineEnum $engine = null,
-    ) {}
+    ) {
+        $this->slug = $slug;
+    }
 
     public function slug(): string
     {
@@ -28,8 +32,8 @@ final class CreateIncidentTemplateData extends BaseData
 
     public function toArray(): array
     {
-        return array_merge([
-            'slug' => Str::slug($this->name),
-        ], parent::toArray());
+        return array_merge(parent::toArray(), [
+            'slug' => $this->slug(),
+        ]);
     }
 }

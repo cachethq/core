@@ -11,6 +11,6 @@ final class CreateMetricPointData extends BaseData
     public function __construct(
         #[Required, Numeric]
         public readonly float $value,
-        public readonly ?string $timestamp = null,
+        public readonly mixed $timestamp = null,
     ) {}
 }

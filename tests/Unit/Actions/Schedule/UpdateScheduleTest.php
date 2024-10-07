@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Actions\Schedule\UpdateSchedule;
+use Cachet\Data\Schedule\UpdateScheduleData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
@@ -8,24 +9,28 @@ use Cachet\Models\Schedule;
 it('can update a schedule', function () {
     $schedule = Schedule::factory()->create();
 
-    $data = [
+    $data = UpdateScheduleData::from([
         'name' => 'Schedule Updated',
-    ];
+    ]);
 
     app(UpdateSchedule::class)->handle($schedule, $data);
 
     expect($schedule)
-        ->name->toBe($data['name']);
+        ->name->toBe($data->name);
 });
 
 it('can update a schedule with components', function () {
     $schedule = Schedule::factory()->create();
     [$componentA, $componentB] = Component::factory()->count(2)->create();
 
-    app(UpdateSchedule::class)->handle($schedule, [], [
-        ['id' => $componentA->id, 'status' => ComponentStatusEnum::performance_issues],
-        ['id' => $componentB->id, 'status' => ComponentStatusEnum::major_outage],
+    $data = UpdateScheduleData::from([
+        'components' => [
+            ['id' => $componentA->id, 'status' => ComponentStatusEnum::performance_issues],
+            ['id' => $componentB->id, 'status' => ComponentStatusEnum::major_outage],
+        ]
     ]);
+
+    app(UpdateSchedule::class)->handle($schedule, $data);
 
     expect($schedule)
         ->components->not->toBeEmpty()

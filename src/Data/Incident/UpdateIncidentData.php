@@ -8,12 +8,13 @@ use Spatie\LaravelData\Attributes\Validation\Enum;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Sometimes;
 use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Optional;
 
 final class UpdateIncidentData extends BaseData
 {
     public function __construct(
         #[Max(255), StringType, Sometimes]
-        public readonly string $name,
+        public readonly Optional|string $name,
         #[StringType, Sometimes]
         public readonly ?string $message = null,
         #[Enum(IncidentStatusEnum::class)]

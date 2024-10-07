@@ -17,7 +17,7 @@ final class CreateIncidentData extends BaseData
         #[Max(255)]
         public readonly string $name,
         #[Enum(IncidentStatusEnum::class)]
-        public readonly IncidentStatusEnum $status,
+        public readonly ?IncidentStatusEnum $status = null,
         #[RequiredWithout('template')]
         public readonly ?string $message = null,
         #[RequiredWithout('message')]

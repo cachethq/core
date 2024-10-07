@@ -1,13 +1,14 @@
 <?php
 
 use Cachet\Actions\Metric\CreateMetric;
+use Cachet\Data\Metric\CreateMetricData;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Events\Metrics\MetricCreated;
 use Illuminate\Support\Facades\Event;
 
 it('can create a metric', function () {
     Event::fake();
-    $data = [
+    $data = CreateMetricData::from([
         'name' => 'Foo',
         'suffix' => 'Bar',
         'description' => 'Baz',
@@ -15,7 +16,7 @@ it('can create a metric', function () {
         'calc_type' => MetricTypeEnum::sum,
         'display_chart' => true,
         'places' => 1,
-    ];
+    ]);
 
     $metric = app(CreateMetric::class)->handle($data);
 

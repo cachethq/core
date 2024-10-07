@@ -3,8 +3,10 @@
 namespace Cachet\Data\ComponentGroup;
 
 use Cachet\Data\BaseData;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
+use Spatie\LaravelData\Attributes\Validation\Enum;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\ListType;
 use Spatie\LaravelData\Attributes\Validation\Max;
@@ -20,7 +22,8 @@ final class CreateComponentGroupData extends BaseData
         public readonly string $name,
         #[IntegerType, Min(0)]
         public readonly ?int $order = null,
-        public readonly ?bool $visible = null,
+        #[Enum(ResourceVisibilityEnum::class)]
+        public readonly ?ResourceVisibilityEnum $visible = null,
         #[ListType]
         public readonly ?array $components = null,
     ) {}

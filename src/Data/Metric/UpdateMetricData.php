@@ -14,7 +14,7 @@ final class UpdateMetricData extends BaseData
         #[Max(255)]
         public readonly string $name,
         #[Max(255)]
-        public readonly string $suffix,
+        public readonly ?string $suffix = null,
         public readonly ?string $description = null,
         public readonly ?float $defaultValue = null,
         #[Min(0), Max(60), Rule(new FactorOfSixty())]

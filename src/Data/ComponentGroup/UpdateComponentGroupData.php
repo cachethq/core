@@ -15,7 +15,7 @@ final class UpdateComponentGroupData extends BaseData
 {
     public function __construct(
         #[Max(255)]
-        public readonly string $name,
+        public readonly ?string $name = null,
         #[IntegerType, Min(0)]
         public readonly ?int $order = null,
         public readonly ?bool $visible = null,
