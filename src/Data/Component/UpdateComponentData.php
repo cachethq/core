@@ -9,10 +9,10 @@ use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Required;
 
-final class ComponentData extends BaseData
+final class UpdateComponentData extends BaseData
 {
     public function __construct(
-        #[Max(255), Required]
+        #[Max(255)]
         public readonly string $name,
         public readonly ?string $description = null,
         public readonly ?ComponentStatusEnum $status = null,

@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\ComponentGroup;
 
-use Cachet\Data\ComponentGroup\ComponentGroupData;
+use Cachet\Data\ComponentGroup\CreateComponentGroupData;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 
@@ -11,7 +11,7 @@ class UpdateComponentGroup
     /**
      * Handle the action.
      */
-    public function handle(ComponentGroup $componentGroup, ComponentGroupData $data): ComponentGroup
+    public function handle(ComponentGroup $componentGroup, CreateComponentGroupData $data): ComponentGroup
     {
         $componentGroup->update($data->except('components')->toArray(),);
 

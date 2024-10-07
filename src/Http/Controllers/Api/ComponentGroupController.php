@@ -5,7 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\ComponentGroup\CreateComponentGroup;
 use Cachet\Actions\ComponentGroup\DeleteComponentGroup;
 use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
-use Cachet\Data\ComponentGroup\ComponentGroupData;
+use Cachet\Data\ComponentGroup\CreateComponentGroupData;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
 use Illuminate\Http\Response;
@@ -30,7 +30,7 @@ class ComponentGroupController extends Controller
     /**
      * Create Component Group.
      */
-    public function store(ComponentGroupData $data, CreateComponentGroup $createComponentGroupAction)
+    public function store(CreateComponentGroupData $data, CreateComponentGroup $createComponentGroupAction)
     {
         $componentGroup = $createComponentGroupAction->handle($data);
 
@@ -50,7 +50,7 @@ class ComponentGroupController extends Controller
     /**
      * Update Component Group
      */
-    public function update(ComponentGroupData $data, ComponentGroup $componentGroup, UpdateComponentGroup $updateComponentGroupAction)
+    public function update(CreateComponentGroupData $data, ComponentGroup $componentGroup, UpdateComponentGroup $updateComponentGroupAction)
     {
         $updateComponentGroupAction->handle($componentGroup, $data);
 

@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Component\CreateComponent;
-use Cachet\Data\Component\ComponentData;
+use Cachet\Data\Component\CreateComponentData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Illuminate\Support\Facades\Event;
@@ -11,7 +11,7 @@ beforeEach(function () {
 });
 
 it('can create a component', function () {
-    $data = ComponentData::from([
+    $data = CreateComponentData::from([
         'name' => 'My Component',
         'description' => 'My component description',
     ]);
@@ -26,7 +26,7 @@ it('can create a component', function () {
 });
 
 it('can create a component with a given status', function () {
-    $data = ComponentData::from([
+    $data = CreateComponentData::from([
         'name' => 'My Component',
         'description' => 'My component description',
         'status' => ComponentStatusEnum::performance_issues,
