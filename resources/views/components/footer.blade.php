@@ -1,5 +1,5 @@
 @if ($showSupport || $showTimezone)
-<div class="flex flex-col items-center justify-center gap-2 border-t px-8 py-6 text-center text-sm tracking-tight text-zinc-500 dark:border-zinc-700">
+<footer class="flex flex-col items-center justify-center gap-2 border-t px-8 py-6 text-center text-sm tracking-tight text-zinc-500 dark:border-zinc-700">
     @if($showSupport)
     <div class="flex items-center justify-center gap-2">
         Powered by
@@ -16,5 +16,5 @@
         <span class="font-semibold">{{ $timezone }}</span>.
     </div>
     @endif
-</div>
+</footer>
 @endif
