@@ -13,7 +13,6 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
 use Filament\Widgets\Widget;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
 class Components extends Widget implements HasForms
@@ -25,42 +24,48 @@ class Components extends Widget implements HasForms
     protected int|string|array $columnSpan = 'full';
 
     public Collection $formData;
-    public  Collection $componentGroups;
+
+    public  Collection $components;
 
     public function mount(): void
     {
-        $this->componentGroups = ComponentGroup::query()
-            ->select(['id', 'name', 'collapsed', 'visible'])
-            ->where('visible', '=', true)
-            ->with('components', fn (HasMany $query) => $this->loadComponents($query))
+        $this->components = $components = Component::query()
+            ->select(['id', 'component_group_id', 'name', 'status', 'enabled'])
+            ->where('enabled', '=', true)
             ->get();
 
-        $this->formData = $this->componentGroups->mapWithKeys(function (ComponentGroup $componentGroup) {
-            $components = $componentGroup->components->mapWithKeys(function (Component $component) {
-                return [$component->id => $component->only('status')];
-            });
+        $componentGroups = $this->loadVisibleComponentGroups();
 
-            return [$componentGroup->id => ['components' => $components]];
-        });
+        $this->formData = $componentGroups
+            ->mapWithKeys(function (ComponentGroup $componentGroup) use ($components) {
+                $components = $components->where('component_group_id', '=', $componentGroup->id);
+
+                return [$componentGroup->id => ['components' => $components->mapWithKeys(function (Component $component) {
+                    return [$component->id => $component->only('status')];
+                })]];
+            });
     }
 
     public function form(Form $form): Form
     {
-        $schema = $this->componentGroups
-            ->loadMissing(['components' => fn (HasMany $query) => $this->loadComponents($query)])
+        $componentGroups = $this->loadVisibleComponentGroups();
+
+        $schema = $componentGroups
+            ->filter(fn (ComponentGroup $componentGroup) => $this->components->pluck('component_group_id')->contains($componentGroup->id))
             ->map(function (ComponentGroup $componentGroup): FilamentFormComponent {
                 return Section::make($componentGroup->name)
                     ->schema(function () use ($componentGroup) {
                         return
-                            $componentGroup->components->map(fn (Component $component) => Group::make([
-                                ToggleButtons::make($componentGroup->id . '.components.' . $component->id . '.status')
-                                    ->label($component->name)
-                                    ->inline()
-                                    ->live()
-                                    ->options(ComponentStatusEnum::class)
-                                    ->afterStateUpdated(function (ComponentStatusEnum $state) use ($component) {
-                                        return $component->update(['status' => $state]);
-                                    })
+                            $this->components->filter(fn(Component $component) => $componentGroup->is($component->group))
+                                ->map(fn (Component $component) => Group::make([
+                                    ToggleButtons::make($componentGroup->id . '.components.' . $component->id . '.status')
+                                        ->label($component->name)
+                                        ->inline()
+                                        ->live()
+                                        ->options(ComponentStatusEnum::class)
+                                        ->afterStateUpdated(function (ComponentStatusEnum $state) use ($component) {
+                                            return $component->update(['status' => $state]);
+                                        })
                             ]))->toArray();
                     })
                     ->collapsed($componentGroup->isCollapsible());
@@ -69,9 +74,12 @@ class Components extends Widget implements HasForms
         return $form->schema($schema)->statePath('formData');
     }
 
-    private function loadComponents(HasMany $query): HasMany
+    protected function loadVisibleComponentGroups(): Collection
     {
-        return $query->select(['id', 'component_group_id', 'name', 'status', 'enabled'])
-                ->where('enabled', '=', true);
+        return ComponentGroup::query()
+            ->select(['id', 'name', 'collapsed', 'visible'])
+            ->where('visible', '=', true)
+            ->get()
+            ->push(ComponentGroup::query()->make(ComponentGroup::defaultGroup()));
     }
 }

@@ -58,4 +58,11 @@ class ComponentGroup extends Model
             ->whereIn('component_id', $this->components->pluck('id'))
             ->exists();
     }
+
+    public static function defaultGroup(): array
+    {
+        return [
+            'name' => 'Other Components',
+        ];
+    }
 }

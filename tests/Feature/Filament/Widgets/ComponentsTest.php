@@ -17,9 +17,14 @@ it('component smoke test', function () {
 });
 
 it('will only show visible component groups', function () {
-    ComponentGroup::factory()->create([
+    $componentGroup = ComponentGroup::factory()->create([
         'name' => 'Test Component Group 1',
         'visible' => true,
+    ]);
+
+    Component::factory()->create([
+        'component_group_id' => $componentGroup->id,
+        'enabled' => true,
     ]);
 
     ComponentGroup::factory()->create([
@@ -31,10 +36,9 @@ it('will only show visible component groups', function () {
 
     $component->assertSuccessful();
 
-    assertCount(1, $component->componentGroups);
-
     $component->assertSee('Test Component Group 1');
     $component->assertDontSee('Test Component Group 2');
+    $component->assertDontSee('Other Components');
 });
 
 it('will only show enabled components', function () {
@@ -59,10 +63,43 @@ it('will only show enabled components', function () {
 
     $component->assertSuccessful();
 
-    assertCount(1, $component->componentGroups->first()->components);
+    assertCount(1, $component->components);
 
     $component->assertSee('Forge');
     $component->assertDontSee('Cloud');
+});
+
+it('will not show component groups without components', function () {
+    ComponentGroup::factory()->create([
+        'name' => 'Laravel',
+        'visible' => true,
+    ]);
+
+    $component = livewire(Components::class);
+
+    $component->assertSuccessful();
+
+    $component->assertDontSee('Laravel');
+});
+
+it('will show enabled components without group in default group', function () {
+    Component::factory()->create([
+        'name' => 'Github',
+        'enabled' => true,
+    ]);
+
+    Component::factory()->create([
+        'name' => 'Bitbucket',
+        'enabled' => false,
+    ]);
+
+    $component = livewire(Components::class);
+
+    $component->assertSuccessful();
+
+    $component->assertSee('Other Components');
+    $component->assertSee('Github');
+    $component->assertDontSee('Bitbucket');
 });
 
 it('can save status of component to have major outage', function () {
