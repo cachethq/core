@@ -2,7 +2,7 @@
     <x-filament::section>
         <div class="flex flex-col items-center justify-center">
             <h1 class="text-lg font-semibold mb-4">Component Manager</h1>
-            <form>
+            <form class="w-full">
                 {{ $this->form }}
             </form>
         </div>
