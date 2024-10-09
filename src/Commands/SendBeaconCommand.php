@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Console\Commands;
+namespace Cachet\Commands;
 
 use Cachet\Jobs\SendBeaconJob;
 use Illuminate\Console\Command;
