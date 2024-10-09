@@ -62,7 +62,7 @@ class ComponentGroup extends Model
     public static function defaultGroup(): array
     {
         return [
-            'name' => 'Other Components',
+            'name' => __('Other Components'),
         ];
     }
 }
