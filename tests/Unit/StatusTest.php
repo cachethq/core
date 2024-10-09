@@ -3,10 +3,8 @@
 namespace Tests\Unit;
 
 use Cachet\Enums\ComponentStatusEnum;
-use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
-use Cachet\Models\Incident;
 use Cachet\Status;
 
 use function PHPUnit\Framework\assertFalse;
@@ -45,7 +43,7 @@ it('can get the current system status', function () {
         'status' => ComponentStatusEnum::operational->value,
     ]);
 
-    $this->assertEquals((new Status())->current(), SystemStatusEnum::operational);
+    $this->assertEquals((new Status)->current(), SystemStatusEnum::operational);
 });
 
 it('can get the current system status as partial outage', function () {
@@ -57,7 +55,7 @@ it('can get the current system status as partial outage', function () {
         'status' => ComponentStatusEnum::partial_outage->value,
     ]);
 
-    $this->assertEquals((new Status())->current(), SystemStatusEnum::partial_outage);
+    $this->assertEquals((new Status)->current(), SystemStatusEnum::partial_outage);
 });
 
 it('can get the current system status as major outage', function () {
@@ -65,7 +63,7 @@ it('can get the current system status as major outage', function () {
         'status' => ComponentStatusEnum::major_outage->value,
     ]);
 
-    $this->assertEquals((new Status())->current(), SystemStatusEnum::major_outage);
+    $this->assertEquals((new Status)->current(), SystemStatusEnum::major_outage);
 });
 
 it('can fetch component overview', function () {
