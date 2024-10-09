@@ -17,37 +17,25 @@ class Status
     protected ?object $incidents = null;
 
     /**
-     * @return array{status: string, label: string, color: string}
+     * Get the current system status as an enum.
      */
-    public function current(): array
+    public function current(): SystemStatusEnum
     {
         $components = $this->components();
 
         if ($this->majorOutage()) {
-            return [
-                'status' => SystemStatusEnum::major_outage,
-                'label' => SystemStatusEnum::major_outage->getLabel(),
-                'color' => SystemStatusEnum::major_outage->getColor(),
-            ];
+            return SystemStatusEnum::major_outage;
         }
 
         if ((int) $components->total - (int) $components->operational === 0) {
             $incidents = $this->incidents();
 
             if ((int) $incidents->total === 0 || ((int) $incidents->total > 0 && (int) $incidents->unresolved === 0)) {
-                return [
-                    'status' => SystemStatusEnum::operational,
-                    'label' => SystemStatusEnum::operational->getLabel(),
-                    'color' => SystemStatusEnum::operational->getColor(),
-                ];
+                return SystemStatusEnum::operational;
             }
         }
 
-        return [
-            'status' => SystemStatusEnum::partial_outage,
-            'label' => SystemStatusEnum::partial_outage->getLabel(),
-            'color' => SystemStatusEnum::partial_outage->getColor(),
-        ];
+        return SystemStatusEnum::partial_outage;
     }
 
     /**

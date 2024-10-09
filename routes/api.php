@@ -9,6 +9,7 @@ use Cachet\Http\Controllers\Api\IncidentUpdateController;
 use Cachet\Http\Controllers\Api\MetricController;
 use Cachet\Http\Controllers\Api\MetricPointController;
 use Cachet\Http\Controllers\Api\ScheduleController;
+use Cachet\Http\Controllers\Api\StatusController;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResources([
@@ -30,3 +31,4 @@ Route::apiResource('metrics.points', MetricPointController::class)
 
 Route::get('/ping', [GeneralController::class, 'ping'])->name('ping');
 Route::get('/version', [GeneralController::class, 'version'])->name('version');
+Route::get('/status', StatusController::class)->name('status');
