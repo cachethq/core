@@ -2,8 +2,6 @@
 
 namespace Cachet\Http\Controllers\StatusPage;
 
-use Cachet\Enums\ComponentGroupVisibilityEnum;
-use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
