@@ -19,7 +19,7 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "doctrine/dbal": "^3.6",
         "filament/filament": "^3.2.23",
         "filament/spatie-laravel-settings-plugin": "^3.2",
