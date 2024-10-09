@@ -57,7 +57,7 @@ class Status
      *
      * @return object{total: int, operational: int, performance_issues: int, partial_outage: int, major_outage: int}
      */
-    public function components()
+    public function components(): object
     {
         return $this->components ??= Component::query()
             ->toBase()
@@ -66,7 +66,6 @@ class Status
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as performance_issues', [ComponentStatusEnum::performance_issues])
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as partial_outage', [ComponentStatusEnum::partial_outage])
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as major_outage', [ComponentStatusEnum::major_outage])
-            // @todo Handle authenticated users.
             ->first();
     }
 
@@ -75,13 +74,13 @@ class Status
      *
      * @return object{total: int, resolved: int, unresolved: int}
      */
-    public function incidents()
+    public function incidents(): object
     {
         return $this->incidents ??= Incident::query()
             ->toBase()
             ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when ? in (incidents.status, latest_update.status) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed])
-            ->selectRaw('sum(case when ? not in (incidents.status, latest_update.status) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed])
+            ->selectRaw('sum(case when ? in (incidents.status, latest_update.status) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed->value])
+            ->selectRaw('sum(case when ? not in (incidents.status, latest_update.status) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed->value])
             ->joinSub(function (Builder $query) {
                 $query
                     ->select('iu1.incident_id', 'iu1.status')
