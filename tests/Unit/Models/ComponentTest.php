@@ -1,8 +1,10 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
+use Cachet\Models\Incident;
 
 it('has a group', function () {
     $component = Component::factory()->forGroup([
@@ -15,7 +17,9 @@ it('has a group', function () {
 });
 
 it('has incidents', function () {
-    $component = Component::factory()->hasIncidents(2)->create();
+    $component = Component::factory()->hasAttached(Incident::factory()->count(2), [
+        'status' => IncidentStatusEnum::investigating,
+    ])->create();
 
     expect($component->incidents)->toHaveCount(2);
 });
