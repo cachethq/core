@@ -20,13 +20,13 @@
             </div>
 
             <!-- Period Selector -->
-            <select x-model="period" class="ml-auto rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-sm font-medium">
+            <select x-model="period" class="ml-auto rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 text-sm font-medium">
                 @foreach([MetricViewEnum::last_hour, MetricViewEnum::today, MetricViewEnum::week, MetricViewEnum::month] as $value)
                 <option value="{{ $value }}">{{ $value->getLabel() }}</option>
                 @endforeach
             </select>
         </div>
-        <canvas x-ref="canvas" height="300" class="ring-1 ring-gray-900/5 dark:ring-gray-100/10 bg-gray-50 dark:bg-gray-800 rounded-md shadow-sm text-white"></canvas>
+        <canvas x-ref="canvas" height="300" class="ring-1 ring-gray-900/5 dark:ring-gray-100/10 bg-white dark:bg-zinc-800 rounded-md shadow-sm text-white"></canvas>
     </div>
 </div>
 
