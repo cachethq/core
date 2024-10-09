@@ -22,7 +22,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     public function register(): void
     {
         if (! defined('CACHET_PATH')) {
-            define('CACHET_PATH', realpath(__DIR__.'/../'));
+            define('CACHET_PATH', dirname(__DIR__).'/');
         }
 
         $this->app->singleton(Cachet::class);
