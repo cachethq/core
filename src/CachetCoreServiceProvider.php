@@ -152,6 +152,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 \Cachet\Commands\SendBeaconCommand::class,
+                \Cachet\Commands\VersionCommand::class,
             ]);
 
             AboutCommand::add('Cachet', fn () => [
