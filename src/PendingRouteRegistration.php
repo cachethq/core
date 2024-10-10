@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use Cachet\Http\Controllers\HealthController;
+use Cachet\Http\Controllers\RssController;
 use Cachet\Http\Controllers\Setup\SetupController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
 use Illuminate\Routing\Router;
@@ -29,7 +30,7 @@ class PendingRouteRegistration
             ->as('cachet.')
             ->group(function (Router $router) {
                 $router->get('/', [StatusPageController::class, 'index'])->name('status-page');
-                $router->get('/incidents/{incident}', [StatusPageController::class, 'show'])->name('status-page.incident');
+                $router->get('/incidents/{incident:guid}', [StatusPageController::class, 'show'])->name('status-page.incident');
 
                 $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
                 $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');
@@ -37,6 +38,8 @@ class PendingRouteRegistration
                 // @todo subscription routes... subscribe, manage subscriptions, unsubscribe
 
                 $router->get('/health', HealthController::class)->name('health');
+
+                $router->get('/rss', RssController::class)->name('rss');
             });
     }
 

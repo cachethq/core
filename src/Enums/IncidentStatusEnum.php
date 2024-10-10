@@ -13,6 +13,25 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
     case watching = 3;
     case fixed = 4;
 
+    public static function unresolved(): array
+    {
+        return [
+            self::investigating,
+            self::identified,
+            self::watching,
+        ];
+    }
+
+    public static function fromString(string $value): self
+    {
+        return match ($value) {
+            'investigating' => self::investigating,
+            'identified' => self::identified,
+            'watching' => self::watching,
+            'fixed' => self::fixed,
+        };
+    }
+
     public function getLabel(): string
     {
         return match ($this) {
@@ -20,6 +39,7 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::identified => __('Identified'),
             self::watching => __('Watching'),
             self::fixed => __('Fixed'),
+            default => __('Reported'),
         };
     }
 
@@ -37,9 +57,9 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
     {
         return match ($this) {
             self::investigating => 'warning',
-            self::identified => 'purple',
             self::watching => 'info',
             self::fixed => 'success',
+            default => 'gray',
         };
     }
 }

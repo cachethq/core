@@ -2,16 +2,16 @@
 
 namespace Cachet\Models;
 
+use Cachet\Concerns\HasVisibility;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ComponentGroup extends Model
 {
-    use HasFactory;
+    use HasFactory, HasVisibility;
 
     protected $casts = [
         'order' => 'int',
@@ -22,6 +22,7 @@ class ComponentGroup extends Model
     protected $fillable = [
         'name',
         'order',
+        'collapsed',
         'visible',
     ];
 
@@ -33,11 +34,28 @@ class ComponentGroup extends Model
         return $this->hasMany(Component::class);
     }
 
-    /**
-     * Scope component groups to a specific visibility.
-     */
-    public function scopeVisibility($query, ComponentGroupVisibilityEnum $visibility): Builder
+    public function isCollapsible(): bool
     {
-        return $query->where('visible', $visibility);
+        return match ($this->collapsed) {
+            ComponentGroupVisibilityEnum::collapsed,
+            ComponentGroupVisibilityEnum::collapsed_unless_incident => true,
+            default => false,
+        };
+    }
+
+    public function isExpanded(): bool
+    {
+        return match ($this->collapsed) {
+            ComponentGroupVisibilityEnum::collapsed => false,
+            ComponentGroupVisibilityEnum::collapsed_unless_incident => $this->hasActiveIncident(),
+            ComponentGroupVisibilityEnum::expanded => true,
+        };
+    }
+
+    public function hasActiveIncident(): bool
+    {
+        return Incident::query()
+            ->whereIn('component_id', $this->components->pluck('id'))
+            ->exists();
     }
 }

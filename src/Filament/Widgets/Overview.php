@@ -3,8 +3,8 @@
 namespace Cachet\Filament\Widgets;
 
 use Cachet\Models\Incident;
+use Cachet\Models\MetricPoint;
 use Cachet\Models\Subscriber;
-use Filament\Support\Enums\IconPosition;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +13,7 @@ class Overview extends BaseWidget
 {
     protected function getColumns(): int
     {
-        return 2;
+        return 3;
     }
 
     protected function getStats(): array
@@ -21,14 +21,24 @@ class Overview extends BaseWidget
         return [
             Stat::make('Total Incidents', Incident::count())
                 ->description(__('Total number of reported incidents.'))
-                ->chart(DB::table('incidents')->select(DB::raw('count(*) as total'), 'created_at')->groupBy('created_at')->get()->pluck('total')->toArray())
-                ->icon('cachet-incident', IconPosition::Before)
-                ->color('info'),
+                ->chart(DB::table('incidents')->selectRaw('count(*) as total')->groupByRaw('date(created_at)')->get()->pluck('total')->toArray())
+                ->icon('cachet-incident')
+                ->chartColor('info')
+                ->color('gray'),
+
+            Stat::make('Metric Points', MetricPoint::count())
+                ->description(__('Recent metric points.'))
+                ->chart(DB::table('metric_points')->selectRaw('count(*) as total')->groupBy('created_at')->get()->pluck('total')->toArray())
+                ->icon('cachet-metrics')
+                ->chartColor('info')
+                ->color('gray'),
+
             Stat::make('Total Subscribers', Subscriber::count())
-                ->description(__('Total number of reported incidents.'))
-                ->chart([2, 3, 5, 4, 6, 8, 10, 12, 14, 16, 18, 20])
-                ->icon('cachet-incident', IconPosition::Before)
-                ->color('info'),
+                ->description(__('Total number of subscribers.'))
+                ->chart(DB::table('subscribers')->selectRaw('count(*) as total')->groupByRaw('date(created_at)')->get()->pluck('total')->toArray())
+                ->icon('cachet-subscribers')
+                ->chartColor('info')
+                ->color('gray'),
         ];
     }
 }

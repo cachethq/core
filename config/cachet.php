@@ -21,9 +21,19 @@ return [
      |
      | This is the URI path where Cachet will be accessible from.
      */
-    'path' => env('CACHET_PATH', 'status'),
+    'path' => env('CACHET_PATH', '/status'),
 
     'guard' => env('CACHET_GUARD', null),
+
+    /*
+     |--------------------------------------------------------------------------
+     | The User Model.
+     |--------------------------------------------------------------------------
+     |
+     | This is the model that will be used to authenticate users. This model
+     | must be an instance of Illuminate\Foundation\Auth\User.
+     */
+    'user_model' => App\Models\User::class,
 
     /*
      |--------------------------------------------------------------------------
@@ -66,13 +76,35 @@ return [
 
     /*
      |--------------------------------------------------------------------------
-     | Cachet Major Outage Threshold
+     | Cachet API Rate Limit (attempts per minute)
      |--------------------------------------------------------------------------
      |
-     | This is the threshold at which a major outage is declared.
+     | This is the rate limit for the Cachet API. By default, the API is rate
+     | limited to 300 requests a minute (or 5 requests a second). You can
+     | adjust the limit as needed by your application.
      |
      */
-    'major_outage' => 50.0,
+    'api_rate_limit' => env('CACHET_API_RATE_LIMIT', 300),
 
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Beacon
+     |--------------------------------------------------------------------------
+     |
+     | Enable Cachet's telemetry. Cachet will only ever send anonymous data
+     | to the cachethq.io domain. This enables us to understand how Cachet
+     | is used.
+     |
+     */
     'beacon' => env('CACHET_BEACON', true),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Docker
+     |--------------------------------------------------------------------------
+     |
+     | Determines whether Cachet is running from within a Docker instance.
+     |
+     */
+    'docker' => env('CACHET_DOCKER', false),
 ];

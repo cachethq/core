@@ -13,13 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('sessions')) {
+            return;
+        }
+
         Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->unique();
-            $table->integer('user_id')->nullable();
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
-            $table->text('payload');
-            $table->integer('last_activity');
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
         });
     }
 

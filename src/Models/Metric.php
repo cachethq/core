@@ -2,6 +2,7 @@
 
 namespace Cachet\Models;
 
+use Cachet\Concerns\HasVisibility;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Metric extends Model
 {
-    use HasFactory;
+    use HasFactory, HasVisibility;
 
     protected $casts = [
         'calc_type' => MetricTypeEnum::class,

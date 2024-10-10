@@ -12,6 +12,16 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
     case performance_issues = 2;
     case partial_outage = 3;
     case major_outage = 4;
+    case unknown = 5;
+
+    public static function outage(): array
+    {
+        return [
+            self::performance_issues,
+            self::partial_outage,
+            self::major_outage,
+        ];
+    }
 
     public function getLabel(): string
     {
@@ -20,7 +30,7 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::performance_issues => __('Performance Issues'),
             self::partial_outage => __('Partial Outage'),
             self::major_outage => __('Major Outage'),
-            default => __('Unknown Component Status'),
+            default => __('Unknown'),
         };
     }
 
@@ -42,7 +52,7 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::performance_issues => 'info',
             self::partial_outage => 'warning',
             self::major_outage => 'danger',
-            default => 'secondary',
+            default => 'purple',
         };
     }
 }

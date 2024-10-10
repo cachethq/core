@@ -6,7 +6,10 @@ use Cachet\Models\ComponentGroup;
 
 class DeleteComponentGroup
 {
-    public function handle(ComponentGroup $componentGroup)
+    /**
+     * Handle the action.
+     */
+    public function handle(ComponentGroup $componentGroup): void
     {
         $componentGroup->components()->update(['component_group_id' => null]);
 

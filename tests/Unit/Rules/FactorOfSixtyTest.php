@@ -7,7 +7,7 @@ it('validates thresholds correctly', function ($threshold) {
     $errors = Validator::make([
         'threshold' => $threshold,
     ], [
-        'threshold' => new FactorOfSixty(),
+        'threshold' => new FactorOfSixty,
     ])->errors()->all();
 
     expect($errors)->toBeEmpty();
@@ -19,7 +19,7 @@ it('validates invalid thresholds correctly', function ($threshold) {
     $errors = Validator::make([
         'threshold' => $threshold,
     ], [
-        'threshold' => new FactorOfSixty(),
+        'threshold' => new FactorOfSixty,
     ])->errors()->all();
 
     expect($errors)->toEqual(['The threshold must be a factor of 60.']);

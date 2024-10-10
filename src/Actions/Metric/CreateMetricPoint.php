@@ -7,6 +7,9 @@ use Cachet\Models\MetricPoint;
 
 class CreateMetricPoint
 {
+    /**
+     * Handle the action.
+     */
     public function handle(Metric $metric, array $data = []): MetricPoint
     {
         $lastPoint = $metric->metricPoints()->latest()->first();

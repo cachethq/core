@@ -6,7 +6,10 @@ use Cachet\Models\IncidentTemplate;
 
 class DeleteIncidentTemplate
 {
-    public function handle(IncidentTemplate $incidentTemplate)
+    /**
+     * Handle the action.
+     */
+    public function handle(IncidentTemplate $incidentTemplate): void
     {
         $incidentTemplate->delete();
     }

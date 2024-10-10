@@ -2,16 +2,17 @@
 
 namespace Cachet\View\Components;
 
+use Cachet\Status;
 use Closure;
 use Illuminate\Contracts\View\View;
-use Illuminate\View\Component;
+use Illuminate\View\Component as ViewComponent;
 
-class StatusBar extends Component
+class StatusBar extends ViewComponent
 {
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct(protected readonly Status $status)
     {
         //
     }
@@ -22,7 +23,7 @@ class StatusBar extends Component
     public function render(): View|Closure|string
     {
         return view('cachet::components.status-bar', [
-            //
+            'status' => $this->status->current(),
         ]);
     }
 }

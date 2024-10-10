@@ -93,7 +93,8 @@ class ComponentResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->reorderable('order');
     }
 
     public static function getRelations(): array
@@ -110,5 +111,24 @@ class ComponentResource extends Resource
             'create' => Pages\CreateComponent::route('/create'),
             'edit' => Pages\EditComponent::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        return __('Component');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::outage()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        if ((int) static::getNavigationBadge() > 0) {
+            return 'danger';
+        }
+
+        return 'success';
     }
 }

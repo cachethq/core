@@ -12,6 +12,16 @@ enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
     case guest = 1;
     case hidden = 2;
 
+    public static function visibleToGuests(): array
+    {
+        return [self::guest];
+    }
+
+    public static function visibleToUsers(): array
+    {
+        return [self::authenticated, self::guest];
+    }
+
     public function getIcon(): ?string
     {
         return match ($this) {
@@ -33,9 +43,9 @@ enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
     public function getColor(): string|array|null
     {
         return match ($this) {
-            self::authenticated => 'danger',
-            self::guest => 'primary',
-            self::hidden => 'warning',
+            self::authenticated => 'warning',
+            self::guest => 'info',
+            self::hidden => 'danger',
         };
     }
 }

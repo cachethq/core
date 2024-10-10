@@ -50,7 +50,7 @@ class Cachet
     {
         Route::aliasMiddleware('cachet.guest', RedirectIfAuthenticated::class);
 
-        return new PendingRouteRegistration();
+        return new PendingRouteRegistration;
     }
 
     /**
@@ -59,6 +59,14 @@ class Cachet
     public static function path(): string
     {
         return config('cachet.path', '/status');
+    }
+
+    /**
+     * Get the URI path prefix used by Cachet's dashboard.
+     */
+    public static function dashboardPath(): string
+    {
+        return '/'.ltrim(config('cachet.dashboard_path', app()->joinPaths(rtrim(static::path(), '/'), 'dashboard')), '/');
     }
 
     /**

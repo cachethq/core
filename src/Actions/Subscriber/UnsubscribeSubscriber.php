@@ -7,6 +7,9 @@ use Cachet\Models\Subscriber;
 
 class UnsubscribeSubscriber
 {
+    /**
+     * Handle the action.
+     */
     public function handle(Subscriber $subscriber): void
     {
         $subscriber->components()->delete();

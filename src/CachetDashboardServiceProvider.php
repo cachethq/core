@@ -10,6 +10,7 @@ use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -28,31 +29,38 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->default()
             ->login()
             ->passwordReset()
-            ->brandLogo(fn () => view('cachet::components.logo'))
+            ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->colors([
                 'primary' => Color::rgb('rgb(4, 193, 71)'),
+                'purple' => Color::Purple,
+                'laravel' => Color::rgb('rgb(249, 50, 44)'),
             ])
-            ->viteTheme('resources/css/dashboard/theme.css', 'vendor/cachethq/cachet')
+            ->favicon('/vendor/cachethq/cachet/favicon.ico')
+            ->viteTheme('resources/css/dashboard/theme.css', 'vendor/cachethq/cachet/build')
             ->discoverResources(__DIR__.'/Filament/Resources', 'Cachet\\Filament\\Resources')
             ->discoverPages(__DIR__.'/Filament/Pages', 'Cachet\\Filament\\Pages')
             ->discoverWidgets(__DIR__.'/Filament/Widgets', 'Cachet\\Filament\\Widgets')
             ->navigationGroups([
                 NavigationGroup::make('Settings')
+                    ->label(__('Settings'))
                     ->collapsed()
                     ->icon('cachet-settings'),
-                NavigationGroup::make('Resources')
+                NavigationGroup::make(__('Resources'))
                     ->collapsible(false),
             ])
             ->navigationItems([
                 NavigationItem::make('Status Page')
-//                    ->url(route('cachet.status-page'))
-                    ->group('Resources')
+                    ->label(__('Status Page'))
+                    ->url(Cachet::path())
+                    ->group(__('Resources'))
                     ->icon('cachet-component-performance-issues'),
                 NavigationItem::make('Documentation')
-                    ->url('https://docs.cachethq.io')
-                    ->group('Resources')
+                    ->label(__('Documentation'))
+                    ->url('https://docs.cachethq.io/?ref=cachet-dashboard')
+                    ->group(__('Resources'))
                     ->icon('heroicon-o-book-open'),
             ])
+            ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('cachet::filament.widgets.add-incident-button'))
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -67,6 +75,6 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->path('/status/dashboard');
+            ->path(Cachet::dashboardPath());
     }
 }

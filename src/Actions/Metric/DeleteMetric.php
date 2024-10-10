@@ -6,7 +6,10 @@ use Cachet\Models\Metric;
 
 class DeleteMetric
 {
-    public function handle(Metric $metric)
+    /**
+     * Handle the action.
+     */
+    public function handle(Metric $metric): void
     {
         $metric->metricPoints()->delete();
         $metric->delete();

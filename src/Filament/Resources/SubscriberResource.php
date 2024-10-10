@@ -103,4 +103,9 @@ class SubscriberResource extends Resource
             'edit' => Pages\EditSubscriber::route('/{record}/edit'),
         ];
     }
+
+    public static function getLabel(): ?string
+    {
+        return __('Subscribers');
+    }
 }

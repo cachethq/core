@@ -2,19 +2,21 @@
 
 namespace Cachet\Filament\Resources;
 
+use Cachet\Actions\IncidentUpdate\CreateIncidentUpdate as CreateIncidentUpdateAction;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\IncidentResource\Pages;
+use Cachet\Filament\Resources\IncidentResource\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\IncidentResource\RelationManagers\IncidentUpdatesRelationManager;
 use Cachet\Models\Incident;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 
 class IncidentResource extends Resource
 {
@@ -26,7 +28,7 @@ class IncidentResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()->columns(2)->schema([
+                Section::make()->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
                         ->maxLength(255),
@@ -38,50 +40,44 @@ class IncidentResource extends Resource
                     Forms\Components\MarkdownEditor::make('message')
                         ->required()
                         ->columnSpanFull(),
+                    Forms\Components\DateTimePicker::make('occurred_at')
+                        ->helperText(__('The incident\'s created timestamp will be used if left empty.')),
                     Forms\Components\ToggleButtons::make('visible')
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
-                    Forms\Components\Toggle::make('stickied')
-                        ->required(),
-                ]),
-                Forms\Components\Section::make()->columns(2)->schema([
-                    Forms\Components\Select::make('component_id')
-                        ->multiple()
-                        ->relationship('components', 'name')
+                    //                    Forms\Components\Select::make('component')
+                    //                        ->multiple()
+                    //                        ->relationship('components', 'name')
+                    //                        ->searchable()
+                    //                        ->preload(),
+                ])
+                    ->columnSpan(3),
+                Section::make()->schema([
+                    Forms\Components\Select::make('user_id')
+                        ->label(__('User'))
+                        ->hint(__('Who reported this incident.'))
+                        ->relationship('user', 'name')
+                        ->default(auth()->id())
                         ->searchable()
                         ->preload(),
-                    Forms\Components\DateTimePicker::make('occurred_at'),
-                    Forms\Components\Select::make('user_id')
-                        ->relationship('user', 'name')
-                        ->searchable()
-                        ->preload()
-                        ->createOptionForm([
-                            Forms\Components\TextInput::make('name')
-                                ->required()
-                                ->maxLength(255),
-                            Forms\Components\TextInput::make('email')
-                                ->required()
-                                ->email()
-                                ->maxLength(255),
-                            Forms\Components\TextInput::make('password')
-                                ->required()
-                                ->password()
-                                ->confirmed()
-                                ->minLength(8),
-                        ]),
                     Forms\Components\Toggle::make('notifications')
-                        ->label(__('Send notifications to subscribers.'))
+                        ->label(__('Notify Subscribers?'))
+                        ->required(),
+                    Forms\Components\Toggle::make('stickied')
+                        ->label(__('Sticky Incident?'))
                         ->required(),
                     Forms\Components\TextInput::make('guid')
-                        ->required()
-                        ->default(fn () => (string) Str::uuid())
-                        ->unique(ignoreRecord: true)
-                        ->maxLength(36)
-                        ->hidden(),
-                ]),
-            ]);
+                        ->label('Incident UUID')
+                        ->visibleOn(['edit'])
+                        ->disabled()
+                        ->readonly()
+                        ->columnSpanFull(),
+                ])
+                    ->columnSpan(1),
+            ])
+            ->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -126,24 +122,29 @@ class IncidentResource extends Resource
             ])
             ->actions([
                 Action::make('add-update')
+                    ->disabled(fn (Incident $record) => $record->status === IncidentStatusEnum::fixed)
                     ->label(__('Record Update'))
                     ->color('info')
-                    ->action(function (Incident $record, array $data) {
-                        //                        $update = $record->incidentUpdates()->create($data);
+                    ->action(function (CreateIncidentUpdateAction $createIncidentUpdate, Incident $record, array $data) {
+                        $createIncidentUpdate->handle($record, $data);
 
                         Notification::make()
-                            ->title('Incident Updated')
-                            ->body('Incident was updated...')
+                            ->title(__('Incident :name Updated', ['name' => $record->name]))
+                            ->body(__('A new incident update has been recorded.'))
                             ->success()
                             ->send();
                     })
                     ->form([
                         Forms\Components\MarkdownEditor::make('message')->required(),
-                        Forms\Components\ToggleButtons::make('Status')
+                        Forms\Components\ToggleButtons::make('status')
                             ->options(IncidentStatusEnum::class)
                             ->inline()
                             ->required(),
                     ]),
+                Action::make('view-incident')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Incident $record): string => route('cachet.status-page.incident', $record))
+                    ->label(__('View Incident')),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -157,6 +158,7 @@ class IncidentResource extends Resource
     public static function getRelations(): array
     {
         return [
+            ComponentsRelationManager::class,
             IncidentUpdatesRelationManager::class,
         ];
     }
@@ -168,5 +170,24 @@ class IncidentResource extends Resource
             'create' => Pages\CreateIncident::route('/create'),
             'edit' => Pages\EditIncident::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        return __('Incident');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::unresolved()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        if ((int) static::getNavigationBadge() > 0) {
+            return 'danger';
+        }
+
+        return 'success';
     }
 }

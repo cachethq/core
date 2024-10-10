@@ -1,12 +1,23 @@
 <?php
 
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Component;
 use Cachet\Models\Incident;
 
 it('can have multiple components', function () {
-    $incident = Incident::factory()->hasComponents(2)->create();
+    $incident = Incident::factory()->create();
 
-    expect($incident->components)->toHaveCount(2);
+    $components = Component::factory(2)->create();
+    $incident->components()->attach($components, ['status' => IncidentStatusEnum::investigating->value]);
+
+    expect($incident->components)->toHaveCount(2)
+        ->and($incident->status)->toBeInstanceOf(IncidentStatusEnum::class);
+});
+
+it('will set default guid', function () {
+    $incident = Incident::factory()->state(['guid' => null])->create();
+
+    expect($incident)->guid->not()->toBeNull();
 });
 
 it('can scope to a specific status', function () {
@@ -32,4 +43,16 @@ it('can scope to stickied incidents', function () {
 
     expect(Incident::query()->count())->toBe(2)
         ->and(Incident::query()->stickied()->count())->toBe(1);
+});
+
+it('can scope to unresolved incidents', function () {
+    Incident::factory()->sequence(
+        ['status' => IncidentStatusEnum::investigating],
+        ['status' => IncidentStatusEnum::identified],
+        ['status' => IncidentStatusEnum::watching],
+        ['status' => IncidentStatusEnum::fixed],
+    )->count(4)->create();
+
+    expect(Incident::query()->count())->toBe(4)
+        ->and(Incident::query()->unresolved()->count())->toBe(3);
 });

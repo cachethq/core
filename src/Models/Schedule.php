@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 class Schedule extends Model
 {
@@ -40,11 +41,19 @@ class Schedule extends Model
     }
 
     /**
+     * Render the Markdown message.
+     */
+    public function formattedMessage(): string
+    {
+        return Str::of($this->message)->markdown();
+    }
+
+    /**
      * Scope schedules that are incomplete.
      */
     public function scopeIncomplete(Builder $query): Builder
     {
-        return $query->whereIn('status', [ScheduleStatusEnum::incomplete()])
+        return $query->whereIn('status', ScheduleStatusEnum::incomplete())
             ->whereNull('completed_at');
     }
 

@@ -20,7 +20,7 @@ class IncidentComponentFactory extends Factory
         return [
             'incident_id' => Incident::factory(),
             'component_id' => Component::factory(),
-            'status_id' => ComponentStatusEnum::performance_issues->value,
+            'status' => ComponentStatusEnum::performance_issues->value,
         ];
     }
 }

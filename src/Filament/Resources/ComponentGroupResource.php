@@ -5,6 +5,7 @@ namespace Cachet\Filament\Resources;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\ComponentGroupResource\Pages;
+use Cachet\Filament\Resources\ComponentResource\RelationManagers\ComponentsRelationManager;
 use Cachet\Models\ComponentGroup;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -22,19 +23,23 @@ class ComponentGroupResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()->columns(3)->schema([
+                Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->columnSpanFull(),
                     Forms\Components\ToggleButtons::make('visible')
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
-                        ->required(),
-                    Forms\Components\Select::make('collapsed')
                         ->required()
+                        ->columnSpanFull(),
+                    Forms\Components\ToggleButtons::make('collapsed')
+                        ->required()
+                        ->inline()
                         ->options(ComponentGroupVisibilityEnum::class)
-                        ->default(false),
+                        ->default(ComponentGroupVisibilityEnum::expanded)
+                        ->columnSpanFull(),
                 ]),
             ]);
     }
@@ -75,7 +80,7 @@ class ComponentGroupResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ComponentsRelationManager::class,
         ];
     }
 
@@ -86,5 +91,10 @@ class ComponentGroupResource extends Resource
             'create' => Pages\CreateComponentGroup::route('/create'),
             'edit' => Pages\EditComponentGroup::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        return __('Component Group');
     }
 }

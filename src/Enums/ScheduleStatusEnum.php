@@ -60,4 +60,13 @@ enum ScheduleStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::complete => 'heroicon-m-check-circle',
         };
     }
+
+    public static function parse(ScheduleStatusEnum|string|null $value): ?self
+    {
+        if ($value instanceof self) {
+            return $value;
+        }
+
+        return self::tryFrom($value);
+    }
 }

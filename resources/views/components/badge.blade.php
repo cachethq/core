@@ -1,13 +1,21 @@
-<div class="{{
-[
-'operational' => 'bg-green-200',
-'performance-issues' => 'bg-purple-200',
-'partial-outage' => 'bg-orange-200',
-'major-outage' => 'bg-red-200',
-'unknown' => 'bg-blue-200',
-][$type]
-}} flex items-center gap-1 rounded-full px-2 py-1 text-sm font-semibold leading-tight">
-    @svg('cachet-component-'.$type, 'h-6 w-6 dark:text-zinc-700')
+@props([
+    'color',
+    'icon',
+    'label',
+])
+<div {{ $attributes->style([
+    Illuminate\Support\Arr::toCssStyles([
+        \Filament\Support\get_color_css_variables(
+            $color,
+            shades: [400, 900],
+        ),
+    ]),
+]) }}>
+    <div {{ $attributes->class([
+        'flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold leading-tight shadow bg-custom-400 text-custom-900',
+    ]) }}>
+        @svg($icon, 'h-5 w-5')
 
-    <div class="dark:text-zinc-700">{{ str($type)->title() }}</div>
+        <span>{{ $label }}</span>
+    </div>
 </div>

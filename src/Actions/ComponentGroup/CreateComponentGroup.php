@@ -7,14 +7,22 @@ use Cachet\Models\ComponentGroup;
 
 class CreateComponentGroup
 {
-    public function handle(array $data, ?array $components = []): ComponentGroup
+    /**
+     * Handle the action.
+     */
+    /**
+     * Handle the action.
+     */
+    public function handle(array $data, ?array $components = null): ComponentGroup
     {
         return tap(ComponentGroup::create($data), function (ComponentGroup $componentGroup) use ($components) {
-            if ($components) {
-                Component::query()->whereIn('id', $components)->update([
-                    'component_group_id' => $componentGroup->id,
-                ]);
+            if (! $components) {
+                return;
             }
+
+            return Component::query()->whereIn('id', $components)->update([
+                'component_group_id' => $componentGroup->id,
+            ]);
         });
     }
 }

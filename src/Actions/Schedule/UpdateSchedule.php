@@ -6,6 +6,9 @@ use Cachet\Models\Schedule;
 
 class UpdateSchedule
 {
+    /**
+     * Handle the action.
+     */
     public function handle(Schedule $schedule, array $data = [], ?array $components = []): Schedule
     {
         $schedule->update($data);
@@ -18,6 +21,8 @@ class UpdateSchedule
 
             $schedule->components()->sync($components);
         }
+
+        // @todo Dispatch notification that maintenance was updated.
 
         return $schedule->fresh();
     }

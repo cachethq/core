@@ -2,13 +2,18 @@
 
 namespace Cachet\Models;
 
+use Cachet\Enums\ComponentStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class IncidentComponent extends Model
+class IncidentComponent extends Pivot
 {
     use HasFactory;
+
+    protected $casts = [
+        'status' => ComponentStatusEnum::class,
+    ];
 
     /**
      * Get the incident the component is attached to.

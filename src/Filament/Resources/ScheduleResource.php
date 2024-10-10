@@ -21,22 +21,30 @@ class ScheduleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()->columns(2)->schema([
+                Forms\Components\Section::make()->schema([
                     Forms\Components\TextInput::make('name')
                         ->required(),
                     Forms\Components\Select::make('status')
                         ->required()
                         ->options(ScheduleStatusEnum::class)
                         ->default(ScheduleStatusEnum::upcoming)
+                        ->afterStateUpdated(function (Forms\Set $set, int|ScheduleStatusEnum $state): void {
+                            if (ScheduleStatusEnum::parse($state) !== ScheduleStatusEnum::complete) {
+                                $set('completed_at', null);
+                            }
+                        })
                         ->live(),
                     Forms\Components\MarkdownEditor::make('message')
                         ->columnSpanFull(),
+                ])->columnSpan(3),
+                Forms\Components\Section::make()->schema([
                     Forms\Components\DateTimePicker::make('scheduled_at')
                         ->required(),
                     Forms\Components\DateTimePicker::make('completed_at')
-                        ->visible(fn (Forms\Get $get): bool => $get('status') === ScheduleStatusEnum::complete),
-                ]),
-            ]);
+                        ->visible(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete)
+                        ->required(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete),
+                ])->columnSpan(1),
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -72,7 +80,7 @@ class ScheduleResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('complete')
-                    ->visible(fn (Schedule $record): bool => in_array($record->status->value, ScheduleStatusEnum::incomplete()))
+                    ->disabled(fn (Schedule $record): bool => $record->status === ScheduleStatusEnum::complete)
                     ->label(__('Complete Maintenance'))
                     ->form([
                         Forms\Components\DateTimePicker::make('completed_at')
@@ -89,13 +97,6 @@ class ScheduleResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
@@ -103,5 +104,24 @@ class ScheduleResource extends Resource
             'create' => Pages\CreateSchedule::route('/create'),
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        return __('Schedule');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::incomplete()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        if ((int) static::getNavigationBadge() > 0) {
+            return 'warning';
+        }
+
+        return 'success';
     }
 }
