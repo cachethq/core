@@ -27,17 +27,4 @@ class GeneralController extends Controller
             ],
         ]);
     }
-
-    /**
-     * Get the Cachet status and message.
-     */
-    public function status(): JsonResponse
-    {
-        return response()->json([
-            'data' => [
-                //                'status' => Cachet::status(),
-                //                'message' => Cachet::statusMessage(),
-            ],
-        ]);
-    }
 }

@@ -2,12 +2,12 @@
 
 namespace Cachet\Http\Controllers\StatusPage;
 
-use Cachet\Enums\ComponentGroupVisibilityEnum;
-use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\View\View;
 
 class StatusPageController
@@ -19,23 +19,16 @@ class StatusPageController
     {
         return view('cachet::status-page.index', [
             'componentGroups' => ComponentGroup::query()
-                ->with(['components' => fn ($query) => $query->orderBy('order')->withCount('incidents')])
+                ->with(['components' => fn (HasMany $query) => $query->enabled()->orderBy('order')->withCount('incidents')])
                 ->visible(auth()->check())
-                ->when(auth()->check(), fn ($query) => $query->users(), fn ($query) => $query->guests())
+                ->when(auth()->check(), fn (Builder $query) => $query->users(), fn ($query) => $query->guests())
                 ->get(),
-            'ungroupedComponents' => (new ComponentGroup([
-                'name' => __('Other Components'),
-                'collapsed' => ComponentGroupVisibilityEnum::expanded,
-                'visible' => ResourceVisibilityEnum::guest,
-            ]))
-                ->setRelation(
-                    'components',
-                    Component::query()
-                        ->whereNull('component_group_id')
-                        ->orderBy('order')
-                        ->withCount('incidents')
-                        ->get()
-                ),
+            'ungroupedComponents' => Component::query()
+                ->enabled()
+                ->whereNull('component_group_id')
+                ->orderBy('order')
+                ->withCount('incidents')
+                ->get(),
 
             'schedules' => Schedule::query()->inTheFuture()->orderBy('scheduled_at')->get(),
         ]);

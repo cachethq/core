@@ -39,6 +39,7 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::identified => __('Identified'),
             self::watching => __('Watching'),
             self::fixed => __('Fixed'),
+            default => __('Reported'),
         };
     }
 
@@ -56,9 +57,9 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
     {
         return match ($this) {
             self::investigating => 'warning',
-            self::identified => 'gray',
             self::watching => 'info',
             self::fixed => 'success',
+            default => 'gray',
         };
     }
 }

@@ -17,37 +17,25 @@ class Status
     protected ?object $incidents = null;
 
     /**
-     * @return array{status: string, label: string, color: string}
+     * Get the current system status as an enum.
      */
-    public function current(): array
+    public function current(): SystemStatusEnum
     {
         $components = $this->components();
 
         if ($this->majorOutage()) {
-            return [
-                'status' => SystemStatusEnum::major_outage,
-                'label' => SystemStatusEnum::major_outage->getLabel(),
-                'color' => SystemStatusEnum::major_outage->getColor(),
-            ];
+            return SystemStatusEnum::major_outage;
         }
 
         if ((int) $components->total - (int) $components->operational === 0) {
             $incidents = $this->incidents();
 
             if ((int) $incidents->total === 0 || ((int) $incidents->total > 0 && (int) $incidents->unresolved === 0)) {
-                return [
-                    'status' => SystemStatusEnum::operational,
-                    'label' => SystemStatusEnum::operational->getLabel(),
-                    'color' => SystemStatusEnum::operational->getColor(),
-                ];
+                return SystemStatusEnum::operational;
             }
         }
 
-        return [
-            'status' => SystemStatusEnum::partial_outage,
-            'label' => SystemStatusEnum::partial_outage->getLabel(),
-            'color' => SystemStatusEnum::partial_outage->getColor(),
-        ];
+        return SystemStatusEnum::partial_outage;
     }
 
     /**
@@ -69,7 +57,7 @@ class Status
      *
      * @return object{total: int, operational: int, performance_issues: int, partial_outage: int, major_outage: int}
      */
-    public function components()
+    public function components(): object
     {
         return $this->components ??= Component::query()
             ->toBase()
@@ -78,7 +66,6 @@ class Status
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as performance_issues', [ComponentStatusEnum::performance_issues])
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as partial_outage', [ComponentStatusEnum::partial_outage])
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as major_outage', [ComponentStatusEnum::major_outage])
-            // @todo Handle authenticated users.
             ->first();
     }
 
@@ -87,13 +74,13 @@ class Status
      *
      * @return object{total: int, resolved: int, unresolved: int}
      */
-    public function incidents()
+    public function incidents(): object
     {
         return $this->incidents ??= Incident::query()
             ->toBase()
             ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when ? in (incidents.status, latest_update.status) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed])
-            ->selectRaw('sum(case when ? not in (incidents.status, latest_update.status) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed])
+            ->selectRaw('sum(case when ? in (incidents.status, latest_update.status) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed->value])
+            ->selectRaw('sum(case when ? not in (incidents.status, latest_update.status) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed->value])
             ->joinSub(function (Builder $query) {
                 $query
                     ->select('iu1.incident_id', 'iu1.status')

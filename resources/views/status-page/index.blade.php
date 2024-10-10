@@ -10,9 +10,9 @@
         <x-cachet::component-group :component-group="$componentGroup"/>
         @endforeach
 
-        @if($ungroupedComponents->components->isNotEmpty())
-        <x-cachet::component-group :component-group="$ungroupedComponents"/>
-        @endif
+        @foreach($ungroupedComponents as $component)
+        <x-cachet::component-ungrouped :component="$component" />
+        @endforeach
 
         @if($schedules->isNotEmpty())
         <x-cachet::schedules :schedules="$schedules" />

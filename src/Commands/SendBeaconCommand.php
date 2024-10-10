@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Console\Commands;
+namespace Cachet\Commands;
 
 use Cachet\Jobs\SendBeaconJob;
 use Illuminate\Console\Command;
@@ -26,13 +26,15 @@ class SendBeaconCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function handle(): int
     {
         // Do not send the beacon if it's not enabled.
         if (! config('cachet.beacon')) {
-            return;
+            return 1;
         }
 
         dispatch(new SendBeaconJob);
+
+        return 0;
     }
 }

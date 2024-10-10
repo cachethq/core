@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Component extends Model
@@ -54,9 +53,9 @@ class Component extends Model
     /**
      * Get the incidents for the component.
      */
-    public function incidents(): HasMany
+    public function incidents(): BelongsToMany
     {
-        return $this->hasMany(Incident::class);
+        return $this->belongsToMany(Incident::class, 'incident_components')->withPivot('status');
     }
 
     /**

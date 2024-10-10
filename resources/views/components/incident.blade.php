@@ -12,7 +12,11 @@
             'rounded-t-lg' => $incident->incidentUpdates->isNotEmpty(),
             'rounded-lg' => $incident->incidentUpdates->isEmpty(),
         ])>
-            <div class="text-xs font-medium">{{ $incident->components->pluck('name')->join(', ') }}</div>
+            @if ($incident->components()->exists())
+            <div class="text-xs font-medium">
+                {{ $incident->components()->pluck('name')->join(', ', 'and') }}
+            </div>
+            @endif
             <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-start sm:items-center">
                 <div class="flex flex-col flex-1">
                     <div class="flex gap-2 items-center">
@@ -33,10 +37,8 @@
                     <x-cachet::incident-badge :type="$incident->status" />
                 </div>
             </div>
-            <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $incident->formattedMessage() !!}</div>
         </div>
 
-        @if($incident->incidentUpdates->isNotEmpty())
         <div class="relative">
             <div class="absolute inset-y-0 -left-9">
                 <div class="ml-3.5 h-full border-l-2 border-dashed dark:border-zinc-700"></div>
@@ -46,7 +48,7 @@
             <div class="flex flex-col px-4 divide-y dark:divide-zinc-700">
                 @foreach ($incident->incidentUpdates as $update)
                 <div class="relative py-4" x-data="{ timestamp: new Date(@js($update->created_at)) }">
-                    <x-cachet::incident-update-status :update="$update" />
+                    <x-cachet::incident-update-status :status="$update->status" />
                     <h3 class="text-lg font-semibold">{{ $update->status->getLabel() }}</h3>
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
                         {{ $update->created_at->diffForHumans() }} — <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
@@ -54,8 +56,15 @@
                     <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
                 </div>
                 @endforeach
+                <div class="relative py-4" x-data="{ timestamp: new Date(@js($incident->created_at)) }">
+                    <x-cachet::incident-update-status />
+
+                    <span class="text-xs text-zinc-500 dark:text-zinc-400">
+                        {{ $incident->created_at->diffForHumans() }} — <time datetime="{{ $incident->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
+                    </span>
+                    <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $incident->formattedMessage() !!}</div>
+                </div>
             </div>
-            @endif
         </div>
     </div>
     @empty

@@ -22,7 +22,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     public function register(): void
     {
         if (! defined('CACHET_PATH')) {
-            define('CACHET_PATH', realpath(__DIR__.'/../'));
+            define('CACHET_PATH', dirname(__DIR__).'/');
         }
 
         $this->app->singleton(Cachet::class);
@@ -150,6 +150,11 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerCommands(): void
     {
         if ($this->app->runningInConsole()) {
+            $this->commands([
+                Commands\SendBeaconCommand::class,
+                Commands\VersionCommand::class,
+            ]);
+
             AboutCommand::add('Cachet', fn () => [
                 'Beacon' => AboutCommand::format(config('cachet.beacon'), console: fn ($value) => $value ? '<fg=yellow;options=bold>ENABLED</>' : 'OFF'),
                 'Enabled' => AboutCommand::format(config('cachet.enabled'), console: fn ($value) => $value ? '<fg=yellow;options=bold>ENABLED</>' : 'OFF'),
