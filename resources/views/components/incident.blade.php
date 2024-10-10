@@ -15,7 +15,7 @@
         ])>
             @if ($incident->components()->exists())
             <div class="text-xs font-medium">
-                {{ $incident->components()->pluck('name')->join(', ', 'and') }}
+                {{ $incident->components()->pluck('name')->join(', ', ' and ') }}
             </div>
             @endif
             <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-start sm:items-center">
