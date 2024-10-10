@@ -73,6 +73,7 @@ class Components extends Widget implements HasForms
     {
         return ToggleButtons::make($component->id . '.status')
             ->label($component->name)
+            ->hiddenLabel(is_null($component->component_group_id))
             ->inline()
             ->live()
             ->options(ComponentStatusEnum::class)
