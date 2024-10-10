@@ -51,14 +51,17 @@ class Components extends Widget implements HasForms
                             ->map(fn (Component $component) => Group::make([$this->buildToggleButton($component)]))
                             ->toArray();
                     })
-                    ->collapsed($componentGroup->isCollapsible());
+                    ->collapsed($componentGroup->isCollapsible())
+                    ->persistCollapsed();
             });
 
-        $ungroupedComponentSchema = $this->components->filter(fn(Component $component) => is_null($component->component_group_id))
+        $ungroupedComponentSchema = $this->components
+            ->filter(fn(Component $component) => is_null($component->component_group_id))
             ->map(function (Component $component): FilamentFormComponent {
                 return Section::make($component->name)
                     ->schema(fn () => [$this->buildToggleButton($component)])
-                    ->collapsible(false);
+                    ->collapsible()
+                    ->persistCollapsed();
             });
 
         $schema = $componentGroupSchema->merge($ungroupedComponentSchema)->toArray();
