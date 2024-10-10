@@ -25,7 +25,7 @@ class ComponentFactory extends Factory
             'description' => fake()->paragraph,
             'status' => ComponentStatusEnum::performance_issues->value,
             'order' => 0,
-            'component_group_id' => 0,
+            'component_group_id' => null,
             'enabled' => true,
         ];
     }
