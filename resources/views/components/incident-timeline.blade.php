@@ -20,13 +20,15 @@
     </div>
 
     <div class="flex justify-between">
-        <a href="{{ route('cachet.status-page', ['from' => $nextPeriodFrom]) }}" class="text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
-            {{ __('Previous Incidents') }}
+        <a href="{{ route('cachet.status-page', ['from' => $nextPeriodFrom]) }}" class="flex items-center gap-1 border py-2 px-3 rounded-lg text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
+            <x-heroicon-m-chevron-left class="size-5" />
+            {{ __('Previous') }}
         </a>
 
         @if($canPageForward)
-        <a href="{{ route('cachet.status-page', ['from' => $nextPeriodTo]) }}" class="text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
-            {{ __('Newer Incidents') }}
+        <a href="{{ route('cachet.status-page', ['from' => $nextPeriodTo]) }}" class="flex items-center gap-1 border py-2 px-3 rounded-lg text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
+            {{ __('Next') }}
+            <x-heroicon-m-chevron-right class="size-5" />
         </a>
         @endif
     </div>
