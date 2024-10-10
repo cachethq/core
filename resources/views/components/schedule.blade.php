@@ -13,7 +13,7 @@
                     </span>
                     </div>
                     <div class="flex justify-start sm:justify-end">
-                        <x-cachet::schedule-badge :schedule="$schedule" />
+                        <x-cachet::badge :status="$schedule->status" />
                     </div>
                 </div>
                 <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $schedule->formattedMessage() !!}</div>

@@ -35,7 +35,7 @@
                     </span>
                 </div>
                 <div class="flex justify-start sm:justify-end">
-                    <x-cachet::incident-badge :type="$incident->status" />
+                    <x-cachet::badge :status="$incident->status" />
                 </div>
             </div>
         </div>
