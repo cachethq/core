@@ -53,7 +53,7 @@ class Schedule extends Model
      */
     public function scopeIncomplete(Builder $query): Builder
     {
-        return $query->whereIn('status', [ScheduleStatusEnum::incomplete()])
+        return $query->whereIn('status', ScheduleStatusEnum::incomplete())
             ->whereNull('completed_at');
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Schedule;
 use Cachet\Models\ScheduleComponent;
 
@@ -13,6 +14,21 @@ it('has components', function () {
 
     expect($schedule)
         ->components->toHaveCount(2);
+});
+
+it('can get incomplete schedules', function () {
+    [$scheduleA, ] = Schedule::factory()
+        ->count(3)
+        ->sequence(
+            ['status' => ScheduleStatusEnum::in_progress],
+            ['status' => ScheduleStatusEnum::upcoming],
+            ['status' => ScheduleStatusEnum::complete],
+        )
+        ->create();
+
+    expect(Schedule::query()->incomplete()->get())
+        ->toHaveCount(2)
+        ->first()->id->toBe($scheduleA->id);
 });
 
 it('can get in-progress schedules', function () {
