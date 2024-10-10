@@ -88,4 +88,9 @@ class Component extends Model
     {
         return $query->where('status', $status);
     }
+
+    public function scopeOutage(Builder $query): Builder
+    {
+        return $query->whereIn('status', ComponentStatusEnum::outage());
+    }
 }

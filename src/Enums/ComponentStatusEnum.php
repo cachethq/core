@@ -14,6 +14,15 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
     case major_outage = 4;
     case unknown = 5;
 
+    public static function outage(): array
+    {
+        return [
+            self::performance_issues,
+            self::partial_outage,
+            self::major_outage,
+        ];
+    }
+
     public function getLabel(): string
     {
         return match ($this) {

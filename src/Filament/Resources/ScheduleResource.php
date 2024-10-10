@@ -110,4 +110,18 @@ class ScheduleResource extends Resource
     {
         return __('Schedule');
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::incomplete()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        if ((int) static::getNavigationBadge() > 0) {
+            return 'warning';
+        }
+
+        return 'success';
+    }
 }

@@ -117,4 +117,18 @@ class ComponentResource extends Resource
     {
         return __('Component');
     }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::outage()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string
+    {
+        if ((int) static::getNavigationBadge() > 0) {
+            return 'danger';
+        }
+
+        return 'success';
+    }
 }
