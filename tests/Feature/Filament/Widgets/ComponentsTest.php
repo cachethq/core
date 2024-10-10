@@ -6,6 +6,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Filament\Widgets\Components;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
+
 use function Pest\Livewire\livewire;
 use function PHPUnit\Framework\assertCount;
 use function PHPUnit\Framework\assertEquals;
@@ -118,7 +119,7 @@ it('can save status of component within component group to have major outage', f
     $livewireComponent->assertSuccessful();
 
     $livewireComponent->set(
-        'formData.' . $component->id . '.status',
+        'formData.'.$component->id.'.status',
         ComponentStatusEnum::major_outage->value
     );
 
@@ -137,7 +138,7 @@ it('can save status of component outside a component group to have major outage'
     $livewireComponent->assertSuccessful();
 
     $livewireComponent->set(
-        'formData.' . $component->id . '.status',
+        'formData.'.$component->id.'.status',
         ComponentStatusEnum::major_outage->value
     );
 

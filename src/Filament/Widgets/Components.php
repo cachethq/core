@@ -7,8 +7,8 @@ use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Filament\Forms\Components\Component as FilamentFormComponent;
 use Filament\Forms\Components\Group;
-use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms\Form;
@@ -56,7 +56,7 @@ class Components extends Widget implements HasForms
             });
 
         $ungroupedComponentSchema = $this->components
-            ->filter(fn(Component $component) => is_null($component->component_group_id))
+            ->filter(fn (Component $component) => is_null($component->component_group_id))
             ->map(function (Component $component): FilamentFormComponent {
                 return Section::make($component->name)
                     ->schema(fn () => [$this->buildToggleButton($component)])
@@ -71,7 +71,7 @@ class Components extends Widget implements HasForms
 
     protected function buildToggleButton(Component $component): ToggleButtons
     {
-        return ToggleButtons::make($component->id . '.status')
+        return ToggleButtons::make($component->id.'.status')
             ->label($component->name)
             ->hiddenLabel(is_null($component->component_group_id))
             ->inline()
