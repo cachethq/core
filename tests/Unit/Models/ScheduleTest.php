@@ -17,7 +17,7 @@ it('has components', function () {
 });
 
 it('can get incomplete schedules', function () {
-    [$scheduleA, ] = Schedule::factory()
+    [$scheduleA] = Schedule::factory()
         ->count(3)
         ->sequence(
             ['status' => ScheduleStatusEnum::in_progress],
