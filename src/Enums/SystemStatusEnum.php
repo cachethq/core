@@ -10,7 +10,6 @@ use Filament\Support\Contracts\HasLabel;
 enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
 {
     case operational;
-    case performance_issues;
     case partial_outage;
     case major_outage;
 
@@ -38,7 +37,6 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
             self::operational => 'heroicon-m-check-circle',
             self::partial_outage => 'cachet-component-partial-outage',
             self::major_outage => 'cachet-component-major-outage',
-            default => 'cachet-unknown',
         };
     }
 }
