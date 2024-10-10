@@ -82,7 +82,7 @@ it('will not show component groups without components', function () {
     $component->assertDontSee('Laravel');
 });
 
-it('will show enabled components without group in default group', function () {
+it('will show enabled components without group', function () {
     Component::factory()->create([
         'name' => 'Github',
         'enabled' => true,
@@ -97,12 +97,11 @@ it('will show enabled components without group in default group', function () {
 
     $component->assertSuccessful();
 
-    $component->assertSee('Other Components');
     $component->assertSee('Github');
     $component->assertDontSee('Bitbucket');
 });
 
-it('can save status of component to have major outage', function () {
+it('can save status of component within component group to have major outage', function () {
     $componentGroup = ComponentGroup::factory()->create([
         'name' => 'Laravel',
         'visible' => true,
@@ -119,7 +118,26 @@ it('can save status of component to have major outage', function () {
     $livewireComponent->assertSuccessful();
 
     $livewireComponent->set(
-        'formData.' . $componentGroup->id . '.components.' . $component->id . '.status',
+        'formData.' . $component->id . '.status',
+        ComponentStatusEnum::major_outage->value
+    );
+
+    assertEquals(ComponentStatusEnum::major_outage, $component->fresh()->status);
+});
+
+it('can save status of component outside a component group to have major outage', function () {
+    $component = Component::factory()->create([
+        'name' => 'Github',
+        'status' => ComponentStatusEnum::operational,
+        'enabled' => true,
+    ]);
+
+    $livewireComponent = livewire(Components::class);
+
+    $livewireComponent->assertSuccessful();
+
+    $livewireComponent->set(
+        'formData.' . $component->id . '.status',
         ComponentStatusEnum::major_outage->value
     );
 

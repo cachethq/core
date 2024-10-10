@@ -46,8 +46,7 @@ class Component extends Model
      */
     public function group(): BelongsTo
     {
-        return $this->belongsTo(ComponentGroup::class, 'component_group_id', 'id')
-            ->withDefault(ComponentGroup::defaultGroup());
+        return $this->belongsTo(ComponentGroup::class, 'component_group_id', 'id');
     }
 
     /**

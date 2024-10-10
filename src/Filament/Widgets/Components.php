@@ -25,53 +25,57 @@ class Components extends Widget implements HasForms
 
     public Collection $formData;
 
-    public  Collection $components;
+    public Collection $components;
 
     public function mount(): void
     {
         $this->components = $components = Component::query()
             ->select(['id', 'component_group_id', 'name', 'status', 'enabled'])
-            ->where('enabled', '=', true)
+            ->enabled()
             ->get();
 
-        $componentGroups = $this->loadVisibleComponentGroups();
-
-        $this->formData = $componentGroups
-            ->mapWithKeys(function (ComponentGroup $componentGroup) use ($components) {
-                $components = $components->where('component_group_id', '=', $componentGroup->id);
-
-                return [$componentGroup->id => ['components' => $components->mapWithKeys(function (Component $component) {
-                    return [$component->id => $component->only('status')];
-                })]];
-            });
+        $this->formData = $components->mapWithKeys(function (Component $component) {
+            return [$component->id => ['status' => $component->status]];
+        });
     }
 
     public function form(Form $form): Form
     {
-        $componentGroups = $this->loadVisibleComponentGroups();
-
-        $schema = $componentGroups
+        $componentGroupSchema = $this->loadVisibleComponentGroups()
             ->filter(fn (ComponentGroup $componentGroup) => $this->components->pluck('component_group_id')->contains($componentGroup->id))
             ->map(function (ComponentGroup $componentGroup): FilamentFormComponent {
                 return Section::make($componentGroup->name)
                     ->schema(function () use ($componentGroup) {
-                        return
-                            $this->components->filter(fn(Component $component) => $componentGroup->is($component->group))
-                                ->map(fn (Component $component) => Group::make([
-                                    ToggleButtons::make($componentGroup->id . '.components.' . $component->id . '.status')
-                                        ->label($component->name)
-                                        ->inline()
-                                        ->live()
-                                        ->options(ComponentStatusEnum::class)
-                                        ->afterStateUpdated(function (ComponentStatusEnum $state) use ($component) {
-                                            return $component->update(['status' => $state]);
-                                        })
-                            ]))->toArray();
+                        return $this->components
+                            ->filter(fn (Component $component) => $componentGroup->is($component->group))
+                            ->map(fn (Component $component) => Group::make([$this->buildToggleButton($component)]))
+                            ->toArray();
                     })
                     ->collapsed($componentGroup->isCollapsible());
-            })->toArray();
+            });
+
+        $ungroupedComponentSchema = $this->components->filter(fn(Component $component) => is_null($component->component_group_id))
+            ->map(function (Component $component): FilamentFormComponent {
+                return Section::make($component->name)
+                    ->schema(fn () => [$this->buildToggleButton($component)])
+                    ->collapsible(false);
+            });
+
+        $schema = $componentGroupSchema->merge($ungroupedComponentSchema)->toArray();
 
         return $form->schema($schema)->statePath('formData');
+    }
+
+    protected function buildToggleButton(Component $component): ToggleButtons
+    {
+        return ToggleButtons::make($component->id . '.status')
+            ->label($component->name)
+            ->inline()
+            ->live()
+            ->options(ComponentStatusEnum::class)
+            ->afterStateUpdated(function (ComponentStatusEnum $state) use ($component) {
+                return $component->update(['status' => $state]);
+            });
     }
 
     protected function loadVisibleComponentGroups(): Collection
@@ -79,7 +83,6 @@ class Components extends Widget implements HasForms
         return ComponentGroup::query()
             ->select(['id', 'name', 'collapsed', 'visible'])
             ->where('visible', '=', true)
-            ->get()
-            ->push(ComponentGroup::query()->make(ComponentGroup::defaultGroup()));
+            ->get();
     }
 }
