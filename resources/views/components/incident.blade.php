@@ -1,3 +1,4 @@
+@use('Cachet\Enums\IncidentStatusEnum')
 @props([
     'date',
     'incidents',
@@ -57,7 +58,7 @@
                 </div>
                 @endforeach
                 <div class="relative py-4" x-data="{ timestamp: new Date(@js($incident->created_at)) }">
-                    <x-cachet::incident-update-status />
+                    <x-cachet::incident-update-status :status="IncidentStatusEnum::unknown" />
 
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
                         {{ $incident->created_at->diffForHumans() }} — <time datetime="{{ $incident->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>

@@ -1,5 +1,3 @@
-@props(['component'])
-
 <li class="px-4 py-3">
     <div class="flex items-center justify-between">
         <div class="flex flex-col">
@@ -25,7 +23,7 @@
         @if ($component->incidents_count > 0)
         <a href="{{ route('cachet.status-page.incident', [$component->incidents->first()]) }}"><x-cachet::component-badge :type="$component->status" /></a>
         @else
-        <x-cachet::component-badge :type="$component->status" />
+        <x-cachet::component-badge :type="$status" />
         @endif
     </div>
 </li>

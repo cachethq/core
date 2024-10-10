@@ -2,12 +2,14 @@
 
 namespace Cachet\Enums;
 
+use Filament\Support\Colors\Color;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
 enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
 {
+    case unknown = 0;
     case investigating = 1;
     case identified = 2;
     case watching = 3;
@@ -29,6 +31,7 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
             'identified' => self::identified,
             'watching' => self::watching,
             'fixed' => self::fixed,
+            default => self::unknown,
         };
     }
 
@@ -49,17 +52,19 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
             self::investigating => 'cachet-incident-investigating',
             self::identified => 'cachet-incident-identified',
             self::watching => 'cachet-incident-watching',
-            self::fixed => 'cachet-incident-fixed',
+            self::fixed => 'cachet-circle-check',
+            default => 'cachet-incident',
         };
     }
 
     public function getColor(): string|array|null
     {
         return match ($this) {
-            self::investigating => 'warning',
-            self::watching => 'info',
-            self::fixed => 'success',
-            default => 'gray',
+            self::investigating => Color::Blue,
+            self::watching => Color::Amber,
+            self::fixed => Color::Green,
+            self::identified => Color::Purple,
+            default => Color::Red,
         };
     }
 }

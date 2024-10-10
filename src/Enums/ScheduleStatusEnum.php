@@ -55,9 +55,8 @@ enum ScheduleStatusEnum: int implements HasColor, HasIcon, HasLabel
     public function getIcon(): ?string
     {
         return match ($this) {
-            self::upcoming => 'heroicon-m-calendar-days',
-            self::in_progress => 'heroicon-m-ellipsis-horizontal-circle',
-            self::complete => 'heroicon-m-check-circle',
+            self::complete => 'cachet-circle-check',
+            default => 'cachet-clock',
         };
     }
 
