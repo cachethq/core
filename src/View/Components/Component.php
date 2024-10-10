@@ -2,7 +2,6 @@
 
 namespace Cachet\View\Components;
 
-use Cachet\Enums\ComponentStatusEnum;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component as ViewComponent;
