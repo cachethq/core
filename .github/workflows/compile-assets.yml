@@ -1,10 +1,39 @@
-name: compile assets
+name: Compile Assets
 
 on: [push]
 
 jobs:
   compile:
-    uses: laravel/.github/.github/workflows/compile-assets.yml@main
-    with:
-      cmd: build
-      build_path: "public/build/"
+    name: Compile Assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          coverage: none
+
+      - name: Install PHP dependencies
+        run: |
+          composer require "laravel/framework:11.x" --no-interaction --no-update
+          composer update --no-dev --prefer-dist --no-interaction
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node }}
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Compile assets
+        run: npm run build
+
+      - name: Commit compiled files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Compile Assets
+          file_pattern: "public/build"
