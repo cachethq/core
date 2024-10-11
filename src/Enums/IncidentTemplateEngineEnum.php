@@ -2,6 +2,7 @@
 
 namespace Cachet\Enums;
 
+use Filament\Support\Colors\Color;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
@@ -14,8 +15,8 @@ enum IncidentTemplateEngineEnum: string implements HasColor, HasIcon, HasLabel
     public function getColor(): string|array|null
     {
         return match ($this) {
-            self::blade => 'laravel',
-            self::twig => 'gray',
+            self::blade => Color::rgb('rgb(249, 50, 44)'),
+            self::twig => Color::Zinc,
         };
     }
 

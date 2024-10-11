@@ -5,6 +5,7 @@ namespace Cachet\Database\Seeders;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\IncidentTemplateEngineEnum;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
@@ -12,10 +13,12 @@ use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
+use Cachet\Models\IncidentTemplate;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
+use Cachet\Settings\ThemeSettings;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -151,14 +154,15 @@ EOF
             'message' => 'We\'ve identified the issue and are working on a fix.',
         ]);
 
-        //        IncidentTemplate::create([
-        //            'name' => 'Third-Party Service Outage',
-        //            'slug' => 'third-party-service-outage',
-        //            'template' => 'We\'re investigating an issue with a third-party provider ({{ name }}) causing our services to be offline.',
-        //            'engine' => IncidentTemplateEngineEnum::twig,
-        //        ]);
+        IncidentTemplate::create([
+            'name' => 'Third-Party Service Outage',
+            'slug' => 'third-party-service-outage',
+            'template' => 'We\'re investigating an issue with a third-party provider ({{ name }}) causing our services to be offline.',
+            'engine' => IncidentTemplateEngineEnum::twig,
+        ]);
 
         $appSettings = app(AppSettings::class);
+        $appSettings->name = 'Cachet v3.x Demo';
         $appSettings->about = <<<'ABOUT'
 Cachet is a **beautiful** and **powerful** open-source status page system.
 
@@ -168,13 +172,13 @@ To access the [dashboard](/dashboard), use the following credentials:
 
 Please [consider sponsoring](https://github.com/cachethq/cachet?sponsor=1) the continued development of Cachet.
 ABOUT;
-        $appSettings->name = 'Cachet v3.x Demo';
-        $appSettings->refresh_rate = null;
         $appSettings->show_support = true;
-        $appSettings->show_timezone = true;
+        $appSettings->timezone = 'UTC';
+        $appSettings->show_timezone = false;
         $appSettings->only_disrupted_days = false;
         $appSettings->incident_days = 7;
-        $appSettings->timezone = 'UTC';
+        $appSettings->refresh_rate = null;
+        $appSettings->dashboard_login_link = true;
         $appSettings->major_outage_threshold = 25;
         $appSettings->save();
 
@@ -185,5 +189,9 @@ HTML;
         $customizationSettings->footer = '';
         $customizationSettings->stylesheet = '';
         $customizationSettings->save();
+
+        $themeSettings = app(ThemeSettings::class);
+        $themeSettings->app_banner = '';
+        $themeSettings->save();
     }
 }
