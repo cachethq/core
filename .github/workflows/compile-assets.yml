@@ -20,7 +20,7 @@ jobs:
       - name: Install PHP dependencies
         run: |
           composer require "laravel/framework:11.x" --no-interaction --no-update
-          composer update --no-dev --prefer-dist --no-interaction
+          composer update --prefer-dist --no-interaction
 
       - uses: actions/setup-node@v4
         with:
