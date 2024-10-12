@@ -109,13 +109,13 @@ it('will show grouped components in the correct order', function () {
     Component::factory()->create([
         'name' => 'Forge',
         'component_group_id' => $componentGroup->id,
-        'order' => 2
+        'order' => 2,
     ]);
 
     Component::factory()->create([
         'name' => 'Cloud',
         'component_group_id' => $componentGroup->id,
-        'order' => 1
+        'order' => 1,
     ]);
 
     $component = livewire(Components::class);
