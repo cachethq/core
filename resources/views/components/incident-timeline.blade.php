@@ -26,6 +26,10 @@
         </a>
 
         @if($canPageForward)
+        <a href="{{ route('cachet.status-page') }}" class="flex items-center gap-1 border dark:border-zinc-400 py-2 px-3 rounded-lg text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
+            {{ __('Today') }}
+        </a>
+
         <a href="{{ route('cachet.status-page', ['from' => $nextPeriodTo]) }}" class="flex items-center gap-1 border dark:border-zinc-400 py-2 px-3 rounded-lg text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
             {{ __('Next') }}
             <x-heroicon-m-chevron-right class="size-5" />
