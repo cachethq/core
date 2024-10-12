@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -78,9 +80,9 @@ class Incident extends Model
     /**
      * Get the updates for this incident.
      */
-    public function incidentUpdates(): HasMany
+    public function updates(): MorphMany
     {
-        return $this->hasMany(IncidentUpdate::class);
+        return $this->morphMany(Update::class, 'updateable')->chaperone();
     }
 
     /**

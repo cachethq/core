@@ -4,17 +4,15 @@ namespace Cachet\Database\Factories;
 
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
-use Cachet\Models\IncidentUpdate;
+use Cachet\Models\Update;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<IncidentUpdate>
- *
- * @method IncidentUpdateFactory forIncident(...$sequence)
+ * @extends Factory<Update>
  */
-class IncidentUpdateFactory extends Factory
+class UpdateFactory extends Factory
 {
-    protected $model = IncidentUpdate::class;
+    protected $model = Update::class;
 
     /**
      * Define the model's default state.
@@ -24,7 +22,10 @@ class IncidentUpdateFactory extends Factory
     public function definition(): array
     {
         return [
-            'incident_id' => Incident::factory(),
+            'updateable_id' => Incident::factory(),
+            'updateable_type' => function (array $attributes) {
+                return Incident::find($attributes['updateable_id'])->type;
+            },
             'status' => IncidentStatusEnum::identified->value,
             'message' => fake()->paragraph,
             'user_id' => 1, // @todo decide how to handle storing of users... nullable?

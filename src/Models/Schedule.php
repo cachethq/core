@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -57,6 +58,14 @@ class Schedule extends Model
             Component::class,
             'schedule_components',
         );
+    }
+
+    /**
+     * Get the updates for this schedule.
+     */
+    public function updates(): MorphMany
+    {
+        return $this->morphMany(Update::class, 'updateable')->chaperone();
     }
 
     /**

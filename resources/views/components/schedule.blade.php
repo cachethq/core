@@ -5,9 +5,16 @@
             <div class="flex-1">
                 <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-start sm:items-center">
                     <div class="flex flex-col flex-1">
-                        <h3 class="max-w-full text-base font-semibold break-words sm:text-xl">
-                            {{ $schedule->name}}
-                        </h3>
+                        <div class="flex items-center gap-x-1">
+                            <h3 class="max-w-full text-base font-semibold break-words sm:text-xl">
+                                {{ $schedule->name }}
+                            </h3>
+                            @if ($updates = $schedule->updates()->count())
+                            <span>
+                                {{ __('+:count Update', ['count' => $updates]) }}
+                            </span>
+                            @endif
+                        </div>
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">
                         {{ $schedule->scheduled_at->diffForHumans() }} — <time datetime="{{ $schedule->scheduled_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
                     </span>

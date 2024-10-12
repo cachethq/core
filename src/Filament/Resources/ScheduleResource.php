@@ -3,6 +3,7 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Enums\ScheduleStatusEnum;
+use Cachet\Filament\Resources\IncidentResource\RelationManagers\IncidentUpdatesRelationManager;
 use Cachet\Filament\Resources\ScheduleResource\Pages;
 use Cachet\Models\Schedule;
 use Filament\Forms;
@@ -105,6 +106,13 @@ class ScheduleResource extends Resource
             'index' => Pages\ListSchedules::route('/'),
             'create' => Pages\CreateSchedule::route('/create'),
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            IncidentUpdatesRelationManager::class,
         ];
     }
 

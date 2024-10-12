@@ -8,16 +8,10 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
 
-class IncidentUpdatesRelationManager extends RelationManager
+class UpdatesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'incidentUpdates';
-
-    public static function getTitle(Model $ownerRecord, string $pageClass): string
-    {
-        return __('Incident Updates');
-    }
+    protected static string $relationship = 'updates';
 
     public function form(Form $form): Form
     {
@@ -63,13 +57,9 @@ class IncidentUpdatesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('title')
-            ->modelLabel(__('Incident Update'))
-            ->pluralModelLabel(__('Incident Updates'))
+            ->modelLabel(__('Update'))
+            ->pluralModelLabel(__('Updates'))
             ->columns([
-                Tables\Columns\TextColumn::make('incident.name')
-                    ->label(__('Incident'))
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('Status'))
                     ->badge()

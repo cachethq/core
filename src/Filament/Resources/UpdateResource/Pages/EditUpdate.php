@@ -1,14 +1,14 @@
 <?php
 
-namespace Cachet\Filament\Resources\IncidentUpdateResource\Pages;
+namespace Cachet\Filament\Resources\UpdateResource\Pages;
 
 use Cachet\Filament\Resources\IncidentUpdateResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditIncidentUpdate extends EditRecord
+class EditUpdate extends EditRecord
 {
-    protected static string $resource = IncidentUpdateResource::class;
+    protected static string $resource = UpdateResource::class;
 
     protected function getHeaderActions(): array
     {

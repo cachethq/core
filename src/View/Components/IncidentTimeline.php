@@ -46,7 +46,7 @@ class IncidentTimeline extends Component
         return Incident::query()
             ->with([
                 'components',
-                'incidentUpdates' => fn ($query) => $query->orderByDesc('created_at'),
+                'updates' => fn ($query) => $query->orderByDesc('created_at'),
             ])
             ->visible(auth()->check())
             ->where(function (Builder $query) use ($endDate, $startDate) {
