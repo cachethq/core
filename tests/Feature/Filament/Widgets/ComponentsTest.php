@@ -70,6 +70,63 @@ it('will only show enabled components', function () {
     $component->assertDontSee('Cloud');
 });
 
+it('will show component groups in the correct order', function () {
+    $componentGroup1 = ComponentGroup::factory()->create([
+        'name' => 'Test Component Group 1',
+        'visible' => true,
+        'order' => 2,
+    ]);
+
+    Component::factory()->create([
+        'component_group_id' => $componentGroup1->id,
+    ]);
+
+    $componentGroup2 = ComponentGroup::factory()->create([
+        'name' => 'Test Component Group 2',
+        'visible' => true,
+        'order' => 1,
+    ]);
+
+    Component::factory()->create([
+        'component_group_id' => $componentGroup2->id,
+    ]);
+
+    $component = livewire(Components::class);
+
+    $component->assertSuccessful();
+
+    assertCount(2, $component->components);
+
+    $component->assertSeeInOrder(['Test Component Group 2', 'Test Component Group 1']);
+});
+
+it('will show grouped components in the correct order', function () {
+    $componentGroup = ComponentGroup::factory()->create([
+        'name' => 'Laravel',
+        'visible' => true,
+    ]);
+
+    Component::factory()->create([
+        'name' => 'Forge',
+        'component_group_id' => $componentGroup->id,
+        'order' => 2
+    ]);
+
+    Component::factory()->create([
+        'name' => 'Cloud',
+        'component_group_id' => $componentGroup->id,
+        'order' => 1
+    ]);
+
+    $component = livewire(Components::class);
+
+    $component->assertSuccessful();
+
+    assertCount(2, $component->components);
+
+    $component->assertSeeInOrder(['Cloud', 'Forge']);
+});
+
 it('will not show component groups without components', function () {
     ComponentGroup::factory()->create([
         'name' => 'Laravel',

@@ -32,6 +32,7 @@ class Components extends Widget implements HasForms
         $this->components = $components = Component::query()
             ->select(['id', 'component_group_id', 'name', 'status', 'enabled'])
             ->enabled()
+            ->orderBy('order')
             ->get();
 
         $this->formData = $components->mapWithKeys(function (Component $component) {
@@ -77,9 +78,7 @@ class Components extends Widget implements HasForms
             ->inline()
             ->live()
             ->options(ComponentStatusEnum::class)
-            ->afterStateUpdated(function (ComponentStatusEnum $state) use ($component) {
-                return $component->update(['status' => $state]);
-            });
+            ->afterStateUpdated(fn (ComponentStatusEnum $state) => $component->update(['status' => $state]));
     }
 
     protected function loadVisibleComponentGroups(): Collection
@@ -87,6 +86,7 @@ class Components extends Widget implements HasForms
         return ComponentGroup::query()
             ->select(['id', 'name', 'collapsed', 'visible'])
             ->where('visible', '=', true)
+            ->orderBy('order')
             ->get();
     }
 }
