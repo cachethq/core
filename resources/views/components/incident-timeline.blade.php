@@ -3,9 +3,27 @@
         <div>
             <h2 class="text-2xl font-semibold">{{ __('Past Incidents') }}</h2>
         </div>
+
         <div class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400" x-data="{ from: new Date(@js($from)), to: new Date(@js($to)) }">
-            <div><x-heroicon-m-calendar class="size-4" /></div>
-            <div><time datetime="{{ $from }}" x-text="from.toLocaleDateString()"></time> &mdash; <time datetime="{{ $to }}" x-text="to.toLocaleDateString()"></time></div>
+            <x-filament::input.wrapper suffix-icon="heroicon-m-calendar">
+                    <x-filament::input
+                        type="date"
+                        wire:model="date"
+                        value="{{ $from }}"
+                        x-data="{ date : '{{ $from }}' }"
+                        x-model="date"
+                        x-init="$watch('date', value => window.location = '?from=' + date)"
+                    />
+            </x-filament::input.wrapper>
+            &mdash;
+            <x-filament::input.wrapper suffix-icon="heroicon-m-calendar" disabled>
+                    <x-filament::input
+                        type="date"
+                        wire:model="date"
+                        value="{{ $to }}"
+                        disabled
+                    />
+            </x-filament::input.wrapper>
         </div>
     </div>
 
