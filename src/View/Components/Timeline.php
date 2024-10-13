@@ -11,7 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\View\Component;
 
-class IncidentTimeline extends Component
+class Timeline extends Component
 {
     public function __construct(private AppSettings $appSettings)
     {
@@ -24,7 +24,7 @@ class IncidentTimeline extends Component
         $startDate = Carbon::createFromFormat('Y-m-d', request('from', now()->toDateString()));
         $endDate = $startDate->clone()->subDays($incidentDays);
 
-        return view('cachet::components.incident-timeline', [
+        return view('cachet::components.timeline', [
             'incidents' => $this->incidents(
                 $startDate,
                 $endDate,
