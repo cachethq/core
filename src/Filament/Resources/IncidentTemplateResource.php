@@ -109,4 +109,9 @@ class IncidentTemplateResource extends Resource
     {
         return __('Incident Template');
     }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('Incident Templates');
+    }
 }

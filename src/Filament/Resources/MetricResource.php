@@ -136,6 +136,16 @@ class MetricResource extends Resource
             ->defaultSort('order');
     }
 
+    public static function getLabel(): ?string
+    {
+        return __('Metric');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('Metrics');
+    }
+
     public static function getRelations(): array
     {
         return [
