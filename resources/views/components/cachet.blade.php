@@ -46,8 +46,8 @@
             /* Cachet custom styles */
             :root {
                 @foreach (\Cachet\Cachet::cssVariables() as $key => $value)
-                    --{{ $key }}-light: {{ $value[0] }};
-                    --{{ $key }}-dark: {{ $value[1] }};
+                    --{{ $key }}: {{ $value }};
+                    --{{ $key }}: {{ $value }};
                 @endforeach
             }
 
