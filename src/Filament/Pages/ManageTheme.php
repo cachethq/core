@@ -24,13 +24,32 @@ class ManageTheme extends SettingsPage
                 ]),
 
                 Forms\Components\Section::make()->columns(2)->schema([
-                    Forms\Components\ColorPicker::make('primary')
-                        ->label(__('Primary'))
-                        ->rgba(),
+                    Forms\Components\Fieldset::make(__('Light'))->columns(2)->schema([
+                        Forms\Components\ColorPicker::make('light_background')
+                            ->label(__('Background')),
 
-                    Forms\Components\ColorPicker::make('secondary')
-                        ->label(__('Secondary'))
-                        ->rgba(),
+                        Forms\Components\ColorPicker::make('light_text')
+                            ->label(__('Text')),
+                    ]),
+
+                    Forms\Components\Fieldset::make(__('Dark'))->columns(2)->schema([
+                        Forms\Components\ColorPicker::make('dark_background')
+                            ->label(__('Background')),
+
+                        Forms\Components\ColorPicker::make('dark_text')
+                            ->label(__('Text')),
+                    ]),
+                ]),
+
+                Forms\Components\Section::make()->columns(2)->schema([
+                    Forms\Components\Select::make('dark_mode')
+                        ->label(__('Dark Mode'))
+                        ->options([
+                            'system' => __('System'),
+                            'dark' => __('Dark'),
+                            'light' => __('Light'),
+                        ])
+                        ->columnSpanFull(),
                 ]),
             ]);
     }
