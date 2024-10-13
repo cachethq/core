@@ -23,8 +23,10 @@ class ScheduleResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->schema([
                     Forms\Components\TextInput::make('name')
+                        ->label(__('Name'))
                         ->required(),
                     Forms\Components\Select::make('status')
+                        ->label(__('Status'))
                         ->required()
                         ->options(ScheduleStatusEnum::class)
                         ->default(ScheduleStatusEnum::upcoming)
@@ -35,12 +37,15 @@ class ScheduleResource extends Resource
                         })
                         ->live(),
                     Forms\Components\MarkdownEditor::make('message')
+                        ->label(__('Message'))
                         ->columnSpanFull(),
                 ])->columnSpan(3),
                 Forms\Components\Section::make()->schema([
                     Forms\Components\DateTimePicker::make('scheduled_at')
+                        ->label(__('Scheduled at'))
                         ->required(),
                     Forms\Components\DateTimePicker::make('completed_at')
+                        ->label(__('Completed at'))
                         ->visible(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete)
                         ->required(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete),
                 ])->columnSpan(1),
@@ -52,25 +57,32 @@ class ScheduleResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->label(__('Status'))
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('scheduled_at')
+                    ->label(__('Scheduled at'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('completed_at')
+                    ->label(__('Completed at'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label(__('Deleted at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -28,12 +28,15 @@ class IncidentTemplateResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
+                        ->label(__('Name'))
                         ->required()
                         ->live(debounce: 250)
                         ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
                     Forms\Components\TextInput::make('slug')
+                        ->label(__('Slug'))
                         ->required(),
                     Forms\Components\Textarea::make('template')
+                        ->label(__('Template'))
                         ->hint(fn (Get $get) => new HtmlString(Blade::render(match ($get('engine')) {
                             IncidentTemplateEngineEnum::twig => '<x-filament::link href="https://twig.symfony.com/doc/">Twig Documentation</x-filament::link>',
                             IncidentTemplateEngineEnum::blade => '<x-filament::link href="https://laravel.com/blade">Laravel Blade Documentation</x-filament::link>',
@@ -43,6 +46,7 @@ class IncidentTemplateResource extends Resource
                         ->rows(8)
                         ->columnSpanFull(),
                     Forms\Components\Select::make('engine')
+                        ->label(__('Engine'))
                         ->options(IncidentTemplateEngineEnum::class)
                         ->default(IncidentTemplateEngineEnum::twig)
                         ->live()
@@ -56,22 +60,28 @@ class IncidentTemplateResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
+                    ->label(__('Slug'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('engine')
+                    ->label(__('Engine'))
                     ->sortable()
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label(__('Deleted at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -30,19 +30,24 @@ class IncidentResource extends Resource
             ->schema([
                 Section::make()->schema([
                     Forms\Components\TextInput::make('name')
+                        ->label(__('Name'))
                         ->required()
                         ->maxLength(255),
                     Forms\Components\ToggleButtons::make('status')
+                        ->label(__('Status'))
                         ->inline()
                         ->columnSpanFull()
                         ->options(IncidentStatusEnum::class)
                         ->required(),
                     Forms\Components\MarkdownEditor::make('message')
+                        ->label(__('Message'))
                         ->required()
                         ->columnSpanFull(),
                     Forms\Components\DateTimePicker::make('occurred_at')
+                        ->label(__('Occurred at'))
                         ->helperText(__('The incident\'s created timestamp will be used if left empty.')),
                     Forms\Components\ToggleButtons::make('visible')
+                        ->label(__('Visible'))
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
@@ -85,17 +90,22 @@ class IncidentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->label(__('Status'))
                     ->sortable()
                     ->badge(),
                 Tables\Columns\TextColumn::make('visible')
+                    ->label(__('Visible'))
                     ->sortable()
                     ->badge(),
                 Tables\Columns\IconColumn::make('stickied')
+                    ->label(__('Stickied'))
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->boolean(),
                 Tables\Columns\TextColumn::make('occurred_at')
+                    ->label(__('Occurred at'))
                     ->dateTime()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('notifications')
@@ -103,14 +113,17 @@ class IncidentResource extends Resource
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
+                    ->label(__('Deleted at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -118,6 +131,7 @@ class IncidentResource extends Resource
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\SelectFilter::make('status')
+                    ->label(__('Status'))
                     ->options(IncidentStatusEnum::class),
             ])
             ->actions([
@@ -135,8 +149,11 @@ class IncidentResource extends Resource
                             ->send();
                     })
                     ->form([
-                        Forms\Components\MarkdownEditor::make('message')->required(),
+                        Forms\Components\MarkdownEditor::make('message')
+                            ->label(__('Message'))
+                            ->required(),
                         Forms\Components\ToggleButtons::make('status')
+                            ->label(__('Status'))
                             ->options(IncidentStatusEnum::class)
                             ->inline()
                             ->required(),

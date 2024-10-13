@@ -23,15 +23,19 @@ class SubscriberResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('email')
+                        ->label(__('Email'))
                         ->email()
                         ->required()
                         ->maxLength(255),
                     Forms\Components\TextInput::make('verify_code')
+                        ->label(__('Verify code'))
                         ->required()
                         ->default(fn () => Str::random())
                         ->maxLength(255),
-                    Forms\Components\DateTimePicker::make('verified_at'),
+                    Forms\Components\DateTimePicker::make('verified_at')
+                        ->label(__('Verified at')),
                     Forms\Components\Toggle::make('global')
+                        ->label(__('Global'))
                         ->required(),
                     //                Forms\Components\TextInput::make('phone_number')
                     //                    ->tel(),
@@ -45,27 +49,35 @@ class SubscriberResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('email')
+                    ->label(__('Email'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('verify_code')
+                    ->label(__('Verify code'))
                     ->fontFamily('mono')
                     ->searchable(),
                 Tables\Columns\IconColumn::make('global')
+                    ->label(__('Global'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('phone_number')
+                    ->label(__('Phone number'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('slack_webhook_url')
+                    ->label(__('Slack Webhook URL'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('verified_at')
+                    ->label(__('Verified at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
