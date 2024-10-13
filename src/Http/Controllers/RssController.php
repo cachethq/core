@@ -18,7 +18,7 @@ class RssController
             'statusAbout' => $appSettings->about,
             'incidents' => Incident::query()
                 ->guests()
-                ->with('incidentUpdates')
+                ->with('updates')
                 ->orderByDesc('created_at')
                 ->get(),
         ])->header('Content-Type', 'application/rss+xml');

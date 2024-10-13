@@ -3,8 +3,11 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Routing\Router;
@@ -39,6 +42,11 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         Route::middlewareGroup('cachet', config('cachet.middleware', []));
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
+
+        Relation::morphMap([
+            'incident' => Incident::class,
+            'schedule' => Schedule::class,
+        ]);
 
         $this->registerCommands();
         $this->registerResources();

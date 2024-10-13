@@ -1,5 +1,6 @@
 {
     ":count Incident": ":count Incident|:count Incidents",
+    "+:count Update": "+:count Update|+:count Updates",
     ":name RSS Feed": ":name RSS Feed",
     "Admin": "Admin",
     "Always Hidden": "Always Hidden",

@@ -1,6 +1,6 @@
 <?php
 
-use Cachet\Actions\IncidentUpdate\UpdateIncidentUpdate;
+use Cachet\Actions\Update\EditUpdate;
 use Cachet\Models\IncidentUpdate;
 
 it('can update an incident update', function () {
@@ -10,7 +10,7 @@ it('can update an incident update', function () {
         'message' => 'Incident Updated',
     ];
 
-    app(UpdateIncidentUpdate::class)->handle($incidentUpdate, $data);
+    app(EditUpdate::class)->handle($incidentUpdate, $data);
 
     expect($incidentUpdate)
         ->message->toBe($data['message'])

@@ -11,7 +11,7 @@ class DeleteIncident
      */
     public function handle(Incident $incident): void
     {
-        $incident->incidentUpdates()->delete();
+        $incident->updates()->delete();
 
         $incident->delete();
     }

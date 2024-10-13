@@ -1,6 +1,6 @@
 <?php
 
-use Cachet\Actions\IncidentUpdate\CreateIncidentUpdate;
+use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 
@@ -12,7 +12,7 @@ it('can create an incident update', function () {
         'status' => IncidentStatusEnum::investigating,
     ];
 
-    $incidentUpdate = app(CreateIncidentUpdate::class)->handle($incident, $data);
+    $incidentUpdate = app(CreateUpdate::class)->handle($incident, $data);
 
     expect($incidentUpdate)
         ->message->toBe($data['message']);
@@ -28,7 +28,7 @@ it('updates the incident when the status is changed', function () {
         'status' => IncidentStatusEnum::identified,
     ];
 
-    $incidentUpdate = app(CreateIncidentUpdate::class)->handle($incident, $data);
+    $incidentUpdate = app(CreateUpdate::class)->handle($incident, $data);
 
     expect($incidentUpdate)
         ->message->toBe($data['message'])

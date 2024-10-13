@@ -6,9 +6,10 @@ use Cachet\Enums\IncidentStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Str;
 
-class IncidentUpdate extends Model
+class Update extends Model
 {
     use HasFactory;
 
@@ -23,13 +24,16 @@ class IncidentUpdate extends Model
     ];
 
     /**
-     * Get the incident that the update belongs to.
+     * Get the resource that the update belongs to.
      */
-    public function incident(): BelongsTo
+    public function updateable(): MorphTo
     {
-        return $this->belongsTo(Incident::class);
+        return $this->morphTo();
     }
 
+    /**
+     * Get the user relation.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(config('cachet.user_model'));

@@ -16,6 +16,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
+use Cachet\Models\Update;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
 use Cachet\Settings\ThemeSettings;
@@ -33,12 +34,12 @@ class DatabaseSeeder extends Seeder
     {
         DB::table('users')->truncate();
         DB::table('incidents')->truncate();
-        DB::table('incident_updates')->truncate();
         DB::table('components')->truncate();
         DB::table('component_groups')->truncate();
         DB::table('schedules')->truncate();
         DB::table('metrics')->truncate();
         DB::table('metric_points')->truncate();
+        DB::table('updates')->truncate();
 
         /** @var \Illuminate\Foundation\Auth\User $userModel */
         $userModel = config('cachet.user_model');
@@ -116,7 +117,7 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $timestamp,
             'occurred_at' => $timestamp,
         ]), function (Incident $incident) use ($user) {
-            $incident->incidentUpdates()->create([
+            $update = new Update([
                 'status' => IncidentStatusEnum::identified,
                 'message' => 'We\'ve confirmed the issue is with our DNS provider. We\'re waiting on them to provide an ETA.',
                 'user_id' => $user->id,
@@ -124,7 +125,9 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => $timestamp,
             ]);
 
-            $incident->incidentUpdates()->create([
+            $incident->updates()->save($update);
+
+            $update = new Update([
                 'status' => IncidentStatusEnum::fixed,
                 'message' => <<<'EOF'
 Our DNS provider has fixed the issue. We will continue to monitor the situation.
@@ -136,6 +139,8 @@ EOF
                 'created_at' => $timestamp = $incident->created_at->addMinutes(45),
                 'updated_at' => $timestamp,
             ]);
+
+            $incident->updates()->save($update);
         });
 
         $incident = Incident::create([
@@ -149,10 +154,12 @@ EOF
             'occurred_at' => $timestamp,
         ]);
 
-        $incident->incidentUpdates()->create([
+        $update = new Update([
             'status' => IncidentStatusEnum::identified,
             'message' => 'We\'ve identified the issue and are working on a fix.',
         ]);
+
+        $incident->updates()->save($update);
 
         IncidentTemplate::create([
             'name' => 'Third-Party Service Outage',

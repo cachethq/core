@@ -9,9 +9,9 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 
-class IncidentUpdatesRelationManager extends RelationManager
+class UpdatesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'incidentUpdates';
+    protected static string $relationship = 'updates';
 
     public function form(Form $form): Form
     {
@@ -52,9 +52,6 @@ class IncidentUpdatesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                Tables\Columns\TextColumn::make('incident.name')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->sortable(),

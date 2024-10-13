@@ -2,14 +2,14 @@
 
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
-use Cachet\Models\IncidentUpdate;
+use Cachet\Models\Update;
 
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\putJson;
 
 it('can list incident updates', function () {
-    $incident = Incident::factory()->hasIncidentUpdates(2)->create();
+    $incident = Incident::factory()->hasUpdates(2)->create();
 
     $response = getJson("/status/api/incidents/{$incident->id}/updates");
 
@@ -18,7 +18,7 @@ it('can list incident updates', function () {
 });
 
 it('does not list more than 15 incident updates by default', function () {
-    $incident = Incident::factory()->hasIncidentUpdates(20)->create();
+    $incident = Incident::factory()->hasUpdates(20)->create();
 
     $response = getJson("/status/api/incidents/{$incident->id}/updates");
 
@@ -27,7 +27,7 @@ it('does not list more than 15 incident updates by default', function () {
 });
 
 it('can list more than 15 incident updates', function () {
-    $incident = Incident::factory()->hasIncidentUpdates(20)->create();
+    $incident = Incident::factory()->hasUpdates(20)->create();
 
     $response = getJson("/status/api/incidents/{$incident->id}/updates?per_page=18");
 
@@ -36,7 +36,7 @@ it('can list more than 15 incident updates', function () {
 });
 
 it('sorts incident updates by id by default', function () {
-    $incident = Incident::factory()->hasIncidentUpdates(20)->create();
+    $incident = Incident::factory()->hasUpdates(20)->create();
 
     $response = getJson("/status/api/incidents/{$incident->id}/updates");
 
@@ -48,12 +48,14 @@ it('sorts incident updates by id by default', function () {
 });
 
 it('can sort incident updates by status', function () {
-    IncidentUpdate::factory(5)->sequence(
+    $update = Update::factory(5)->sequence(
         ['status' => 3],
         ['status' => 1],
         ['status' => 4],
         ['status' => 2],
-    )->forIncident()->create();
+    )->create();
+
+    dd($update->incident);
 
     $incident = Incident::query()->first();
 
@@ -66,7 +68,7 @@ it('can sort incident updates by status', function () {
 });
 
 it('can sort incident updates by created date', function () {
-    IncidentUpdate::factory(4)->sequence(
+    Update::factory(4)->sequence(
         ['created_at' => '2022-01-01'],
         ['created_at' => '2020-01-01'],
         ['created_at' => '2023-01-01'],
@@ -84,11 +86,11 @@ it('can sort incident updates by created date', function () {
 });
 
 it('can filter incident updates by status', function () {
-    $incident = Incident::factory()->hasIncidentUpdates(20)->create([
+    $incident = Incident::factory()->hasUpdates(20)->create([
         'status' => IncidentStatusEnum::investigating,
     ]);
 
-    $incidentUpdate = IncidentUpdate::factory()->for($incident)->create([
+    $incidentUpdate = Update::factory()->for($incident)->create([
         'status' => IncidentStatusEnum::watching,
     ]);
 
@@ -107,7 +109,7 @@ it('can filter incident updates by status', function () {
 });
 
 it('can get an incident update', function () {
-    $incidentUpdate = IncidentUpdate::factory()->forIncident()->create();
+    $incidentUpdate = Update::factory()->forIncident()->create();
 
     $response = getJson("/status/api/incidents/{$incidentUpdate->incident_id}/updates/{$incidentUpdate->id}");
 
@@ -118,7 +120,7 @@ it('can get an incident update', function () {
 });
 
 it('can get an incident update with incident', function () {
-    $incidentUpdate = IncidentUpdate::factory()->forIncident()->create();
+    $incidentUpdate = Update::factory()->forIncident()->create();
 
     $response = getJson("/status/api/incidents/{$incidentUpdate->incident_id}/updates/{$incidentUpdate->id}?include=incident");
 
@@ -129,7 +131,7 @@ it('can get an incident update with incident', function () {
 });
 
 it('can update an incident update', function () {
-    $incidentUpdate = IncidentUpdate::factory()->forIncident()->create();
+    $incidentUpdate = Update::factory()->forIncident()->create();
 
     $data = [
         'message' => 'This is an updated message.',
@@ -146,7 +148,7 @@ it('can update an incident update', function () {
 });
 
 it('can delete an incident update', function () {
-    $incidentUpdate = IncidentUpdate::factory()->forIncident()->create();
+    $incidentUpdate = Update::factory()->forIncident()->create();
 
     $response = deleteJson("/status/api/incidents/{$incidentUpdate->incident_id}/updates/{$incidentUpdate->id}");
     $response->assertNoContent();
@@ -157,7 +159,7 @@ it('can delete an incident update', function () {
 
 it('cannot delete an incident update from another incident', function () {
     $incident = Incident::factory()->create();
-    $incidentUpdate = IncidentUpdate::factory()->forIncident()->create();
+    $incidentUpdate = Update::factory()->forIncident()->create();
 
     $response = deleteJson("/status/api/incidents/{$incident->id}/updates/{$incidentUpdate->id}");
     $response->assertNotFound();

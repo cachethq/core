@@ -5,7 +5,7 @@ namespace Cachet\Http\Resources;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
-class IncidentUpdate extends JsonApiResource
+class Update extends JsonApiResource
 {
     public function toAttributes(Request $request): array
     {
@@ -30,7 +30,7 @@ class IncidentUpdate extends JsonApiResource
     public function toRelationships(Request $request): array
     {
         return [
-            'incident' => fn () => Incident::make($this->incident),
+//            'incident' => fn () => Incident::make($this->incident),
         ];
     }
 }

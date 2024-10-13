@@ -2,12 +2,12 @@
 
 namespace Cachet\Filament\Resources;
 
-use Cachet\Actions\IncidentUpdate\CreateIncidentUpdate as CreateIncidentUpdateAction;
+use Cachet\Actions\Update\CreateUpdate as CreateIncidentUpdateAction;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\IncidentResource\Pages;
 use Cachet\Filament\Resources\IncidentResource\RelationManagers\ComponentsRelationManager;
-use Cachet\Filament\Resources\IncidentResource\RelationManagers\IncidentUpdatesRelationManager;
+use Cachet\Filament\Resources\IncidentResource\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Incident;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -159,7 +159,7 @@ class IncidentResource extends Resource
     {
         return [
             ComponentsRelationManager::class,
-            IncidentUpdatesRelationManager::class,
+            UpdatesRelationManager::class,
         ];
     }
 

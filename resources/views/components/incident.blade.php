@@ -10,8 +10,8 @@
     <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }" class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
         <div @class([
             'flex flex-col bg-zinc-50 p-4 dark:bg-zinc-900 gap-2',
-            'rounded-t-lg' => $incident->incidentUpdates->isNotEmpty(),
-            'rounded-lg' => $incident->incidentUpdates->isEmpty(),
+            'rounded-t-lg' => $incident->updates->isNotEmpty(),
+            'rounded-lg' => $incident->updates->isEmpty(),
         ])>
             @if ($incident->components()->exists())
             <div class="text-xs font-medium">
@@ -47,7 +47,7 @@
                 <div class="absolute inset-x-0 bottom-0 w-full h-24 bg-gradient-to-b from-transparent to-zinc-50 dark:from-transparent dark:to-zinc-900"></div>
             </div>
             <div class="flex flex-col px-4 divide-y dark:divide-zinc-700">
-                @foreach ($incident->incidentUpdates as $update)
+                @foreach ($incident->updates as $update)
                 <div class="relative py-4" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                     <x-cachet::incident-update-status :status="$update->status" />
                     <h3 class="text-lg font-semibold">{{ $update->status->getLabel() }}</h3>
