@@ -18,7 +18,7 @@
         <x-cachet::schedules :schedules="$schedules" />
         @endif
 
-        <x-cachet::incident-timeline />
+        <x-cachet::timeline />
     </div>
 
     <x-cachet::footer />
