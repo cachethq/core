@@ -19,19 +19,16 @@ class Cachet
     /**
      * Get the default CSS variables.
      *
-     * @return array<string, array<string,string>>
+     * @return array<string, <string,string>>
      */
     public static function cssVariables(): array
     {
-        $light_background = app(ThemeSettings::class)->light_background;
-        $light_text = app(ThemeSettings::class)->light_text;
-
-        $dark_background = app(ThemeSettings::class)->dark_background;
-        $dark_text = app(ThemeSettings::class)->dark_text;
         return [
-            // Variable => [Light, Dark]
-            'background' => [$light_background, $dark_background],
-            'text' => [$light_text, $dark_text],
+            'background-light' => app(ThemeSettings::class)->light_background,
+            'text-light' => app(ThemeSettings::class)->light_text,
+            'background-dark' => app(ThemeSettings::class)->dark_background,
+            'text-dark' => app(ThemeSettings::class)->dark_text,
+            'font-family-sans' => app(ThemeSettings::class)->font_family_sans,
         ];
     }
 

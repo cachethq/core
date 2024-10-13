@@ -12,6 +12,7 @@ class ThemeSettings extends Settings
     public ?string $light_text;
     public ?string $dark_background;
     public ?string $dark_text;
+    public ?string $font_family_sans;
 
     public static function group(): string
     {

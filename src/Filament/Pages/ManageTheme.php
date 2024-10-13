@@ -26,17 +26,21 @@ class ManageTheme extends SettingsPage
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\Fieldset::make(__('Light'))->columns(2)->schema([
                         Forms\Components\ColorPicker::make('light_background')
+                            ->rgba()
                             ->label(__('Background')),
 
                         Forms\Components\ColorPicker::make('light_text')
+                            ->rgba()
                             ->label(__('Text')),
                     ]),
 
                     Forms\Components\Fieldset::make(__('Dark'))->columns(2)->schema([
                         Forms\Components\ColorPicker::make('dark_background')
+                            ->rgba()
                             ->label(__('Background')),
 
                         Forms\Components\ColorPicker::make('dark_text')
+                            ->rgba()
                             ->label(__('Text')),
                     ]),
                 ]),
@@ -51,6 +55,12 @@ class ManageTheme extends SettingsPage
                         ])
                         ->columnSpanFull(),
                 ]),
+
+                Forms\Components\Section::make()->columns(2)->schema([
+                        Forms\Components\TextInput::make('font_family_sans')
+                            ->label(__('Font')),
+                ]),
+
             ]);
     }
 }
