@@ -3,6 +3,7 @@
 namespace Cachet\View\Components;
 
 use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,6 +26,11 @@ class IncidentTimeline extends Component
 
         return view('cachet::components.incident-timeline', [
             'incidents' => $this->incidents(
+                $startDate,
+                $endDate,
+                $this->appSettings->only_disrupted_days
+            ),
+            'schedules' => $this->schedules(
                 $startDate,
                 $endDate,
                 $this->appSettings->only_disrupted_days
@@ -71,6 +77,35 @@ class IncidentTimeline extends Component
                     ->map(fn ($period) => collect())
             )
             ->when($onlyDisruptedDays, fn ($collection) => $collection->filter(fn ($incidents) => $incidents->isNotEmpty()))
+            ->sortKeysDesc();
+    }
+
+    /**
+     * Fetch the schedules that occurred between the given start and end date.
+     * Schedules will be grouped by days.
+     */
+    private function schedules(Carbon $startDate, Carbon $endDate, bool $onlyDisruptedDays = false): Collection
+    {
+        return Schedule::query()
+            ->with([
+                'components',
+            ])
+            ->where(function (Builder $query) use ($endDate, $startDate) {
+                $query->whereBetween('completed_at', [
+                    $endDate->startOfDay()->toDateTimeString(),
+                    $startDate->endofDay()->toDateTimeString(),
+                ]);
+            })
+            ->orderBy('completed_at', 'desc')
+            ->get()
+            ->groupBy(fn (Schedule $schedule) => $schedule->completed_at->toDateString())
+            ->union(
+            // Back-fill any missing dates...
+                collect($endDate->toPeriod($startDate))
+                    ->keyBy(fn ($period) => $period->toDateString())
+                    ->map(fn ($period) => collect())
+            )
+            ->when($onlyDisruptedDays, fn ($collection) => $collection->filter(fn ($schedules) => $schedules->isNotEmpty()))
             ->sortKeysDesc();
     }
 }

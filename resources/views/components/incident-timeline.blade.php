@@ -11,7 +11,7 @@
 
     <div class="flex flex-col gap-14 w-full">
         @forelse ($incidents as $date => $incident)
-        <x-cachet::incident :date="$date" :incidents="$incident" />
+        <x-cachet::incident :date="$date" :incidents="$incident" :schedules="$schedules" />
         @empty
         <div class="text-zinc-500 dark:text-zinc-400 text-center">
             {{ __('No incidents reported between :from and :to.', ['from' => $from, 'to' => $to]) }}

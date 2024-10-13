@@ -3,7 +3,9 @@
 namespace Cachet\Models;
 
 use Cachet\Enums\ScheduleStatusEnum;
+use Cachet\Filament\Resources\ScheduleResource;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -92,5 +94,18 @@ class Schedule extends Model
     {
         return $query->where('status', '=', ScheduleStatusEnum::complete)
             ->where('completed_at', '<=', Carbon::now());
+    }
+
+    /**
+     * Get the URL to the schedule page within the dashboard.
+     */
+    public function filamentDashboardEditUrl(): string
+    {
+        return ScheduleResource::getUrl(name: 'edit', parameters: ['record' => $this->id]);
+    }
+
+    public function timestamp(): Attribute
+    {
+        return Attribute::get(fn () => $this->completed_at ?: $this->scheduled_at);
     }
 }
