@@ -25,6 +25,7 @@ workbench:
     - migrate:refresh:
         --seed: true
         --seeder: Cachet\Database\Seeders\DatabaseSeeder
+    - cachet:install
   assets:
     - query-builder-config
     - cachet-assets
