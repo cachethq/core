@@ -161,27 +161,6 @@ EOF
             'engine' => IncidentTemplateEngineEnum::twig,
         ]);
 
-        $appSettings = app(AppSettings::class);
-        $appSettings->name = 'Cachet v3.x Demo';
-        $appSettings->about = <<<'ABOUT'
-Cachet is a **beautiful** and **powerful** open-source status page system.
-
-To access the [dashboard](/dashboard), use the following credentials:
-- `test@test.com`
-- `test123`
-
-Please [consider sponsoring](https://github.com/cachethq/cachet?sponsor=1) the continued development of Cachet.
-ABOUT;
-        $appSettings->show_support = true;
-        $appSettings->timezone = 'UTC';
-        $appSettings->show_timezone = false;
-        $appSettings->only_disrupted_days = false;
-        $appSettings->incident_days = 7;
-        $appSettings->refresh_rate = null;
-        $appSettings->dashboard_login_link = true;
-        $appSettings->major_outage_threshold = 25;
-        $appSettings->save();
-
         $customizationSettings = app(CustomizationSettings::class);
         $customizationSettings->header = <<<'HTML'
 <script src="https://cdn.usefathom.com/script.js" data-site="NQKCLYJJ" defer></script>
