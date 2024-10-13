@@ -4,14 +4,14 @@
     "src": "resources/js/cachet.js",
     "isEntry": true
   },
+  "resources/css/cachet.css": {
+    "file": "assets/cachet.b1620ece.css",
+    "src": "resources/css/cachet.css",
+    "isEntry": true
+  },
   "resources/css/dashboard/theme.css": {
     "file": "assets/theme.8251fad4.css",
     "src": "resources/css/dashboard/theme.css",
-    "isEntry": true
-  },
-  "resources/css/cachet.css": {
-    "file": "assets/cachet.30cb9e62.css",
-    "src": "resources/css/cachet.css",
     "isEntry": true
   }
 }
