@@ -25,16 +25,19 @@ class ComponentGroupResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
+                        ->label(__('Name'))
                         ->required()
                         ->maxLength(255)
                         ->columnSpanFull(),
                     Forms\Components\ToggleButtons::make('visible')
+                        ->label(__('Visible'))
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
                         ->required()
                         ->columnSpanFull(),
                     Forms\Components\ToggleButtons::make('collapsed')
+                        ->label(__('Collapsed'))
                         ->required()
                         ->inline()
                         ->options(ComponentGroupVisibilityEnum::class)
@@ -49,17 +52,22 @@ class ComponentGroupResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('visible')
+                    ->label(__('Visible'))
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('collapsed')
+                    ->label(__('Collapsed'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -96,5 +104,10 @@ class ComponentGroupResource extends Resource
     public static function getLabel(): ?string
     {
         return __('Component Group');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('Component Groups');
     }
 }
