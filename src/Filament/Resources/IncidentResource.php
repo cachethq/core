@@ -177,6 +177,11 @@ class IncidentResource extends Resource
         return __('Incident');
     }
 
+    public static function getPluralLabel(): ?string
+    {
+        return __('Incidents');
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::unresolved()->count();

@@ -111,6 +111,11 @@ class ScheduleResource extends Resource
         return __('Schedule');
     }
 
+    public static function getPluralLabel(): ?string
+    {
+        return __('Schedules');
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::incomplete()->count();

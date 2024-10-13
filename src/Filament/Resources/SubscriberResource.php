@@ -106,6 +106,11 @@ class SubscriberResource extends Resource
 
     public static function getLabel(): ?string
     {
+        return __('Subscriber');
+    }
+
+    public static function getPluralLabel(): ?string
+    {
         return __('Subscribers');
     }
 }

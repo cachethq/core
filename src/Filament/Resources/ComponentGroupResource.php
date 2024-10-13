@@ -97,4 +97,9 @@ class ComponentGroupResource extends Resource
     {
         return __('Component Group');
     }
+
+    public static function getPluralLabel(): ?string
+    {
+        return __('Component Groups');
+    }
 }

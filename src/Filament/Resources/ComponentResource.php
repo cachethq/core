@@ -118,6 +118,11 @@ class ComponentResource extends Resource
         return __('Component');
     }
 
+    public static function getPluralLabel(): ?string
+    {
+        return __('Components');
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::outage()->count();
