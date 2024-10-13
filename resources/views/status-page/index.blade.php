@@ -14,6 +14,8 @@
         <x-cachet::component-ungrouped :component="$component" />
         @endforeach
 
+        <x-cachet::metrics />
+
         @if($schedules->isNotEmpty())
         <x-cachet::schedules :schedules="$schedules" />
         @endif
