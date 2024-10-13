@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use Cachet\Http\Middleware\RedirectIfAuthenticated;
+use Cachet\Settings\ThemeSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,11 +23,26 @@ class Cachet
      */
     public static function cssVariables(): array
     {
+        $light_background = app(ThemeSettings::class)->light_background;
+        $light_text = app(ThemeSettings::class)->light_text;
+
+        $dark_background = app(ThemeSettings::class)->dark_background;
+        $dark_text = app(ThemeSettings::class)->dark_text;
         return [
             // Variable => [Light, Dark]
-            'background' => ['#F9FAFB', '#18181B'],
-            'text' => ['#3F3F46', '#D4D4D8'],
+            'background' => [$light_background, $dark_background],
+            'text' => [$light_text, $dark_text],
         ];
+    }
+
+    /**
+     * Get the current theme mode.
+     *
+     * @return string ('system', 'dark', 'light')
+     */
+    public static function darkMode(): string
+    {
+        return app(ThemeSettings::class)->dark_mode;
     }
 
     /**

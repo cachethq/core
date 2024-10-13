@@ -1,6 +1,14 @@
 @use('Cachet\Cachet')
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-background-light text-base-light dark:bg-background-dark dark:text-base-dark">
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    class="bg-background-light text-base-light dark:bg-background-dark dark:text-base-dark"
+    x-data="{
+      darkMode: localStorage.getItem('darkMode')
+      || localStorage.setItem('darkMode', '{{ Cachet::darkMode() }}')}"
+    x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
+    x-bind:class="{'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}"
+>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -51,5 +59,8 @@
 
         <!-- Custom Cachet Footer -->
         {!! $cachet_footer !!}
+    <script>
+        localStorage.setItem('darkMode', '{{ Cachet::darkMode() }}')
+    </script>
     </body>
 </html>
