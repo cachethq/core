@@ -3,16 +3,13 @@
 namespace Tests\Unit\Commands;
 
 use Cachet\Settings\AppSettings;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('runs install command successfully without configuration', function () {
     $this->artisan('cachet:install')
         ->expectsOutputToContain('Welcome to the Cachet installer!')
         ->expectsConfirmation('Do you want to configure Cachet before installing?', 'no')
         ->expectsOutputToContain('Installing Cachet...')
-        ->expectsOutputToContain('Cachet has been installed successfully!')
+        ->expectsOutputToContain('Cachet is installed ⚡')
         ->assertSuccessful();
 });
 
@@ -32,7 +29,7 @@ it('updates app settings when configuration is passed', function () {
         ->expectsConfirmation('Should the dashboard login link be shown?', 'no')
         ->expectsQuestion('Major outage threshold %', 50)
         ->expectsOutputToContain('Installing Cachet...')
-        ->expectsOutputToContain('Cachet has been installed successfully!')
+        ->expectsOutputToContain('Cachet is installed ⚡')
         ->assertSuccessful();
 
     $settings = app(AppSettings::class);

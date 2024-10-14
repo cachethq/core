@@ -10,6 +10,7 @@ use ReflectionClass;
 use ReflectionProperty;
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\info;
+use function Laravel\Prompts\intro;
 use function Laravel\Prompts\text;
 
 
@@ -21,7 +22,7 @@ class InstallCommand extends Command
 
     public function handle(AppSettings $settings)
     {
-        info('Welcome to the Cachet installer!');
+        intro('Welcome to the Cachet installer!');
 
         Sleep::for(2)->seconds();
 
@@ -32,7 +33,7 @@ class InstallCommand extends Command
 
         info('Installing Cachet...');
 
-        info('Cachet has been installed successfully!');
+        info('Cachet is installed ⚡');
 
         return Command::SUCCESS;
     }
