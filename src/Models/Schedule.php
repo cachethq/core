@@ -16,7 +16,6 @@ class Schedule extends Model
     use HasFactory, SoftDeletes;
 
     protected $casts = [
-        'status' => ScheduleStatusEnum::class,
         'scheduled_at' => 'datetime',
         'completed_at' => 'datetime',
     ];
@@ -24,10 +23,24 @@ class Schedule extends Model
     protected $fillable = [
         'name',
         'message',
-        'status',
         'scheduled_at',
         'completed_at',
     ];
+
+    public function getStatusAttribute(): ScheduleStatusEnum
+    {
+        $now = Carbon::now();
+
+        if ($this->scheduled_at >= $now) {
+            return ScheduleStatusEnum::upcoming;
+        }
+
+        if ($this->completed_at >= $now || $this->completed_at === null) {
+            return ScheduleStatusEnum::in_progress;
+        }
+
+        return ScheduleStatusEnum::complete;
+    }
 
     /**
      * Get the components affected by this schedule.
@@ -53,8 +66,8 @@ class Schedule extends Model
      */
     public function scopeIncomplete(Builder $query): Builder
     {
-        return $query->whereIn('status', ScheduleStatusEnum::incomplete())
-            ->whereNull('completed_at');
+        return $query->whereDate('completed_at', '>=', Carbon::now())
+        ->orWhereNull('completed_at');
     }
 
     /**
@@ -62,9 +75,11 @@ class Schedule extends Model
      */
     public function scopeInProgress(Builder $query): Builder
     {
-        return $query->where('scheduled_at', '<=', Carbon::now())
-            ->where('status', '=', ScheduleStatusEnum::in_progress)
-            ->whereNull('completed_at');
+        return $query->whereDate('scheduled_at', '<=', Carbon::now())
+        ->where(function (Builder $query) {
+            $query->whereDate('completed_at', '>=', Carbon::now())
+            ->orWhereNull('completed_at');
+        });
     }
 
     /**
@@ -72,8 +87,7 @@ class Schedule extends Model
      */
     public function scopeInTheFuture(Builder $query): Builder
     {
-        return $query->whereIn('status', ScheduleStatusEnum::upcoming())
-            ->whereDate('scheduled_at', '>=', Carbon::now());
+        return $query->whereDate('scheduled_at', '>=', Carbon::now());
     }
 
     /**
@@ -81,16 +95,6 @@ class Schedule extends Model
      */
     public function scopeInThePast(Builder $query): Builder
     {
-        return $query->whereIn('status', ScheduleStatusEnum::upcoming())
-            ->where('scheduled_at', '<=', Carbon::now());
-    }
-
-    /**
-     * Scopes schedules to those completed in the past.
-     */
-    public function scopeCompletedPreviously(Builder $query): Builder
-    {
-        return $query->where('status', '=', ScheduleStatusEnum::complete)
-            ->where('completed_at', '<=', Carbon::now());
+        return $query->where('completed_at', '<=', Carbon::now());
     }
 }

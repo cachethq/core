@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Database Maintenance',
             'message' => 'We will be conducting maintenance on our database servers. You may experience degraded performance during this time.',
             'scheduled_at' => now()->addHours(6),
-            'status' => ScheduleStatusEnum::upcoming,
+            'completed_at' => now()->addHours(10),
         ]);
 
         $componentGroup = ComponentGroup::create([
