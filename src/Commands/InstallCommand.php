@@ -27,6 +27,8 @@ class InstallCommand extends Command
 
         Sleep::for(2)->seconds();
 
+        $this->call('migrate', ['--seed' => true, '--seeder' => DatabaseSeeder::class]);
+
         if (confirm('Do you want to configure Cachet before installing?', true)) {
             info('Configuring Cachet...');
             $this->configureEnvironmentSettings();
@@ -36,8 +38,6 @@ class InstallCommand extends Command
         info('Installing Cachet...');
 
         $this->call('filament:assets');
-
-        $this->call('migrate', ['--seed' => true, '--seeder' => DatabaseSeeder::class]);
 
         $settings->save();
 
