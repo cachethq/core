@@ -107,4 +107,14 @@ return [
      |
      */
     'docker' => env('CACHET_DOCKER', false),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Database Connection
+     |--------------------------------------------------------------------------
+     |
+     | Support using an alternative database connection, defaults to default connecton of application
+     |
+     */
+    'database_connection' => env('CACHET_DB_CONNECTION'),
 ];
