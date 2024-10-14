@@ -2,6 +2,7 @@
 
 namespace Cachet\Commands;
 
+use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\Attributes\Description;
 use Illuminate\Console\Command;
@@ -28,17 +29,29 @@ class InstallCommand extends Command
 
         if (confirm('Do you want to configure Cachet before installing?', true)) {
             info('Configuring Cachet...');
-            $this->configureDatabaseSettings($settings);
+            $this->configureEnvironmentSettings();
+            $settings = $this->configureDatabaseSettings($settings);
         }
 
         info('Installing Cachet...');
+
+        $this->call('filament:assets');
+
+        $this->call('migrate', ['--seed' => true, '--seeder' => DatabaseSeeder::class]);
+
+        $settings->save();
 
         info('Cachet is installed ⚡');
 
         return Command::SUCCESS;
     }
 
-    protected function configureDatabaseSettings(AppSettings $settings): void
+    protected function configureEnvironmentSettings(): void
+    {
+        //@todo configure environment variables inside cachet.php
+    }
+
+    protected function configureDatabaseSettings(AppSettings $settings): AppSettings
     {
         collect(
             (new ReflectionClass($settings))->getProperties(ReflectionProperty::IS_PUBLIC)
@@ -55,6 +68,6 @@ class InstallCommand extends Command
             })
             ->pluck('name');
 
-        $settings->save();
+        return $settings;
     }
 }

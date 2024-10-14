@@ -18,12 +18,8 @@ workbench:
       to: public/vendor/cachethq/cachet
   build:
     - asset-publish
-    - filament:assets
     - create-sqlite-db
     - db:wipe
-    - migrate:refresh:
-        --seed: true
-        --seeder: Cachet\Database\Seeders\DatabaseSeeder
     - cachet:install
   assets:
     - query-builder-config
