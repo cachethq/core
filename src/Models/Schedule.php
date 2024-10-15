@@ -4,6 +4,7 @@ namespace Cachet\Models;
 
 use Cachet\Enums\ScheduleStatusEnum;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -27,19 +28,20 @@ class Schedule extends Model
         'completed_at',
     ];
 
-    public function getStatusAttribute(): ScheduleStatusEnum
+    /**
+     * Get the status of the schedule.
+     */
+    public function status(): Attribute
     {
-        $now = Carbon::now();
+        return Attribute::get(function () {
+            $now = Carbon::now();
 
-        if ($this->scheduled_at >= $now) {
-            return ScheduleStatusEnum::upcoming;
-        }
-
-        if ($this->completed_at >= $now || $this->completed_at === null) {
-            return ScheduleStatusEnum::in_progress;
-        }
-
-        return ScheduleStatusEnum::complete;
+            return match(true) {
+                $this->scheduled_at->gte($now) => ScheduleStatusEnum::upcoming,
+                $this->completed_at->gte($now) || $this->completed_at === null => ScheduleStatusEnum::in_progress,
+                default => ScheduleStatusEnum::complete,
+            };
+        });
     }
 
     /**
