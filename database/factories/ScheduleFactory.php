@@ -30,6 +30,7 @@ class ScheduleFactory extends Factory
     public function completed(): self
     {
         return $this->state([
+            'scheduled_at' => now()->subMinutes(45),
             'completed_at' => now()->subMinutes(30),
         ]);
     }

@@ -52,3 +52,21 @@ it('can get schedules from the past', function () {
         ->toHaveCount(1)
         ->first()->id->toBe($scheduleInPast->id);
 });
+
+it('can determine a schedule\'s upcoming status', function () {
+    $schedule = Schedule::factory()->inTheFuture()->create();
+
+    expect($schedule)->status->toBe(ScheduleStatusEnum::upcoming);
+});
+
+it('can determine a schedule\'s in-progress status', function () {
+    $schedule = Schedule::factory()->inProgress()->create();
+
+    expect($schedule)->status->toBe(ScheduleStatusEnum::in_progress);
+});
+
+it('can determine a schedule\'s completed status', function () {
+    $schedule = Schedule::factory()->completed()->create();
+
+    expect($schedule)->status->toBe(ScheduleStatusEnum::complete);
+});
