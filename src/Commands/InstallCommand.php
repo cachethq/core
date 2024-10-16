@@ -6,7 +6,9 @@ use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\Attributes\Description;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Sleep;
+use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionProperty;
 use function Laravel\Prompts\confirm;
@@ -48,7 +50,67 @@ class InstallCommand extends Command
 
     protected function configureEnvironmentSettings(): void
     {
-        //@todo configure environment variables inside cachet.php
+        $path = text(
+            'Which path do you want Cachet to be accessible from?',
+            default: config('cachet.path')
+        );
+
+        $title = text(
+            'What will the title of your status page be?',
+            default: config('cachet.title')
+        );
+
+        $connection = text(
+            'Which database connection do you wish to use for Cachet?',
+            default: config('cachet.database_connection')
+        );
+
+        $beacon = confirm(
+            'Do you wish to send anonymous data to cachet to help us understand how Cachet is used?',
+            default: config('cachet.beacon')
+        );
+
+        $this->writeEnv([
+            'CACHET_PATH' => $path,
+            'CACHET_TITLE' => $title,
+            'CACHET_DB_CONNECTION' => $connection,
+            'CACHET_BEACON' => $beacon,
+        ]);
+    }
+
+    protected function writeEnv(array $values): void
+    {
+        $environmentFile = app()->environmentFile();
+        $environmentPath = app()->environmentPath();
+        $fullPath = $environmentPath . '/' . $environmentFile;
+
+        $envFileContents = File::lines($fullPath)->collect();
+
+        foreach ($values as $key => $value) {
+            $existingKey = $envFileContents->search(function ($line) use ($key) {
+                return stripos($line, $key) !== false;
+            });
+
+            if (Str::contains($value, ' ')) {
+                $value = Str::wrap($value,'"');
+            }
+
+            if ($value === true) {
+                $value = 'true';
+            }
+
+            if ($value === false) {
+                $value = 'false';
+            }
+
+            if ($existingKey === false) {
+                $envFileContents->push($key . '=' . $value);
+            } else {
+                $envFileContents->put($existingKey, $key . '=' . $value);
+            }
+        }
+
+        File::put($fullPath, $envFileContents->implode("\n"));
     }
 
     protected function configureDatabaseSettings(AppSettings $settings): AppSettings

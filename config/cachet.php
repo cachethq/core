@@ -116,5 +116,5 @@ return [
      | Support using an alternative database connection, defaults to default connecton of application
      |
      */
-    'database_connection' => env('CACHET_DB_CONNECTION'),
+    'database_connection' => env('CACHET_DB_CONNECTION', 'default'),
 ];
