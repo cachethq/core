@@ -1,6 +1,5 @@
 <?php
 
-use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
 
@@ -199,7 +198,7 @@ it('can update a schedule', function () {
 
     $response = putJson('/status/api/schedules/'.$schedule->id, [
         'name' => 'Updated Scheduled Maintenance',
-        'message' => 'Something went wrong.'
+        'message' => 'Something went wrong.',
     ]);
 
     $response->assertOk();

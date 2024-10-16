@@ -36,9 +36,9 @@ class Schedule extends Model
         return Attribute::get(function () {
             $now = Carbon::now();
 
-            return match(true) {
+            return match (true) {
                 $this->scheduled_at->gte($now) => ScheduleStatusEnum::upcoming,
-                $this->completed_at->gte($now) || $this->completed_at === null => ScheduleStatusEnum::in_progress,
+                $this->completed_at === null => ScheduleStatusEnum::in_progress,
                 default => ScheduleStatusEnum::complete,
             };
         });
@@ -68,8 +68,8 @@ class Schedule extends Model
      */
     public function scopeIncomplete(Builder $query): Builder
     {
-        return $query->whereDate('completed_at', '>=', Carbon::now())
-        ->orWhereNull('completed_at');
+        return $query->whereDate('scheduled_at', '>=', Carbon::now())
+            ->whereNull('completed_at');
     }
 
     /**
@@ -78,10 +78,10 @@ class Schedule extends Model
     public function scopeInProgress(Builder $query): Builder
     {
         return $query->whereDate('scheduled_at', '<=', Carbon::now())
-        ->where(function (Builder $query) {
-            $query->whereDate('completed_at', '>=', Carbon::now())
-            ->orWhereNull('completed_at');
-        });
+            ->where(function (Builder $query) {
+                $query->whereDate('completed_at', '>=', Carbon::now())
+                    ->orWhereNull('completed_at');
+            });
     }
 
     /**
