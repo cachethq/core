@@ -2,7 +2,6 @@
 
 namespace Cachet\Database\Factories;
 
-use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -39,7 +38,7 @@ class ScheduleFactory extends Factory
     {
         return $this->state([
             'scheduled_at' => now()->subMinutes(30),
-            'completed_at' => now()->addDays(14),
+            'completed_at' => null,
         ]);
     }
 
@@ -47,7 +46,7 @@ class ScheduleFactory extends Factory
     {
         return $this->state([
             'scheduled_at' => now()->addDays(30),
-            'completed_at' => now()->addDays(180),
+            'completed_at' => null,
         ]);
     }
 
