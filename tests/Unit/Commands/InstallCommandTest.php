@@ -3,6 +3,7 @@
 namespace Tests\Unit\Commands;
 
 use Cachet\Settings\AppSettings;
+use Illuminate\Support\Facades\File;
 
 it('runs install command successfully without configuration', function () {
     $this->artisan('cachet:install')
@@ -13,11 +14,17 @@ it('runs install command successfully without configuration', function () {
         ->assertSuccessful();
 });
 
-it('updates app settings when configuration is passed', function () {
+it('updates app settings and config filewhen configuration is passed', function () {
+    File::copy(base_path('.env.example'), base_path('.env'));
+
     $this->artisan('cachet:install')
         ->expectsOutputToContain('Welcome to the Cachet installer!')
         ->expectsConfirmation('Do you want to configure Cachet before installing?', 'yes')
         ->expectsOutputToContain('Configuring Cachet...')
+        ->expectsQuestion('Which path do you want Cachet to be accessible from?', '/status')
+        ->expectsQuestion('What will the title of your status page be?', 'Laravel Envoyer')
+        ->expectsQuestion('Which database connection do you wish to use for Cachet?', 'default')
+        ->expectsQuestion('Do you wish to send anonymous data to cachet to help us understand how Cachet is used?', true)
         ->expectsQuestion('What is the name of your application?', 'Laravel Envoyer')
         ->expectsQuestion('What is your application about?', 'Zero downtime deployment tool.')
         ->expectsConfirmation('Do you want to show support for Cachet?', 'yes')
@@ -32,6 +39,14 @@ it('updates app settings when configuration is passed', function () {
         ->expectsOutputToContain('Cachet is installed ⚡')
         ->assertSuccessful();
 
+    $envContent = file_get_contents(base_path('.env'));
+
+    expect($envContent)
+        ->toContain('CACHET_PATH=/status')
+        ->toContain('CACHET_TITLE="Laravel Envoyer"')
+        ->toContain('CACHET_DB_CONNECTION=default')
+        ->toContain('CACHET_BEACON=true');
+
     $settings = app(AppSettings::class);
     expect($settings->name)->toBe('Laravel Envoyer')
         ->and($settings->about)->toBe('Zero downtime deployment tool.')
@@ -43,4 +58,8 @@ it('updates app settings when configuration is passed', function () {
         ->and($settings->refresh_rate)->toBe(10)
         ->and($settings->dashboard_login_link)->toBeFalse()
         ->and($settings->major_outage_threshold)->toBe(50);
+});
+
+afterAll(function() {
+    File::delete(base_path('.env'));
 });
