@@ -88,20 +88,15 @@ class InstallCommand extends Command
 
         foreach ($values as $key => $value) {
             $existingKey = $envFileContents->search(function ($line) use ($key) {
-                return stripos($line, $key) !== false;
+                return Str::contains($line, $key, true);
             });
 
-            if (Str::contains($value, ' ')) {
-                $value = Str::wrap($value,'"');
-            }
-
-            if ($value === true) {
-                $value = 'true';
-            }
-
-            if ($value === false) {
-                $value = 'false';
-            }
+            $value = match (true) {
+                Str::contains($value, ' ') => Str::wrap($value,'"'),
+                $value === true => 'true',
+                $value === false => 'false',
+                default => $value
+            };
 
             if ($existingKey === false) {
                 $envFileContents->push($key . '=' . $value);
