@@ -14,7 +14,7 @@ class AppSettings extends Settings
     #[Description('What is the name of your application?')]
     public ?string $name = 'Cachet';
 
-    #[Description('What is your application about?')]
+    #[Description('What is your application about?', required: false)]
     public ?string $about;
 
     #[Description('Do you want to show support for Cachet?')]
@@ -32,7 +32,7 @@ class AppSettings extends Settings
     #[Description('How many incident days should be shown in the timeline?')]
     public int $incident_days = 7;
 
-    #[Description('After how many seconds should the status page automatically refresh?')]
+    #[Description('After how many seconds should the status page automatically refresh?', required: false)]
     public ?int $refresh_rate;
 
     #[Description('Should the dashboard login link be shown?')]
