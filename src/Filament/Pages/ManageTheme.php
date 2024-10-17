@@ -24,14 +24,43 @@ class ManageTheme extends SettingsPage
                 ]),
 
                 Forms\Components\Section::make()->columns(2)->schema([
-                    Forms\Components\ColorPicker::make('primary')
-                        ->label(__('Primary'))
-                        ->rgba(),
+                    Forms\Components\Fieldset::make(__('Light'))->columns(2)->schema([
+                        Forms\Components\ColorPicker::make('light_background')
+                            ->rgba()
+                            ->label(__('Background')),
 
-                    Forms\Components\ColorPicker::make('secondary')
-                        ->label(__('Secondary'))
-                        ->rgba(),
+                        Forms\Components\ColorPicker::make('light_text')
+                            ->rgba()
+                            ->label(__('Text')),
+                    ]),
+
+                    Forms\Components\Fieldset::make(__('Dark'))->columns(2)->schema([
+                        Forms\Components\ColorPicker::make('dark_background')
+                            ->rgba()
+                            ->label(__('Background')),
+
+                        Forms\Components\ColorPicker::make('dark_text')
+                            ->rgba()
+                            ->label(__('Text')),
+                    ]),
                 ]),
+
+                Forms\Components\Section::make()->columns(2)->schema([
+                    Forms\Components\Select::make('dark_mode')
+                        ->label(__('Dark Mode'))
+                        ->options([
+                            'system' => __('System'),
+                            'dark' => __('Dark'),
+                            'light' => __('Light'),
+                        ])
+                        ->columnSpanFull(),
+                ]),
+
+                Forms\Components\Section::make()->columns(2)->schema([
+                        Forms\Components\TextInput::make('font_family_sans')
+                            ->label(__('Font')),
+                ]),
+
             ]);
     }
 }
