@@ -9,6 +9,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
+use Laravel\Prompts\Prompt;
 use ReflectionClass;
 use ReflectionProperty;
 use function Laravel\Prompts\confirm;
@@ -25,6 +26,8 @@ class InstallCommand extends Command
 
     public function handle(AppSettings $settings)
     {
+        Prompt::fallbackWhen(!$this->input->isInteractive());
+
         intro('Welcome to the Cachet installer!');
 
         Sleep::for(2)->seconds();
