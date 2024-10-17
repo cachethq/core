@@ -115,10 +115,23 @@ class InstallCommand extends Command
         )
             ->filter(fn (ReflectionProperty $property) => array_key_exists($property->getName(), $settings->installable()) )
             ->each(function (ReflectionProperty $property) use ($settings) {
-                $description = $property->getAttributes(Description::class)[0]->getArguments()[0];
+                $descriptionAttribute = $property->getAttributes(Description::class);
+
+                if (empty($descriptionAttribute)) {
+                    return;
+                }
+
+                $descriptionAttributeClass = $descriptionAttribute[0]->newInstance();
+                $default = $descriptionAttributeClass->getDefault();
+                $required = $descriptionAttributeClass->getRequired();
+
+                if ($required === false) {
+                    return;
+                }
+
                 $value = match($property->getType()?->getName()) {
-                    'bool' => confirm($description ?? $property->getName()),
-                    default => text($description ?? $property->getName(), default: $property->getDefaultValue() ?? '', required: true),
+                    'bool' => confirm($default ?? $property->getName()),
+                    default => text($default ?? $property->getName(), default: $property->getDefaultValue() ?? '', required: true),
                 };
 
                 $settings->{$property->getName()} = $value;
