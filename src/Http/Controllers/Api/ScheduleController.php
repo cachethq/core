@@ -22,8 +22,8 @@ class ScheduleController extends Controller
     {
         $schedules = QueryBuilder::for(Schedule::class)
             ->allowedIncludes(['components'])
-            ->allowedFilters(['name', 'status'])
-            ->allowedSorts(['name', 'status', 'id', 'scheduled_at', 'completed_at'])
+            ->allowedFilters(['name'])
+            ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(request('per_page', 15));
 
         return ScheduleResource::collection($schedules);

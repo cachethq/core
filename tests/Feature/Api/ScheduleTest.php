@@ -1,6 +1,5 @@
 <?php
 
-use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
 
@@ -66,20 +65,6 @@ it('can sort schedules by name', function () {
     $response->assertJsonPath('data.4.attributes.id', 4);
 });
 
-it('can sort schedules by status', function () {
-    Schedule::factory(3)->sequence(
-        ['status' => 1],
-        ['status' => 2],
-        ['status' => 0],
-    )->create();
-
-    $response = getJson('/status/api/schedules?sort=status');
-
-    $response->assertJsonPath('data.0.attributes.id', 3);
-    $response->assertJsonPath('data.1.attributes.id', 1);
-    $response->assertJsonPath('data.2.attributes.id', 2);
-});
-
 it('can sort schedules by scheduled at date', function () {
     Schedule::factory(4)->sequence(
         ['scheduled_at' => '2022-01-01'],
@@ -130,26 +115,6 @@ it('can filter schedules by name', function () {
     $response->assertJsonPath('data.0.attributes.id', $schedule->id);
 });
 
-it('can filter schedules by status', function () {
-    Schedule::factory(20)->create([
-        'status' => ScheduleStatusEnum::upcoming,
-    ]);
-    $schedule = Schedule::factory()->create([
-        'status' => ScheduleStatusEnum::complete,
-    ]);
-
-    $query = http_build_query([
-        'filter' => [
-            'status' => ScheduleStatusEnum::complete->value,
-        ],
-    ]);
-
-    $response = getJson('/status/api/schedules?'.$query);
-
-    $response->assertJsonCount(1, 'data');
-    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
-});
-
 it('can get a schedule', function () {
     $schedule = Schedule::factory()->create();
 
@@ -165,8 +130,8 @@ it('can create a schedule', function () {
     $response = postJson('/status/api/schedules', [
         'name' => 'New Scheduled Maintenance',
         'message' => 'Something will go wrong.',
-        'status' => 1,
         'scheduled_at' => $scheduleAt = now()->addWeek()->toDateTimeString(),
+        'completed_at' => $completedAt = now()->addWeek()->addDay()->toDateTimeString(),
     ]);
 
     $response->assertCreated();
@@ -176,6 +141,9 @@ it('can create a schedule', function () {
                 'name' => 'New Scheduled Maintenance',
                 'scheduled' => [
                     'string' => $scheduleAt,
+                ],
+                'completed' => [
+                    'string' => $completedAt,
                 ],
             ],
         ],
@@ -189,8 +157,8 @@ it('can create a schedule with components', function () {
     $response = postJson('/status/api/schedules', [
         'name' => 'New Scheduled Maintenance',
         'message' => 'Something will go wrong.',
-        'status' => 1,
         'scheduled_at' => $scheduleAt = now()->addWeek()->toDateTimeString(),
+        'completed_at' => $completedAt = now()->addWeek()->addDay()->toDateTimeString(),
         'components' => [
             ['id' => $componentA->id, 'status' => 3],
             ['id' => $componentB->id, 'status' => 4],
@@ -205,6 +173,9 @@ it('can create a schedule with components', function () {
                 'scheduled' => [
                     'string' => $scheduleAt,
                 ],
+                'completed' => [
+                    'string' => $completedAt,
+                ],
             ],
         ],
     ]);
@@ -218,8 +189,8 @@ it('cannot create a schedule with bad data', function (array $payload) {
     $response->assertInvalid(array_keys($response->json('errors')));
 })->with([
     fn () => ['name' => 'Missing Message', 'message' => null],
-    fn () => ['name' => null, 'message' => 'Missing Name & Invalid Status', 'status' => 999],
-    fn () => ['name' => 'Invalid Scheduled At', 'message' => 'Something', 'status' => 1, 'scheduled_at' => 'invalid'],
+    fn () => ['name' => null, 'message' => 'Missing Name & Missing Scheduled At'],
+    fn () => ['name' => 'Invalid Scheduled At', 'message' => 'Something', 'scheduled_at' => 'invalid'],
 ]);
 
 it('can update a schedule', function () {
@@ -228,7 +199,6 @@ it('can update a schedule', function () {
     $response = putJson('/status/api/schedules/'.$schedule->id, [
         'name' => 'Updated Scheduled Maintenance',
         'message' => 'Something went wrong.',
-        'status' => 2,
     ]);
 
     $response->assertOk();
@@ -249,7 +219,6 @@ it('can update a schedule with components', function () {
     $response = putJson('/status/api/schedules/'.$schedule->id.'?include=components', [
         'name' => 'Updated Scheduled Maintenance',
         'message' => 'Something went wrong.',
-        'status' => 2,
         'components' => [
             ['id' => $componentA->id, 'status' => 3],
             ['id' => $componentB->id, 'status' => 4],
@@ -265,25 +234,6 @@ it('can update a schedule with components', function () {
         ],
     ]);
 });
-
-it('can update a schedule while passing null data', function (array $payload) {
-    $schedule = Schedule::factory()->create();
-
-    $response = putJson('/status/api/schedules/'.$schedule->id, $payload);
-
-    $response->assertJson([
-        'data' => [
-            'attributes' => [
-                'name' => 'Updated Incident',
-                'status' => [
-                    'value' => 2,
-                ],
-            ],
-        ],
-    ]);
-})->with([
-    fn () => ['name' => 'Updated Incident', 'status' => 2],
-]);
 
 it('can delete a schedule', function () {
     $schedule = Schedule::factory()->create();

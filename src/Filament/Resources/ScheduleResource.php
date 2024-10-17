@@ -25,17 +25,6 @@ class ScheduleResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->label(__('Name'))
                         ->required(),
-                    Forms\Components\Select::make('status')
-                        ->label(__('Status'))
-                        ->required()
-                        ->options(ScheduleStatusEnum::class)
-                        ->default(ScheduleStatusEnum::upcoming)
-                        ->afterStateUpdated(function (Forms\Set $set, int|ScheduleStatusEnum $state): void {
-                            if (ScheduleStatusEnum::parse($state) !== ScheduleStatusEnum::complete) {
-                                $set('completed_at', null);
-                            }
-                        })
-                        ->live(),
                     Forms\Components\MarkdownEditor::make('message')
                         ->label(__('Message'))
                         ->columnSpanFull(),
@@ -45,9 +34,7 @@ class ScheduleResource extends Resource
                         ->label(__('Scheduled at'))
                         ->required(),
                     Forms\Components\DateTimePicker::make('completed_at')
-                        ->label(__('Completed at'))
-                        ->visible(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete)
-                        ->required(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete),
+                        ->label(__('Completed at')),
                 ])->columnSpan(1),
             ])->columns(4);
     }
@@ -99,7 +86,7 @@ class ScheduleResource extends Resource
                             ->required(),
                     ])
                     ->color('success')
-                    ->action(fn (Schedule $record, array $data) => $record->update(['completed_at' => $data['completed_at'], 'status' => ScheduleStatusEnum::complete])),
+                    ->action(fn (Schedule $record, array $data) => $record->update(['completed_at' => $data['completed_at']])),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

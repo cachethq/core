@@ -2,7 +2,6 @@
 
 namespace Cachet\Database\Factories;
 
-use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,16 +21,15 @@ class ScheduleFactory extends Factory
     {
         return [
             'name' => 'Incident Schedule',
-            'status' => ScheduleStatusEnum::upcoming,
             'scheduled_at' => now()->addDays(7),
-            'completed_at' => null,
+            'completed_at' => now()->addDays(14),
         ];
     }
 
     public function completed(): self
     {
         return $this->state([
-            'status' => ScheduleStatusEnum::complete,
+            'scheduled_at' => now()->subMinutes(45),
             'completed_at' => now()->subMinutes(30),
         ]);
     }
@@ -39,7 +37,6 @@ class ScheduleFactory extends Factory
     public function inProgress(): self
     {
         return $this->state([
-            'status' => ScheduleStatusEnum::in_progress,
             'scheduled_at' => now()->subMinutes(30),
             'completed_at' => null,
         ]);
@@ -48,7 +45,6 @@ class ScheduleFactory extends Factory
     public function inTheFuture(): self
     {
         return $this->state([
-            'status' => ScheduleStatusEnum::upcoming->value,
             'scheduled_at' => now()->addDays(30),
             'completed_at' => null,
         ]);
@@ -57,17 +53,7 @@ class ScheduleFactory extends Factory
     public function inThePast(): self
     {
         return $this->state([
-            'status' => ScheduleStatusEnum::upcoming,
             'scheduled_at' => now()->subDays(30)->subHours(2),
-            'completed_at' => null,
-        ]);
-    }
-
-    public function completedInThePast(): self
-    {
-        return $this->state([
-            'status' => ScheduleStatusEnum::complete,
-            'scheduled_at' => now()->addDays(30)->subHours(2),
             'completed_at' => now()->subDays(30),
         ]);
     }
