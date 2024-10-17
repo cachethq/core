@@ -32,23 +32,15 @@ This package provides the core functionality of Cachet and may be installed into
 1. Clone this repository.
 2. Run the following commands from within the `core` directory:
     ```shell
-   composer update
    npm install
-   npm run build
+   composer update
+   composer dev
     ```
-3. Start running Cachet via the Orchestra Workbench:
-    ```shell
-   composer start
-    ```
-4. From within the `core` directory, you can now run to actively compile the frontend assets:
-    ```shell
-    npm run dev
-    ```
-5. Make your changes to the frontend. Currently, HMR is not enabled so manual refreshes are needed.
+3. Develop Cachet. Currently, HMR is not enabled so manual refreshes are needed.
 
 ### Dashboard Credentials
 
-When running Cachet via the `composer start` command, Workbench will seed a user that you can use to log in to the dashboard.
+When running Cachet via the `composer dev` command, Workbench will seed a user that you can use to log in to the dashboard.
 Login to the account at `/dashboard` and use credentials:
 
 - **Email:** `test@test.com`
