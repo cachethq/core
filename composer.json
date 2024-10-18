@@ -29,6 +29,7 @@
         "illuminate/events": "^11.0",
         "illuminate/queue": "^11.0",
         "illuminate/support": "^11.0",
+        "laravel/prompts": "^0.1",
         "nesbot/carbon": "^2.70",
         "spatie/laravel-query-builder": "^5.5",
         "spatie/laravel-settings": "^3.2",
