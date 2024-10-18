@@ -9,7 +9,6 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
-use Laravel\Prompts\Prompt;
 use ReflectionClass;
 use ReflectionProperty;
 use function Laravel\Prompts\confirm;
@@ -24,7 +23,7 @@ class InstallCommand extends Command
 
     protected $description = 'Install Cachet';
 
-    public function handle(AppSettings $settings)
+    public function handle(AppSettings $settings): int
     {
         intro('Welcome to the Cachet installer!');
 
@@ -123,8 +122,8 @@ class InstallCommand extends Command
                 }
 
                 $descriptionAttributeClass = $descriptionAttribute[0]->newInstance();
-                $default = $descriptionAttributeClass->getDefault();
-                $required = $descriptionAttributeClass->getRequired();
+                $default = $descriptionAttributeClass->default();
+                $required = $descriptionAttributeClass->required();
 
                 if ($required === false) {
                     return;
