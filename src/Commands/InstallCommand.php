@@ -26,8 +26,6 @@ class InstallCommand extends Command
 
     public function handle(AppSettings $settings)
     {
-        Prompt::fallbackWhen(!$this->input->isInteractive());
-
         intro('Welcome to the Cachet installer!');
 
         Sleep::for(2)->seconds();
