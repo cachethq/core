@@ -3,9 +3,7 @@
 <html
     lang="{{ str_replace('_', '-', app()->getLocale()) }}"
     class="bg-background-light text-base-light dark:bg-background-dark dark:text-base-dark"
-    x-data="{
-      darkMode: localStorage.getItem('darkMode')
-      || localStorage.setItem('darkMode', '{{ Cachet::darkMode() }}')}"
+    x-data="{ darkMode: localStorage.getItem('darkMode') || localStorage.setItem('darkMode', '{{ Cachet::darkMode() }}')}"
     x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))"
     x-bind:class="{'dark': darkMode === 'dark' || (darkMode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)}"
 >
@@ -32,8 +30,8 @@
         <meta property="twitter:title" content="{{ $title ?: config('cachet.title', 'Cachet') }}" />
         <meta property="twitter:description" content="Status page for {{ $site_name }}." />
 
-        @vite(['resources/css/cachet.css', 'resources/js/cachet.js'], 'vendor/cachethq/cachet/build')
         @filamentStyles
+        @vite(['resources/css/cachet.css', 'resources/js/cachet.js'], 'vendor/cachethq/cachet/build')
 
         @if($refresh_rate)
         <meta http-equiv="refresh" content="{{ $refresh_rate }}">
@@ -46,7 +44,6 @@
             /* Cachet custom styles */
             :root {
                 @foreach (\Cachet\Cachet::cssVariables() as $key => $value)
-                    --{{ $key }}: {{ $value }};
                     --{{ $key }}: {{ $value }};
                 @endforeach
             }
