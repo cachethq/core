@@ -30,7 +30,7 @@
         <meta property="twitter:title" content="{{ $title ?: config('cachet.title', 'Cachet') }}" />
         <meta property="twitter:description" content="Status page for {{ $site_name }}." />
 
-        @filamentStyles
+
         @vite(['resources/css/cachet.css', 'resources/js/cachet.js'], 'vendor/cachethq/cachet/build')
 
         @if($refresh_rate)
