@@ -4,7 +4,7 @@
     ->merge(array_filter([
         'default-open' => $componentGroup->isExpanded(),
     ]))
-    ->class(['overflow-hidden rounded-lg border shadow dark:border-zinc-700'])
+    ->class(['overflow-hidden rounded-lg border dark:border-zinc-700'])
     }}>
     <div class="flex items-center justify-between bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
         <button x-disclosure:button class="flex items-center gap-2 text-zinc-500 dark:text-zinc-300">
