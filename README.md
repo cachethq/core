@@ -25,7 +25,37 @@
 
 ## Introduction
 
-This package provides the core functionality of Cachet and may be installed into existing Laravel applications. Cachet 3.x will ship as a standalone Laravel application that requires this package.
+This package provides the core functionality of [Cachet](https://github.com/cachethq/cachet) and may be installed into existing Laravel applications. Cachet 3.x will ship as a standalone Laravel application that requires this package.
+
+## Project Status
+
+Cachet 3.x is currently in development and is not yet completely ready for production use. We are actively working on the project and will provide updates as we progress.
+
+- [x] Incident Management
+- [x] Incident Updates
+- [x] Scheduled Maintenance
+- [ ] Scheduled Maintenance Updates
+  - WIP - https://github.com/cachethq/core/pull/109
+- [x] Components
+- [ ] Metrics
+  - API and dashboard are working.
+  - Frontend is in progress.
+- [ ] Subscribers
+- [x] API
+  - Complete but may need some tweaks as we progress.
+- [ ] Webhooks
+- [x] Dashboard
+- [x] Localization
+- [ ] Status Page Customization
+
+## Stack
+
+Cachet is built on:
+
+- [Laravel 11.x](https://laravel.com)
+- [Filament 3.x](https://filamentphp.com)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Alpine.js](https://alpinejs.dev)
 
 ## Development
 
