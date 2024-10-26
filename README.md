@@ -84,7 +84,6 @@ Login to the account at `/dashboard` and use credentials:
     <a href="https://xyhen-it.nl"><img width="100px" src="https://github.com/xyphen-it.png" alt="Xyphen-IT"></a>
 </p>
 
-
 ## Security Vulnerabilities
 
 Please review our [security policy](https://github.com/cachethq/cachet/security/policy) on how to report security vulnerabilities.
