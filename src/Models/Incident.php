@@ -39,7 +39,6 @@ class Incident extends Model
 
     protected $fillable = [
         'guid',
-        'user_id',
         'component_id',
         'name',
         'status',
@@ -77,14 +76,6 @@ class Incident extends Model
     public function incidentUpdates(): HasMany
     {
         return $this->hasMany(IncidentUpdate::class);
-    }
-
-    /**
-     * Get the user that created the incident.
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(config('cachet.user_model'));
     }
 
     /**
