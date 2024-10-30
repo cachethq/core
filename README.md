@@ -66,7 +66,10 @@ Cachet is built on:
    composer update
    composer dev
     ```
-3. Develop Cachet. Currently, HMR is not enabled so manual refreshes are needed.
+3. Develop Cachet.
+
+> [!NOTE] 
+> HMR is not enabled. Manual refreshes are needed to view changes.
 
 ### Dashboard Credentials
 
@@ -91,3 +94,17 @@ Please review our [security policy](https://github.com/cachethq/cachet/security/
 ## License
 
 Cachet Core is open-sourced software licensed under the [MIT license](LICENSE.md).
+
+## Trademarks
+
+Copyright (c) 2023-present Alt Three Services Limited. The Cachet name and logo are trademarks of Alt Three Services Limited. Please see our [trademark guidelines](https://github.com/cachethq/core/blob/main/TRADEMARKS.md) for info on acceptable usage.
+
+## Community
+
+Have questions, comments or feedback? [Start a discussion](https://github.com/cachethq/cachet/discussions/new). For the latest news and release notes, visit [cachethq.io](https://cachethq.io).
+
+## Contributors
+
+<a href="https://github.com/cachethq/core/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=cachethq/core&max=400&columns=20" width="100%"/>
+</a>
