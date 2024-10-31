@@ -2,7 +2,7 @@
     <div>
         <a href="{{ route('cachet.status-page') }}" class="transition hover:opacity-80">
             @if($appBanner)
-            <img src="{{ asset($appBanner) }}" alt="{{ $siteName }}" class="h-8 w-auto" />
+            <img src="{{ Storage::url($appBanner) }}" alt="{{ $siteName }}" class="h-8 w-auto" />
             @else
             <x-cachet::logo class="hidden h-8 w-auto sm:block" />
             <x-cachet::logomark class="h-8 w-auto sm:hidden" />
