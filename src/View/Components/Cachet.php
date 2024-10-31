@@ -7,6 +7,7 @@ use Cachet\Settings\CustomizationSettings;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
+use Illuminate\Support\Str;
 
 class Cachet extends Component
 {
