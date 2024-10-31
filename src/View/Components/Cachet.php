@@ -25,7 +25,13 @@ class Cachet extends Component
         }
 
         $this->title ??= ($this->appSettings->name ?? config('cachet.title'));
-        $this->description ??= (Str::of($this->appSettings->about)->trim()->toString());
+        $this->description ??= Str::of($this->appSettings->about)
+            ->markdown()
+            ->stripTags()
+            ->replaceMatches('/\s\s+|\n/', ' ')
+            ->trim()
+            ->limit(155, preserveWords: true) // 155 is the recommended length of a meta description...
+            ->toString();
     }
 
     /**
