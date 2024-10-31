@@ -32,6 +32,7 @@ class Cachet extends Component
     {
         return view('cachet::components.cachet', [
             'title' => $this->title,
+            'description' => Str::of($this->settings->about)->trim()->markdown()->toString(),
             'site_name' => $this->appSettings->name,
             'cachet_header' => $this->customizationSettings->header,
             'cachet_css' => $this->customizationSettings->stylesheet,
