@@ -7,7 +7,7 @@
         "laravel"
     ],
     "homepage": "https://cachethq.io",
-    "license": "Cachet License",
+    "license": "proprietary",
     "support": {
         "issues": "https://github.com/cachethq/core/issues",
         "source": "https://github.com/cachethq/core"
