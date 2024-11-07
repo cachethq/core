@@ -7,6 +7,7 @@
         <div class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400" x-data="{ from: new Date(@js($from)), to: new Date(@js($to)) }">
             <x-filament::input.wrapper>
                 <x-filament::input
+                    class="bg-white border rounded-lg dark:border-zinc-700 dark:bg-zinc-800 dark:[color-scheme:dark]"
                     type="date"
                     wire:model="date"
                     value="{{ $from }}"
@@ -19,6 +20,7 @@
             &mdash;
             <x-filament::input.wrapper disabled>
                 <x-filament::input
+                    class="bg-white border rounded-lg dark:border-zinc-700 dark:bg-zinc-800 dark:[color-scheme:dark]"
                     type="date"
                     wire:model="date"
                     value="{{ $to }}"
