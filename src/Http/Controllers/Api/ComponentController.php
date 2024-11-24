@@ -13,10 +13,16 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Components
+ */
 class ComponentController extends Controller
 {
     /**
-     * List Components.
+     * List Components
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\Component
+     * @apiResourceModel \Cachet\Models\Component
      */
     public function index()
     {
@@ -30,7 +36,11 @@ class ComponentController extends Controller
     }
 
     /**
-     * Create Component.
+     * Create Component
+     *
+     * @apiResource \Cachet\Http\Resources\Component
+     * @apiResourceModel \Cachet\Models\Component
+     * @authenticated
      */
     public function store(CreateComponentRequest $request, CreateComponent $createComponentAction)
     {
@@ -40,7 +50,10 @@ class ComponentController extends Controller
     }
 
     /**
-     * Get Component.
+     * Get Component
+     *
+     * @apiResource \Cachet\Http\Resources\Component
+     * @apiResourceModel \Cachet\Models\Component
      */
     public function show(Component $component)
     {
@@ -50,7 +63,11 @@ class ComponentController extends Controller
     }
 
     /**
-     * Update Component.
+     * Update Component
+     *
+     * @apiResource \Cachet\Http\Resources\Component
+     * @apiResourceModel \Cachet\Models\Component
+     * @authenticated
      */
     public function update(UpdateComponentRequest $request, Component $component, UpdateComponent $updateComponentAction)
     {
@@ -60,7 +77,10 @@ class ComponentController extends Controller
     }
 
     /**
-     * Delete Component.
+     * Delete Component
+     *
+     * @response 204
+     * @authenticated
      */
     public function destroy(Component $component, DeleteComponent $deleteComponentAction)
     {

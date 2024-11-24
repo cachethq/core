@@ -2,9 +2,11 @@
 
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\IncidentTemplateFactory;
 use Cachet\Enums\IncidentTemplateEngineEnum;
 use Cachet\Renderers\BladeRenderer;
 use Cachet\Renderers\TwigRenderer;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,5 +50,13 @@ class IncidentTemplate extends Model
     private function renderWithBlade(array $variables = []): string
     {
         return app(BladeRenderer::class)->render($this->template, $variables);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return IncidentTemplateFactory::new();
     }
 }

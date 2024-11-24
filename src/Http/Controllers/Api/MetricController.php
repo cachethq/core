@@ -14,10 +14,16 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Metrics
+ */
 class MetricController extends Controller
 {
     /**
-     * List Metrics.
+     * List Metrics
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\Metric
+     * @apiResourceModel \Cachet\Models\Metric
      */
     public function index()
     {
@@ -34,7 +40,11 @@ class MetricController extends Controller
     }
 
     /**
-     * Create Metric.
+     * Create Metric
+     *
+     * @apiResource \Cachet\Http\Resources\Metric
+     * @apiResourceModel \Cachet\Models\Metric
+     * @authenticated
      */
     public function store(CreateMetricRequest $request, CreateMetric $createMetricAction)
     {
@@ -44,7 +54,10 @@ class MetricController extends Controller
     }
 
     /**
-     * Get Metric.
+     * Get Metric
+     *
+     * @apiResource \Cachet\Http\Resources\Metric
+     * @apiResourceModel \Cachet\Models\Metric
      */
     public function show(Metric $metric)
     {
@@ -54,7 +67,11 @@ class MetricController extends Controller
     }
 
     /**
-     * Update Metric.
+     * Update Metric
+     *
+     * @apiResource \Cachet\Http\Resources\Metric
+     * @apiResourceModel \Cachet\Models\Metric
+     * @authenticated
      */
     public function update(UpdateMetricRequest $request, Metric $metric, UpdateMetric $updateMetricAction)
     {
@@ -64,7 +81,10 @@ class MetricController extends Controller
     }
 
     /**
-     * Delete Metric.
+     * Delete Metric
+     *
+     * @response 204
+     * @authenticated
      */
     public function destroy(Metric $metric, DeleteMetric $deleteMetricAction)
     {

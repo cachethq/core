@@ -2,9 +2,11 @@
 
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -98,5 +100,13 @@ class Schedule extends Model
     public function scopeInThePast(Builder $query): Builder
     {
         return $query->where('completed_at', '<=', Carbon::now());
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return ScheduleFactory::new();
     }
 }
