@@ -19,7 +19,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ScheduleController extends Controller
 {
     /**
-     * List Schedules.
+     * List Schedules
      *
      * @apiResourceCollection \Cachet\Http\Resources\Schedule
      * @apiResourceModel \Cachet\Models\Schedule
@@ -36,7 +36,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Create Schedule.
+     * Create Schedule
      *
      * @apiResource \Cachet\Http\Resources\Schedule
      * @apiResourceModel \Cachet\Models\Schedule
@@ -52,7 +52,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Get Schedule.
+     * Get Schedule
      *
      * @apiResource \Cachet\Http\Resources\Schedule
      * @apiResourceModel \Cachet\Models\Schedule
@@ -65,7 +65,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Update Schedule.
+     * Update Schedule
      *
      * @apiResource \Cachet\Http\Resources\Schedule
      * @apiResourceModel \Cachet\Models\Schedule
@@ -80,7 +80,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Delete Schedule.
+     * Delete Schedule
      *
      * @response 204
      * @authenticated

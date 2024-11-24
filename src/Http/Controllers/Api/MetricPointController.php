@@ -18,7 +18,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class MetricPointController extends Controller
 {
     /**
-     * List Metric Points.
+     * List Metric Points
      *
      * @apiResourceCollection \Cachet\Http\Resources\MetricPoint
      * @apiResourceModel \Cachet\Models\MetricPoint
@@ -35,7 +35,7 @@ class MetricPointController extends Controller
     }
 
     /**
-     * Create Metric Point.
+     * Create Metric Point
      *
      * @apiResource \Cachet\Http\Resources\MetricPoint
      * @apiResourceModel \Cachet\Models\MetricPoint
@@ -51,7 +51,7 @@ class MetricPointController extends Controller
     }
 
     /**
-     * Get Metric Point.
+     * Get Metric Point
      *
      * @apiResource \Cachet\Http\Resources\MetricPoint
      * @apiResourceModel \Cachet\Models\MetricPoint
@@ -64,7 +64,7 @@ class MetricPointController extends Controller
     }
 
     /**
-     * Delete Metric Point.
+     * Delete Metric Point
      *
      * @response 204
      * @authenticated

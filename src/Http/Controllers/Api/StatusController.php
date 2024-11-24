@@ -10,7 +10,7 @@ use Cachet\Status;
 class StatusController
 {
     /**
-     * Get the current system status.
+     * Get System Status
      *
      * @response {
      *     "data": {

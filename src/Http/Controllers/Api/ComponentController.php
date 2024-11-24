@@ -19,7 +19,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ComponentController extends Controller
 {
     /**
-     * List Components.
+     * List Components
      *
      * @apiResourceCollection \Cachet\Http\Resources\Component
      * @apiResourceModel \Cachet\Models\Component
@@ -36,7 +36,7 @@ class ComponentController extends Controller
     }
 
     /**
-     * Create Component.
+     * Create Component
      *
      * @apiResource \Cachet\Http\Resources\Component
      * @apiResourceModel \Cachet\Models\Component
@@ -50,7 +50,7 @@ class ComponentController extends Controller
     }
 
     /**
-     * Get Component.
+     * Get Component
      *
      * @apiResource \Cachet\Http\Resources\Component
      * @apiResourceModel \Cachet\Models\Component
@@ -63,7 +63,7 @@ class ComponentController extends Controller
     }
 
     /**
-     * Update Component.
+     * Update Component
      *
      * @apiResource \Cachet\Http\Resources\Component
      * @apiResourceModel \Cachet\Models\Component
@@ -77,7 +77,7 @@ class ComponentController extends Controller
     }
 
     /**
-     * Delete Component.
+     * Delete Component
      *
      * @response 204
      * @authenticated

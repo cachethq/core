@@ -19,7 +19,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ComponentGroupController extends Controller
 {
     /**
-     * List Component Groups.
+     * List Component Groups
      *
      * @apiResource \Cachet\Http\Resources\ComponentGroup
      * @apiResourceModel \Cachet\Models\ComponentGroup
@@ -35,7 +35,7 @@ class ComponentGroupController extends Controller
     }
 
     /**
-     * Create Component Group.
+     * Create Component Group
      *
      * @apiResource \Cachet\Http\Resources\ComponentGroup
      * @apiResourceModel \Cachet\Models\ComponentGroup
@@ -51,7 +51,7 @@ class ComponentGroupController extends Controller
     }
 
     /**
-     * Get Component Group.
+     * Get Component Group
      *
      * @apiResource \Cachet\Http\Resources\ComponentGroup
      * @apiResourceModel \Cachet\Models\ComponentGroup
@@ -64,7 +64,7 @@ class ComponentGroupController extends Controller
     }
 
     /**
-     * Update Component Group.
+     * Update Component Group
      *
      * @apiResource \Cachet\Http\Resources\ComponentGroup
      * @apiResourceModel \Cachet\Models\ComponentGroup
@@ -80,7 +80,7 @@ class ComponentGroupController extends Controller
     }
 
     /**
-     * Delete Component Group.
+     * Delete Component Group
      *
      * @apiResource \Cachet\Http\Resources\ComponentGroup
      * @apiResourceModel \Cachet\Models\ComponentGroup

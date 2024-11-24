@@ -12,7 +12,7 @@ use Illuminate\Routing\Controller;
 class GeneralController extends Controller
 {
     /**
-     * Ping the API.
+     * Test the API
      *
      * @response {
      *     "data": "Pong!"
@@ -24,7 +24,7 @@ class GeneralController extends Controller
     }
 
     /**
-     * Get the Cachet version.
+     * Get Version
      *
      * @response {
      *     "data": {

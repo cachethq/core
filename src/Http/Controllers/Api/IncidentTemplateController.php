@@ -19,7 +19,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class IncidentTemplateController extends Controller
 {
     /**
-     * List Incident Templates.
+     * List Incident Templates
      *
      * @apiResourceCollection \Cachet\Http\Resources\IncidentTemplate
      * @apiResourceModel \Cachet\Models\IncidentTemplate
@@ -35,7 +35,7 @@ class IncidentTemplateController extends Controller
     }
 
     /**
-     * Create Incident Template.
+     * Create Incident Template
      *
      * @apiResource \Cachet\Http\Resources\IncidentTemplate
      * @apiResourceModel \Cachet\Models\IncidentTemplate
@@ -49,7 +49,7 @@ class IncidentTemplateController extends Controller
     }
 
     /**
-     * Get Incident Template.
+     * Get Incident Template
      *
      * @apiResource \Cachet\Http\Resources\IncidentTemplate
      * @apiResourceModel \Cachet\Models\IncidentTemplate
@@ -62,7 +62,7 @@ class IncidentTemplateController extends Controller
     }
 
     /**
-     * Update Incident Template.
+     * Update Incident Template
      *
      * @apiResource \Cachet\Http\Resources\IncidentTemplate
      * @apiResourceModel \Cachet\Models\IncidentTemplate
@@ -76,7 +76,7 @@ class IncidentTemplateController extends Controller
     }
 
     /**
-     * Delete Incident Template.
+     * Delete Incident Template
      *
      * @response 204
      * @authenticated

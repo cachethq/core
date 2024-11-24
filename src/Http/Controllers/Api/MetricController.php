@@ -20,7 +20,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class MetricController extends Controller
 {
     /**
-     * List Metrics.
+     * List Metrics
      *
      * @apiResourceCollection \Cachet\Http\Resources\Metric
      * @apiResourceModel \Cachet\Models\Metric
@@ -40,7 +40,7 @@ class MetricController extends Controller
     }
 
     /**
-     * Create Metric.
+     * Create Metric
      *
      * @apiResource \Cachet\Http\Resources\Metric
      * @apiResourceModel \Cachet\Models\Metric
@@ -54,7 +54,7 @@ class MetricController extends Controller
     }
 
     /**
-     * Get Metric.
+     * Get Metric
      *
      * @apiResource \Cachet\Http\Resources\Metric
      * @apiResourceModel \Cachet\Models\Metric
@@ -67,7 +67,7 @@ class MetricController extends Controller
     }
 
     /**
-     * Update Metric.
+     * Update Metric
      *
      * @apiResource \Cachet\Http\Resources\Metric
      * @apiResourceModel \Cachet\Models\Metric
@@ -81,7 +81,7 @@ class MetricController extends Controller
     }
 
     /**
-     * Delete Metric.
+     * Delete Metric
      *
      * @response 204
      * @authenticated
