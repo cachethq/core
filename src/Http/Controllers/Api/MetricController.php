@@ -23,6 +23,7 @@ class MetricController extends Controller
      * List Metrics
      *
      * @apiResourceCollection \Cachet\Http\Resources\Metric
+     *
      * @apiResourceModel \Cachet\Models\Metric
      */
     public function index()
@@ -43,7 +44,9 @@ class MetricController extends Controller
      * Create Metric
      *
      * @apiResource \Cachet\Http\Resources\Metric
+     *
      * @apiResourceModel \Cachet\Models\Metric
+     *
      * @authenticated
      */
     public function store(CreateMetricRequest $request, CreateMetric $createMetricAction)
@@ -57,6 +60,7 @@ class MetricController extends Controller
      * Get Metric
      *
      * @apiResource \Cachet\Http\Resources\Metric
+     *
      * @apiResourceModel \Cachet\Models\Metric
      */
     public function show(Metric $metric)
@@ -70,7 +74,9 @@ class MetricController extends Controller
      * Update Metric
      *
      * @apiResource \Cachet\Http\Resources\Metric
+     *
      * @apiResourceModel \Cachet\Models\Metric
+     *
      * @authenticated
      */
     public function update(UpdateMetricRequest $request, Metric $metric, UpdateMetric $updateMetricAction)
@@ -84,6 +90,7 @@ class MetricController extends Controller
      * Delete Metric
      *
      * @response 204
+     *
      * @authenticated
      */
     public function destroy(Metric $metric, DeleteMetric $deleteMetricAction)

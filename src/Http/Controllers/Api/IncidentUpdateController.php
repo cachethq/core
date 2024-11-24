@@ -23,6 +23,7 @@ class IncidentUpdateController extends Controller
      * List Incident Updates
      *
      * @apiResourceCollection \Cachet\Http\Resources\IncidentUpdate
+     *
      * @apiResourceModel \Cachet\Models\IncidentUpdate
      */
     public function index(Incident $incident)
@@ -40,7 +41,9 @@ class IncidentUpdateController extends Controller
      * Create Incident Update
      *
      * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     *
      * @apiResourceModel \Cachet\Models\IncidentUpdate
+     *
      * @authenticated
      */
     public function store(CreateIncidentUpdateRequest $request, Incident $incident, CreateIncidentUpdate $createIncidentUpdateAction)
@@ -54,6 +57,7 @@ class IncidentUpdateController extends Controller
      * Get Incident Update
      *
      * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     *
      * @apiResourceModel \Cachet\Models\IncidentUpdate
      */
     public function show(Incident $incident, IncidentUpdate $incidentUpdate)
@@ -67,7 +71,9 @@ class IncidentUpdateController extends Controller
      * Update Incident Update
      *
      * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     *
      * @apiResourceModel \Cachet\Models\IncidentUpdate
+     *
      * @authenticated
      */
     public function update(UpdateIncidentUpdateRequest $request, Incident $incident, IncidentUpdate $incidentUpdate, UpdateIncidentUpdate $updateIncidentUpdateAction)
@@ -81,6 +87,7 @@ class IncidentUpdateController extends Controller
      * Delete Incident Update
      *
      * @response 204
+     *
      * @authenticated
      */
     public function destroy(Incident $incident, IncidentUpdate $incidentUpdate, DeleteIncidentUpdate $deleteIncidentUpdateAction)

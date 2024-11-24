@@ -21,6 +21,7 @@ class MetricPointController extends Controller
      * List Metric Points
      *
      * @apiResourceCollection \Cachet\Http\Resources\MetricPoint
+     *
      * @apiResourceModel \Cachet\Models\MetricPoint
      */
     public function index(Metric $metric)
@@ -38,7 +39,9 @@ class MetricPointController extends Controller
      * Create Metric Point
      *
      * @apiResource \Cachet\Http\Resources\MetricPoint
+     *
      * @apiResourceModel \Cachet\Models\MetricPoint
+     *
      * @authenticated
      */
     public function store(CreateMetricPointRequest $request, Metric $metric, CreateMetricPoint $createMetricPointAction)
@@ -54,6 +57,7 @@ class MetricPointController extends Controller
      * Get Metric Point
      *
      * @apiResource \Cachet\Http\Resources\MetricPoint
+     *
      * @apiResourceModel \Cachet\Models\MetricPoint
      */
     public function show(Metric $metric, MetricPoint $metricPoint)
@@ -67,6 +71,7 @@ class MetricPointController extends Controller
      * Delete Metric Point
      *
      * @response 204
+     *
      * @authenticated
      */
     public function destroy(Metric $metric, MetricPoint $metricPoint, DeleteMetricPoint $deleteMetricPointAction)
