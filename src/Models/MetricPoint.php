@@ -2,7 +2,7 @@
 
 namespace Cachet\Models;
 
-use Cachet\Database\Factories\MetricFactory;
+use Cachet\Database\Factories\MetricPointFactory;
 use Cachet\Events\Metrics\MetricPointCreated;
 use Cachet\Events\Metrics\MetricPointDeleted;
 use DateTime;
@@ -84,6 +84,6 @@ class MetricPoint extends Model
      */
     protected static function newFactory(): Factory
     {
-        return MetricFactory::new();
+        return MetricPointFactory::new();
     }
 }
