@@ -2,7 +2,7 @@
 
 namespace Cachet\Models;
 
-use Cachet\Database\Factories\ScheduleFactory;
+use Cachet\Database\Factories\ScheduleComponentFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -39,6 +39,6 @@ class ScheduleComponent extends Model
      */
     protected static function newFactory(): Factory
     {
-        return ScheduleFactory::new();
+        return ScheduleComponentFactory::new();
     }
 }
