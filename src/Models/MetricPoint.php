@@ -2,10 +2,12 @@
 
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\MetricFactory;
 use Cachet\Events\Metrics\MetricPointCreated;
 use Cachet\Events\Metrics\MetricPointDeleted;
 use DateTime;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -75,5 +77,13 @@ class MetricPoint extends Model
         $now = Carbon::parse($timestamp) ?? now();
 
         return $this->created_at->startOfMinute()->diffInMinutes($now->startOfMinute()) < $threshold;
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return MetricFactory::new();
     }
 }

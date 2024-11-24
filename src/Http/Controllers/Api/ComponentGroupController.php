@@ -13,10 +13,16 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Component Groups
+ */
 class ComponentGroupController extends Controller
 {
     /**
      * List Component Groups.
+     *
+     * @apiResource \Cachet\Http\Resources\ComponentGroup
+     * @apiResourceModel \Cachet\Models\ComponentGroup
      */
     public function index()
     {
@@ -30,6 +36,10 @@ class ComponentGroupController extends Controller
 
     /**
      * Create Component Group.
+     *
+     * @apiResource \Cachet\Http\Resources\ComponentGroup
+     * @apiResourceModel \Cachet\Models\ComponentGroup
+     * @authenticated
      */
     public function store(CreateComponentGroupRequest $request, CreateComponentGroup $createComponentGroupAction)
     {
@@ -42,6 +52,9 @@ class ComponentGroupController extends Controller
 
     /**
      * Get Component Group.
+     *
+     * @apiResource \Cachet\Http\Resources\ComponentGroup
+     * @apiResourceModel \Cachet\Models\ComponentGroup
      */
     public function show(ComponentGroup $componentGroup)
     {
@@ -51,7 +64,11 @@ class ComponentGroupController extends Controller
     }
 
     /**
-     * Update Component Group
+     * Update Component Group.
+     *
+     * @apiResource \Cachet\Http\Resources\ComponentGroup
+     * @apiResourceModel \Cachet\Models\ComponentGroup
+     * @authenticated
      */
     public function update(UpdateComponentGroupRequest $request, ComponentGroup $componentGroup, UpdateComponentGroup $updateComponentGroupAction)
     {
@@ -64,6 +81,10 @@ class ComponentGroupController extends Controller
 
     /**
      * Delete Component Group.
+     *
+     * @apiResource \Cachet\Http\Resources\ComponentGroup
+     * @apiResourceModel \Cachet\Models\ComponentGroup
+     * @authenticated
      */
     public function destroy(ComponentGroup $componentGroup, DeleteComponentGroup $deleteComponentGroupAction)
     {

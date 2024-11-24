@@ -14,10 +14,16 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Incidents
+ */
 class IncidentController extends Controller
 {
     /**
      * List Incidents.
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\Incident
+     * @apiResourceModel \Cachet\Models\Incident
      */
     public function index()
     {
@@ -35,6 +41,10 @@ class IncidentController extends Controller
 
     /**
      * Create Incident.
+     *
+     * @apiResource \Cachet\Http\Resources\Incident
+     * @apiResourceModel \Cachet\Models\Incident
+     * @authenticated
      */
     public function store(CreateIncidentRequest $request, CreateIncident $createIncidentAction)
     {
@@ -45,6 +55,9 @@ class IncidentController extends Controller
 
     /**
      * Get Incident.
+     *
+     * @apiResource \Cachet\Http\Resources\Incident
+     * @apiResourceModel \Cachet\Models\Incident
      */
     public function show(Incident $incident)
     {
@@ -55,6 +68,10 @@ class IncidentController extends Controller
 
     /**
      * Update Incident.
+     *
+     * @apiResource \Cachet\Http\Resources\Incident
+     * @apiResourceModel \Cachet\Models\Incident
+     * @authenticated
      */
     public function update(UpdateIncidentRequest $request, Incident $incident, UpdateIncident $updateIncidentAction)
     {
@@ -65,6 +82,9 @@ class IncidentController extends Controller
 
     /**
      * Delete Incident.
+     *
+     * @response 204
+     * @authenticated
      */
     public function destroy(Incident $incident, DeleteIncident $deleteIncidentAction)
     {

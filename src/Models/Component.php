@@ -2,11 +2,13 @@
 
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -92,5 +94,13 @@ class Component extends Model
     public function scopeOutage(Builder $query): Builder
     {
         return $query->whereIn('status', ComponentStatusEnum::outage());
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return ComponentFactory::new();
     }
 }

@@ -13,10 +13,16 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Schedules
+ */
 class ScheduleController extends Controller
 {
     /**
      * List Schedules.
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\Schedule
+     * @apiResourceModel \Cachet\Models\Schedule
      */
     public function index()
     {
@@ -31,6 +37,10 @@ class ScheduleController extends Controller
 
     /**
      * Create Schedule.
+     *
+     * @apiResource \Cachet\Http\Resources\Schedule
+     * @apiResourceModel \Cachet\Models\Schedule
+     * @authenticated
      */
     public function store(CreateScheduleRequest $request, CreateSchedule $createScheduleAction)
     {
@@ -43,6 +53,9 @@ class ScheduleController extends Controller
 
     /**
      * Get Schedule.
+     *
+     * @apiResource \Cachet\Http\Resources\Schedule
+     * @apiResourceModel \Cachet\Models\Schedule
      */
     public function show(Schedule $schedule)
     {
@@ -53,6 +66,10 @@ class ScheduleController extends Controller
 
     /**
      * Update Schedule.
+     *
+     * @apiResource \Cachet\Http\Resources\Schedule
+     * @apiResourceModel \Cachet\Models\Schedule
+     * @authenticated
      */
     public function update(UpdateScheduleRequest $request, Schedule $schedule, UpdateSchedule $updateScheduleAction)
     {
@@ -64,6 +81,9 @@ class ScheduleController extends Controller
 
     /**
      * Delete Schedule.
+     *
+     * @response 204
+     * @authenticated
      */
     public function destroy(Schedule $schedule, DeleteSchedule $deleteScheduleAction)
     {
