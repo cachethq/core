@@ -51,10 +51,17 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Schedule::create([
+            'name' => 'Documentation Maintenance',
+            'message' => 'We will be conducting maintenance on our documentation servers. Documentation may not be available during this time.',
+            'scheduled_at' => now()->subHours(12)->subMinutes(45),
+            'completed_at' => now()->subHours(12),
+        ]);
+
+        Schedule::create([
             'name' => 'Database Maintenance',
             'message' => 'We will be conducting maintenance on our database servers. You may experience degraded performance during this time.',
-            'scheduled_at' => now()->addHours(6),
-            'status' => ScheduleStatusEnum::upcoming,
+            'scheduled_at' => now()->addHours(24),
+            'completed_at' => null,
         ]);
 
         $componentGroup = ComponentGroup::create([
