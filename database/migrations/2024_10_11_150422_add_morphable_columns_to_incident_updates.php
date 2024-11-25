@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('incident_updates', function (Blueprint $table) {
             $table->morphs('updateable');
+            $table->unsignedTinyInteger('status')->nullable()->change();
         });
     }
 };

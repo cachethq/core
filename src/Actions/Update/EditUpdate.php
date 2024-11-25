@@ -11,8 +11,8 @@ class EditUpdate
      */
     public function handle(Update $update, array $data): Update
     {
-        $update->update($data);
-
-        return $update->fresh();
+        return tap($update, function (Update $update) use ($data) {
+            $update->update($data);
+        });
     }
 }

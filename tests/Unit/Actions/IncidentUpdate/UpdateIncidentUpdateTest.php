@@ -1,10 +1,10 @@
 <?php
 
 use Cachet\Actions\Update\EditUpdate;
-use Cachet\Models\IncidentUpdate;
+use Cachet\Models\Update;
 
 it('can update an incident update', function () {
-    $incidentUpdate = IncidentUpdate::factory()->create();
+    $incidentUpdate = Update::factory()->forIncident()->create();
 
     $data = [
         'message' => 'Incident Updated',

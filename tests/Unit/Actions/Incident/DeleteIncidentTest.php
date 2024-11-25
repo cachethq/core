@@ -3,6 +3,7 @@
 use Cachet\Actions\Incident\DeleteIncident;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Models\Incident;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Event;
 
 it('can delete an incident', function () {
@@ -27,7 +28,8 @@ it('deletes attached incident updates', function () {
     $this->assertSoftDeleted('incidents', [
         'id' => $incident->id,
     ]);
-    $this->assertDatabaseMissing('incident_updates', [
-        'incident_id' => $incident->id,
+    $this->assertDatabaseMissing('updates', [
+        'updateable_type' => Relation::getMorphAlias(Incident::class),
+        'updateable_id' => $incident->id,
     ]);
 });

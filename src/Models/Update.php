@@ -2,7 +2,6 @@
 
 namespace Cachet\Models;
 
-use Cachet\Database\Factories\IncidentUpdateFactory;
 use Cachet\Database\Factories\UpdateFactory;
 use Cachet\Enums\IncidentStatusEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
