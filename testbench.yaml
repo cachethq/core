@@ -20,6 +20,7 @@ workbench:
     - asset-publish
     - filament:assets
     - create-sqlite-db
+    - storage-link
     - db:wipe
     - migrate:refresh:
         --seed: true
