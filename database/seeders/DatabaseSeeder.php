@@ -57,12 +57,24 @@ class DatabaseSeeder extends Seeder
             'completed_at' => now()->subHours(12),
         ]);
 
-        Schedule::create([
+        tap(Schedule::create([
             'name' => 'Documentation Maintenance',
             'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
             'scheduled_at' => now()->addHours(24),
             'completed_at' => null,
-        ]);
+        ]), function (Schedule $schedule) use ($user) {
+            $update = new Update([
+                'message' => <<<'EOF'
+This scheduled maintenance period has been pushed back by one hour.
+EOF
+                ,
+                'user_id' => $user->id,
+                'created_at' => $timestamp = $schedule->created_at->addMinutes(45),
+                'updated_at' => $timestamp,
+            ]);
+
+            $schedule->updates()->save($update);
+        });
 
         $componentGroup = ComponentGroup::create([
             'name' => 'Cachet',
