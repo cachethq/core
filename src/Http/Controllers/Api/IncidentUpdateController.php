@@ -96,9 +96,9 @@ class IncidentUpdateController extends Controller
      *
      * @authenticated
      */
-    public function destroy(Incident $incident, Update $update, DeleteUpdate $deleteIncidentUpdateAction)
+    public function destroy(Incident $incident, Update $update, DeleteUpdate $deleteUpdateAction)
     {
-        $deleteIncidentUpdateAction->handle($update);
+        $deleteUpdateAction->handle($update);
 
         return response()->noContent();
     }
