@@ -19,7 +19,7 @@ Whenever you use one of our marks, you must always do so in a way that does not 
 
 Do not use the Cachet marks in any way that could mistakenly imply that Cachet has reviewed, approved or guaranteed your goods or services. You also cannot use our logo on your website in a way that suggests that your website is an official website or that we endorse your website. You can, though, say you like the Cachet software, that you use Cachet, that the analytics are powered by Cachet or that you participate in the Cachet community.
 
-Do not use the "tl" prefix in a way that could mistakenly imply that your product is related to Cachet. For example, an analytics product that uses Cachet should not use the name "tlanalytics".
+Do not use the "Cachet" prefix in a way that could mistakenly imply that your product is related to Cachet. For example, an analytics product that uses Cachet should not use the name "cachetanalytics".
 
 You may not use or register our marks or variations of them as part of your trademark, business, product, service, app, domain name, social media account or business indicator. You may not use our marks as a part of an advertising campaign. You may not display Cachet trademarks more prominently than your product, service or company name. You may not use Cachet trademarks on merchandise for sale (e.g., selling t-shirts, mugs, etc).
 
@@ -61,6 +61,6 @@ To request the use of the trademarks in a manner or for a purpose not expressly 
 
 If you want to report misuse of a Cachet trademark, please email [hello@cachethq.io](mailto:hello@cachethq.io).
 
-Last updated: October 30 2024
+Last updated: November 25 2024
 
 These guidelines are based on the Model Trademark Guidelines, available at http://www.modeltrademarkguidelines.org., used under a Creative Commons Attribution 3.0 Unported license: https://creativecommons.org/licenses/by/3.0/deed.en_US
