@@ -23,9 +23,7 @@ class UpdateFactory extends Factory
     {
         return [
             'updateable_id' => Incident::factory(),
-            'updateable_type' => function (array $attributes) {
-                return Incident::find($attributes['updateable_id'])->type;
-            },
+            'updateable_type' => 'incident',
             'status' => IncidentStatusEnum::identified->value,
             'message' => fake()->paragraph,
             'user_id' => 1, // @todo decide how to handle storing of users... nullable?

@@ -3,6 +3,7 @@
 namespace Cachet\Models;
 
 use Cachet\Database\Factories\IncidentUpdateFactory;
+use Cachet\Database\Factories\UpdateFactory;
 use Cachet\Enums\IncidentStatusEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,6 +55,6 @@ class Update extends Model
      */
     protected static function newFactory(): Factory
     {
-        return IncidentUpdateFactory::new();
+        return UpdateFactory::new();
     }
 }

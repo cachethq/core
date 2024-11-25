@@ -9,7 +9,6 @@ use Cachet\Http\Requests\CreateIncidentUpdateRequest;
 use Cachet\Http\Requests\UpdateIncidentUpdateRequest;
 use Cachet\Http\Resources\Update as IncidentUpdateResource;
 use Cachet\Models\Incident;
-use Cachet\Models\IncidentUpdate;
 use Cachet\Models\Update;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -23,9 +22,9 @@ class IncidentUpdateController extends Controller
     /**
      * List Incident Updates
      *
-     * @apiResourceCollection \Cachet\Http\Resources\IncidentUpdate
+     * @apiResourceCollection \Cachet\Http\Resources\Update
      *
-     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     * @apiResourceModel \Cachet\Models\Update
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
@@ -47,9 +46,9 @@ class IncidentUpdateController extends Controller
     /**
      * Create Incident Update
      *
-     * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     * @apiResource \Cachet\Http\Resources\Update
      *
-     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     * @apiResourceModel \Cachet\Models\Update
      *
      * @authenticated
      */
@@ -63,9 +62,9 @@ class IncidentUpdateController extends Controller
     /**
      * Get Incident Update
      *
-     * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     * @apiResource \Cachet\Http\Resources\Update
      *
-     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     * @apiResourceModel \Cachet\Models\Update
      */
     public function show(Incident $incident, Update $update)
     {
@@ -77,9 +76,9 @@ class IncidentUpdateController extends Controller
     /**
      * Update Incident Update
      *
-     * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     * @apiResource \Cachet\Http\Resources\Update
      *
-     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     * @apiResourceModel \Cachet\Models\Update
      *
      * @authenticated
      */

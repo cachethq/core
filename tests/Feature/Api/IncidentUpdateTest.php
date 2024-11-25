@@ -55,8 +55,6 @@ it('can sort incident updates by status', function () {
         ['status' => 2],
     )->create();
 
-    dd($update->incident);
-
     $incident = Incident::query()->first();
 
     $response = getJson("/status/api/incidents/{$incident->id}/updates?sort=status");
@@ -158,12 +156,13 @@ it('can delete an incident update', function () {
 });
 
 it('cannot delete an incident update from another incident', function () {
-    $incident = Incident::factory()->create();
-    $incidentUpdate = Update::factory()->forIncident()->create();
+    $incidentUpdate = Update::factory()->forUpdateable()->create();
 
-    $response = deleteJson("/status/api/incidents/{$incident->id}/updates/{$incidentUpdate->id}");
+    dd($incidentUpdate);
+
+    $response = deleteJson("/status/api/incidents/{$incidentUpdate->updateable_id}/updates/{$incidentUpdate->id}");
     $response->assertNotFound();
     $this->assertDatabaseHas('incident_updates', [
-        'incident_id' => $incidentUpdate->incident_id,
+        'incident_id' => $incidentUpdate->updateable_id,
     ]);
 });

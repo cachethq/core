@@ -7,7 +7,7 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\IncidentResource\Pages;
 use Cachet\Filament\Resources\IncidentResource\RelationManagers\ComponentsRelationManager;
-use Cachet\Filament\Resources\IncidentResource\RelationManagers\UpdatesRelationManager;
+use Cachet\Filament\Resources\UpdateResource\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Incident;
 use Filament\Forms;
 use Filament\Forms\Components\Section;

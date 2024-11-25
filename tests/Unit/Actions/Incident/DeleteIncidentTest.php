@@ -20,7 +20,7 @@ it('can delete an incident', function () {
 });
 
 it('deletes attached incident updates', function () {
-    $incident = Incident::factory()->hasIncidentUpdates(2)->create();
+    $incident = Incident::factory()->hasUpdates(2)->create();
 
     app(DeleteIncident::class)->handle($incident);
 

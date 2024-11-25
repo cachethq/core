@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Filament\Resources\IncidentResource\RelationManagers;
+namespace Cachet\Filament\Resources\UpdateResource\RelationManagers;
 
 use Cachet\Enums\IncidentStatusEnum;
 use Filament\Forms;
