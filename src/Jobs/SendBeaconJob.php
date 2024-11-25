@@ -22,8 +22,11 @@ class SendBeaconJob
             return;
         }
 
-        $request = Http::asJson()->post('https://cachethq.io/beacon', [
+        $request = Http::asJson()
+            ->retry(3)
+            ->post('https://cachethq.io/beacon', [
             'install_id' => app(AppSettings::class)->install_id,
+            'php_version' => PHP_VERSION,
             'version' => Cachet::version(),
             'docker' => config('cachet.docker'),
             'database' => config('database.default'),
