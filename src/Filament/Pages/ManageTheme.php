@@ -19,7 +19,10 @@ class ManageTheme extends SettingsPage
             ->schema([
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\FileUpload::make('app_banner')
+                        ->image()
+                        ->imageEditor()
                         ->label(__('Banner Image'))
+                        ->disk('public')
                         ->columnSpanFull(),
                 ]),
 
