@@ -23,6 +23,11 @@ class MetricPointController extends Controller
      * @apiResourceCollection \Cachet\Http\Resources\MetricPoint
      *
      * @apiResourceModel \Cachet\Models\MetricPoint
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, order, id Example: name
+     * @queryParam include string Include related resources. Enum: metric Example: metric
      */
     public function index(Metric $metric)
     {

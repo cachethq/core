@@ -24,6 +24,11 @@ class ComponentGroupController extends Controller
      * @apiResource \Cachet\Http\Resources\ComponentGroup
      *
      * @apiResourceModel \Cachet\Models\ComponentGroup
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, id Example: name
+     * @queryParam include string Include related resources. Enum: components Example: components
      */
     public function index()
     {
