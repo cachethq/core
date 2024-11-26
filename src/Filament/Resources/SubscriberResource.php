@@ -26,7 +26,8 @@ class SubscriberResource extends Resource
                         ->label(__('Email'))
                         ->email()
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->autocomplete(false),
                     Forms\Components\TextInput::make('verify_code')
                         ->label(__('Verify code'))
                         ->required()
@@ -97,7 +98,9 @@ class SubscriberResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(__('Subscribers'))
+            ->emptyStateDescription(__('Subscribers are people who have subscribed to your status page for notifications.'));
     }
 
     public static function getRelations(): array

@@ -28,7 +28,8 @@ class ComponentGroupResource extends Resource
                         ->label(__('Name'))
                         ->required()
                         ->maxLength(255)
-                        ->columnSpanFull(),
+                        ->columnSpanFull()
+                        ->autocomplete(false),
                     Forms\Components\ToggleButtons::make('visible')
                         ->label(__('Visible'))
                         ->inline()
@@ -82,7 +83,9 @@ class ComponentGroupResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(__('Component Groups'))
+            ->emptyStateDescription(__('Group related components together.'));
     }
 
     public static function getRelations(): array
