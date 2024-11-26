@@ -7,7 +7,7 @@
         "laravel"
     ],
     "homepage": "https://cachethq.io",
-    "license": "MIT",
+    "license": "proprietary",
     "support": {
         "issues": "https://github.com/cachethq/core/issues",
         "source": "https://github.com/cachethq/core"
@@ -54,6 +54,7 @@
     "autoload-dev": {
         "psr-4": {
             "Cachet\\Tests\\": "tests",
+            "Cachet\\Database\\Factories\\": "database/factories",
             "Workbench\\App\\": "workbench/app/",
             "Workbench\\Database\\Factories\\": "workbench/database/factories/",
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"

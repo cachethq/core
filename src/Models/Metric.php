@@ -3,12 +3,14 @@
 namespace Cachet\Models;
 
 use Cachet\Concerns\HasVisibility;
+use Cachet\Database\Factories\MetricFactory;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Events\Metrics\MetricCreated;
 use Cachet\Events\Metrics\MetricDeleted;
 use Cachet\Events\Metrics\MetricUpdated;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -59,5 +61,13 @@ class Metric extends Model
     public function recentMetricPoints(int $points = 15): HasMany
     {
         return $this->metricPoints()->latest()->limit($points);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return MetricFactory::new();
     }
 }

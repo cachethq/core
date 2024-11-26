@@ -30,9 +30,11 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->login()
             ->passwordReset()
             ->brandLogo(fn () => view('cachet::filament.brand-logo'))
+            ->brandLogoHeight('2rem')
             ->colors([
                 'primary' => Color::rgb('rgb(4, 193, 71)'),
                 'purple' => Color::Purple,
+                'gray' => Color::Zinc,
             ])
             ->favicon('/vendor/cachethq/cachet/favicon.ico')
             ->viteTheme('resources/css/dashboard/theme.css', 'vendor/cachethq/cachet/build')

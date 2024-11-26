@@ -14,10 +14,22 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Incidents
+ */
 class IncidentController extends Controller
 {
     /**
-     * List Incidents.
+     * List Incidents
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\Incident
+     *
+     * @apiResourceModel \Cachet\Models\Incident
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, id, status Example: status
+     * @queryParam include string Include related resources. Enum: updates Example: updates
      */
     public function index()
     {
@@ -34,7 +46,13 @@ class IncidentController extends Controller
     }
 
     /**
-     * Create Incident.
+     * Create Incident
+     *
+     * @apiResource \Cachet\Http\Resources\Incident
+     *
+     * @apiResourceModel \Cachet\Models\Incident
+     *
+     * @authenticated
      */
     public function store(CreateIncidentData $data, CreateIncident $createIncidentAction)
     {
@@ -44,7 +62,11 @@ class IncidentController extends Controller
     }
 
     /**
-     * Get Incident.
+     * Get Incident
+     *
+     * @apiResource \Cachet\Http\Resources\Incident
+     *
+     * @apiResourceModel \Cachet\Models\Incident
      */
     public function show(Incident $incident)
     {
@@ -54,7 +76,13 @@ class IncidentController extends Controller
     }
 
     /**
-     * Update Incident.
+     * Update Incident
+     *
+     * @apiResource \Cachet\Http\Resources\Incident
+     *
+     * @apiResourceModel \Cachet\Models\Incident
+     *
+     * @authenticated
      */
     public function update(UpdateIncidentData $data, Incident $incident, UpdateIncident $updateIncidentAction)
     {
@@ -64,7 +92,11 @@ class IncidentController extends Controller
     }
 
     /**
-     * Delete Incident.
+     * Delete Incident
+     *
+     * @response 204
+     *
+     * @authenticated
      */
     public function destroy(Incident $incident, DeleteIncident $deleteIncidentAction)
     {

@@ -14,10 +14,23 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Metrics
+ */
 class MetricController extends Controller
 {
     /**
-     * List Metrics.
+     * List Metrics
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\Metric
+     *
+     * @apiResourceModel \Cachet\Models\Metric
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, order, id enabled Example: name
+     * @queryParam include string Include related resources. Enum: points Example: points
+     * @queryParam filters string[] Filter the resources. Example: name=api
      */
     public function index()
     {
@@ -34,7 +47,13 @@ class MetricController extends Controller
     }
 
     /**
-     * Create Metric.
+     * Create Metric
+     *
+     * @apiResource \Cachet\Http\Resources\Metric
+     *
+     * @apiResourceModel \Cachet\Models\Metric
+     *
+     * @authenticated
      */
     public function store(CreateMetricData $data, CreateMetric $createMetricAction)
     {
@@ -44,7 +63,11 @@ class MetricController extends Controller
     }
 
     /**
-     * Get Metric.
+     * Get Metric
+     *
+     * @apiResource \Cachet\Http\Resources\Metric
+     *
+     * @apiResourceModel \Cachet\Models\Metric
      */
     public function show(Metric $metric)
     {
@@ -54,7 +77,13 @@ class MetricController extends Controller
     }
 
     /**
-     * Update Metric.
+     * Update Metric
+     *
+     * @apiResource \Cachet\Http\Resources\Metric
+     *
+     * @apiResourceModel \Cachet\Models\Metric
+     *
+     * @authenticated
      */
     public function update(UpdateMetricData $data, Metric $metric, UpdateMetric $updateMetricAction)
     {
@@ -64,7 +93,11 @@ class MetricController extends Controller
     }
 
     /**
-     * Delete Metric.
+     * Delete Metric
+     *
+     * @response 204
+     *
+     * @authenticated
      */
     public function destroy(Metric $metric, DeleteMetric $deleteMetricAction)
     {

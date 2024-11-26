@@ -2,9 +2,11 @@
 
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\SubscriberFactory;
 use Cachet\Events\Subscribers\SubscriberCreated;
 use Cachet\Events\Subscribers\SubscriberUnsubscribed;
 use Cachet\Events\Subscribers\SubscriberVerified;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -63,5 +65,13 @@ class Subscriber extends Model
         ]);
 
         SubscriberVerified::dispatch($this);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return SubscriberFactory::new();
     }
 }

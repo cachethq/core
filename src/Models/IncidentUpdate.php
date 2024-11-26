@@ -2,7 +2,9 @@
 
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\IncidentUpdateFactory;
 use Cachet\Enums\IncidentStatusEnum;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -41,5 +43,13 @@ class IncidentUpdate extends Model
     public function formattedMessage(): string
     {
         return Str::of($this->message)->markdown();
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return IncidentUpdateFactory::new();
     }
 }

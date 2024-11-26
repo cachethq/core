@@ -13,10 +13,22 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Incident Templates
+ */
 class IncidentTemplateController extends Controller
 {
     /**
-     * List Incident Templates.
+     * List Incident Templates
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\IncidentTemplate
+     *
+     * @apiResourceModel \Cachet\Models\IncidentTemplate
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, slug, id Example: name
+     * @queryParam filters string[] Filter the resources.
      */
     public function index()
     {
@@ -29,7 +41,13 @@ class IncidentTemplateController extends Controller
     }
 
     /**
-     * Create Incident Template.
+     * Create Incident Template
+     *
+     * @apiResource \Cachet\Http\Resources\IncidentTemplate
+     *
+     * @apiResourceModel \Cachet\Models\IncidentTemplate
+     *
+     * @authenticated
      */
     public function store(CreateIncidentTemplateData $data, CreateIncidentTemplate $createIncidentTemplateAction)
     {
@@ -39,7 +57,11 @@ class IncidentTemplateController extends Controller
     }
 
     /**
-     * Get Incident Template.
+     * Get Incident Template
+     *
+     * @apiResource \Cachet\Http\Resources\IncidentTemplate
+     *
+     * @apiResourceModel \Cachet\Models\IncidentTemplate
      */
     public function show(IncidentTemplate $incidentTemplate)
     {
@@ -49,7 +71,13 @@ class IncidentTemplateController extends Controller
     }
 
     /**
-     * Update Incident Template.
+     * Update Incident Template
+     *
+     * @apiResource \Cachet\Http\Resources\IncidentTemplate
+     *
+     * @apiResourceModel \Cachet\Models\IncidentTemplate
+     *
+     * @authenticated
      */
     public function update(UpdateIncidentTemplateData $data, IncidentTemplate $incidentTemplate, UpdateIncidentTemplate $updateIncidentTemplateAction)
     {
@@ -59,7 +87,11 @@ class IncidentTemplateController extends Controller
     }
 
     /**
-     * Delete Incident Template.
+     * Delete Incident Template
+     *
+     * @response 204
+     *
+     * @authenticated
      */
     public function destroy(IncidentTemplate $incidentTemplate)
     {

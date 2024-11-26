@@ -8,8 +8,8 @@ it('can create a schedule without components', function () {
     $data = CreateScheduleData::from([
         'name' => 'My Scheduled Maintenance',
         'message' => 'Something will go down...',
-        'status' => 0, // Upcoming...
         'scheduled_at' => '2023-09-01 12:00:00',
+        'completed_at' => '2023-10-01 12:00:00',
     ]);
 
     $schedule = app(CreateSchedule::class)->handle($data);
@@ -26,8 +26,8 @@ it('can create a schedule with components', function () {
     $data = CreateScheduleData::from([
         'name' => 'My Scheduled Maintenance',
         'message' => 'Something will go down...',
-        'status' => 0, // Upcoming...
         'scheduled_at' => '2023-09-01 12:00:00',
+        'completed_at' => '2023-10-01 12:00:00',
         'components' => [
             ['id' => $componentA->id, 'status' => 3], // Partial Outage
             ['id' => $componentB->id, 'status' => 4], // Major Outage
