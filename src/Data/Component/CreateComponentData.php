@@ -25,4 +25,22 @@ final class CreateComponentData extends BaseData
         #[Min(0), Exists(table: 'component_groups', column: 'id')]
         public readonly ?int $componentGroupId = null,
     ) {}
+
+    /**
+     * Specify body parameter documentation for Scribe.
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'status' => [
+                'description' => 'The status of the component. See [Component Statuses](/v3.x/guide/components#component-statuses) for more information.',
+                'example' => '1',
+                'required' => false,
+                'schema' => [
+                    'type' => 'integer',
+                    'enum' => ComponentStatusEnum::cases(),
+                ],
+            ],
+        ];
+    }
 }
