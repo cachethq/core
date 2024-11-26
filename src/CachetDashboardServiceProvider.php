@@ -46,6 +46,9 @@ class CachetDashboardServiceProvider extends PanelProvider
                     ->label(__('Settings'))
                     ->collapsed()
                     ->icon('cachet-settings'),
+                NavigationGroup::make('Integrations')
+                    ->label(__('Integrations'))
+                    ->collapsed(),
                 NavigationGroup::make(__('Resources'))
                     ->collapsible(false),
             ])
