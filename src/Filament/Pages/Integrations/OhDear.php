@@ -29,9 +29,9 @@ class OhDear extends Page
     protected static string $view = 'cachet::filament.pages.integrations.oh-dear';
 
     public string $url;
-    public bool $import_sites;
-    public ?int $component_group_id;
-    public bool $import_incidents;
+    public bool $import_sites = false;
+    public ?int $component_group_id = null;
+    public bool $import_incidents = false;
 
     /**
      * Mount the page.
