@@ -53,7 +53,7 @@ class ImportOhDearFeed
                 Incident::updateOrCreate(
                     [
                         'external_provider' => $provider = ExternalProviderEnum::OhDear,
-                        'external_id' => $incident['id']
+                        'external_id' => $incident['id'],
                     ],
                     [
                         'name' => $incident['title'],

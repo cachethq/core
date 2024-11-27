@@ -29,8 +29,11 @@ class OhDear extends Page
     protected static string $view = 'cachet::filament.pages.integrations.oh-dear';
 
     public string $url;
+
     public bool $import_sites = false;
+
     public ?int $component_group_id = null;
+
     public bool $import_incidents = false;
 
     /**
@@ -81,7 +84,7 @@ class OhDear extends Page
                     ->label(__('Import Incidents'))
                     ->helperText(__('Recent incidents from Oh Dear will be imported as incidents in Cachet.'))
                     ->default(false),
-            ])
+            ]),
         ];
     }
 

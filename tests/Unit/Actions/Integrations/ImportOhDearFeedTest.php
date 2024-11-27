@@ -6,7 +6,7 @@ use Cachet\Enums\ExternalProviderEnum;
 use Cachet\Enums\IncidentStatusEnum;
 
 it('can import an OhDear feed', function () {
-    $importOhDearFeed = new ImportOhDearFeed();
+    $importOhDearFeed = new ImportOhDearFeed;
 
     $data = json_decode(file_get_contents(__DIR__.'/../../../stubs/ohdear-feed-php.json'), true);
 
@@ -21,7 +21,7 @@ it('can import an OhDear feed', function () {
 
     $this->assertDatabaseHas('incidents', [
         'external_provider' => ExternalProviderEnum::OhDear->value,
-        'external_id' => "1274100",
+        'external_id' => '1274100',
         'name' => 'php.net has recovered.',
         'status' => IncidentStatusEnum::fixed,
     ]);
