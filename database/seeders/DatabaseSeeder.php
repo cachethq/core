@@ -72,17 +72,17 @@ class DatabaseSeeder extends Seeder
         $componentGroup->components()->createMany([
             [
                 'name' => 'Cachet Website',
-                'description' => 'The Cachet Website.',
+                'description' => 'The Cachet website.',
                 'link' => 'https://cachethq.io',
                 'status' => ComponentStatusEnum::operational,
             ], [
                 'name' => 'Cachet Documentation',
-                'description' => 'The Checkmango Documentation.',
+                'description' => 'The Cachet docs, powered by Mintlify.',
                 'link' => 'https://docs.cachethq.io',
                 'status' => ComponentStatusEnum::operational,
             ], [
                 'name' => 'Cachet Blog',
-                'description' => 'The Cachet Blog.',
+                'description' => 'Learn more about Cachet.',
                 'link' => 'https://blog.cachethq.io',
                 'status' => ComponentStatusEnum::operational,
             ],
