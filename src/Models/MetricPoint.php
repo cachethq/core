@@ -74,7 +74,11 @@ class MetricPoint extends Model
      */
     public function withinThreshold(int $threshold, string|int|DateTime|null $timestamp = null): bool
     {
-        $now = Carbon::parse($timestamp) ?? now();
+        if (blank($timestamp)) {
+            $now = now();
+        }
+
+        $now ??= Carbon::parse($timestamp);
 
         return $this->created_at->startOfMinute()->diffInMinutes($now->startOfMinute()) < $threshold;
     }
