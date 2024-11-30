@@ -25,6 +25,11 @@ class IncidentController extends Controller
      * @apiResourceCollection \Cachet\Http\Resources\Incident
      *
      * @apiResourceModel \Cachet\Models\Incident
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, id, status Example: status
+     * @queryParam include string Include related resources. Enum: updates Example: updates
      */
     public function index()
     {

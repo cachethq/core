@@ -28,7 +28,8 @@ class MetricResource extends Resource
                         ->label(__('Name'))
                         ->required()
                         ->maxLength(255)
-                        ->columnSpan(3),
+                        ->columnSpan(3)
+                        ->autocomplete(false),
                     Forms\Components\TextInput::make('suffix')
                         ->label(__('Suffix'))
                         ->required()
@@ -155,7 +156,9 @@ class MetricResource extends Resource
                 ]),
             ])
             ->reorderable('order')
-            ->defaultSort('order');
+            ->defaultSort('order')
+            ->emptyStateHeading(__('Metrics'))
+            ->emptyStateDescription(__('Metrics are used to track and display data on your status page.'));
     }
 
     public static function getLabel(): ?string

@@ -41,6 +41,8 @@ class Incident extends Model
 
     protected $fillable = [
         'guid',
+        'external_provider',
+        'external_id',
         'user_id',
         'component_id',
         'name',
@@ -112,7 +114,9 @@ class Incident extends Model
 
     public function timestamp(): Attribute
     {
-        return Attribute::get(fn () => $this->occurred_at ?: $this->created_at);
+        return Attribute::make(
+            get: fn () => $this->occurred_at ?: $this->created_at
+        );
     }
 
     /**

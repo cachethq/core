@@ -24,6 +24,11 @@ class IncidentTemplateController extends Controller
      * @apiResourceCollection \Cachet\Http\Resources\IncidentTemplate
      *
      * @apiResourceModel \Cachet\Models\IncidentTemplate
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, slug, id Example: name
+     * @queryParam filters string[] Filter the resources.
      */
     public function index()
     {
