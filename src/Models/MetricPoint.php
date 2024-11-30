@@ -53,7 +53,7 @@ class MetricPoint extends Model
                     $createdAt = Carbon::parse($createdAt);
                 }
 
-                $timestamp = $createdAt->unix();
+                $timestamp = $createdAt->getTimestamp();
                 $timestamp = 30 * round($timestamp / 30);
 
                 return Carbon::createFromTimestamp($timestamp);
