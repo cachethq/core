@@ -179,7 +179,7 @@ EOF
             'updated_at' => $timestamp,
         ]);
 
-        $incident->incidentUpdates()->create([
+        $incident->updates()->create([
             'status' => IncidentStatusEnum::fixed,
             'message' => 'The documentation is now back online. Happy reading!',
             'created_at' => $timestamp = $incident->created_at->addMinutes(25),
