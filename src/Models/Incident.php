@@ -106,7 +106,9 @@ class Incident extends Model
 
     public function timestamp(): Attribute
     {
-        return Attribute::get(fn () => $this->occurred_at ?: $this->created_at);
+        return Attribute::make(
+            get: fn () => $this->occurred_at ?: $this->created_at
+        );
     }
 
     /**

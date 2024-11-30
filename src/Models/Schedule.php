@@ -35,15 +35,17 @@ class Schedule extends Model
      */
     public function status(): Attribute
     {
-        return Attribute::get(function () {
-            $now = Carbon::now();
+        return Attribute::make(
+            get: function () {
+                $now = Carbon::now();
 
-            return match (true) {
-                $this->scheduled_at->gte($now) => ScheduleStatusEnum::upcoming,
-                $this->completed_at === null => ScheduleStatusEnum::in_progress,
-                default => ScheduleStatusEnum::complete,
-            };
-        });
+                return match (true) {
+                    $this->scheduled_at->gte($now) => ScheduleStatusEnum::upcoming,
+                    $this->completed_at === null => ScheduleStatusEnum::in_progress,
+                    default => ScheduleStatusEnum::complete,
+                };
+            }
+        );
     }
 
     /**
