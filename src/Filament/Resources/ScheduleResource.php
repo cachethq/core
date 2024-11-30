@@ -45,7 +45,8 @@ class ScheduleResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name'))
-                    ->searchable(),
+                    ->searchable()
+                    ->autocomplete(false),
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('Status'))
                     ->badge()
@@ -93,7 +94,9 @@ class ScheduleResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(__('Schedules'))
+            ->emptyStateDescription(__('Plan and schedule your maintenance.'));
     }
 
     public static function getPages(): array

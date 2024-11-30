@@ -41,6 +41,9 @@ class Incident extends Model
 
     protected $fillable = [
         'guid',
+        'external_provider',
+        'external_id',
+        'user_id',
         'component_id',
         'name',
         'status',
