@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -78,9 +78,9 @@ class Incident extends Model
     /**
      * Get the updates for this incident.
      */
-    public function incidentUpdates(): HasMany
+    public function updates(): MorphMany
     {
-        return $this->hasMany(IncidentUpdate::class);
+        return $this->morphMany(Update::class, 'updateable')->chaperone();
     }
 
     /**
@@ -116,6 +116,18 @@ class Incident extends Model
     {
         return Attribute::make(
             get: fn () => $this->occurred_at ?: $this->created_at
+        );
+    }
+
+    /**
+     * Determine the latest status of the incident.
+     */
+    public function latestStatus(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                return $this->updates()->latest()->first()?->status ?? $this->status;
+            }
         );
     }
 

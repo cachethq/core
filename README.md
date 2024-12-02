@@ -31,8 +31,7 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [x] Incident Management
 - [x] Incident Updates
 - [x] Scheduled Maintenance
-- [ ] Scheduled Maintenance Updates
-  - WIP - https://github.com/cachethq/core/pull/109
+- [x] Scheduled Maintenance Updates
 - [x] Components
 - [ ] Metrics
   - API and dashboard are working.

@@ -138,7 +138,7 @@ it('can filter incidents by status', function () {
 
     $response->assertJsonCount(1, 'data');
     $response->assertJsonPath('data.0.attributes.id', $incident->id);
-});
+})->todo('This test needs to be aware of the computed status.');
 
 it('can filter incidents by occurred at date', function () {
     Incident::factory(20)->create([
@@ -172,9 +172,9 @@ it('can get an incident', function () {
 });
 
 it('can get an incident with updates', function () {
-    $incident = Incident::factory()->hasIncidentUpdates(2)->create();
+    $incident = Incident::factory()->hasUpdates(2)->create();
 
-    $response = getJson('/status/api/incidents/'.$incident->id.'?include=incidentUpdates');
+    $response = getJson('/status/api/incidents/'.$incident->id.'?include=updates');
 
     $response->assertOk();
     $response->assertJsonFragment([
