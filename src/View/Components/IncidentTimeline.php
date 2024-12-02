@@ -60,9 +60,8 @@ class IncidentTimeline extends Component
                     ]);
                 });
             })
-            ->orderBy('occurred_at', 'desc')
-            ->orderBy('created_at', 'desc')
             ->get()
+            ->sortByDesc(fn (Incident $incident) => $incident->timestamp)
             ->groupBy(fn (Incident $incident) => $incident->timestamp->toDateString())
             ->union(
                 // Back-fill any missing dates...

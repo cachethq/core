@@ -15,7 +15,7 @@
         ])>
             @if ($incident->components()->exists())
             <div class="text-xs font-medium">
-                {{ $incident->components()->pluck('name')->join(', ', ' and ') }}
+                {{ $incident->components->pluck('name')->join(', ', ' and ') }}
             </div>
             @endif
             <div class="flex flex-col sm:flex-row justify-between gap-2 flex-col-reverse items-start sm:items-center">
@@ -57,11 +57,11 @@
                     <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
                 </div>
                 @endforeach
-                <div class="relative py-4" x-data="{ timestamp: new Date(@js($incident->created_at)) }">
+                <div class="relative py-4" x-data="{ timestamp: new Date(@js($incident->timestamp)) }">
                     <x-cachet::incident-update-status :status="IncidentStatusEnum::unknown" />
 
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ $incident->created_at->diffForHumans() }} — <time datetime="{{ $incident->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
+                        {{ $incident->timestamp->diffForHumans() }} — <time datetime="{{ $incident->timestamp->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
                     </span>
                     <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $incident->formattedMessage() !!}</div>
                 </div>
