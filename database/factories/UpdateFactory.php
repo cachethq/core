@@ -2,9 +2,7 @@
 
 namespace Cachet\Database\Factories;
 
-use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
-use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;

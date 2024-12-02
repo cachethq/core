@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -14,7 +12,7 @@ return new class extends Migration
         DB::table('incident_updates')
             ->update([
                 'updateable_type' => 'incident',
-                'updateable_id' => DB::raw('incident_id')
+                'updateable_id' => DB::raw('incident_id'),
             ]);
     }
 };
