@@ -2,14 +2,18 @@
 
 namespace Cachet\Filament\Resources;
 
+use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Filament\Resources\ScheduleResource\Pages;
 use Cachet\Filament\Resources\UpdateResource\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Schedule;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 
 class ScheduleResource extends Resource
@@ -79,6 +83,40 @@ class ScheduleResource extends Resource
                 //
             ])
             ->actions([
+                Action::make('add-update')
+                    ->disabled(fn (Schedule $record) => $record->status === ScheduleStatusEnum::complete)
+                    ->label(__('Record Update'))
+                    ->color('info')
+                    ->action(function (CreateUpdate $createUpdate, Schedule $record, array $data) {
+                        // Reset the completed_at date if the status is not complete.
+                        $status = ScheduleStatusEnum::tryFrom($data['status']);
+                        if ($status !== ScheduleStatusEnum::complete) {
+                            $data['completed_at'] = null;
+                        }
+
+                        $createUpdate->handle($record, $data);
+
+                        Notification::make()
+                            ->title(__('Schedule :name Updated', ['name' => $record->name]))
+                            ->body(__('A new schedule update has been recorded.'))
+                            ->success()
+                            ->send();
+                    })
+                    ->form([
+                        Forms\Components\MarkdownEditor::make('message')
+                            ->label(__('Message'))
+                            ->required(),
+                        Forms\Components\ToggleButtons::make('status')
+                            ->label(__('Status'))
+                            ->options(ScheduleStatusEnum::class)
+                            ->inline()
+                            ->required()
+                            ->reactive(),
+
+                        Forms\Components\DateTimePicker::make('completed_at')
+                            ->visible(fn (Get $get) => ScheduleStatusEnum::tryFrom($get('status')) === ScheduleStatusEnum::complete)
+                            ->required(),
+                    ]),
                 Tables\Actions\Action::make('complete')
                     ->disabled(fn (Schedule $record): bool => $record->status === ScheduleStatusEnum::complete)
                     ->label(__('Complete Maintenance'))
