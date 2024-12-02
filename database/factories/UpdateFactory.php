@@ -30,10 +30,13 @@ class UpdateFactory extends Factory
             'updateable_type' => Relation::getMorphAlias(Incident::class),
             'status' => IncidentStatusEnum::identified->value,
             'message' => fake()->paragraph,
-            'user_id' => 1, // @todo decide how to handle storing of users... nullable?
+            'user_id' => 1,
         ];
     }
 
+    /**
+     * Create an update for an incident.
+     */
     public function forIncident(?Incident $incident = null): self
     {
         return $this->state([
@@ -43,12 +46,16 @@ class UpdateFactory extends Factory
         ]);
     }
 
+    /**
+     * Create an update for a schedule.
+     */
     public function forSchedule(?Schedule $schedule = null): self
     {
         return $this->state([
             'updateable_id' => $schedule->id ?? Schedule::factory(),
             'updateable_type' => Relation::getMorphAlias(Schedule::class),
             'status' => null,
+            'user_id' => null,
         ]);
     }
 }
