@@ -158,6 +158,13 @@ class IncidentResource extends Resource
                             ->options(IncidentStatusEnum::class)
                             ->inline()
                             ->required(),
+                        Forms\Components\Select::make('user_id')
+                            ->label(__('User'))
+                            ->hint(__('Who reported this incident.'))
+                            ->relationship('user', 'name')
+                            ->default(auth()->id())
+                            ->searchable()
+                            ->preload(),
                     ]),
                 Action::make('view-incident')
                     ->icon('heroicon-o-eye')

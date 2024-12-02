@@ -5,6 +5,9 @@ namespace Cachet\Http\Resources;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/**
+ * @mixin \Cachet\Models\Incident
+ */
 class Incident extends JsonApiResource
 {
     public function toAttributes(Request $request): array
@@ -19,8 +22,8 @@ class Incident extends JsonApiResource
             'stickied' => $this->stickied,
             'notifications' => $this->notifications,
             'status' => [
-                'human' => $this->status->getLabel(),
-                'value' => $this->status->value,
+                'human' => $this->latestStatus->getLabel(),
+                'value' => $this->latestStatus->value,
             ],
             'occurred' => [
                 'human' => optional($this->occurred_at)->diffForHumans(),
@@ -40,7 +43,7 @@ class Incident extends JsonApiResource
     public function toRelationships(Request $request)
     {
         return [
-            'component' => fn () => Component::make($this->component),
+            'components' => fn () => Component::collection($this->components),
             'updates' => fn () => Update::collection($this->updates),
             'user' => fn () => Component::make($this->user),
         ];
