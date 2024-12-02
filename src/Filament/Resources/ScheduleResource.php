@@ -46,8 +46,7 @@ class ScheduleResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name'))
-                    ->searchable()
-                    ->autocomplete(false),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('Status'))
                     ->badge()
