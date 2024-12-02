@@ -22,7 +22,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ScheduleUpdateController extends Controller
 {
     /**
-     * List Incident Updates
+     * List Schedule Updates
      *
      * @apiResourceCollection \Cachet\Http\Resources\Update
      *
