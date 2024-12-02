@@ -20,6 +20,15 @@ use Spatie\QueryBuilder\QueryBuilder;
 class IncidentController extends Controller
 {
     /**
+     * The list of allowed includes.
+     */
+    public const ALLOWED_INCLUDES = [
+        'components',
+        'incidentUpdates',
+        'user',
+    ];
+
+    /**
      * List Incidents
      *
      * @apiResourceCollection \Cachet\Http\Resources\Incident
@@ -29,7 +38,7 @@ class IncidentController extends Controller
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
      * @queryParam sort string Field to sort by. Enum: name, id, status Example: status
-     * @queryParam include string Include related resources. Enum: updates Example: updates
+     * @queryParam include string Include related resources. Enum: components, incidentUpdates, user Example: incidentUpdates
      */
     public function index()
     {
@@ -37,7 +46,7 @@ class IncidentController extends Controller
             ->when(! request('sort'), function (Builder $builder) {
                 $builder->orderByDesc('created_at');
             })
-            ->allowedIncludes(['updates'])
+            ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->allowedFilters(['name', 'status', 'occurred_at'])
             ->allowedSorts(['name', 'status', 'id'])
             ->simplePaginate(request('per_page', 15));
@@ -67,10 +76,16 @@ class IncidentController extends Controller
      * @apiResource \Cachet\Http\Resources\Incident
      *
      * @apiResourceModel \Cachet\Models\Incident
+     *
+     * @queryParam include string Include related resources. Enum: components, incidentUpdates, user Example: incidentUpdates
      */
     public function show(Incident $incident)
     {
-        return IncidentResource::make($incident)
+        $incidentQuery = QueryBuilder::for($incident)
+            ->allowedIncludes(self::ALLOWED_INCLUDES)
+            ->first();
+
+        return IncidentResource::make($incidentQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }
