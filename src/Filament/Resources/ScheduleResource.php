@@ -88,12 +88,6 @@ class ScheduleResource extends Resource
                     ->label(__('Record Update'))
                     ->color('info')
                     ->action(function (CreateUpdate $createUpdate, Schedule $record, array $data) {
-                        // Reset the completed_at date if the status is not complete.
-                        $status = ScheduleStatusEnum::tryFrom($data['status']);
-                        if ($status !== ScheduleStatusEnum::complete) {
-                            $data['completed_at'] = null;
-                        }
-
                         $createUpdate->handle($record, $data);
 
                         Notification::make()
@@ -106,16 +100,8 @@ class ScheduleResource extends Resource
                         Forms\Components\MarkdownEditor::make('message')
                             ->label(__('Message'))
                             ->required(),
-                        Forms\Components\ToggleButtons::make('status')
-                            ->label(__('Status'))
-                            ->options(ScheduleStatusEnum::class)
-                            ->inline()
-                            ->required()
-                            ->reactive(),
 
-                        Forms\Components\DateTimePicker::make('completed_at')
-                            ->visible(fn (Get $get) => ScheduleStatusEnum::tryFrom($get('status')) === ScheduleStatusEnum::complete)
-                            ->required(),
+                        Forms\Components\DateTimePicker::make('completed_at'),
                     ]),
                 Tables\Actions\Action::make('complete')
                     ->disabled(fn (Schedule $record): bool => $record->status === ScheduleStatusEnum::complete)
