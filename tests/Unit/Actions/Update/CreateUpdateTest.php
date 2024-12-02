@@ -3,6 +3,7 @@
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 
 it('can create an incident update', function () {
     $incident = Incident::factory()->create();
@@ -18,7 +19,7 @@ it('can create an incident update', function () {
         ->message->toBe($data['message']);
 });
 
-it('updates the incident when the status is changed', function () {
+it('an incident\'s computed latest status equals the new status', function () {
     $incident = Incident::factory()->create([
         'status' => IncidentStatusEnum::investigating,
     ]);
@@ -33,5 +34,19 @@ it('updates the incident when the status is changed', function () {
     expect($incidentUpdate)
         ->message->toBe($data['message'])
         ->and($incident->fresh())
-        ->status->toEqual(IncidentStatusEnum::identified);
+        ->latestStatus->toEqual(IncidentStatusEnum::identified);
+});
+
+it('can create a schedule update', function () {
+    $schedule = Schedule::factory()->create();
+
+    $data = [
+        'message' => 'This is an update message for a schedule.',
+        'status' => IncidentStatusEnum::investigating,
+    ];
+
+    $incidentUpdate = app(CreateUpdate::class)->handle($schedule, $data);
+
+    expect($incidentUpdate)
+        ->message->toBe($data['message']);
 });
