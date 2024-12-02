@@ -18,9 +18,6 @@
     <a href="https://packagist.org/packages/cachethq/core">
         <img src="https://img.shields.io/packagist/v/cachethq/core" alt="Latest Stable Version">
     </a>
-    <a href="https://packagist.org/packages/cachethq/core">
-        <img src="https://img.shields.io/github/license/cachethq/core" alt="License">
-    </a>
 </p>
 
 ## Introduction
