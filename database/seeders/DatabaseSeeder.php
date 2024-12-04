@@ -9,13 +9,13 @@ use Cachet\Enums\IncidentTemplateEngineEnum;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
-use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
+use Cachet\Models\Update;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
 use Cachet\Settings\ThemeSettings;
@@ -33,12 +33,12 @@ class DatabaseSeeder extends Seeder
     {
         DB::table('users')->truncate();
         DB::table('incidents')->truncate();
-        DB::table('incident_updates')->truncate();
         DB::table('components')->truncate();
         DB::table('component_groups')->truncate();
         DB::table('schedules')->truncate();
         DB::table('metrics')->truncate();
         DB::table('metric_points')->truncate();
+        DB::table('updates')->truncate();
 
         /** @var \Illuminate\Foundation\Auth\User $userModel */
         $userModel = config('cachet.user_model');
@@ -51,48 +51,67 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Schedule::create([
-            'name' => 'Database Maintenance',
-            'message' => 'We will be conducting maintenance on our database servers. You may experience degraded performance during this time.',
-            'scheduled_at' => now()->addHours(6),
-            'status' => ScheduleStatusEnum::upcoming,
+            'name' => 'Documentation Maintenance',
+            'message' => 'We will be conducting maintenance on our documentation servers. Documentation may not be available during this time.',
+            'scheduled_at' => now()->subHours(12)->subMinutes(45),
+            'completed_at' => now()->subHours(12),
         ]);
 
+        tap(Schedule::create([
+            'name' => 'Documentation Maintenance',
+            'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
+            'scheduled_at' => now()->addHours(24),
+            'completed_at' => null,
+        ]), function (Schedule $schedule) use ($user) {
+            $update = new Update([
+                'message' => <<<'EOF'
+This scheduled maintenance period has been pushed back by one hour.
+EOF
+                ,
+                'user_id' => $user->id,
+                'created_at' => $timestamp = $schedule->created_at->addMinutes(45),
+                'updated_at' => $timestamp,
+            ]);
+
+            $schedule->updates()->save($update);
+        });
+
         $componentGroup = ComponentGroup::create([
-            'name' => 'Checkmango',
+            'name' => 'Cachet',
             'collapsed' => ComponentGroupVisibilityEnum::expanded,
             'visible' => ResourceVisibilityEnum::guest,
         ]);
 
         $componentGroup->components()->createMany([
             [
-                'name' => 'Dashboard',
-                'description' => 'The Checkmango Dashboard.',
-                'link' => 'https://checkmango.com',
+                'name' => 'Cachet Website',
+                'description' => 'The Cachet website.',
+                'link' => 'https://cachethq.io',
                 'status' => ComponentStatusEnum::operational,
             ], [
-                'name' => 'API',
-                'description' => 'The Checkmango API.',
-                'link' => 'https://developers.checkmango.com',
+                'name' => 'Cachet Documentation',
+                'description' => 'The Cachet docs, powered by Mintlify.',
+                'link' => 'https://docs.cachethq.io',
                 'status' => ComponentStatusEnum::operational,
             ], [
-                'name' => 'Documentation',
-                'description' => 'The Checkmango Documentation.',
-                'link' => 'https://docs.checkmango.com',
-                'status' => ComponentStatusEnum::performance_issues,
+                'name' => 'Cachet Blog',
+                'description' => 'Learn more about Cachet.',
+                'link' => 'https://blog.cachethq.io',
+                'status' => ComponentStatusEnum::operational,
             ],
         ]);
 
         Component::create([
-            'name' => 'Cachet',
-            'description' => 'The open-source status page system.',
-            'link' => 'https://cachethq.io',
+            'name' => 'Laravel Artisan Cheatsheet',
+            'description' => 'The Laravel Artisan Cheatsheet.',
+            'link' => 'https://artisan.page',
             'status' => ComponentStatusEnum::operational,
         ]);
 
         $metric = Metric::create([
-            'name' => 'Checkmango Requests',
+            'name' => 'Cachet API Requests',
             'suffix' => 'req/s',
-            'description' => 'The number of requests to the Checkmango API.',
+            'description' => 'The number of requests to the Cachet API.',
             'default_view' => MetricViewEnum::last_hour,
             'calc_type' => MetricTypeEnum::average,
             'display_chart' => true,
@@ -116,7 +135,7 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $timestamp,
             'occurred_at' => $timestamp,
         ]), function (Incident $incident) use ($user) {
-            $incident->incidentUpdates()->create([
+            $update = new Update([
                 'status' => IncidentStatusEnum::identified,
                 'message' => 'We\'ve confirmed the issue is with our DNS provider. We\'re waiting on them to provide an ETA.',
                 'user_id' => $user->id,
@@ -124,7 +143,9 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => $timestamp,
             ]);
 
-            $incident->incidentUpdates()->create([
+            $incident->updates()->save($update);
+
+            $update = new Update([
                 'status' => IncidentStatusEnum::fixed,
                 'message' => <<<'EOF'
 Our DNS provider has fixed the issue. We will continue to monitor the situation.
@@ -136,12 +157,14 @@ EOF
                 'created_at' => $timestamp = $incident->created_at->addMinutes(45),
                 'updated_at' => $timestamp,
             ]);
+
+            $incident->updates()->save($update);
         });
 
         $incident = Incident::create([
             'name' => 'Documentation Performance Degradation',
             'message' => 'We\'re investigating an issue with our documentation causing the site to be slow.',
-            'status' => IncidentStatusEnum::investigating,
+            'status' => IncidentStatusEnum::fixed,
             'visible' => ResourceVisibilityEnum::guest,
             'guid' => Str::uuid(),
             'created_at' => $timestamp = now()->subMinutes(30),
@@ -149,10 +172,21 @@ EOF
             'occurred_at' => $timestamp,
         ]);
 
-        $incident->incidentUpdates()->create([
+        $update = new Update([
             'status' => IncidentStatusEnum::identified,
             'message' => 'We\'ve identified the issue and are working on a fix.',
+            'created_at' => $timestamp = $incident->created_at->addMinutes(15),
+            'updated_at' => $timestamp,
         ]);
+
+        $incident->updates()->create([
+            'status' => IncidentStatusEnum::fixed,
+            'message' => 'The documentation is now back online. Happy reading!',
+            'created_at' => $timestamp = $incident->created_at->addMinutes(25),
+            'updated_at' => $timestamp,
+        ]);
+
+        $incident->updates()->save($update);
 
         IncidentTemplate::create([
             'name' => 'Third-Party Service Outage',

@@ -30,7 +30,7 @@ class StatusPageController
                 ->withCount('incidents')
                 ->get(),
 
-            'schedules' => Schedule::query()->inTheFuture()->orderBy('scheduled_at')->get(),
+            'schedules' => Schedule::query()->with('updates')->incomplete()->orderBy('scheduled_at')->get(),
         ]);
     }
 

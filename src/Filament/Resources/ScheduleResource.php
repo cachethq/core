@@ -2,13 +2,17 @@
 
 namespace Cachet\Filament\Resources;
 
+use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Filament\Resources\ScheduleResource\Pages;
+use Cachet\Filament\Resources\UpdateResource\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Schedule;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
 
 class ScheduleResource extends Resource
@@ -25,17 +29,6 @@ class ScheduleResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->label(__('Name'))
                         ->required(),
-                    Forms\Components\Select::make('status')
-                        ->label(__('Status'))
-                        ->required()
-                        ->options(ScheduleStatusEnum::class)
-                        ->default(ScheduleStatusEnum::upcoming)
-                        ->afterStateUpdated(function (Forms\Set $set, int|ScheduleStatusEnum $state): void {
-                            if (ScheduleStatusEnum::parse($state) !== ScheduleStatusEnum::complete) {
-                                $set('completed_at', null);
-                            }
-                        })
-                        ->live(),
                     Forms\Components\MarkdownEditor::make('message')
                         ->label(__('Message'))
                         ->columnSpanFull(),
@@ -45,9 +38,7 @@ class ScheduleResource extends Resource
                         ->label(__('Scheduled at'))
                         ->required(),
                     Forms\Components\DateTimePicker::make('completed_at')
-                        ->label(__('Completed at'))
-                        ->visible(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete)
-                        ->required(fn (Forms\Get $get): bool => ScheduleStatusEnum::parse($get('status')) === ScheduleStatusEnum::complete),
+                        ->label(__('Completed at')),
                 ])->columnSpan(1),
             ])->columns(4);
     }
@@ -91,6 +82,26 @@ class ScheduleResource extends Resource
                 //
             ])
             ->actions([
+                Action::make('add-update')
+                    ->disabled(fn (Schedule $record) => $record->status === ScheduleStatusEnum::complete)
+                    ->label(__('Record Update'))
+                    ->color('info')
+                    ->action(function (CreateUpdate $createUpdate, Schedule $record, array $data) {
+                        $createUpdate->handle($record, $data);
+
+                        Notification::make()
+                            ->title(__('Schedule :name Updated', ['name' => $record->name]))
+                            ->body(__('A new schedule update has been recorded.'))
+                            ->success()
+                            ->send();
+                    })
+                    ->form([
+                        Forms\Components\MarkdownEditor::make('message')
+                            ->label(__('Message'))
+                            ->required(),
+
+                        Forms\Components\DateTimePicker::make('completed_at'),
+                    ]),
                 Tables\Actions\Action::make('complete')
                     ->disabled(fn (Schedule $record): bool => $record->status === ScheduleStatusEnum::complete)
                     ->label(__('Complete Maintenance'))
@@ -99,14 +110,16 @@ class ScheduleResource extends Resource
                             ->required(),
                     ])
                     ->color('success')
-                    ->action(fn (Schedule $record, array $data) => $record->update(['completed_at' => $data['completed_at'], 'status' => ScheduleStatusEnum::complete])),
+                    ->action(fn (Schedule $record, array $data) => $record->update(['completed_at' => $data['completed_at']])),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(__('Schedules'))
+            ->emptyStateDescription(__('Plan and schedule your maintenance.'));
     }
 
     public static function getPages(): array
@@ -115,6 +128,13 @@ class ScheduleResource extends Resource
             'index' => Pages\ListSchedules::route('/'),
             'create' => Pages\CreateSchedule::route('/create'),
             'edit' => Pages\EditSchedule::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            UpdatesRelationManager::class,
         ];
     }
 

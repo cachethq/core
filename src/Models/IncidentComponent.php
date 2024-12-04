@@ -2,7 +2,9 @@
 
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\IncidentComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -29,5 +31,13 @@ class IncidentComponent extends Pivot
     public function incident(): BelongsTo
     {
         return $this->belongsTo(Incident::class);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return IncidentComponentFactory::new();
     }
 }

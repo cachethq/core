@@ -14,10 +14,31 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Incidents
+ */
 class IncidentController extends Controller
 {
     /**
-     * List Incidents.
+     * The list of allowed includes.
+     */
+    public const ALLOWED_INCLUDES = [
+        'components',
+        'updates',
+        'user',
+    ];
+
+    /**
+     * List Incidents
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\Incident
+     *
+     * @apiResourceModel \Cachet\Models\Incident
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, id, status Example: status
+     * @queryParam include string Include related resources. Enum: components, updates, user Example: updates
      */
     public function index()
     {
@@ -25,7 +46,7 @@ class IncidentController extends Controller
             ->when(! request('sort'), function (Builder $builder) {
                 $builder->orderByDesc('created_at');
             })
-            ->allowedIncludes(['updates'])
+            ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->allowedFilters(['name', 'status', 'occurred_at'])
             ->allowedSorts(['name', 'status', 'id'])
             ->simplePaginate(request('per_page', 15));
@@ -34,7 +55,13 @@ class IncidentController extends Controller
     }
 
     /**
-     * Create Incident.
+     * Create Incident
+     *
+     * @apiResource \Cachet\Http\Resources\Incident
+     *
+     * @apiResourceModel \Cachet\Models\Incident
+     *
+     * @authenticated
      */
     public function store(CreateIncidentRequest $request, CreateIncident $createIncidentAction)
     {
@@ -44,17 +71,33 @@ class IncidentController extends Controller
     }
 
     /**
-     * Get Incident.
+     * Get Incident
+     *
+     * @apiResource \Cachet\Http\Resources\Incident
+     *
+     * @apiResourceModel \Cachet\Models\Incident
+     *
+     * @queryParam include string Include related resources. Enum: components, updates, user Example: updates
      */
     public function show(Incident $incident)
     {
-        return IncidentResource::make($incident)
+        $incidentQuery = QueryBuilder::for($incident)
+            ->allowedIncludes(self::ALLOWED_INCLUDES)
+            ->first();
+
+        return IncidentResource::make($incidentQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }
 
     /**
-     * Update Incident.
+     * Update Incident
+     *
+     * @apiResource \Cachet\Http\Resources\Incident
+     *
+     * @apiResourceModel \Cachet\Models\Incident
+     *
+     * @authenticated
      */
     public function update(UpdateIncidentRequest $request, Incident $incident, UpdateIncident $updateIncidentAction)
     {
@@ -64,7 +107,11 @@ class IncidentController extends Controller
     }
 
     /**
-     * Delete Incident.
+     * Delete Incident
+     *
+     * @response 204
+     *
+     * @authenticated
      */
     public function destroy(Incident $incident, DeleteIncident $deleteIncidentAction)
     {

@@ -3,6 +3,7 @@
 namespace Cachet\Models;
 
 use Cachet\Concerns\HasVisibility;
+use Cachet\Database\Factories\IncidentFactory;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Events\Incidents\IncidentCreated;
@@ -11,11 +12,12 @@ use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Filament\Resources\IncidentResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -39,6 +41,8 @@ class Incident extends Model
 
     protected $fillable = [
         'guid',
+        'external_provider',
+        'external_id',
         'user_id',
         'component_id',
         'name',
@@ -74,9 +78,9 @@ class Incident extends Model
     /**
      * Get the updates for this incident.
      */
-    public function incidentUpdates(): HasMany
+    public function updates(): MorphMany
     {
-        return $this->hasMany(IncidentUpdate::class);
+        return $this->morphMany(Update::class, 'updateable')->chaperone();
     }
 
     /**
@@ -110,7 +114,21 @@ class Incident extends Model
 
     public function timestamp(): Attribute
     {
-        return Attribute::get(fn () => $this->occurred_at ?: $this->created_at);
+        return Attribute::make(
+            get: fn () => $this->occurred_at ?: $this->created_at
+        );
+    }
+
+    /**
+     * Determine the latest status of the incident.
+     */
+    public function latestStatus(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                return $this->updates()->latest()->first()?->status ?? $this->status;
+            }
+        );
     }
 
     /**
@@ -127,5 +145,13 @@ class Incident extends Model
     public function filamentDashboardEditUrl(): string
     {
         return IncidentResource::getUrl(name: 'edit', parameters: ['record' => $this->id]);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return IncidentFactory::new();
     }
 }

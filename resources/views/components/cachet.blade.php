@@ -10,19 +10,19 @@
 
         <title>{{ $title ?: config('cachet.title', 'Cachet') }}</title>
         <meta name="title" content="{{ $title ?: config('cachet.title', 'Cachet') }}" />
-        <meta name="description" content="Status page for {{ $site_name }}." />
+        <meta name="description" content="{{ $description }}" />
 
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website" />
         <meta property="og:url" content="{{ url(Cachet::path()) }}" />
         <meta property="og:title" content="{{ $title ?: config('cachet.title', 'Cachet') }}" />
-        <meta property="og:description" content="Status page for {{ $site_name }}." />
+        <meta property="og:description" content="{{ $description }}" />
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="{{ url(Cachet::path()) }}" />
         <meta property="twitter:title" content="{{ $title ?: config('cachet.title', 'Cachet') }}" />
-        <meta property="twitter:description" content="Status page for {{ $site_name }}." />
+        <meta property="twitter:description" content="{{ $description }}" />
 
         @vite(['resources/css/cachet.css', 'resources/js/cachet.js'], 'vendor/cachethq/cachet/build')
         @filamentStyles

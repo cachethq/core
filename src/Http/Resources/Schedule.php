@@ -14,20 +14,24 @@ class Schedule extends JsonApiResource
             'name' => $this->name,
             'message' => $this->message,
             'status' => [
-                'human' => optional($this->status)->getLabel(),
-                'value' => optional($this->status)->value,
+                'human' => $this->status?->getLabel(),
+                'value' => $this->status?->value,
             ],
             'scheduled' => [
-                'human' => optional($this->scheduled_at)->diffForHumans(),
-                'string' => optional($this->scheduled_at)->toDateTimeString(),
+                'human' => $this->scheduled_at?->diffForHumans(),
+                'string' => $this->scheduled_at?->toDateTimeString(),
+            ],
+            'completed' => [
+                'human' => $this->completed_at?->diffForHumans(),
+                'string' => $this->completed_at?->toDateTimeString(),
             ],
             'created' => [
-                'human' => optional($this->created_at)->diffForHumans(),
-                'string' => optional($this->created_at)->toDateTimeString(),
+                'human' => $this->created_at?->diffForHumans(),
+                'string' => $this->created_at?->toDateTimeString(),
             ],
             'updated' => [
-                'human' => optional($this->updated_at)->diffForHumans(),
-                'string' => optional($this->updated_at)->toDateTimeString(),
+                'human' => $this->updated_at?->diffForHumans(),
+                'string' => $this->updated_at?->toDateTimeString(),
             ],
         ];
     }
@@ -36,6 +40,8 @@ class Schedule extends JsonApiResource
     {
         return [
             'components' => fn () => Component::collection($this->components),
+            'updates' => fn () => Update::collection($this->updates),
+            'user' => fn () => Component::make($this->user),
         ];
     }
 }

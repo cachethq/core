@@ -7,7 +7,7 @@
         "laravel"
     ],
     "homepage": "https://cachethq.io",
-    "license": "MIT",
+    "license": "proprietary",
     "support": {
         "issues": "https://github.com/cachethq/core/issues",
         "source": "https://github.com/cachethq/core"
@@ -36,6 +36,7 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
+        "laravel/pail": "^1.1",
         "orchestra/testbench": "^9.5.1",
         "pestphp/pest": "^3.2",
         "pestphp/pest-plugin-laravel": "^3.0",
@@ -52,6 +53,7 @@
     "autoload-dev": {
         "psr-4": {
             "Cachet\\Tests\\": "tests",
+            "Cachet\\Database\\Factories\\": "database/factories",
             "Workbench\\App\\": "workbench/app/",
             "Workbench\\Database\\Factories\\": "workbench/database/factories/",
             "Workbench\\Database\\Seeders\\": "workbench/database/seeders/"
@@ -68,10 +70,13 @@
             "@clear",
             "@php vendor/bin/testbench workbench:build"
         ],
-        "start": [
+        "dev": [
             "@build",
             "Composer\\Config::disableProcessTimeout",
-            "@php vendor/bin/testbench serve"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php vendor/bin/testbench serve\" \"php vendor/bin/testbench queue:listen --tries=1\" \"php vendor/bin/testbench pail\" \"npm run dev\" --names=server,queue,logs,vite"
+        ],
+        "start": [
+            "@dev"
         ]
     },
     "config": {

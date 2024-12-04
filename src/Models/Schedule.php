@@ -2,13 +2,16 @@
 
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Filament\Resources\ScheduleResource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -18,7 +21,6 @@ class Schedule extends Model
     use HasFactory, SoftDeletes;
 
     protected $casts = [
-        'status' => ScheduleStatusEnum::class,
         'scheduled_at' => 'datetime',
         'completed_at' => 'datetime',
     ];
@@ -26,10 +28,27 @@ class Schedule extends Model
     protected $fillable = [
         'name',
         'message',
-        'status',
         'scheduled_at',
         'completed_at',
     ];
+
+    /**
+     * Get the status of the schedule.
+     */
+    public function status(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $now = Carbon::now();
+
+                return match (true) {
+                    $this->scheduled_at->gte($now) => ScheduleStatusEnum::upcoming,
+                    $this->completed_at === null => ScheduleStatusEnum::in_progress,
+                    default => ScheduleStatusEnum::complete,
+                };
+            }
+        );
+    }
 
     /**
      * Get the components affected by this schedule.
@@ -40,6 +59,14 @@ class Schedule extends Model
             Component::class,
             'schedule_components',
         );
+    }
+
+    /**
+     * Get the updates for this schedule.
+     */
+    public function updates(): MorphMany
+    {
+        return $this->morphMany(Update::class, 'updateable')->chaperone();
     }
 
     /**
@@ -55,7 +82,7 @@ class Schedule extends Model
      */
     public function scopeIncomplete(Builder $query): Builder
     {
-        return $query->whereIn('status', ScheduleStatusEnum::incomplete())
+        return $query->whereDate('scheduled_at', '>=', Carbon::now())
             ->whereNull('completed_at');
     }
 
@@ -64,9 +91,11 @@ class Schedule extends Model
      */
     public function scopeInProgress(Builder $query): Builder
     {
-        return $query->where('scheduled_at', '<=', Carbon::now())
-            ->where('status', '=', ScheduleStatusEnum::in_progress)
-            ->whereNull('completed_at');
+        return $query->whereDate('scheduled_at', '<=', Carbon::now())
+            ->where(function (Builder $query) {
+                $query->whereDate('completed_at', '>=', Carbon::now())
+                    ->orWhereNull('completed_at');
+            });
     }
 
     /**
@@ -74,8 +103,7 @@ class Schedule extends Model
      */
     public function scopeInTheFuture(Builder $query): Builder
     {
-        return $query->whereIn('status', ScheduleStatusEnum::upcoming())
-            ->whereDate('scheduled_at', '>=', Carbon::now());
+        return $query->whereDate('scheduled_at', '>=', Carbon::now());
     }
 
     /**
@@ -83,17 +111,7 @@ class Schedule extends Model
      */
     public function scopeInThePast(Builder $query): Builder
     {
-        return $query->whereIn('status', ScheduleStatusEnum::upcoming())
-            ->where('scheduled_at', '<=', Carbon::now());
-    }
-
-    /**
-     * Scopes schedules to those completed in the past.
-     */
-    public function scopeCompletedPreviously(Builder $query): Builder
-    {
-        return $query->where('status', '=', ScheduleStatusEnum::complete)
-            ->where('completed_at', '<=', Carbon::now());
+        return $query->where('completed_at', '<=', Carbon::now());
     }
 
     /**
@@ -107,5 +125,13 @@ class Schedule extends Model
     public function timestamp(): Attribute
     {
         return Attribute::get(fn () => $this->completed_at ?: $this->scheduled_at);
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return ScheduleFactory::new();
     }
 }

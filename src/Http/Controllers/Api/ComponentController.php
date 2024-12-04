@@ -13,10 +13,23 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Components
+ */
 class ComponentController extends Controller
 {
     /**
-     * List Components.
+     * List Components
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\Component
+     *
+     * @apiResourceModel \Cachet\Models\Component
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, status, enabled Example: name
+     * @queryParam include string Include related resources. Enum: group, incidents Example: group,incidents
+     * @queryParam filters string[] Filter the resources. Example: name=api
      */
     public function index()
     {
@@ -30,7 +43,13 @@ class ComponentController extends Controller
     }
 
     /**
-     * Create Component.
+     * Create Component
+     *
+     * @apiResource \Cachet\Http\Resources\Component
+     *
+     * @apiResourceModel \Cachet\Models\Component
+     *
+     * @authenticated
      */
     public function store(CreateComponentRequest $request, CreateComponent $createComponentAction)
     {
@@ -40,7 +59,11 @@ class ComponentController extends Controller
     }
 
     /**
-     * Get Component.
+     * Get Component
+     *
+     * @apiResource \Cachet\Http\Resources\Component
+     *
+     * @apiResourceModel \Cachet\Models\Component
      */
     public function show(Component $component)
     {
@@ -50,7 +73,13 @@ class ComponentController extends Controller
     }
 
     /**
-     * Update Component.
+     * Update Component
+     *
+     * @apiResource \Cachet\Http\Resources\Component
+     *
+     * @apiResourceModel \Cachet\Models\Component
+     *
+     * @authenticated
      */
     public function update(UpdateComponentRequest $request, Component $component, UpdateComponent $updateComponentAction)
     {
@@ -60,7 +89,11 @@ class ComponentController extends Controller
     }
 
     /**
-     * Delete Component.
+     * Delete Component
+     *
+     * @response 204
+     *
+     * @authenticated
      */
     public function destroy(Component $component, DeleteComponent $deleteComponentAction)
     {

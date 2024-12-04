@@ -13,7 +13,7 @@ class Cachet
      *
      * @var string
      */
-    const USER_AGENT = 'Cachet/1.0';
+    public const USER_AGENT = 'Cachet/3.0 (+https://docs.cachethq.io)';
 
     /**
      * Get the default CSS variables.

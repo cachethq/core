@@ -5,6 +5,9 @@ namespace Cachet\Http\Resources;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/**
+ * @mixin \Cachet\Models\Incident
+ */
 class Incident extends JsonApiResource
 {
     public function toAttributes(Request $request): array
@@ -19,30 +22,30 @@ class Incident extends JsonApiResource
             'stickied' => $this->stickied,
             'notifications' => $this->notifications,
             'status' => [
-                'human' => $this->status->getLabel(),
-                'value' => $this->status->value,
+                'human' => $this->latestStatus->getLabel(),
+                'value' => $this->latestStatus->value,
             ],
             'occurred' => [
-                'human' => optional($this->occurred_at)->diffForHumans(),
-                'string' => optional($this->occurred_at)->toDateTimeString(),
+                'human' => $this->occurred_at?->diffForHumans(),
+                'string' => $this->occurred_at?->toDateTimeString(),
             ],
             'created' => [
-                'human' => optional($this->created_at)->diffForHumans(),
-                'string' => optional($this->created_at)->toDateTimeString(),
+                'human' => $this->created_at?->diffForHumans(),
+                'string' => $this->created_at?->toDateTimeString(),
             ],
             'updated' => [
-                'human' => optional($this->updated_at)->diffForHumans(),
-                'string' => optional($this->updated_at)->toDateTimeString(),
+                'human' => $this->updated_at?->diffForHumans(),
+                'string' => $this->updated_at?->toDateTimeString(),
             ],
         ];
     }
 
-    public function toRelationships(Request $request)
+    public function toRelationships(Request $request): array
     {
         return [
-            'component' => fn () => Component::make($this->component),
-            'updates' => fn () => IncidentUpdate::collection($this->updates),
-            'user' => fn () => Component::make($this->user),
+            'components' => fn () => Component::collection($this->components),
+            'updates' => fn () => Update::collection($this->updates),
+            'user' => fn () => User::make($this->user),
         ];
     }
 }
