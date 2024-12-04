@@ -16,12 +16,12 @@ class MetricPoint extends JsonApiResource
             'value' => $this->value,
             'counter' => $this->counter,
             'created' => [
-                'human' => optional($this->created_at)->diffForHumans(),
-                'string' => optional($this->created_at)->toDateTimeString(),
+                'human' => $this->created_at?->diffForHumans(),
+                'string' => $this->created_at?->toDateTimeString(),
             ],
             'updated' => [
-                'human' => optional($this->updated_at)->diffForHumans(),
-                'string' => optional($this->updated_at)->toDateTimeString(),
+                'human' => $this->updated_at?->diffForHumans(),
+                'string' => $this->updated_at?->toDateTimeString(),
             ],
         ];
     }

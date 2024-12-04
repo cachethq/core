@@ -26,16 +26,16 @@ class Incident extends JsonApiResource
                 'value' => $this->latestStatus->value,
             ],
             'occurred' => [
-                'human' => optional($this->occurred_at)->diffForHumans(),
-                'string' => optional($this->occurred_at)->toDateTimeString(),
+                'human' => $this->occurred_at?->diffForHumans(),
+                'string' => $this->occurred_at?->toDateTimeString(),
             ],
             'created' => [
-                'human' => optional($this->created_at)->diffForHumans(),
-                'string' => optional($this->created_at)->toDateTimeString(),
+                'human' => $this->created_at?->diffForHumans(),
+                'string' => $this->created_at?->toDateTimeString(),
             ],
             'updated' => [
-                'human' => optional($this->updated_at)->diffForHumans(),
-                'string' => optional($this->updated_at)->toDateTimeString(),
+                'human' => $this->updated_at?->diffForHumans(),
+                'string' => $this->updated_at?->toDateTimeString(),
             ],
         ];
     }
