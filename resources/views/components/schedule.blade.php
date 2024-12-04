@@ -13,6 +13,11 @@
                             {{ $schedule->scheduled_at->diffForHumans() }} — <time datetime="{{ $schedule->scheduled_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
                         </span>
                     </div>
+                    @auth
+                        <a href="{{ $schedule->filamentDashboardEditUrl() }}" class="underline text-right text-sm text-zinc-500 hover:text-zinc-400 dark:text-zinc-400 dark:hover:text-zinc-300" title="{{ __('Edit Incident') }}">
+                            <x-heroicon-m-pencil-square class="size-4" />
+                        </a>
+                    @endauth
 
                     <div class="flex justify-start sm:justify-end">
                         <x-cachet::badge :status="$schedule->status" />

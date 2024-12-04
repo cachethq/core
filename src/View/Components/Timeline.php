@@ -3,6 +3,7 @@
 namespace Cachet\View\Components;
 
 use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,7 +11,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\View\Component;
 
-class IncidentTimeline extends Component
+class Timeline extends Component
 {
     public function __construct(private AppSettings $appSettings)
     {
@@ -23,8 +24,13 @@ class IncidentTimeline extends Component
         $startDate = Carbon::createFromFormat('Y-m-d', request('from', now()->toDateString()));
         $endDate = $startDate->clone()->subDays($incidentDays);
 
-        return view('cachet::components.incident-timeline', [
+        return view('cachet::components.timeline', [
             'incidents' => $this->incidents(
+                $startDate,
+                $endDate,
+                $this->appSettings->only_disrupted_days
+            ),
+            'schedules' => $this->schedules(
                 $startDate,
                 $endDate,
                 $this->appSettings->only_disrupted_days
@@ -70,6 +76,35 @@ class IncidentTimeline extends Component
                     ->map(fn ($period) => collect())
             )
             ->when($onlyDisruptedDays, fn ($collection) => $collection->filter(fn ($incidents) => $incidents->isNotEmpty()))
+            ->sortKeysDesc();
+    }
+
+    /**
+     * Fetch the schedules that occurred between the given start and end date.
+     * Schedules will be grouped by days.
+     */
+    private function schedules(Carbon $startDate, Carbon $endDate, bool $onlyDisruptedDays = false): Collection
+    {
+        return Schedule::query()
+            ->with([
+                'components',
+            ])
+            ->where(function (Builder $query) use ($endDate, $startDate) {
+                $query->whereBetween('completed_at', [
+                    $endDate->startOfDay()->toDateTimeString(),
+                    $startDate->endofDay()->toDateTimeString(),
+                ]);
+            })
+            ->orderBy('completed_at', 'desc')
+            ->get()
+            ->groupBy(fn (Schedule $schedule) => $schedule->completed_at->toDateString())
+            ->union(
+            // Back-fill any missing dates...
+                collect($endDate->toPeriod($startDate))
+                    ->keyBy(fn ($period) => $period->toDateString())
+                    ->map(fn ($period) => collect())
+            )
+            ->when($onlyDisruptedDays, fn ($collection) => $collection->filter(fn ($schedules) => $schedules->isNotEmpty()))
             ->sortKeysDesc();
     }
 }

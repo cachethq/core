@@ -4,9 +4,7 @@
     'incidents',
 ])
 
-<div class="relative flex flex-col gap-5" x-data="{ forDate: new Date(@js($date)) }">
-    <h3 class="text-xl font-semibold"><time datetime="{{ $date }}" x-text="forDate.toLocaleDateString()"></time></h3>
-    @forelse($incidents as $incident)
+    @foreach($incidents as $incident)
     <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }" class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
         <div @class([
             'flex flex-col bg-zinc-50 p-4 dark:bg-zinc-900 gap-2',
@@ -68,13 +66,4 @@
             </div>
         </div>
     </div>
-    @empty
-        <div class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
-            <div class="flex flex-col p-4 divide-y dark:divide-zinc-700">
-                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">
-                    {{ __('No incidents reported.') }}
-                </div>
-            </div>
-        </div>
-    @endforelse
-</div>
+    @endforeach
