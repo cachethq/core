@@ -4,7 +4,6 @@ namespace Cachet\Data\ComponentGroup;
 
 use Cachet\Data\BaseData;
 use Illuminate\Validation\Rule;
-use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\ListType;
 use Spatie\LaravelData\Attributes\Validation\Max;

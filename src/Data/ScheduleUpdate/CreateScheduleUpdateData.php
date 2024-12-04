@@ -14,4 +14,3 @@ class CreateScheduleUpdateData extends BaseData
         public readonly string $message,
     ) {}
 }
-

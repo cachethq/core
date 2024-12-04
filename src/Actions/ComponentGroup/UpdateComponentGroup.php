@@ -13,7 +13,7 @@ class UpdateComponentGroup
      */
     public function handle(ComponentGroup $componentGroup, UpdateComponentGroupData $data): ComponentGroup
     {
-        $componentGroup->update($data->except('components')->toArray(),);
+        $componentGroup->update($data->except('components')->toArray());
 
         if ($data->components) {
             Component::query()->whereIn('id', $data->components)->update([

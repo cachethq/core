@@ -12,4 +12,3 @@ class EditScheduleUpdateData extends BaseData
         public readonly ?string $message = null,
     ) {}
 }
-

@@ -27,7 +27,7 @@ it('can update a schedule with components', function () {
         'components' => [
             ['id' => $componentA->id, 'status' => ComponentStatusEnum::performance_issues],
             ['id' => $componentB->id, 'status' => ComponentStatusEnum::major_outage],
-        ]
+        ],
     ]);
 
     app(UpdateSchedule::class)->handle($schedule, $data);

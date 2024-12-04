@@ -17,7 +17,7 @@ class CreateIncidentUpdate
     public function handle(Incident $incident, CreateIncidentUpdateData $data): IncidentUpdate
     {
         $incidentUpdate = $incident->incidentUpdates()->create(array_merge([
-            'user_id' => auth()->id()
+            'user_id' => auth()->id(),
         ], $data->toArray()));
 
         // Update the incident with the new status.

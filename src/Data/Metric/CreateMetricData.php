@@ -23,7 +23,7 @@ final class CreateMetricData extends BaseData
         public readonly ?string $description = null,
         public readonly ?float $defaultValue = null,
         public readonly ?bool $displayChart = null,
-        #[Min(0), Max(60), Rule(new FactorOfSixty())]
+        #[Min(0), Max(60), Rule(new FactorOfSixty)]
         public readonly ?int $threshold = null,
         public readonly ?int $places = null,
     ) {}
