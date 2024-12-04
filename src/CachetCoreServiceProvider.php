@@ -78,7 +78,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         RateLimiter::for('cachet-api', function ($request) {
             return Limit::perMinute(config('cachet.api_rate_limit', 300))
-                ->by(optional($request->user())->id ?: $request->ip());
+                ->by($request->user()?->id ?: $request->ip());
         });
     }
 
@@ -100,19 +100,6 @@ class CachetCoreServiceProvider extends ServiceProvider
             Cachet::routes()
                 ->register();
         });
-    }
-
-    /**
-     * Get the Cachet route group configuration array.
-     */
-    private function routeConfiguration(): array
-    {
-        return [
-            'domain' => config('cachet.domain', null),
-            'as' => 'cachet.api.',
-            'prefix' => Cachet::path().'/api',
-            'middleware' => ['cachet:api', 'throttle:cachet-api'],
-        ];
     }
 
     /**
