@@ -5,6 +5,7 @@ namespace Cachet\Http\Resources;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/** @mixin \Cachet\Models\Schedule */
 class Schedule extends JsonApiResource
 {
     public function toAttributes(Request $request): array
@@ -41,7 +42,6 @@ class Schedule extends JsonApiResource
         return [
             'components' => fn () => Component::collection($this->components),
             'updates' => fn () => Update::collection($this->updates),
-            'user' => fn () => Component::make($this->user),
         ];
     }
 }

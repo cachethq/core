@@ -10,6 +10,8 @@ use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Filament\Resources\IncidentResource;
+use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -19,12 +21,48 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * @template TUser of Authenticatable
+ *
+ * @property int $id
+ * @property ?int $component_id
+ * @property string $name
+ * @property ?IncidentStatusEnum $status
+ * @property string $message
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
+ * @property ResourceVisibilityEnum $visible
+ * @property bool $stickied
+ * @property ?Carbon $occurred_at
+ * @property ?int $user_id
+ * @property int $notifications
+ * @property string $guid
+ * @property ?string $external_provider
+ * @property ?string $external_id
+ * @property ?TUser $user
+ * @property ?Component $component
+ * @property Collection<int, Component> $components
+ * @property Collection<int, Update> $updates
+ *
+ * @property-read Carbon $timestamp
+ *
+ * @method static IncidentFactory factory($count = null, $state = [])
+ * @method static Builder<Incident> status(IncidentStatusEnum $status)
+ * @method static Builder<Incident> unresolved()
+ * @method static Builder<Incident> stickied()
+ */
 class Incident extends Model
 {
-    use HasFactory, HasVisibility, SoftDeletes;
+    /** @use HasFactory<IncidentFactory> */
+    use HasFactory;
+    use HasVisibility;
+    use SoftDeletes;
 
+    /** @var array<string, string> */
     protected $casts = [
         'status' => IncidentStatusEnum::class,
         'visible' => ResourceVisibilityEnum::class,
@@ -33,12 +71,14 @@ class Incident extends Model
         'occurred_at' => 'datetime',
     ];
 
+    /** @var array<string, string> */
     protected $dispatchesEvents = [
         'created' => IncidentCreated::class,
         'deleted' => IncidentDeleted::class,
         'updated' => IncidentUpdated::class,
     ];
 
+    /** @var list<string> */
     protected $fillable = [
         'guid',
         'external_provider',

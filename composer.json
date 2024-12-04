@@ -36,6 +36,7 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
+        "larastan/larastan": "^2.9",
         "laravel/pail": "^1.1",
         "orchestra/testbench": "^9.5.1",
         "pestphp/pest": "^3.2",

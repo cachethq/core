@@ -5,6 +5,13 @@ namespace Cachet\Concerns;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @method static Builder|static query()
+ * @method static Builder|static visible(bool $authenticated = false)
+ * @method static Builder|static visibility(ResourceVisibilityEnum $visibility)
+ * @method static Builder|static users()
+ * @method static Builder|static guests()
+ */
 trait HasVisibility
 {
     /**

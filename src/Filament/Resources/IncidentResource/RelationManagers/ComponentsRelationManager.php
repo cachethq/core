@@ -25,8 +25,7 @@ class ComponentsRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label(__('Name'))
-                    ->searchable(),
+                    ->label(__('Name')),
                 Forms\Components\ToggleButtons::make('status')
                     ->label(__('Status'))
                     ->inline()

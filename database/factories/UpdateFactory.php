@@ -38,7 +38,7 @@ class UpdateFactory extends Factory
     public function forIncident(?Incident $incident = null): self
     {
         return $this->state([
-            'updateable_id' => $component->id ?? Incident::factory(),
+            'updateable_id' => $incident->id ?? Incident::factory(),
             'updateable_type' => Relation::getMorphAlias(Incident::class),
             'status' => IncidentStatusEnum::identified->value,
         ]);
