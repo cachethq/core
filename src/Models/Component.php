@@ -70,30 +70,30 @@ class Component extends Model
     /**
      * Scope to disabled components only.
      */
-    public function scopeDisabled(Builder $query): Builder
+    public function scopeDisabled(Builder $query): void
     {
-        return $query->where('enabled', false);
+        $query->where('enabled', false);
     }
 
     /**
      * Scope to enabled components only.
      */
-    public function scopeEnabled(Builder $query): Builder
+    public function scopeEnabled(Builder $query): void
     {
-        return $query->where('enabled', true);
+        $query->where('enabled', true);
     }
 
     /**
      * Scope to a specific status.
      */
-    public function scopeStatus(Builder $query, ComponentStatusEnum $status): Builder
+    public function scopeStatus(Builder $query, ComponentStatusEnum $status): void
     {
-        return $query->where('status', $status);
+        $query->where('status', $status);
     }
 
-    public function scopeOutage(Builder $query): Builder
+    public function scopeOutage(Builder $query): void
     {
-        return $query->whereIn('status', ComponentStatusEnum::outage());
+        $query->whereIn('status', ComponentStatusEnum::outage());
     }
 
     /**
