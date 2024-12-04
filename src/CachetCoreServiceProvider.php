@@ -103,19 +103,6 @@ class CachetCoreServiceProvider extends ServiceProvider
     }
 
     /**
-     * Get the Cachet route group configuration array.
-     */
-    private function routeConfiguration(): array
-    {
-        return [
-            'domain' => config('cachet.domain', null),
-            'as' => 'cachet.api.',
-            'prefix' => Cachet::path().'/api',
-            'middleware' => ['cachet:api', 'throttle:cachet-api'],
-        ];
-    }
-
-    /**
      * Register the package's publishable resources.
      */
     private function registerPublishing(): void
