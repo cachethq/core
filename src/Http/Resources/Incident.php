@@ -40,7 +40,7 @@ class Incident extends JsonApiResource
         ];
     }
 
-    public function toRelationships(Request $request)
+    public function toRelationships(Request $request): array
     {
         return [
             'components' => fn () => Component::collection($this->components),
