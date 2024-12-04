@@ -2,6 +2,7 @@
 
 namespace Cachet\Actions\Incident;
 
+use Cachet\Data\Incident\CreateIncidentData;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
@@ -13,39 +14,40 @@ class CreateIncident
     /**
      * Handle the action.
      */
-    public function handle(array $incident): Incident
+    public function handle(CreateIncidentData $data): Incident
     {
-        if (isset($incident['template'])) {
+        if (isset($data->template)) {
             $template = IncidentTemplate::query()
-                ->where('slug', $incident['template'])
+                ->where('slug', $data->template)
                 ->first();
-            $incident['message'] = $this->parseTemplate($template, $incident);
+
+            $data = $data->withMessage($this->parseTemplate($template, $data));
         }
 
         // @todo Dispatch notification that incident was created.
 
         return Incident::create(array_merge(
             ['guid' => Str::uuid()],
-            $incident
+            $data->toArray()
         ));
     }
 
     /**
      * Render the incident template with the given data.
      */
-    private function parseTemplate(IncidentTemplate $template, array $data): string
+    private function parseTemplate(IncidentTemplate $template, CreateIncidentData $data): string
     {
-        $vars = array_merge($data['template_vars'], [
+        $vars = array_merge($data->templateVars, [
             'incident' => [
-                'name' => $data['name'],
-                'status' => $data['status'],
-                'message' => $data['message'] ?? null,
-                'visible' => $data['visible'] ?? false,
-                'notify' => $data['notifications'] ?? false,
-                'stickied' => $data['stickied'] ?? false,
-                'occurred_at' => $data['occurred_at'] ?? Carbon::now(),
-                'component' => isset($data['component_id']) ? Component::find($data['component_id']) : null,
-                'component_status' => $data['component_status'] ?? null,
+                'name' => $data->name,
+                'status' => $data->status,
+                'message' => $data->message ?? null,
+                'visible' => $data->visible ?? false,
+                'notify' => $data->notifications ?? false,
+                'stickied' => $data->stickied ?? false,
+                'occurred_at' => $data->occurredAt ?? Carbon::now(),
+                'component' => $data->componentId ? Component::find($data->componentId) : null,
+                'component_status' => $data->componentStatus ?? null,
             ],
         ]);
 

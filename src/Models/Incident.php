@@ -84,14 +84,6 @@ class Incident extends Model
     }
 
     /**
-     * Get the user that created the incident.
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(config('cachet.user_model'));
-    }
-
-    /**
      * Scope to a specific status.
      */
     public function scopeStatus(Builder $query, IncidentStatusEnum $status): Builder

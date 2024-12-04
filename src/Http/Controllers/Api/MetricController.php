@@ -5,8 +5,8 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Metric\CreateMetric;
 use Cachet\Actions\Metric\DeleteMetric;
 use Cachet\Actions\Metric\UpdateMetric;
-use Cachet\Http\Requests\CreateMetricRequest;
-use Cachet\Http\Requests\UpdateMetricRequest;
+use Cachet\Data\Metric\CreateMetricData;
+use Cachet\Data\Metric\UpdateMetricData;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
 use Illuminate\Database\Eloquent\Builder;
@@ -55,9 +55,9 @@ class MetricController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateMetricRequest $request, CreateMetric $createMetricAction)
+    public function store(CreateMetricData $data, CreateMetric $createMetricAction)
     {
-        $metric = $createMetricAction->handle($request->validated());
+        $metric = $createMetricAction->handle($data);
 
         return MetricResource::make($metric);
     }
@@ -85,9 +85,9 @@ class MetricController extends Controller
      *
      * @authenticated
      */
-    public function update(UpdateMetricRequest $request, Metric $metric, UpdateMetric $updateMetricAction)
+    public function update(UpdateMetricData $data, Metric $metric, UpdateMetric $updateMetricAction)
     {
-        $updateMetricAction->handle($metric, $request->validated());
+        $updateMetricAction->handle($metric, $data);
 
         return MetricResource::make($metric->fresh());
     }

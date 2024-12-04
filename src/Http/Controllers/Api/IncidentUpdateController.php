@@ -5,8 +5,8 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
-use Cachet\Http\Requests\CreateIncidentUpdateRequest;
-use Cachet\Http\Requests\UpdateIncidentUpdateRequest;
+use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
+use Cachet\Data\IncidentUpdate\EditIncidentUpdateData;
 use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Incident;
 use Cachet\Models\Update;
@@ -52,9 +52,9 @@ class IncidentUpdateController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateIncidentUpdateRequest $request, Incident $incident, CreateUpdate $createUpdateAction)
+    public function store(CreateIncidentUpdateData $data, Incident $incident, CreateUpdate $createUpdateAction)
     {
-        $update = $createUpdateAction->handle($incident, $request->validated());
+        $update = $createUpdateAction->handle($incident, $data);
 
         return UpdateResource::make($update);
     }
@@ -82,9 +82,9 @@ class IncidentUpdateController extends Controller
      *
      * @authenticated
      */
-    public function update(UpdateIncidentUpdateRequest $request, Incident $incident, Update $update, EditUpdate $editUpdateAction)
+    public function update(EditIncidentUpdateData $data, Incident $incident, Update $update, EditUpdate $editUpdateAction)
     {
-        $editUpdateAction->handle($update, $request->validated());
+        $editUpdateAction->handle($update, $data);
 
         return UpdateResource::make($update->fresh());
     }

@@ -5,8 +5,8 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
-use Cachet\Http\Requests\CreateScheduleUpdateRequest;
-use Cachet\Http\Requests\UpdateScheduleUpdateRequest;
+use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateData;
+use Cachet\Data\ScheduleUpdate\EditScheduleUpdateData;
 use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
@@ -53,9 +53,9 @@ class ScheduleUpdateController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateScheduleUpdateRequest $request, Schedule $schedule, CreateUpdate $createUpdateAction)
+    public function store(CreateScheduleUpdateData $data, Schedule $schedule, CreateUpdate $createUpdateAction)
     {
-        $update = $createUpdateAction->handle($schedule, $request->validated());
+        $update = $createUpdateAction->handle($schedule, $data);
 
         return UpdateResource::make($update);
     }
@@ -83,9 +83,9 @@ class ScheduleUpdateController extends Controller
      *
      * @authenticated
      */
-    public function update(UpdateScheduleUpdateRequest $request, Schedule $schedule, Update $update, EditUpdate $editUpdateAction)
+    public function update(EditScheduleUpdateData $data, Schedule $schedule, Update $update, EditUpdate $editUpdateAction)
     {
-        $editUpdateAction->handle($update, $request->validated());
+        $editUpdateAction->handle($update, $data);
 
         return UpdateResource::make($update->fresh());
     }
