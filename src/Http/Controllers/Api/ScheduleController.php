@@ -28,13 +28,13 @@ class ScheduleController extends Controller
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
      * @queryParam sort string Field to sort by. Enum: name, id, scheduled_at, completed_at, enabled Example: name
-     * @queryParam include string Include related resources. Enum: components Example: components
+     * @queryParam include string Include related resources. Enum: components, updates Example: components
      * @queryParam filters string[] Filter the resources. Example: name=api
      */
     public function index()
     {
         $schedules = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components'])
+            ->allowedIncludes(['components', 'updates', 'user'])
             ->allowedFilters(['name'])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(request('per_page', 15));

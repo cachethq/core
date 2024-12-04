@@ -40,6 +40,8 @@ class Schedule extends JsonApiResource
     {
         return [
             'components' => fn () => Component::collection($this->components),
+            'updates' => fn () => Update::collection($this->updates),
+            'user' => fn () => Component::make($this->user),
         ];
     }
 }

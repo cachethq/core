@@ -5,22 +5,24 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
-use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
-use Cachet\Data\IncidentUpdate\EditIncidentUpdateData;
+use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateData;
+use Cachet\Data\ScheduleUpdate\EditScheduleUpdateData;
 use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 use Cachet\Models\Update;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * @group Incident Updates
+ * @group Schedule Updates
  */
-class IncidentUpdateController extends Controller
+class ScheduleUpdateController extends Controller
 {
     /**
-     * List Incident Updates
+     * List Schedule Updates
      *
      * @apiResourceCollection \Cachet\Http\Resources\Update
      *
@@ -31,20 +33,19 @@ class IncidentUpdateController extends Controller
      * @queryParam sort string Field to sort by. Enum: name, created_at Example: name
      * @queryParam filters string[] Filter the resources.
      */
-    public function index(Incident $incident)
+    public function index(Schedule $schedule)
     {
         $updates = QueryBuilder::for(Update::class)
-            ->where('updateable_id', $incident->id)
-            ->where('updateable_type', 'incident')
-            ->allowedFilters(['status'])
-            ->allowedSorts(['status', 'created_at'])
+            ->where('updateable_id', $schedule->id)
+            ->where('updateable_type', Relation::getMorphAlias(Schedule::class))
+            ->allowedSorts(['created_at'])
             ->simplePaginate(request('per_page', 15));
 
         return UpdateResource::collection($updates);
     }
 
     /**
-     * Create Incident Update
+     * Create Schedule Update
      *
      * @apiResource \Cachet\Http\Resources\Update
      *
@@ -52,29 +53,29 @@ class IncidentUpdateController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateIncidentUpdateData $data, Incident $incident, CreateUpdate $createUpdateAction)
+    public function store(CreateScheduleUpdateData $data, Schedule $schedule, CreateUpdate $createUpdateAction)
     {
-        $update = $createUpdateAction->handle($incident, $data);
+        $update = $createUpdateAction->handle($schedule, $data);
 
         return UpdateResource::make($update);
     }
 
     /**
-     * Get Incident Update
+     * Get Schedule Update
      *
      * @apiResource \Cachet\Http\Resources\Update
      *
      * @apiResourceModel \Cachet\Models\Update
      */
-    public function show(Incident $incident, Update $update)
+    public function show(Incident $incident, Schedule $schedule)
     {
-        return UpdateResource::make($update)
+        return UpdateResource::make($schedule)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }
 
     /**
-     * Update Incident Update
+     * Update Schedule Update
      *
      * @apiResource \Cachet\Http\Resources\Update
      *
@@ -82,7 +83,7 @@ class IncidentUpdateController extends Controller
      *
      * @authenticated
      */
-    public function update(EditIncidentUpdateData $data, Incident $incident, Update $update, EditUpdate $editUpdateAction)
+    public function update(EditScheduleUpdateData $data, Schedule $schedule, Update $update, EditUpdate $editUpdateAction)
     {
         $editUpdateAction->handle($update, $data);
 
@@ -90,13 +91,13 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Delete Incident Update
+     * Delete Schedule Update
      *
      * @response 204
      *
      * @authenticated
      */
-    public function destroy(Incident $incident, Update $update, DeleteUpdate $deleteUpdateAction)
+    public function destroy(Schedule $schedule, Update $update, DeleteUpdate $deleteUpdateAction)
     {
         $deleteUpdateAction->handle($update);
 

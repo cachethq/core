@@ -2,20 +2,26 @@
 
 namespace Cachet\Http\Resources;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
-class IncidentUpdate extends JsonApiResource
+/**
+ * @mixin \Cachet\Models\Update
+ */
+class Update extends JsonApiResource
 {
     public function toAttributes(Request $request): array
     {
         return [
             'id' => $this->id,
+            'updateable_id' => $this->updateable_id,
+            'updateable_type' => $this->updateable_type,
             'message' => $this->message,
-            'status' => [
-                'human' => $this->status->getLabel(),
-                'value' => $this->status->value,
-            ],
+            'status' => $this->when($this->updateable_type === Relation::getMorphAlias(Incident::class), [
+                'human' => $this->status?->getLabel(),
+                'value' => $this->status?->value,
+            ]),
             'created' => [
                 'human' => optional($this->created_at)->diffForHumans(),
                 'string' => optional($this->created_at)->toDateTimeString(),
@@ -30,7 +36,7 @@ class IncidentUpdate extends JsonApiResource
     public function toRelationships(Request $request): array
     {
         return [
-            'incident' => fn () => Incident::make($this->incident),
+            //            'incident' => fn () => Incident::make($this->incident),
         ];
     }
 }
