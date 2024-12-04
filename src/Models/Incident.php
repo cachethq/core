@@ -94,22 +94,22 @@ class Incident extends Model
     /**
      * Scope to a specific status.
      */
-    public function scopeStatus(Builder $query, IncidentStatusEnum $status): Builder
+    public function scopeStatus(Builder $query, IncidentStatusEnum $status): void
     {
-        return $query->where('status', $status);
+        $query->where('status', $status);
     }
 
-    public function scopeUnresolved(Builder $query): Builder
+    public function scopeUnresolved(Builder $query): void
     {
-        return $query->whereIn('status', IncidentStatusEnum::unresolved());
+        $query->whereIn('status', IncidentStatusEnum::unresolved());
     }
 
     /**
      * Scope to stickied incidents.
      */
-    public function scopeStickied(Builder $query): Builder
+    public function scopeStickied(Builder $query): void
     {
-        return $query->where('stickied', true);
+        $query->where('stickied', true);
     }
 
     public function timestamp(): Attribute

@@ -10,9 +10,9 @@ trait HasVisibility
     /**
      * Scope to visible incidents.
      */
-    public function scopeVisible(Builder $query, bool $authenticated = false): Builder
+    public function scopeVisible(Builder $query, bool $authenticated = false): void
     {
-        return $query->whereIn('visible', match ($authenticated) {
+        $query->whereIn('visible', match ($authenticated) {
             true => ResourceVisibilityEnum::visibleToUsers(),
             default => ResourceVisibilityEnum::visibleToGuests(),
         });
@@ -21,24 +21,24 @@ trait HasVisibility
     /**
      * Scope the resource to a given visibility setting.
      */
-    public function scopeVisibility(Builder $query, ResourceVisibilityEnum $visibility): Builder
+    public function scopeVisibility(Builder $query, ResourceVisibilityEnum $visibility): void
     {
-        return $query->where('visible', $visibility);
+        $query->where('visible', $visibility);
     }
 
     /**
      * Scope the resource to those visible to guests.
      */
-    public function scopeGuests(Builder $query): Builder
+    public function scopeGuests(Builder $query): void
     {
-        return $query->whereIn('visible', ResourceVisibilityEnum::visibleToGuests());
+        $query->whereIn('visible', ResourceVisibilityEnum::visibleToGuests());
     }
 
     /**
      * Scope the resource to those visible to authenticated users.
      */
-    public function scopeUsers(Builder $query): Builder
+    public function scopeUsers(Builder $query): void
     {
-        return $query->whereIn('visible', ResourceVisibilityEnum::visibleToUsers());
+        $query->whereIn('visible', ResourceVisibilityEnum::visibleToUsers());
     }
 }

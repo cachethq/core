@@ -79,18 +79,18 @@ class Schedule extends Model
     /**
      * Scope schedules that are incomplete.
      */
-    public function scopeIncomplete(Builder $query): Builder
+    public function scopeIncomplete(Builder $query): void
     {
-        return $query->whereDate('scheduled_at', '>=', Carbon::now())
+        $query->whereDate('scheduled_at', '>=', Carbon::now())
             ->whereNull('completed_at');
     }
 
     /**
      * Scope schedules that are in progress.
      */
-    public function scopeInProgress(Builder $query): Builder
+    public function scopeInProgress(Builder $query): void
     {
-        return $query->whereDate('scheduled_at', '<=', Carbon::now())
+        $query->whereDate('scheduled_at', '<=', Carbon::now())
             ->where(function (Builder $query) {
                 $query->whereDate('completed_at', '>=', Carbon::now())
                     ->orWhereNull('completed_at');
@@ -100,17 +100,17 @@ class Schedule extends Model
     /**
      * Scopes schedules to those in the future.
      */
-    public function scopeInTheFuture(Builder $query): Builder
+    public function scopeInTheFuture(Builder $query): void
     {
-        return $query->whereDate('scheduled_at', '>=', Carbon::now());
+        $query->whereDate('scheduled_at', '>=', Carbon::now());
     }
 
     /**
      * Scopes schedules to those scheduled in the past.
      */
-    public function scopeInThePast(Builder $query): Builder
+    public function scopeInThePast(Builder $query): void
     {
-        return $query->where('completed_at', '<=', Carbon::now());
+        $query->where('completed_at', '<=', Carbon::now());
     }
 
     /**
