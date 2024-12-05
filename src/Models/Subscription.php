@@ -17,12 +17,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property ?Carbon $updated_at
  * @property Subscriber $subscriber
  * @property Component $component
+ *
  * @method static SubscriptionFactory factory($count = null, $state = [])
  */
 class Subscription extends Model
 {
     /** @use HasFactory<SubscriptionFactory> */
     use HasFactory;
+
     /**
      * Get the component the subscription is for.
      */

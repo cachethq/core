@@ -46,7 +46,6 @@ use Illuminate\Support\Str;
  * @property ?Component $component
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
- *
  * @property-read Carbon $timestamp
  *
  * @method static IncidentFactory factory($count = null, $state = [])
@@ -58,6 +57,7 @@ class Incident extends Model
 {
     /** @use HasFactory<IncidentFactory> */
     use HasFactory;
+
     use HasVisibility;
     use SoftDeletes;
 

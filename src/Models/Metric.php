@@ -41,6 +41,7 @@ class Metric extends Model
 {
     /** @use HasFactory<MetricFactory> */
     use HasFactory;
+
     use HasVisibility;
 
     /** @var array<string, string> */

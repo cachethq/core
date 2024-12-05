@@ -39,6 +39,7 @@ class Schedule extends Model
 {
     /** @use HasFactory<ScheduleFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     /** @var array<string, string> */
@@ -107,7 +108,7 @@ class Schedule extends Model
     /**
      * Scope schedules that are incomplete.
      *
-     * @param Builder<$this> $query
+     * @param  Builder<$this>  $query
      * @return Builder<$this>
      */
     public function scopeIncomplete(Builder $query): void
@@ -119,7 +120,7 @@ class Schedule extends Model
     /**
      * Scope schedules that are in progress.
      *
-     * @param Builder<$this> $query
+     * @param  Builder<$this>  $query
      * @return Builder<$this>
      */
     public function scopeInProgress(Builder $query): void
@@ -134,7 +135,7 @@ class Schedule extends Model
     /**
      * Scopes schedules to those in the future.
      *
-     * @param Builder<$this> $query
+     * @param  Builder<$this>  $query
      * @return Builder<$this>
      */
     public function scopeInTheFuture(Builder $query): void
@@ -145,7 +146,7 @@ class Schedule extends Model
     /**
      * Scopes schedules to those scheduled in the past.
      *
-     * @param Builder<$this> $query
+     * @param  Builder<$this>  $query
      * @return Builder<$this>
      */
     public function scopeInThePast(Builder $query): void

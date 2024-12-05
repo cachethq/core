@@ -41,6 +41,7 @@ class Component extends Model
 {
     /** @use HasFactory<ComponentFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     /** @var array<string, string> */

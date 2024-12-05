@@ -29,6 +29,7 @@ class ComponentGroup extends Model
 {
     /** @use HasFactory<ComponentGroupFactory> */
     use HasFactory;
+
     use HasVisibility;
 
     /** @var array<string, string> */

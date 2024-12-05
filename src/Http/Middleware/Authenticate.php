@@ -12,9 +12,9 @@ class Authenticate extends BaseAuthenticationMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure(Request):mixed $next
-     * @param string  ...$guards
+     * @param  Request  $request
+     * @param  Closure(Request):mixed  $next
+     * @param  string  ...$guards
      * @return mixed
      *
      * @throws AuthenticationException
