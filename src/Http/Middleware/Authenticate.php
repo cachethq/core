@@ -3,19 +3,21 @@
 namespace Cachet\Http\Middleware;
 
 use Closure;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Middleware\Authenticate as BaseAuthenticationMiddleware;
+use Illuminate\Http\Request;
 
 class Authenticate extends BaseAuthenticationMiddleware
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request):mixed  $next
-     * @param  string[]  ...$guards
+     * @param Request $request
+     * @param Closure(Request):mixed $next
+     * @param string  ...$guards
      * @return mixed
      *
-     * @throws \Illuminate\Auth\AuthenticationException
+     * @throws AuthenticationException
      */
     public function handle($request, Closure $next, ...$guards)
     {

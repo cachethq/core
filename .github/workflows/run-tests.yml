@@ -1,17 +1,55 @@
 name: run-tests
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
+  static-analysis:
+    runs-on: ubuntu-latest
+    test:
+      runs-on: ${{ matrix.os }}
+      strategy:
+        fail-fast: false
+        matrix:
+          os: [ ubuntu-latest ]
+          php: [ 8.3, 8.2 ]
+          laravel: [ 11.x ]
+          stability: [ prefer-lowest, prefer-stable ]
+
+      name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+
+        - name: Setup PHP
+          uses: shivammathur/setup-php@v2
+          with:
+            php-version: ${{ matrix.php }}
+            extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+            coverage: none
+
+        - name: Setup problem matchers
+          run: |
+            echo "::add-matcher::${{ runner.tool_cache }}/php.json"
+            echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+
+        - name: Install dependencies
+          run: |
+            composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+            composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
+        - name: Run PHPStan
+          run: vendor/bin/phpstan --error-format=github
+
   test:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        php: [8.3, 8.2]
-        laravel: [11.x]
-        stability: [prefer-lowest, prefer-stable]
+        os: [ ubuntu-latest ]
+        php: [ 8.3, 8.2 ]
+        laravel: [ 11.x ]
+        stability: [ prefer-lowest, prefer-stable ]
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -47,3 +85,18 @@ jobs:
 
       - name: Execute tests
         run: composer test
+
+  check:
+    if: always()
+
+    needs:
+      - static-analysis
+      - test
+
+    runs-on: Ubuntu-latest
+
+    steps:
+      - name: Check if all jobs are passing
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

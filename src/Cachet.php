@@ -18,7 +18,7 @@ class Cachet
     /**
      * Get the default CSS variables.
      *
-     * @return array<string, array<string,string>>
+     * @return array<string, list<string>>
      */
     public static function cssVariables(): array
     {

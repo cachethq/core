@@ -5,6 +5,7 @@ namespace Cachet\Http\Resources;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/** @mixin \Cachet\Models\ComponentGroup */
 class ComponentGroup extends JsonApiResource
 {
     public function toAttributes(Request $request): array
