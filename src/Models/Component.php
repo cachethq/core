@@ -31,10 +31,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property array<string, mixed> $meta
  * @property ?ComponentGroup $componentGroup
  *
- * @method static Builder|static disabled()
- * @method static Builder|static enabled()
- * @method static Builder|static outage()
- * @method static Builder|static status(ComponentStatusEnum $status)
+ * @method static Builder<static>|static disabled()
+ * @method static Builder<static>|static enabled()
+ * @method static Builder<static>|static outage()
+ * @method static Builder<static>|static status(ComponentStatusEnum $status)
  * @method static ComponentFactory factory($count = null, $state = [])
  */
 class Component extends Model

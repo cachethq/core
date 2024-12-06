@@ -49,9 +49,9 @@ use Illuminate\Support\Str;
  * @property-read Carbon $timestamp
  *
  * @method static IncidentFactory factory($count = null, $state = [])
- * @method static Builder<Incident> status(IncidentStatusEnum $status)
- * @method static Builder<Incident> unresolved()
- * @method static Builder<Incident> stickied()
+ * @method static Builder<static>|static status(IncidentStatusEnum $status)
+ * @method static Builder<static>|static unresolved()
+ * @method static Builder<static>|static stickied()
  */
 class Incident extends Model
 {

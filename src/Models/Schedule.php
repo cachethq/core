@@ -30,10 +30,11 @@ use Illuminate\Support\Str;
  * @property-read ScheduleStatusEnum $status
  *
  * @method static ScheduleFactory factory($count = null, $state = [])
- * @method static Builder<Schedule> incomplete()
- * @method static Builder<Schedule> inProgress()
- * @method static Builder<Schedule> inTheFuture()
- * @method static Builder<Schedule> inThePast()
+ * @method static Builder<static>|static query()
+ * @method static Builder<static>|static incomplete()
+ * @method static Builder<static>|static inProgress()
+ * @method static Builder<static>|static inTheFuture()
+ * @method static Builder<static>|static inThePast()
  */
 class Schedule extends Model
 {
@@ -109,7 +110,6 @@ class Schedule extends Model
      * Scope schedules that are incomplete.
      *
      * @param  Builder<$this>  $query
-     * @return Builder<$this>
      */
     public function scopeIncomplete(Builder $query): void
     {
@@ -121,7 +121,6 @@ class Schedule extends Model
      * Scope schedules that are in progress.
      *
      * @param  Builder<$this>  $query
-     * @return Builder<$this>
      */
     public function scopeInProgress(Builder $query): void
     {
@@ -136,7 +135,6 @@ class Schedule extends Model
      * Scopes schedules to those in the future.
      *
      * @param  Builder<$this>  $query
-     * @return Builder<$this>
      */
     public function scopeInTheFuture(Builder $query): void
     {
@@ -147,7 +145,6 @@ class Schedule extends Model
      * Scopes schedules to those scheduled in the past.
      *
      * @param  Builder<$this>  $query
-     * @return Builder<$this>
      */
     public function scopeInThePast(Builder $query): void
     {
