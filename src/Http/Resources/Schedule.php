@@ -15,12 +15,12 @@ class Schedule extends JsonApiResource
             'name' => $this->name,
             'message' => $this->message,
             'status' => [
-                'human' => $this->status?->getLabel(),
-                'value' => $this->status?->value,
+                'human' => $this->status->getLabel(),
+                'value' => $this->status->value,
             ],
             'scheduled' => [
-                'human' => $this->scheduled_at?->diffForHumans(),
-                'string' => $this->scheduled_at?->toDateTimeString(),
+                'human' => $this->scheduled_at->diffForHumans(),
+                'string' => $this->scheduled_at->toDateTimeString(),
             ],
             'completed' => [
                 'human' => $this->completed_at?->diffForHumans(),
