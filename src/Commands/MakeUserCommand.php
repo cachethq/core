@@ -3,6 +3,7 @@
 namespace Cachet\Commands;
 
 use Illuminate\Console\Command;
+
 use function Laravel\Prompts\password;
 use function Laravel\Prompts\text;
 
