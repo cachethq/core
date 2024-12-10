@@ -7,7 +7,6 @@ use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\View\View;
 
 class StatusPageController
