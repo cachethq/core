@@ -34,10 +34,12 @@ class MetricController extends Controller
      */
     public function index()
     {
-        $metrics = QueryBuilder::for(Metric::class)
+        $query = Metric::query()
             ->when(! request('sort'), function (Builder $builder) {
                 $builder->orderByDesc('created_at');
-            })
+            });
+
+        $metrics = QueryBuilder::for($query)
             ->allowedIncludes(['points'])
             ->allowedFilters(['name', 'calc_type'])
             ->allowedSorts(['name', 'order', 'id'])

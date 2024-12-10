@@ -105,6 +105,8 @@ class Incident extends Model
 
     /**
      * Get the components impacted by this incident.
+     *
+     * @return BelongsToMany<Component, $this>
      */
     public function components(): BelongsToMany
     {
@@ -116,6 +118,8 @@ class Incident extends Model
 
     /**
      * Get the updates for this incident.
+     *
+     * @return MorphMany<Update, $this>
      */
     public function updates(): MorphMany
     {
@@ -143,7 +147,10 @@ class Incident extends Model
         $query->where('stickied', true);
     }
 
-    public function timestamp(): Attribute
+    /**
+     * @return Attribute<Carbon, never>
+     */
+    protected function timestamp(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->occurred_at ?: $this->created_at
@@ -152,12 +159,14 @@ class Incident extends Model
 
     /**
      * Determine the latest status of the incident.
+     *
+     * @return Attribute<IncidentStatusEnum|null, never>
      */
-    public function latestStatus(): Attribute
+    protected function latestStatus(): Attribute
     {
         return Attribute::make(
             get: function ($value) {
-                return $this->updates()->latest()->first()?->status ?? $this->status;
+                return $this->updates()->latest()->first()->status ?? $this->status;
             }
         );
     }

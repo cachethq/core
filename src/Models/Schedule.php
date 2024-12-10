@@ -20,14 +20,13 @@ use Illuminate\Support\Str;
  * @property int $id
  * @property string $name
  * @property ?string $message
- * @property Carbon $scheduled_at
+ * @property ?Carbon $scheduled_at
  * @property ?Carbon $completed_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
- * @property-read ScheduleStatusEnum $status
  *
  * @method static ScheduleFactory factory($count = null, $state = [])
  * @method static Builder<static>|static query()
@@ -59,8 +58,10 @@ class Schedule extends Model
 
     /**
      * Get the status of the schedule.
+     *
+     * @return Attribute<ScheduleStatusEnum, never>
      */
-    public function status(): Attribute
+    protected function status(): Attribute
     {
         return Attribute::make(
             get: function () {

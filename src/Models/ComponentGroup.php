@@ -49,6 +49,8 @@ class ComponentGroup extends Model
 
     /**
      * Get the components in the group.
+     *
+     * @return HasMany<Component, $this>
      */
     public function components(): HasMany
     {
