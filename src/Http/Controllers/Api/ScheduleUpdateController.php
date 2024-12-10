@@ -35,9 +35,11 @@ class ScheduleUpdateController extends Controller
      */
     public function index(Schedule $schedule)
     {
-        $updates = QueryBuilder::for(Update::class)
+        $query = Update::query()
             ->where('updateable_id', $schedule->id)
-            ->where('updateable_type', Relation::getMorphAlias(Schedule::class))
+            ->where('updateable_type', Relation::getMorphAlias(Schedule::class));
+
+        $updates = QueryBuilder::for($query)
             ->allowedSorts(['created_at'])
             ->simplePaginate(request('per_page', 15));
 

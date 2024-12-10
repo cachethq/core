@@ -20,14 +20,13 @@ use Illuminate\Support\Str;
  * @property int $id
  * @property string $name
  * @property ?string $message
- * @property Carbon $scheduled_at
+ * @property ?Carbon $scheduled_at
  * @property ?Carbon $completed_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
- * @property-read ScheduleStatusEnum $status
  *
  * @method static ScheduleFactory factory($count = null, $state = [])
  * @method static Builder<Schedule> incomplete()
@@ -58,8 +57,10 @@ class Schedule extends Model
 
     /**
      * Get the status of the schedule.
+     *
+     * @return Attribute<ScheduleStatusEnum, never>
      */
-    public function status(): Attribute
+    protected function status(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -109,7 +110,6 @@ class Schedule extends Model
      * Scope schedules that are incomplete.
      *
      * @param  Builder<$this>  $query
-     * @return Builder<$this>
      */
     public function scopeIncomplete(Builder $query): void
     {
@@ -121,7 +121,6 @@ class Schedule extends Model
      * Scope schedules that are in progress.
      *
      * @param  Builder<$this>  $query
-     * @return Builder<$this>
      */
     public function scopeInProgress(Builder $query): void
     {
@@ -136,7 +135,6 @@ class Schedule extends Model
      * Scopes schedules to those in the future.
      *
      * @param  Builder<$this>  $query
-     * @return Builder<$this>
      */
     public function scopeInTheFuture(Builder $query): void
     {
@@ -147,7 +145,6 @@ class Schedule extends Model
      * Scopes schedules to those scheduled in the past.
      *
      * @param  Builder<$this>  $query
-     * @return Builder<$this>
      */
     public function scopeInThePast(Builder $query): void
     {

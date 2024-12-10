@@ -33,9 +33,11 @@ class IncidentUpdateController extends Controller
      */
     public function index(Incident $incident)
     {
-        $updates = QueryBuilder::for(Update::class)
+        $query = Update::query()
             ->where('updateable_id', $incident->id)
-            ->where('updateable_type', 'incident')
+            ->where('updateable_type', 'incident');
+
+        $updates = QueryBuilder::for($query)
             ->allowedFilters(['status'])
             ->allowedSorts(['status', 'created_at'])
             ->simplePaginate(request('per_page', 15));

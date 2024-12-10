@@ -77,6 +77,8 @@ class Metric extends Model
 
     /**
      * Get the metrics points.
+     *
+     * @return HasMany<MetricPoint, $this>
      */
     public function metricPoints(): HasMany
     {

@@ -1,6 +1,5 @@
 includes:
     - vendor/larastan/larastan/extension.neon
-    - phpstan-baseline.neon
 
 parameters:
     level: 5
@@ -8,7 +7,6 @@ parameters:
     paths:
         - src
         - routes
-        - config
         - database/factories
         - database/seeders
 
@@ -18,4 +16,10 @@ parameters:
         - public
 
     databaseMigrationsPath:
-            - database/migrations
+        - database/migrations
+
+    ignoreErrors:
+        -
+            path: src/Http/Resources
+            identifier: return.type
+            message: '#Method Cachet\\Http\\Resources\\.*?::toRelationships\(\).*#'

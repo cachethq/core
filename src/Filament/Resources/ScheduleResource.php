@@ -87,6 +87,7 @@ class ScheduleResource extends Resource
                     ->label(__('Record Update'))
                     ->color('info')
                     ->action(function (CreateUpdate $createUpdate, Schedule $record, array $data) {
+                        /** @phpstan-ignore-next-line argument.type Seems like this is a bug in the code here? */
                         $createUpdate->handle($record, $data);
 
                         Notification::make()

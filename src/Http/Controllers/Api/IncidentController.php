@@ -42,10 +42,12 @@ class IncidentController extends Controller
      */
     public function index()
     {
-        $incidents = QueryBuilder::for(Incident::class)
+        $query = Incident::query()
             ->when(! request('sort'), function (Builder $builder) {
                 $builder->orderByDesc('created_at');
-            })
+            });
+
+        $incidents = QueryBuilder::for($query)
             ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->allowedFilters(['name', 'status', 'occurred_at'])
             ->allowedSorts(['name', 'status', 'id'])

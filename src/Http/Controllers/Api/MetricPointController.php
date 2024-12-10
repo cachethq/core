@@ -31,8 +31,10 @@ class MetricPointController extends Controller
      */
     public function index(Metric $metric)
     {
-        $points = QueryBuilder::for(MetricPoint::class)
-            ->where('metric_id', $metric->id)
+        $query = MetricPoint::query()
+            ->where('metric_id', $metric->id);
+
+        $points = QueryBuilder::for($query)
             ->allowedIncludes(['metric'])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(request('per_page', 15));

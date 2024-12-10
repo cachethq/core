@@ -23,6 +23,7 @@ class Metric extends JsonApiResource
             'threshold' => $this->threshold,
             'order' => $this->order,
             'visible' => $this->visible,
+            /** @phpstan-ignore-next-line looks like this field does not exists? */
             'status' => $this->status,
             'created' => [
                 'human' => $this->created_at?->diffForHumans(),

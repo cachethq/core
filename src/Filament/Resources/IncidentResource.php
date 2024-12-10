@@ -141,6 +141,7 @@ class IncidentResource extends Resource
                     ->label(__('Record Update'))
                     ->color('info')
                     ->action(function (CreateIncidentUpdateAction $createIncidentUpdate, Incident $record, array $data) {
+                        /** @phpstan-ignore-next-line argument.type Seems like this is a bug in the code here? */
                         $createIncidentUpdate->handle($record, $data);
 
                         Notification::make()

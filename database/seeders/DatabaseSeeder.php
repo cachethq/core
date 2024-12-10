@@ -82,18 +82,21 @@ EOF
             'visible' => ResourceVisibilityEnum::guest,
         ]);
 
+        /** @phpstan-ignore-next-line argument.type Larastan bug */
         $componentGroup->components()->createMany([
             [
                 'name' => 'Cachet Website',
                 'description' => 'The Cachet website.',
                 'link' => 'https://cachethq.io',
                 'status' => ComponentStatusEnum::operational,
-            ], [
+            ],
+            [
                 'name' => 'Cachet Documentation',
                 'description' => 'The Cachet docs, powered by Mintlify.',
                 'link' => 'https://docs.cachethq.io',
                 'status' => ComponentStatusEnum::operational,
-            ], [
+            ],
+            [
                 'name' => 'Cachet Blog',
                 'description' => 'Learn more about Cachet.',
                 'link' => 'https://blog.cachethq.io',
