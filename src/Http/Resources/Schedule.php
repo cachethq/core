@@ -19,8 +19,8 @@ class Schedule extends JsonApiResource
                 'value' => $this->status->value,
             ],
             'scheduled' => [
-                'human' => $this->scheduled_at?->diffForHumans(),
-                'string' => $this->scheduled_at?->toDateTimeString(),
+                'human' => $this->scheduled_at->diffForHumans(),
+                'string' => $this->scheduled_at->toDateTimeString(),
             ],
             'completed' => [
                 'human' => $this->completed_at?->diffForHumans(),

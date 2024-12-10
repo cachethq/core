@@ -3,6 +3,7 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Actions\Update\CreateUpdate as CreateIncidentUpdateAction;
+use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\IncidentResource\Pages;
@@ -141,8 +142,7 @@ class IncidentResource extends Resource
                     ->label(__('Record Update'))
                     ->color('info')
                     ->action(function (CreateIncidentUpdateAction $createIncidentUpdate, Incident $record, array $data) {
-                        /** @phpstan-ignore-next-line argument.type Seems like this is a bug in the code here? */
-                        $createIncidentUpdate->handle($record, $data);
+                        $createIncidentUpdate->handle($record, CreateIncidentUpdateData::from($data));
 
                         Notification::make()
                             ->title(__('Incident :name Updated', ['name' => $record->name]))

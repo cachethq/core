@@ -29,10 +29,11 @@ use Illuminate\Support\Str;
  * @property Collection<int, Update> $updates
  *
  * @method static ScheduleFactory factory($count = null, $state = [])
- * @method static Builder<Schedule> incomplete()
- * @method static Builder<Schedule> inProgress()
- * @method static Builder<Schedule> inTheFuture()
- * @method static Builder<Schedule> inThePast()
+ * @method static Builder<static>|static query()
+ * @method static Builder<static>|static incomplete()
+ * @method static Builder<static>|static inProgress()
+ * @method static Builder<static>|static inTheFuture()
+ * @method static Builder<static>|static inThePast()
  */
 class Schedule extends Model
 {
