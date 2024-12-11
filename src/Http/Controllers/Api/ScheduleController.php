@@ -5,8 +5,8 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Schedule\CreateSchedule;
 use Cachet\Actions\Schedule\DeleteSchedule;
 use Cachet\Actions\Schedule\UpdateSchedule;
-use Cachet\Http\Requests\CreateScheduleRequest;
-use Cachet\Http\Requests\UpdateScheduleRequest;
+use Cachet\Data\Schedule\CreateScheduleData;
+use Cachet\Data\Schedule\UpdateScheduleData;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Schedule;
 use Illuminate\Http\Response;
@@ -28,13 +28,13 @@ class ScheduleController extends Controller
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
      * @queryParam sort string Field to sort by. Enum: name, id, scheduled_at, completed_at, enabled Example: name
-     * @queryParam include string Include related resources. Enum: components Example: components
+     * @queryParam include string Include related resources. Enum: components, updates Example: components
      * @queryParam filters string[] Filter the resources. Example: name=api
      */
     public function index()
     {
         $schedules = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components'])
+            ->allowedIncludes(['components', 'updates', 'user'])
             ->allowedFilters(['name'])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(request('per_page', 15));
@@ -51,11 +51,9 @@ class ScheduleController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateScheduleRequest $request, CreateSchedule $createScheduleAction)
+    public function store(CreateScheduleData $data, CreateSchedule $createScheduleAction)
     {
-        [$data, $components] = [$request->except('components'), $request->input('components')];
-
-        $schedule = $createScheduleAction->handle($data, $components);
+        $schedule = $createScheduleAction->handle($data);
 
         return ScheduleResource::make($schedule);
     }
@@ -83,10 +81,9 @@ class ScheduleController extends Controller
      *
      * @authenticated
      */
-    public function update(UpdateScheduleRequest $request, Schedule $schedule, UpdateSchedule $updateScheduleAction)
+    public function update(UpdateScheduleData $data, Schedule $schedule, UpdateSchedule $updateScheduleAction)
     {
-        [$data, $components] = [$request->except('components'), $request->input('components')];
-        $updateScheduleAction->handle($schedule, $data, $components);
+        $updateScheduleAction->handle($schedule, $data);
 
         return ScheduleResource::make($schedule->fresh());
     }

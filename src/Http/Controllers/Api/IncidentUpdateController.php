@@ -2,14 +2,14 @@
 
 namespace Cachet\Http\Controllers\Api;
 
-use Cachet\Actions\IncidentUpdate\CreateIncidentUpdate;
-use Cachet\Actions\IncidentUpdate\DeleteIncidentUpdate;
-use Cachet\Actions\IncidentUpdate\UpdateIncidentUpdate;
-use Cachet\Http\Requests\CreateIncidentUpdateRequest;
-use Cachet\Http\Requests\UpdateIncidentUpdateRequest;
-use Cachet\Http\Resources\IncidentUpdate as IncidentUpdateResource;
+use Cachet\Actions\Update\CreateUpdate;
+use Cachet\Actions\Update\DeleteUpdate;
+use Cachet\Actions\Update\EditUpdate;
+use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
+use Cachet\Data\IncidentUpdate\EditIncidentUpdateData;
+use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Incident;
-use Cachet\Models\IncidentUpdate;
+use Cachet\Models\Update;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -22,9 +22,9 @@ class IncidentUpdateController extends Controller
     /**
      * List Incident Updates
      *
-     * @apiResourceCollection \Cachet\Http\Resources\IncidentUpdate
+     * @apiResourceCollection \Cachet\Http\Resources\Update
      *
-     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     * @apiResourceModel \Cachet\Models\Update
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
@@ -33,41 +33,44 @@ class IncidentUpdateController extends Controller
      */
     public function index(Incident $incident)
     {
-        $updates = QueryBuilder::for(IncidentUpdate::class)
-            ->where('incident_id', $incident->id)
+        $query = Update::query()
+            ->where('updateable_id', $incident->id)
+            ->where('updateable_type', 'incident');
+
+        $updates = QueryBuilder::for($query)
             ->allowedFilters(['status'])
             ->allowedSorts(['status', 'created_at'])
             ->simplePaginate(request('per_page', 15));
 
-        return IncidentUpdateResource::collection($updates);
+        return UpdateResource::collection($updates);
     }
 
     /**
      * Create Incident Update
      *
-     * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     * @apiResource \Cachet\Http\Resources\Update
      *
-     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     * @apiResourceModel \Cachet\Models\Update
      *
      * @authenticated
      */
-    public function store(CreateIncidentUpdateRequest $request, Incident $incident, CreateIncidentUpdate $createIncidentUpdateAction)
+    public function store(CreateIncidentUpdateData $data, Incident $incident, CreateUpdate $createUpdateAction)
     {
-        $incidentUpdate = $createIncidentUpdateAction->handle($incident, $request->validated());
+        $update = $createUpdateAction->handle($incident, $data);
 
-        return IncidentUpdateResource::make($incidentUpdate);
+        return UpdateResource::make($update);
     }
 
     /**
      * Get Incident Update
      *
-     * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     * @apiResource \Cachet\Http\Resources\Update
      *
-     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     * @apiResourceModel \Cachet\Models\Update
      */
-    public function show(Incident $incident, IncidentUpdate $incidentUpdate)
+    public function show(Incident $incident, Update $update)
     {
-        return IncidentUpdateResource::make($incidentUpdate)
+        return UpdateResource::make($update)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }
@@ -75,17 +78,17 @@ class IncidentUpdateController extends Controller
     /**
      * Update Incident Update
      *
-     * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     * @apiResource \Cachet\Http\Resources\Update
      *
-     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     * @apiResourceModel \Cachet\Models\Update
      *
      * @authenticated
      */
-    public function update(UpdateIncidentUpdateRequest $request, Incident $incident, IncidentUpdate $incidentUpdate, UpdateIncidentUpdate $updateIncidentUpdateAction)
+    public function update(EditIncidentUpdateData $data, Incident $incident, Update $update, EditUpdate $editUpdateAction)
     {
-        $updateIncidentUpdateAction->handle($incidentUpdate, $request->validated());
+        $editUpdateAction->handle($update, $data);
 
-        return IncidentUpdateResource::make($incidentUpdate->fresh());
+        return UpdateResource::make($update->fresh());
     }
 
     /**
@@ -95,9 +98,9 @@ class IncidentUpdateController extends Controller
      *
      * @authenticated
      */
-    public function destroy(Incident $incident, IncidentUpdate $incidentUpdate, DeleteIncidentUpdate $deleteIncidentUpdateAction)
+    public function destroy(Incident $incident, Update $update, DeleteUpdate $deleteUpdateAction)
     {
-        $deleteIncidentUpdateAction->handle($incidentUpdate);
+        $deleteUpdateAction->handle($update);
 
         return response()->noContent();
     }

@@ -35,7 +35,7 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return match ($this) {
             self::operational => 'cachet-circle-check',
@@ -46,7 +46,7 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): array
     {
         return match ($this) {
             self::operational => Color::Green,

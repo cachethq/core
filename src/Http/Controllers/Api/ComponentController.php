@@ -5,8 +5,8 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
-use Cachet\Http\Requests\CreateComponentRequest;
-use Cachet\Http\Requests\UpdateComponentRequest;
+use Cachet\Data\Component\CreateComponentData;
+use Cachet\Data\Component\UpdateComponentData;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
 use Illuminate\Http\Response;
@@ -51,9 +51,11 @@ class ComponentController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateComponentRequest $request, CreateComponent $createComponentAction)
+    public function store(CreateComponentData $data, CreateComponent $createComponentAction)
     {
-        $component = $createComponentAction->handle($request->validated());
+        $component = $createComponentAction->handle(
+            $data,
+        );
 
         return ComponentResource::make($component);
     }
@@ -81,9 +83,9 @@ class ComponentController extends Controller
      *
      * @authenticated
      */
-    public function update(UpdateComponentRequest $request, Component $component, UpdateComponent $updateComponentAction)
+    public function update(UpdateComponentData $data, Component $component, UpdateComponent $updateComponentAction)
     {
-        $updateComponentAction->handle($component, $request->validated());
+        $updateComponentAction->handle($component, $data);
 
         return ComponentResource::make($component->fresh());
     }

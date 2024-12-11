@@ -11,7 +11,7 @@
                         </button>
                         <div x-popover:panel x-cloak x-transition.opacity x-anchor.right.offset.8="$refs.anchor" class="rounded bg-zinc-900 dark:bg-zinc-200 px-2 py-1 text-xs font-medium text-zinc-100 drop-shadow dark:text-zinc-800">
                             <span class="pointer-events-none absolute -left-1.5 size-4 rotate-45 bg-zinc-900 dark:bg-zinc-200"></span>
-                            <p class="relative">{{ __('Updated :timestamp', ['timestamp' => $component->updated_at]) }}</p>
+                            <p class="relative">{{ __('Last Updated :timestamp', ['timestamp' => $component->updated_at]) }}</p>
                         </div>
                     </div>
                 </div>

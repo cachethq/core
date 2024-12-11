@@ -13,19 +13,35 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
+/**
+ * @property int $id
+ * @property int $metric_id
+ * @property float $value
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property int $counter
+ * @property Metric $metric
+ * @property-read float $calculated_value
+ *
+ * @method static MetricPointFactory factory($count = null, $state = [])
+ */
 class MetricPoint extends Model
 {
+    /** @use HasFactory<MetricPointFactory> */
     use HasFactory;
 
+    /** @var array<string, string> */
     protected $casts = [
         'value' => 'float',
     ];
 
+    /** @var array<string, string> */
     protected $dispatchesEvents = [
         'created' => MetricPointCreated::class,
         'deleted' => MetricPointDeleted::class,
     ];
 
+    /** @var list<string> */
     protected $fillable = [
         'value',
         'counter',
@@ -53,7 +69,7 @@ class MetricPoint extends Model
                     $createdAt = Carbon::parse($createdAt);
                 }
 
-                $timestamp = $createdAt->unix();
+                $timestamp = $createdAt->getTimestamp();
                 $timestamp = 30 * round($timestamp / 30);
 
                 return Carbon::createFromTimestamp($timestamp);
@@ -74,7 +90,11 @@ class MetricPoint extends Model
      */
     public function withinThreshold(int $threshold, string|int|DateTime|null $timestamp = null): bool
     {
-        $now = Carbon::parse($timestamp) ?? now();
+        if (blank($timestamp)) {
+            $now = now();
+        }
+
+        $now ??= Carbon::parse($timestamp);
 
         return $this->created_at->startOfMinute()->diffInMinutes($now->startOfMinute()) < $threshold;
     }

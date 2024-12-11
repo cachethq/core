@@ -9,6 +9,7 @@ use Cachet\Http\Controllers\Api\IncidentUpdateController;
 use Cachet\Http\Controllers\Api\MetricController;
 use Cachet\Http\Controllers\Api\MetricPointController;
 use Cachet\Http\Controllers\Api\ScheduleController;
+use Cachet\Http\Controllers\Api\ScheduleUpdateController;
 use Cachet\Http\Controllers\Api\StatusController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,8 +23,10 @@ Route::apiResources([
 ]);
 
 Route::apiResource('incidents.updates', IncidentUpdateController::class)
-    ->parameter('updates', 'incidentUpdate')
-    ->scoped();
+    ->scoped(['updateable_id']);
+
+Route::apiResource('schedules.updates', ScheduleUpdateController::class)
+    ->scoped(['updateable_id']);
 
 Route::apiResource('metrics.points', MetricPointController::class)
     ->parameter('points', 'metricPoint')

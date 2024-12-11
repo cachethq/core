@@ -2,6 +2,7 @@
 
 namespace Cachet\Actions\Metric;
 
+use Cachet\Data\Metric\UpdateMetricData;
 use Cachet\Models\Metric;
 
 class UpdateMetric
@@ -9,9 +10,9 @@ class UpdateMetric
     /**
      * Handle the action.
      */
-    public function handle(Metric $metric, ?array $data = []): Metric
+    public function handle(Metric $metric, UpdateMetricData $data): Metric
     {
-        $metric->update($data);
+        $metric->update($data->toArray());
 
         return $metric->fresh();
     }

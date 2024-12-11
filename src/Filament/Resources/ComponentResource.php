@@ -25,7 +25,8 @@ class ComponentResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->label(__('Name'))
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->autocomplete(false),
                     Forms\Components\ToggleButtons::make('status')
                         ->label(__('Status'))
                         ->inline()
@@ -106,7 +107,9 @@ class ComponentResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->reorderable('order');
+            ->reorderable('order')
+            ->emptyStateHeading(__('Components'))
+            ->emptyStateDescription(__('Components represent the various parts of your system that can affect the status of your status page.'));
     }
 
     public static function getRelations(): array
