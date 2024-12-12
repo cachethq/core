@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -124,6 +125,18 @@ class Incident extends Model
     public function updates(): MorphMany
     {
         return $this->morphMany(Update::class, 'updateable')->chaperone();
+    }
+
+    /**
+     * Get the user who reported the incident.
+     *
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        $userModel = config('cachet.user_model');
+
+        return $this->belongsTo($userModel);
     }
 
     /**
