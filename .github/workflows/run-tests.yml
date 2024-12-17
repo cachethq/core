@@ -1,6 +1,13 @@
 name: run-tests
 
-on: [ push, pull_request ]
+on:
+  push:
+    branches:
+      - main
+      - '*.x'
+  pull_request:
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   static-analysis:
