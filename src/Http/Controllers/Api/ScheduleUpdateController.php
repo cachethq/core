@@ -76,7 +76,7 @@ class ScheduleUpdateController extends Controller
     {
         $updateQuery = QueryBuilder::for($update)
             ->allowedIncludes([
-                AllowedInclude::relationship('schedule', 'updateable')
+                AllowedInclude::relationship('schedule', 'updateable'),
             ])
             ->first();
 

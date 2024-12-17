@@ -76,7 +76,7 @@ class IncidentUpdateController extends Controller
     {
         $updateQuery = QueryBuilder::for($update)
             ->allowedIncludes([
-                AllowedInclude::relationship('incident', 'updateable')
+                AllowedInclude::relationship('incident', 'updateable'),
             ])
             ->first();
 
