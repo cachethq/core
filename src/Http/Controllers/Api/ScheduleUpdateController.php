@@ -13,6 +13,7 @@ use Cachet\Models\Update;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -74,8 +75,10 @@ class ScheduleUpdateController extends Controller
     public function show(Schedule $schedule, Update $update)
     {
         $updateQuery = QueryBuilder::for($update)
-            ->allowedIncludes(['schedule'])
-            ->firstOrFail();
+            ->allowedIncludes([
+                AllowedInclude::relationship('schedule', 'updateable')
+            ])
+            ->first();
 
         return UpdateResource::make($updateQuery)
             ->response()

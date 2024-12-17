@@ -12,6 +12,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Update;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -74,8 +75,10 @@ class IncidentUpdateController extends Controller
     public function show(Incident $incident, Update $update)
     {
         $updateQuery = QueryBuilder::for($update)
-            ->allowedIncludes(['incident'])
-            ->firstOrFail();
+            ->allowedIncludes([
+                AllowedInclude::relationship('incident', 'updateable')
+            ])
+            ->first();
 
         return UpdateResource::make($updateQuery)
             ->response()
