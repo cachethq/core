@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('incidents', function (Blueprint $table) {
-            $table->tinyInteger('status')->unsigned()->default(0);
+            $table->unsignedInteger('status')->unsigned()->default(0);
         });
     }
 };
