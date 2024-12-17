@@ -129,8 +129,6 @@ class Incident extends Model
 
     /**
      * Get the user who reported the incident.
-     *
-     * @return BelongsTo
      */
     public function user(): BelongsTo
     {

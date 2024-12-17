@@ -28,7 +28,7 @@ class MetricPointController extends Controller
      * @queryParam page int Which page to show. Example: 2
      * @queryParam sort Field to sort by. Enum: name, order, id. Example: name
      * @queryParam include Include related resources. Enum: metric. Example: metric
- */
+     */
     public function index(Metric $metric)
     {
         $query = MetricPoint::query()

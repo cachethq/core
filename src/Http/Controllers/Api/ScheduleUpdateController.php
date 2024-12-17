@@ -8,7 +8,6 @@ use Cachet\Actions\Update\EditUpdate;
 use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateData;
 use Cachet\Data\ScheduleUpdate\EditScheduleUpdateData;
 use Cachet\Http\Resources\Update as UpdateResource;
-use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 use Illuminate\Database\Eloquent\Relations\Relation;
