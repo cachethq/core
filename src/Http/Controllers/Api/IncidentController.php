@@ -37,8 +37,8 @@ class IncidentController extends Controller
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort string Field to sort by. Enum: name, id, status Example: status
-     * @queryParam include string Include related resources. Enum: components, updates, user Example: updates
+     * @queryParam sort Field to sort by. Enum: name, id, status. Example: status
+     * @queryParam include Include related resources. Enum: components, updates, user Example: updates
      */
     public function index()
     {
@@ -79,7 +79,7 @@ class IncidentController extends Controller
      *
      * @apiResourceModel \Cachet\Models\Incident
      *
-     * @queryParam include string Include related resources. Enum: components, updates, user Example: updates
+     * @queryParam include Include related resources. Enum: components, updates, user. Example: updates
      */
     public function show(Incident $incident)
     {

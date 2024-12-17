@@ -30,8 +30,8 @@ class ScheduleUpdateController extends Controller
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort string Field to sort by. Enum: name, created_at Example: name
-     * @queryParam filters string[] Filter the resources.
+     * @queryParam sort Field to sort by. Enum: name, created_at. Example: name
+     * @queryParam include Include related resources. Enum: schedule. Example: schedule
      */
     public function index(Schedule $schedule)
     {
@@ -41,6 +41,7 @@ class ScheduleUpdateController extends Controller
 
         $updates = QueryBuilder::for($query)
             ->allowedSorts(['created_at'])
+            ->allowedIncludes(['schedule'])
             ->simplePaginate(request('per_page', 15));
 
         return UpdateResource::collection($updates);
@@ -68,10 +69,16 @@ class ScheduleUpdateController extends Controller
      * @apiResource \Cachet\Http\Resources\Update
      *
      * @apiResourceModel \Cachet\Models\Update
+     *
+     * @queryParam include Include related resources. Enum: schedule. Example: schedule
      */
-    public function show(Incident $incident, Schedule $schedule)
+    public function show(Schedule $schedule, Update $update)
     {
-        return UpdateResource::make($schedule)
+        $updateQuery = QueryBuilder::for($update)
+            ->allowedIncludes(['schedule'])
+            ->firstOrFail();
+
+        return UpdateResource::make($updateQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }

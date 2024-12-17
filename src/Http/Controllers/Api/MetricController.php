@@ -28,9 +28,10 @@ class MetricController extends Controller
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort string Field to sort by. Enum: name, order, id enabled Example: name
-     * @queryParam include string Include related resources. Enum: points Example: points
-     * @queryParam filters string[] Filter the resources. Example: name=api
+     * @queryParam sort Field to sort by. Enum: name, order, id. Example: name
+     * @queryParam include Include related resources. Enum: points. Example: points
+     * @queryParam filters[name] string Filter by name. Example: metric name
+     * @queryParam filters[calc_type] Enum:Cachet\Enums\MetricTypeEnum Filter by calculation type. Example: sum,avg
      */
     public function index()
     {
@@ -70,10 +71,16 @@ class MetricController extends Controller
      * @apiResource \Cachet\Http\Resources\Metric
      *
      * @apiResourceModel \Cachet\Models\Metric
+     *
+     * @queryParam include Include related resources. Enum: points. Example: points
      */
     public function show(Metric $metric)
     {
-        return MetricResource::make($metric)
+        $metricQuery = QueryBuilder::for($metric)
+            ->allowedIncludes(['points'])
+            ->first();
+
+        return MetricResource::make($metricQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }
