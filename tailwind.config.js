@@ -11,9 +11,10 @@ export default {
     extend: {
       colors: {
         accent: {
-          DEFAULT: 'var(--accent)',
-          content: 'var(--accent-content)',
-          foreground: 'var(--accent-foreground)',
+          DEFAULT: 'rgba(var(--accent), <alpha-value>)',
+          content: 'rgba(var(--accent-content), <alpha-value>)',
+          foreground: 'rgba(var(--accent-foreground), <alpha-value>)',
+          background: 'rgba(var(--accent-background), <alpha-value>)',
         },
         primary: {
           '50': '#e6f7ed',

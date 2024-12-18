@@ -6,6 +6,8 @@ use BladeUI\Icons\Factory;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
@@ -56,6 +58,10 @@ class CachetCoreServiceProvider extends ServiceProvider
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
             'User-Agent', Cachet::USER_AGENT
         ));
+
+        FilamentColor::register([
+            'primary' => Color::rgb('rgb(4, 193, 71)'),
+        ]);
     }
 
     /**

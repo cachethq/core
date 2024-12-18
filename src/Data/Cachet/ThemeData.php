@@ -4,11 +4,15 @@ namespace Cachet\Data\Cachet;
 
 use Cachet\Data\BaseData;
 use Cachet\Settings\ThemeSettings;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Spatie\LaravelData\Attributes\Computed;
 use Spatie\LaravelData\Attributes\Validation\Required;
 
 class ThemeData extends BaseData
 {
+    public const GRAYS = ['slate', 'gray', 'zinc', 'neutral', 'stone'];
+
     private const THEME_PAIRINGS = [
         "cachet" => "zinc",
         "red" => "zinc",
@@ -33,266 +37,254 @@ class ThemeData extends BaseData
     private const THEMES = [
         "gray" => [
             "light" => [
-                "accent" => "var(--theme-gray-800)",
-                "accent-content" => "var(--theme-gray-800)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Gray[800],
+                "accent-content" => Color::Gray[800],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-white)",
-                "accent-content" => "var(--theme-white)",
-                "accent-foreground" => "var(--theme-gray-800)",
+                "accent" => '255 255 255',
+                "accent-content" => '255 255 255',
+                "accent-foreground" => Color::Gray[800],
             ],
         ],
         "zinc" => [
             "light" => [
-                "accent" => "var(--theme-zinc-800)",
-                "accent-content" => "var(--theme-zinc-800)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Zinc[800],
+                "accent-content" => Color::Zinc[800],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-white)",
-                "accent-content" => "var(--theme-white)",
-                "accent-foreground" => "var(--theme-zinc-800)",
+                "accent" => '255 255 255',
+                "accent-content" => '255 255 255',
+                "accent-foreground" => Color::Zinc[800],
             ],
         ],
         "neutral" => [
             "light" => [
-                "accent" => "var(--theme-neutral-800)",
-                "accent-content" => "var(--theme-neutral-800)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Neutral[800],
+                "accent-content" => Color::Neutral[800],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-white)",
-                "accent-content" => "var(--theme-white)",
-                "accent-foreground" => "var(--theme-neutral-800)",
+                "accent" => '255 255 255',
+                "accent-content" => '255 255 255',
+                "accent-foreground" => Color::Neutral[800],
             ],
         ],
         "stone" => [
             "light" => [
-                "accent" => "var(--theme-stone-800)",
-                "accent-content" => "var(--theme-stone-800)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Stone[800],
+                "accent-content" => Color::Stone[800],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-white)",
-                "accent-content" => "var(--theme-white)",
-                "accent-foreground" => "var(--theme-stone-800)",
+                "accent" => '255 255 255',
+                "accent-content" => '255 255 255',
+                "accent-foreground" => Color::Stone[800],
             ],
         ],
         "red" => [
             "light" => [
-                "accent" => "var(--theme-red-500)",
-                "accent-content" => "var(--theme-red-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Red[500],
+                "accent-content" => Color::Red[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-red-500)",
-                "accent-content" => "var(--theme-red-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Red[500],
+                "accent-content" => Color::Red[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "orange" => [
             "light" => [
-                "accent" => "var(--theme-orange-500)",
-                "accent-content" => "var(--theme-orange-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Orange[500],
+                "accent-content" => Color::Orange[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-orange-400)",
-                "accent-content" => "var(--theme-orange-400)",
-                "accent-foreground" => "var(--theme-orange-950)",
+                "accent" => Color::Orange[400],
+                "accent-content" => Color::Orange[400],
+                "accent-foreground" => Color::Orange[950],
             ],
         ],
         "amber" => [
             "light" => [
-                "accent" => "var(--theme-amber-400)",
-                "accent-content" => "var(--theme-amber-600)",
-                "accent-foreground" => "var(--theme-amber-950)",
+                "accent" => Color::Amber[400],
+                "accent-content" => Color::Amber[600],
+                "accent-foreground" => Color::Amber[950],
             ],
             "dark" => [
-                "accent" => "var(--theme-amber-400)",
-                "accent-content" => "var(--theme-amber-400)",
-                "accent-foreground" => "var(--theme-amber-950)",
+                "accent" => Color::Amber[400],
+                "accent-content" => Color::Amber[400],
+                "accent-foreground" => Color::Amber[950],
             ],
         ],
         "yellow" => [
             "light" => [
-                "accent" => "var(--theme-yellow-400)",
-                "accent-content" => "var(--theme-yellow-600)",
-                "accent-foreground" => "var(--theme-yellow-950)",
+                "accent" => Color::Yellow[400],
+                "accent-content" => Color::Yellow[600],
+                "accent-foreground" => Color::Yellow[950],
             ],
             "dark" => [
-                "accent" => "var(--theme-yellow-400)",
-                "accent-content" => "var(--theme-yellow-400)",
-                "accent-foreground" => "var(--theme-yellow-950)",
+                "accent" => Color::Yellow[400],
+                "accent-content" => Color::Yellow[400],
+                "accent-foreground" => Color::Yellow[950],
             ],
         ],
         "lime" => [
             "light" => [
-                "accent" => "var(--theme-lime-400)",
-                "accent-content" => "var(--theme-lime-600)",
-                "accent-foreground" => "var(--theme-lime-900)",
+                "accent" => Color::Lime[400],
+                "accent-content" => Color::Lime[600],
+                "accent-foreground" => Color::Lime[900],
             ],
             "dark" => [
-                "accent" => "var(--theme-lime-400)",
-                "accent-content" => "var(--theme-lime-400)",
-                "accent-foreground" => "var(--theme-lime-950)",
+                "accent" => Color::Lime[400],
+                "accent-content" => Color::Lime[400],
+                "accent-foreground" => Color::Lime[950],
             ],
         ],
         "green" => [
             "light" => [
-                "accent" => "var(--theme-green-600)",
-                "accent-content" => "var(--theme-green-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Green[600],
+                "accent-content" => Color::Green[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-green-600)",
-                "accent-content" => "var(--theme-green-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Green[600],
+                "accent-content" => Color::Green[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "emerald" => [
             "light" => [
-                "accent" => "var(--theme-emerald-600)",
-                "accent-content" => "var(--theme-emerald-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Emerald[600],
+                "accent-content" => Color::Emerald[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-emerald-600)",
-                "accent-content" => "var(--theme-emerald-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Emerald[600],
+                "accent-content" => Color::Emerald[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "teal" => [
             "light" => [
-                "accent" => "var(--theme-teal-600)",
-                "accent-content" => "var(--theme-teal-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Teal[600],
+                "accent-content" => Color::Teal[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-teal-600)",
-                "accent-content" => "var(--theme-teal-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Teal[600],
+                "accent-content" => Color::Teal[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "cyan" => [
             "light" => [
-                "accent" => "var(--theme-cyan-600)",
-                "accent-content" => "var(--theme-cyan-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Cyan[600],
+                "accent-content" => Color::Cyan[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-cyan-600)",
-                "accent-content" => "var(--theme-cyan-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Cyan[600],
+                "accent-content" => Color::Cyan[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "sky" => [
             "light" => [
-                "accent" => "var(--theme-sky-600)",
-                "accent-content" => "var(--theme-sky-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Sky[600],
+                "accent-content" => Color::Sky[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-sky-600)",
-                "accent-content" => "var(--theme-sky-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Sky[600],
+                "accent-content" => Color::Sky[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "blue" => [
             "light" => [
-                "accent" => "var(--theme-blue-500)",
-                "accent-content" => "var(--theme-blue-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Blue[500],
+                "accent-content" => Color::Blue[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-blue-500)",
-                "accent-content" => "var(--theme-blue-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Blue[500],
+                "accent-content" => Color::Blue[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "indigo" => [
             "light" => [
-                "accent" => "var(--theme-indigo-500)",
-                "accent-content" => "var(--theme-indigo-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Indigo[500],
+                "accent-content" => Color::Indigo[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-indigo-500)",
-                "accent-content" => "var(--theme-indigo-300)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Indigo[500],
+                "accent-content" => Color::Indigo[300],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "violet" => [
             "light" => [
-                "accent" => "var(--theme-violet-500)",
-                "accent-content" => "var(--theme-violet-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Violet[500],
+                "accent-content" => Color::Violet[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-violet-500)",
-                "accent-content" => "var(--theme-violet-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Violet[500],
+                "accent-content" => Color::Violet[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "purple" => [
             "light" => [
-                "accent" => "var(--theme-purple-500)",
-                "accent-content" => "var(--theme-purple-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Purple[500],
+                "accent-content" => Color::Purple[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-purple-500)",
-                "accent-content" => "var(--theme-purple-300)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Purple[500],
+                "accent-content" => Color::Purple[300],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "fuchsia" => [
             "light" => [
-                "accent" => "var(--theme-fuchsia-600)",
-                "accent-content" => "var(--theme-fuchsia-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Fuchsia[600],
+                "accent-content" => Color::Fuchsia[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-fuchsia-600)",
-                "accent-content" => "var(--theme-fuchsia-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Fuchsia[600],
+                "accent-content" => Color::Fuchsia[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "pink" => [
             "light" => [
-                "accent" => "var(--theme-pink-600)",
-                "accent-content" => "var(--theme-pink-600)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Pink[600],
+                "accent-content" => Color::Pink[600],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-pink-600)",
-                "accent-content" => "var(--theme-pink-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Pink[600],
+                "accent-content" => Color::Pink[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
         "rose" => [
             "light" => [
-                "accent" => "var(--theme-rose-500)",
-                "accent-content" => "var(--theme-rose-500)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Rose[500],
+                "accent-content" => Color::Rose[500],
+                "accent-foreground" => '255 255 255',
             ],
             "dark" => [
-                "accent" => "var(--theme-rose-500)",
-                "accent-content" => "var(--theme-rose-400)",
-                "accent-foreground" => "var(--theme-white)",
-            ],
-        ],
-        "cachet" => [
-            "light" => [
-                "accent" => "var(--theme-primary-500)",
-                "accent-content" => "var(--theme-primary-500)",
-                "accent-foreground" => "var(--theme-white)",
-            ],
-            "dark" => [
-                "accent" => "var(--theme-primary-500)",
-                "accent-content" => "var(--theme-primary-400)",
-                "accent-foreground" => "var(--theme-white)",
+                "accent" => Color::Rose[500],
+                "accent-content" => Color::Rose[400],
+                "accent-foreground" => '255 255 255',
             ],
         ],
     ];
@@ -313,8 +305,31 @@ class ThemeData extends BaseData
      */
     protected function generate(): void
     {
-        $theme = self::THEMES[$this->themeSettings->accent];
-        $pairing = self::THEME_PAIRINGS[$this->themeSettings->accent];
+        $accent = $this->themeSettings->accent;
+        if ($accent === 'cachet') {
+            $primaryColor = FilamentColor::getColors()['primary'];
+
+            $theme = [
+                'light' => [
+                    'accent' => $primaryColor[500],
+                    'accent-content' => $primaryColor[500],
+                    "accent-foreground" => '255 255 255',
+                ],
+                'dark' => [
+                    'accent' => $primaryColor[500],
+                    'accent-content' => $primaryColor[400],
+                    "accent-foreground" => '255 255 255',
+                ],
+            ];
+        } else {
+            $theme = self::THEMES[$accent];
+        }
+
+        if ($accentPairing = $this->themeSettings->accent_pairing) {
+            $pairing = self::THEME_PAIRINGS[$accent];
+        } else {
+            $pairing = $this->themeSettings->accent_content;
+        }
 
         $this->styles = $this->compileCss($theme, $pairing);
     }
@@ -324,12 +339,16 @@ class ThemeData extends BaseData
      */
     protected function compileCss(array $theme, string $pairing): string
     {
+        $pairingKey = ucwords($pairing);
+        $color = new Color;
+        $pairingColor = $color::{$pairingKey};
+
         return <<<CSS
             :root {
                 --accent: {$theme['light']['accent']};
                 --accent-content: {$theme['light']['accent-content']};
                 --accent-foreground: {$theme['light']['accent-foreground']};
-                --background: var(--theme-{$pairing}-100);
+                --accent-background: {$pairingColor[50]};
             }
 
             @media(prefers-color-scheme: dark) {
@@ -337,7 +356,7 @@ class ThemeData extends BaseData
                     --accent: {$theme['dark']['accent']};
                     --accent-content: {$theme['dark']['accent-content']};
                     --accent-foreground: {$theme['dark']['accent-foreground']};
-                    --background: var(--theme-{$pairing}-900);
+                    --accent-background: {$pairingColor[900]};
                 }
             }
         CSS;
