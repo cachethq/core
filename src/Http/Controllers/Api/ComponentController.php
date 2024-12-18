@@ -19,6 +19,14 @@ use Spatie\QueryBuilder\QueryBuilder;
 class ComponentController extends Controller
 {
     /**
+     * The list of allowed includes.
+     */
+    public const ALLOWED_INCLUDES = [
+        'group',
+        'incidents',
+    ];
+
+    /**
      * List Components
      *
      * @apiResourceCollection \Cachet\Http\Resources\Component
@@ -27,14 +35,16 @@ class ComponentController extends Controller
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort string Field to sort by. Enum: name, status, enabled Example: name
-     * @queryParam include string Include related resources. Enum: group, incidents Example: group,incidents
-     * @queryParam filters string[] Filter the resources. Example: name=api
+     * @queryParam sort Field to sort by. Enum: name, status, enabled. Example: name
+     * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
+     * @queryParam filters[name] string Filter by name. Example: My Component
+     * @queryParam filters[status] Filter by status. Enum: 1 , 2, 3. Example: 1
+     * @queryParam filters[enabled] Filter by enabled status. Enum: 0, 1. Example: 1
      */
     public function index()
     {
         $components = QueryBuilder::for(Component::class)
-            ->allowedIncludes(['group', 'incidents'])
+            ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->allowedFilters(['name', 'status', 'enabled'])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(request('per_page', 15));
@@ -66,10 +76,16 @@ class ComponentController extends Controller
      * @apiResource \Cachet\Http\Resources\Component
      *
      * @apiResourceModel \Cachet\Models\Component
+     *
+     * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
      */
     public function show(Component $component)
     {
-        return ComponentResource::make($component)
+        $componentQuery = QueryBuilder::for($component)
+            ->allowedIncludes(self::ALLOWED_INCLUDES)
+            ->first();
+
+        return ComponentResource::make($componentQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }

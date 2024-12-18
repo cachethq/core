@@ -12,6 +12,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Update;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -28,8 +29,8 @@ class IncidentUpdateController extends Controller
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort string Field to sort by. Enum: name, created_at Example: name
-     * @queryParam filters string[] Filter the resources.
+     * @queryParam sort Field to sort by. Enum: name, created_at. Example: name
+     * @queryParam include Include related resources. Enum: incident. Example: incident
      */
     public function index(Incident $incident)
     {
@@ -39,6 +40,7 @@ class IncidentUpdateController extends Controller
 
         $updates = QueryBuilder::for($query)
             ->allowedFilters(['status'])
+            ->allowedIncludes(['incident'])
             ->allowedSorts(['status', 'created_at'])
             ->simplePaginate(request('per_page', 15));
 
@@ -67,10 +69,18 @@ class IncidentUpdateController extends Controller
      * @apiResource \Cachet\Http\Resources\Update
      *
      * @apiResourceModel \Cachet\Models\Update
+     *
+     * @queryParam include Include related resources. Enum: incident. Example: incident
      */
     public function show(Incident $incident, Update $update)
     {
-        return UpdateResource::make($update)
+        $updateQuery = QueryBuilder::for($update)
+            ->allowedIncludes([
+                AllowedInclude::relationship('incident', 'updateable'),
+            ])
+            ->first();
+
+        return UpdateResource::make($updateQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }
