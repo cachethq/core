@@ -70,7 +70,14 @@ class ManageTheme extends SettingsPage
 
                     Forms\Components\Toggle::make('accent_pairing')
                         ->label(__('Accent Pairing'))
-                        ->reactive(),
+                        ->reactive()
+                        ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, ?bool $old, ?bool $state) {
+                            $accent = $get('accent');
+
+                            if ($state) {
+                                $set('accent_content', ThemeData::matchPairing($accent));
+                            }
+                        }),
                 ]),
             ]);
     }
