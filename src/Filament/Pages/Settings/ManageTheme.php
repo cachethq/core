@@ -8,6 +8,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\SettingsPage;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 
 class ManageTheme extends SettingsPage
 {
@@ -35,9 +36,9 @@ class ManageTheme extends SettingsPage
                         Forms\Components\Select::make('accent')
                             ->label(__('Accent Color'))
                             ->options([
-                                'cachet' => '<div class="theme-swatch" style="--swatch: 4 193 71"></div> Cachet',
                                 ...collect(Color::all())
                                     ->except(ThemeData::GRAYS)
+                                    ->prepend(FilamentColor::getColors()['cachet'], 'cachet')
                                     ->map(function (array $shades, string $color) {
                                         $colorName = __(ucwords($color));
 

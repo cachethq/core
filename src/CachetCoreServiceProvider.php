@@ -60,7 +60,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         ));
 
         FilamentColor::register([
-            'primary' => Color::rgb('rgb(4, 193, 71)'),
+            'cachet' => Color::rgb('rgb(4, 193, 71)'),
         ]);
     }
 

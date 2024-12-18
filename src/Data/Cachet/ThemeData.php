@@ -306,7 +306,7 @@ class ThemeData extends BaseData
     {
         $accent = $this->themeSettings->accent;
         if ($accent === 'cachet') {
-            $primaryColor = FilamentColor::getColors()['primary'];
+            $primaryColor = FilamentColor::getColors()['cachet'];
 
             $theme = [
                 'light' => [
