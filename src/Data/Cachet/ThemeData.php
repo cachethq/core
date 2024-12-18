@@ -339,8 +339,7 @@ class ThemeData extends BaseData
     protected function compileCss(array $theme, string $pairing): string
     {
         $pairingKey = ucwords($pairing);
-        $color = new Color;
-        $pairingColor = $color::{$pairingKey};
+        $pairingColor = constant("Filament\Support\Colors\Color::{$pairingKey}");
 
         return <<<CSS
             :root {
