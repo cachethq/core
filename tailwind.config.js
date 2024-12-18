@@ -10,6 +10,12 @@ export default {
   theme: {
     extend: {
       colors: {
+        accent: {
+          DEFAULT: 'rgba(var(--accent), <alpha-value>)',
+          content: 'rgba(var(--accent-content), <alpha-value>)',
+          foreground: 'rgba(var(--accent-foreground), <alpha-value>)',
+          background: 'rgba(var(--accent-background), <alpha-value>)',
+        },
         primary: {
           '50': '#e6f7ed',
           '100': '#c1edce',
@@ -34,14 +40,6 @@ export default {
           800: 'rgba(var(--c-800), <alpha-value>)',
           900: 'rgba(var(--c-900), <alpha-value>)',
           950: 'rgba(var(--c-950), <alpha-value>)',
-        },
-        background: {
-          light: 'var(--background-light)',
-          dark: 'var(--background-dark)',
-        },
-        base: {
-          light: 'var(--text-light)',
-          dark: 'var(--text-dark)',
         },
       },
     },
