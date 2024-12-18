@@ -21,27 +21,28 @@
     "require": {
         "php": "^8.2",
         "doctrine/dbal": "^3.6",
-        "filament/filament": "^3.2.23",
+        "filament/filament": "^3.2.57",
         "filament/spatie-laravel-settings-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.8",
-        "illuminate/console": "^11.0",
-        "illuminate/database": "^11.0",
-        "illuminate/events": "^11.0",
-        "illuminate/queue": "^11.0",
-        "illuminate/support": "^11.0",
+        "illuminate/console": "^11.23.0",
+        "illuminate/database": "^11.23.0",
+        "illuminate/events": "^11.23.0",
+        "illuminate/queue": "^11.23.0",
+        "illuminate/support": "^11.23.0",
         "nesbot/carbon": "^2.70",
+        "spatie/laravel-data": "^4.11",
         "spatie/laravel-query-builder": "^5.5",
         "spatie/laravel-settings": "^3.2",
         "timacdonald/json-api": "^v1.0.0-beta.4",
         "twig/twig": "^3.0"
     },
     "require-dev": {
+        "larastan/larastan": "^3.0",
         "laravel/pail": "^1.1",
         "orchestra/testbench": "^9.5.1",
         "pestphp/pest": "^3.2",
         "pestphp/pest-plugin-laravel": "^3.0",
-        "pestphp/pest-plugin-livewire": "*",
-        "spatie/laravel-ray": "^1.32"
+        "pestphp/pest-plugin-livewire": "*"
     },
     "autoload": {
         "psr-4": {

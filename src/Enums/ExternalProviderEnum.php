@@ -11,12 +11,12 @@ enum ExternalProviderEnum: string
      */
     public function status(mixed $status): IncidentStatusEnum
     {
-        if ($this === self::OhDear) {
-            return match ($status) {
+        return match ($this) {
+            self::OhDear => match ($status) {
                 'resolved' => IncidentStatusEnum::fixed,
                 'warning' => IncidentStatusEnum::investigating,
                 default => IncidentStatusEnum::unknown,
-            };
-        }
+            },
+        };
     }
 }

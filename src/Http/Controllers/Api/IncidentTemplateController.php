@@ -5,8 +5,8 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\IncidentTemplate\CreateIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\DeleteIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\UpdateIncidentTemplate;
-use Cachet\Http\Requests\CreateIncidentTemplateRequest;
-use Cachet\Http\Requests\UpdateIncidentTemplateRequest;
+use Cachet\Data\IncidentTemplate\CreateIncidentTemplateData;
+use Cachet\Data\IncidentTemplate\UpdateIncidentTemplateData;
 use Cachet\Http\Resources\IncidentTemplate as IncidentTemplateResource;
 use Cachet\Models\IncidentTemplate;
 use Illuminate\Http\Response;
@@ -27,8 +27,10 @@ class IncidentTemplateController extends Controller
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort string Field to sort by. Enum: name, slug, id Example: name
-     * @queryParam filters string[] Filter the resources.
+     * @queryParam sort Field to sort by. Enum: name, slug, id. Example: name
+     * @queryParam filters[name] string Filter by name. Example: My Template
+     * @queryParam filters[slug] string Filter by slug. Example: my-template
+     * @queryParam filters[id] int Filter by id. Example: 1
      */
     public function index()
     {
@@ -49,9 +51,9 @@ class IncidentTemplateController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateIncidentTemplateRequest $request)
+    public function store(CreateIncidentTemplateData $data, CreateIncidentTemplate $createIncidentTemplateAction)
     {
-        $template = app(CreateIncidentTemplate::class)->handle($request->validated());
+        $template = $createIncidentTemplateAction->handle($data);
 
         return IncidentTemplateResource::make($template);
     }
@@ -79,11 +81,11 @@ class IncidentTemplateController extends Controller
      *
      * @authenticated
      */
-    public function update(UpdateIncidentTemplateRequest $request, IncidentTemplate $incidentTemplate)
+    public function update(UpdateIncidentTemplateData $data, IncidentTemplate $incidentTemplate, UpdateIncidentTemplate $updateIncidentTemplateAction)
     {
-        app(UpdateIncidentTemplate::class)->handle($incidentTemplate, $request->validated());
+        $template = $updateIncidentTemplateAction->handle($incidentTemplate, $data);
 
-        return IncidentTemplateResource::make($incidentTemplate->fresh());
+        return IncidentTemplateResource::make($template);
     }
 
     /**

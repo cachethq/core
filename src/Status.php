@@ -8,6 +8,7 @@ use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Settings\AppSettings;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder;
 
 class Status
@@ -83,15 +84,16 @@ class Status
             ->selectRaw('sum(case when ? not in (incidents.status, latest_update.status) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed->value])
             ->joinSub(function (Builder $query) {
                 $query
-                    ->select('iu1.incident_id', 'iu1.status')
-                    ->from('incident_updates', 'iu1')
+                    ->select('iu1.updateable_id', 'iu1.status')
+                    ->from('updates', 'iu1')
                     ->joinSub(function (Builder $query) {
-                        $query->select('incident_id')
+                        $query->select('updateable_id')
                             ->selectRaw('max(id) as max_id')
-                            ->from('incident_updates')
-                            ->groupBy('incident_id');
+                            ->from('updates')
+                            ->where('updates.updateable_type', Relation::getMorphAlias(Incident::class))
+                            ->groupBy('updateable_id');
                     }, 'iu2', 'iu1.id', '=', 'iu2.max_id');
-            }, 'latest_update', 'latest_update.incident_id', '=', 'incidents.id')
+            }, 'latest_update', 'latest_update.updateable_id', '=', 'incidents.id')
             ->first();
     }
 }
