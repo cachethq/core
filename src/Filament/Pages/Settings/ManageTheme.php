@@ -28,7 +28,10 @@ class ManageTheme extends SettingsPage
                         ->columnSpanFull(),
                 ]),
 
-                Forms\Components\Section::make()->columns(2)->schema([
+                Forms\Components\Section::make()->columns(2)
+                    ->heading(__('Status Page Accent'))
+                    ->description(__('Customize the accent color of your status page. Cachet can automatically select a matching base color.'))
+                    ->schema([
                     Forms\Components\Select::make('accent')
                         ->label(__('Accent Color'))
                         ->options([
