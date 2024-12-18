@@ -229,6 +229,9 @@ HTML;
 
         $themeSettings = app(ThemeSettings::class);
         $themeSettings->app_banner = '';
+        $themeSettings->accent = 'cachet';
+        $themeSettings->accent_content = 'zinc';
+        $themeSettings->accent_pairing = true;
         $themeSettings->save();
     }
 }
