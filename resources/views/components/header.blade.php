@@ -12,7 +12,7 @@
 
     @if ($dashboardLoginLink)
     <div class="flex items-center gap-2.5 sm:gap-5">
-        <a href="{{ Cachet\Cachet::dashboardPath() }}" class="rounded bg-accent px-2 py-1 text-sm font-semibold text-accent-foreground transition">Dashboard</a>
+        <a href="{{ Cachet\Cachet::dashboardPath() }}" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground">Dashboard</a>
         @auth
         {{-- TODO: This form sucks... --}}
         <form action="{{ \Cachet\Cachet::dashboardPath() }}/logout" method="POST">

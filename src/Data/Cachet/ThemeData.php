@@ -318,14 +318,14 @@ class ThemeData extends BaseData
                 'dark' => [
                     'accent' => $primaryColor[500],
                     'accent-content' => $primaryColor[400],
-                    "accent-foreground" => '255 255 255',
+                    "accent-foreground" => $primaryColor[950],
                 ],
             ];
         } else {
             $theme = self::THEMES[$accent];
         }
 
-        if ($accentPairing = $this->themeSettings->accent_pairing) {
+        if ($this->themeSettings->accent_pairing) {
             $pairing = self::THEME_PAIRINGS[$accent];
         } else {
             $pairing = $this->themeSettings->accent_content;
