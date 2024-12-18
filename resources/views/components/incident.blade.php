@@ -7,9 +7,9 @@
 <div class="relative flex flex-col gap-5" x-data="{ forDate: new Date(@js($date)) }">
     <h3 class="text-xl font-semibold"><time datetime="{{ $date }}" x-text="forDate.toLocaleDateString()"></time></h3>
     @forelse($incidents as $incident)
-    <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }" class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
+    <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }" class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-[var(--background)]">
         <div @class([
-            'flex flex-col bg-zinc-50 p-4 dark:bg-zinc-900 gap-2',
+            'flex flex-col bg-zinc-50 p-4 dark:bg-[var(--background)] gap-2',
             'rounded-t-lg' => $incident->updates->isNotEmpty(),
             'rounded-lg' => $incident->updates->isEmpty(),
         ])>
@@ -54,7 +54,7 @@
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
                         {{ $update->created_at->diffForHumans() }} — <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
                     </span>
-                    <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
+                    <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
                 </div>
                 @endforeach
                 <div class="relative py-4" x-data="{ timestamp: new Date(@js($incident->timestamp)) }">
@@ -63,15 +63,15 @@
                     <span class="text-xs text-zinc-500 dark:text-zinc-400">
                         {{ $incident->timestamp->diffForHumans() }} — <time datetime="{{ $incident->timestamp->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
                     </span>
-                    <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $incident->formattedMessage() !!}</div>
+                    <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">{!! $incident->formattedMessage() !!}</div>
                 </div>
             </div>
         </div>
     </div>
     @empty
-        <div class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800">
+        <div class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-[var(--background)]">
             <div class="flex flex-col p-4 divide-y dark:divide-zinc-700">
-                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">
+                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">
                     {{ __('No incidents reported.') }}
                 </div>
             </div>

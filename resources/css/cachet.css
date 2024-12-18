@@ -1,3 +1,5 @@
+@import 'colors.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,7 +18,7 @@
     }
 
     .button--secondary {
-        @apply bg-zinc-300 text-zinc-800 hover:bg-zinc-400 focus-visible:outline-zinc-300 focus-visible:outline-zinc-800 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700;
+        @apply bg-zinc-300 text-zinc-800 hover:bg-zinc-400 focus-visible:outline-zinc-300 focus-visible:outline-zinc-800 dark:bg-[var(--background)] dark:text-zinc-400 dark:hover:bg-zinc-700;
     }
 }
 

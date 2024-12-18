@@ -2,8 +2,10 @@
 
 namespace Cachet\View\Components;
 
+use Cachet\Data\Cachet\ThemeData;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
+use Cachet\Settings\ThemeSettings;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -17,6 +19,7 @@ class Cachet extends Component
     public function __construct(
         private readonly AppSettings $appSettings,
         private readonly CustomizationSettings $customizationSettings,
+        private readonly ThemeSettings $themeSettings,
         private ?string $title = null,
         private ?string $description = null
     ) {
@@ -47,6 +50,7 @@ class Cachet extends Component
             'cachet_css' => $this->customizationSettings->stylesheet,
             'cachet_footer' => $this->customizationSettings->footer,
             'refresh_rate' => $this->appSettings->refresh_rate,
+            'theme' => new ThemeData($this->themeSettings),
         ]);
     }
 }

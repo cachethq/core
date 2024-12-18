@@ -1,6 +1,6 @@
 @use('Cachet\Cachet')
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-background-light text-base-light dark:bg-background-dark dark:text-base-dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-[var(--background)] text-zinc-700 dark:text-zinc-300">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -35,13 +35,7 @@
         {!! $cachet_header !!}
 
         <style type="text/css">
-            /* Cachet custom styles */
-            :root {
-                @foreach (\Cachet\Cachet::cssVariables() as $key => $value)
-                    --{{ $key }}-light: {{ $value[0] }};
-                    --{{ $key }}-dark: {{ $value[1] }};
-                @endforeach
-            }
+            {{ $theme->styles  }}
 
             {!! $cachet_css !!}
         </style>
