@@ -42,7 +42,7 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [ ] Webhooks
 - [x] Dashboard
 - [x] Localization
-- [ ] Status Page Customization
+- [x] Status Page Customization
 
 ## Stack
 
