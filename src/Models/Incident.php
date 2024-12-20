@@ -145,6 +145,9 @@ class Incident extends Model
         $query->where('status', $status);
     }
 
+    /**
+     * Scope to unresolved incidents.
+     */
     public function scopeUnresolved(Builder $query): void
     {
         $query->whereIn('status', IncidentStatusEnum::unresolved());
