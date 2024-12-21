@@ -1,6 +1,6 @@
 <p align="center">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://cachethq.io/assets/cachet-logo-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="https://cachethq.io/assets/cachet-logo-dark.svg">
       <img alt="Cachet Logo" src="https://cachethq.io/assets/cachet-logo-light.svg">
     </picture>
 </p>
