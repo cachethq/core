@@ -6,4 +6,4 @@ test('rules test')
     ->expect('Cachet\Rules')
     ->toBeClasses()
     ->toImplement(InvokableRule::class)
-    ->toOnlyBeUsedIn('Cachet\Http\Requests');
+    ->toOnlyBeUsedIn('Cachet\Data');

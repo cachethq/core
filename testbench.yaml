@@ -3,6 +3,7 @@ providers:
   - Cachet\CachetCoreServiceProvider
   - Cachet\CachetDashboardServiceProvider
   - Spatie\LaravelSettings\LaravelSettingsServiceProvider
+  - Spatie\LaravelData\LaravelDataServiceProvider
 
 migrations:
   - workbench/database/migrations
@@ -20,6 +21,7 @@ workbench:
     - asset-publish
     - filament:assets
     - create-sqlite-db
+    - storage-link
     - db:wipe
     - migrate:refresh:
         --seed: true

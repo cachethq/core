@@ -3,8 +3,8 @@ updates:
   - package-ecosystem: composer
     directory: "/"
     schedule:
-      interval: weekly
-      day: monday
+      interval: daily
+      time: "07:00"
     groups:
       php-dependencies:
         update-types:

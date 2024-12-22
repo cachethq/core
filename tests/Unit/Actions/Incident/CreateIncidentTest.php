@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Actions\Incident\CreateIncident;
+use Cachet\Data\Incident\CreateIncidentData;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Models\IncidentTemplate;
@@ -11,33 +12,33 @@ beforeEach(function () {
 });
 
 it('can create an incident', function () {
-    $data = [
+    $data = CreateIncidentData::from([
         'name' => 'My Incident',
         'message' => 'This is an incident message.',
-    ];
+    ]);
 
     $incident = app(CreateIncident::class)->handle($data);
 
     expect($incident)
-        ->name->toBe($data['name'])
-        ->message->toBe($data['message']);
+        ->name->toBe($data->name)
+        ->message->toBe($data->message);
 
     Event::assertDispatched(IncidentCreated::class, fn ($event) => $event->incident->is($incident));
 });
 
 it('can create an incident with a given status', function () {
-    $data = [
+    $data = CreateIncidentData::from([
         'name' => 'My Incident',
         'message' => 'This is an incident message',
         'status' => IncidentStatusEnum::investigating,
-    ];
+    ]);
 
     $incident = app(CreateIncident::class)->handle($data);
 
     expect($incident)
-        ->name->toBe($data['name'])
-        ->message->toBe($data['message'])
-        ->status->toBe($data['status']);
+        ->name->toBe($data->name)
+        ->message->toBe($data->message)
+        ->status->toBe($data->status);
 
     Event::assertDispatched(IncidentCreated::class, fn ($event) => $event->incident->is($incident));
 });
@@ -48,19 +49,19 @@ it('can create an incident with a twig template', function () {
         'template' => 'This is a template: {{ incident.name }} foo: {{ foo }}',
     ]);
 
-    $data = [
+    $data = CreateIncidentData::from([
         'name' => 'My Incident',
         'template' => 'my-template',
         'template_vars' => [
             'foo' => 'bar',
         ],
         'status' => IncidentStatusEnum::investigating,
-    ];
+    ]);
 
     $incident = app(CreateIncident::class)->handle($data);
 
     expect($incident)
-        ->name->toBe($data['name'])
+        ->name->toBe($data->name)
         ->message->toBe('This is a template: My Incident foo: bar');
 
     Event::assertDispatched(IncidentCreated::class, fn ($event) => $event->incident->is($incident));
@@ -72,19 +73,19 @@ it('can create an incident with a blade template', function () {
         'template' => 'This is a template: {{ $incident[\'name\'] }} foo: {{ $foo }}',
     ]);
 
-    $data = [
+    $data = CreateIncidentData::from([
         'name' => 'My Incident',
         'template' => 'my-template',
         'template_vars' => [
             'foo' => 'bar',
         ],
         'status' => IncidentStatusEnum::investigating,
-    ];
+    ]);
 
     $incident = app(CreateIncident::class)->handle($data);
 
     expect($incident)
-        ->name->toBe($data['name'])
+        ->name->toBe($data->name)
         ->message->toBe('This is a template: My Incident foo: bar');
 
     Event::assertDispatched(IncidentCreated::class, fn ($event) => $event->incident->is($incident));

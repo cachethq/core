@@ -31,7 +31,8 @@ class IncidentTemplateResource extends Resource
                         ->label(__('Name'))
                         ->required()
                         ->live(debounce: 250)
-                        ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
+                        ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
+                        ->autocomplete(false),
                     Forms\Components\TextInput::make('slug')
                         ->label(__('Slug'))
                         ->required(),
@@ -96,7 +97,9 @@ class IncidentTemplateResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(__('Incident Templates'))
+            ->emptyStateDescription(__('Incident templates are used to create reusable incident messages.'));
     }
 
     public static function getRelations(): array

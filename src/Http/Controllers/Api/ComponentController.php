@@ -5,23 +5,46 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
-use Cachet\Http\Requests\CreateComponentRequest;
-use Cachet\Http\Requests\UpdateComponentRequest;
+use Cachet\Data\Component\CreateComponentData;
+use Cachet\Data\Component\UpdateComponentData;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Components
+ */
 class ComponentController extends Controller
 {
     /**
-     * List Components.
+     * The list of allowed includes.
+     */
+    public const ALLOWED_INCLUDES = [
+        'group',
+        'incidents',
+    ];
+
+    /**
+     * List Components
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\Component
+     *
+     * @apiResourceModel \Cachet\Models\Component
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort Field to sort by. Enum: name, status, enabled. Example: name
+     * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
+     * @queryParam filters[name] string Filter by name. Example: My Component
+     * @queryParam filters[status] Filter by status. Enum: 1 , 2, 3. Example: 1
+     * @queryParam filters[enabled] Filter by enabled status. Enum: 0, 1. Example: 1
      */
     public function index()
     {
         $components = QueryBuilder::for(Component::class)
-            ->allowedIncludes(['group', 'incidents'])
+            ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->allowedFilters(['name', 'status', 'enabled'])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(request('per_page', 15));
@@ -30,37 +53,65 @@ class ComponentController extends Controller
     }
 
     /**
-     * Create Component.
+     * Create Component
+     *
+     * @apiResource \Cachet\Http\Resources\Component
+     *
+     * @apiResourceModel \Cachet\Models\Component
+     *
+     * @authenticated
      */
-    public function store(CreateComponentRequest $request, CreateComponent $createComponentAction)
+    public function store(CreateComponentData $data, CreateComponent $createComponentAction)
     {
-        $component = $createComponentAction->handle($request->validated());
+        $component = $createComponentAction->handle(
+            $data,
+        );
 
         return ComponentResource::make($component);
     }
 
     /**
-     * Get Component.
+     * Get Component
+     *
+     * @apiResource \Cachet\Http\Resources\Component
+     *
+     * @apiResourceModel \Cachet\Models\Component
+     *
+     * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
      */
     public function show(Component $component)
     {
-        return ComponentResource::make($component)
+        $componentQuery = QueryBuilder::for($component)
+            ->allowedIncludes(self::ALLOWED_INCLUDES)
+            ->first();
+
+        return ComponentResource::make($componentQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
     }
 
     /**
-     * Update Component.
+     * Update Component
+     *
+     * @apiResource \Cachet\Http\Resources\Component
+     *
+     * @apiResourceModel \Cachet\Models\Component
+     *
+     * @authenticated
      */
-    public function update(UpdateComponentRequest $request, Component $component, UpdateComponent $updateComponentAction)
+    public function update(UpdateComponentData $data, Component $component, UpdateComponent $updateComponentAction)
     {
-        $updateComponentAction->handle($component, $request->validated());
+        $updateComponentAction->handle($component, $data);
 
         return ComponentResource::make($component->fresh());
     }
 
     /**
-     * Delete Component.
+     * Delete Component
+     *
+     * @response 204
+     *
+     * @authenticated
      */
     public function destroy(Component $component, DeleteComponent $deleteComponentAction)
     {

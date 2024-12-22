@@ -44,7 +44,7 @@ enum ScheduleStatusEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): array
     {
         return match ($this) {
             self::upcoming => Color::Blue,
@@ -53,7 +53,7 @@ enum ScheduleStatusEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return match ($this) {
             self::complete => 'cachet-circle-check',

@@ -22,7 +22,7 @@ enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
         return [self::authenticated, self::guest];
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return match ($this) {
             self::authenticated => 'heroicon-o-lock-closed',
@@ -31,7 +31,7 @@ enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
         return match ($this) {
             self::authenticated => __('Users'),
@@ -40,7 +40,7 @@ enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string
     {
         return match ($this) {
             self::authenticated => 'warning',

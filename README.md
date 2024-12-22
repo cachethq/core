@@ -18,9 +18,6 @@
     <a href="https://packagist.org/packages/cachethq/core">
         <img src="https://img.shields.io/packagist/v/cachethq/core" alt="Latest Stable Version">
     </a>
-    <a href="https://packagist.org/packages/cachethq/core">
-        <img src="https://img.shields.io/github/license/cachethq/core" alt="License">
-    </a>
 </p>
 
 ## Introduction
@@ -34,8 +31,7 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [x] Incident Management
 - [x] Incident Updates
 - [x] Scheduled Maintenance
-- [ ] Scheduled Maintenance Updates
-  - WIP - https://github.com/cachethq/core/pull/109
+- [x] Scheduled Maintenance Updates
 - [x] Components
 - [ ] Metrics
   - API and dashboard are working.
@@ -46,7 +42,9 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [ ] Webhooks
 - [x] Dashboard
 - [x] Localization
-- [ ] Status Page Customization
+- [x] Status Page Customization
+- [ ] Meta
+- [ ] Tags
 
 ## Stack
 
@@ -59,17 +57,7 @@ Cachet is built on:
 
 ## Development
 
-1. Clone this repository.
-2. Run the following commands from within the `core` directory:
-    ```shell
-   npm install
-   composer update
-   composer dev
-    ```
-3. Develop Cachet.
-
-> [!NOTE] 
-> HMR is not enabled. Manual refreshes are needed to view changes.
+To get started developing Cachet, please check out the [Development Guide](https://docs.cachethq.io/v3.x/development).
 
 ### Dashboard Credentials
 
@@ -84,7 +72,7 @@ Login to the account at `/dashboard` and use credentials:
 <p align="center">
     <a href="https://jump24.co.uk"><img width="100px" src="https://github.com/jumptwentyfour.png" alt="Jump24"></a>
     <a href="https://dreamtilt.com.au"><img width="100px" src="https://github.com/dreamtilt.png" alt="Dreamtilt"></a>
-    <a href="https://xyhen-it.nl"><img width="100px" src="https://github.com/xyphen-it.png" alt="Xyphen-IT"></a>
+    <a href="https://xyphen-it.nl"><img width="100px" src="https://github.com/xyphen-it.png" alt="Xyphen-IT"></a>
 </p>
 
 ## Security Vulnerabilities
