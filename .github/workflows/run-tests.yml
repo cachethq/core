@@ -27,7 +27,7 @@ jobs:
 
       - name: Setup PHP
         run: |
-          export TERM=dumb
+          export TERM=xterm
           /bin/bash -c "$(curl -fsSL https://php.new/install/linux)"
 
       - name: Install dependencies
