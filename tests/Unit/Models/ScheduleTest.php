@@ -3,6 +3,7 @@
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Schedule;
 use Cachet\Models\ScheduleComponent;
+use Illuminate\Support\Carbon;
 
 it('has components', function () {
     $schedule = Schedule::factory()->create();
@@ -17,6 +18,18 @@ it('has components', function () {
 });
 
 it('can get incomplete schedules', function () {
+    $scheduleA = Schedule::factory()->inTheFuture()->create();
+    Schedule::factory()->inProgress()->create();
+    Schedule::factory()->inThePast()->create();
+
+    expect(Schedule::query()->incomplete()->get())
+        ->toHaveCount(2)
+        ->first()->id->toBe($scheduleA->id);
+});
+
+it('can get incomplete schedules at midnight', function () {
+    Carbon::setTestNow(Carbon::create(2024, 12, 23, 0));
+
     $scheduleA = Schedule::factory()->inTheFuture()->create();
     Schedule::factory()->inProgress()->create();
     Schedule::factory()->inThePast()->create();
