@@ -16,20 +16,6 @@ class Cachet
     public const USER_AGENT = 'Cachet/3.0 (+https://docs.cachethq.io)';
 
     /**
-     * Get the default CSS variables.
-     *
-     * @return array<string, list<string>>
-     */
-    public static function cssVariables(): array
-    {
-        return [
-            // Variable => [Light, Dark]
-            'background' => ['#F9FAFB', '#18181B'],
-            'text' => ['#3F3F46', '#D4D4D8'],
-        ];
-    }
-
-    /**
      * Get the current user using `cachet.guard`.
      */
     public static function user(?Request $request = null)
