@@ -2,7 +2,7 @@
 
 namespace Cachet\Concerns;
 
-interface User
+interface CachetUser
 {
     //
 }

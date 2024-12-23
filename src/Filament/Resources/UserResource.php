@@ -29,11 +29,12 @@ class UserResource extends Resource
                         ->autocomplete(false),
 
                     Forms\Components\TextInput::make('email')
-                        ->label(__('Email'))
+                        ->label(__('Email address'))
                         ->email()
                         ->required()
                         ->maxLength(255)
-                        ->autocomplete(false),
+                        ->autocomplete(false)
+                        ->unique('users', 'email'),
 
                     Forms\Components\TextInput::make('password')
                         ->label(__('Password'))
@@ -61,7 +62,7 @@ class UserResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email')
-                    ->label(__('Email'))
+                    ->label(__('Email address'))
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email_verified_at')
