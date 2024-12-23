@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Support\View;
+namespace Cachet\View;
 
 use Closure;
 use Illuminate\Contracts\Support\Htmlable;

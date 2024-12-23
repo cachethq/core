@@ -1,3 +1,4 @@
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_NAVIGATION_BEFORE) }}
 <div class="flex items-center justify-between border-b border-zinc-200 px-4 sm:px-6 lg:px-8 py-4 dark:border-zinc-700">
     <div>
         <a href="{{ route('cachet.status-page') }}" class="transition hover:opacity-80">
@@ -23,3 +24,4 @@
     </div>
     @endif
 </div>
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_NAVIGATION_AFTER) }}

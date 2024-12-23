@@ -1,12 +1,20 @@
 <?php
 
-namespace Cachet\Support\View;
+namespace Cachet\View;
 
 class RenderHook
 {
+    const STATUS_PAGE_BODY_AFTER = 'cachet::status-page.body.after';
+
+    const STATUS_PAGE_BODY_BEFORE = 'cachet::status-page.body.before';
+
     const STATUS_PAGE_NAVIGATION_AFTER = 'cachet::status-page.navigation.after';
 
     const STATUS_PAGE_NAVIGATION_BEFORE = 'cachet::status-page.navigation.before';
+
+    const STATUS_PAGE_ABOUT_AFTER = 'cachet::status-page.about.after';
+
+    const STATUS_PAGE_ABOUT_BEFORE = 'cachet::status-page.about.before';
 
     const STATUS_PAGE_COMPONENTS_AFTER = 'cachet::status-page.components.after';
 
