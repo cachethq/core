@@ -45,6 +45,7 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [x] Status Page Customization
 - [ ] Meta
 - [ ] Tags
+- [ ] User Management
 
 ## Stack
 
