@@ -69,7 +69,7 @@ class ComponentsRelationManager extends RelationManager
                     ->multiple(),
             ])
             ->actions([
-//                Tables\Actions\EditAction::make(),
+                //                Tables\Actions\EditAction::make(),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([

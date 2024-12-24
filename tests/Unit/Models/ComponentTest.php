@@ -1,7 +1,6 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
-use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
