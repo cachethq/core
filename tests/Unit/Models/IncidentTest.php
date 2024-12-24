@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
@@ -8,7 +9,7 @@ it('can have multiple components', function () {
     $incident = Incident::factory()->create();
 
     $components = Component::factory(2)->create();
-    $incident->components()->attach($components, ['status' => IncidentStatusEnum::investigating->value]);
+    $incident->components()->attach($components, ['component_status' => ComponentStatusEnum::performance_issues->value]);
 
     expect($incident->components)->toHaveCount(2)
         ->and($incident->status)->toBeInstanceOf(IncidentStatusEnum::class);

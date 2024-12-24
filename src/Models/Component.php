@@ -83,7 +83,7 @@ class Component extends Model
      */
     public function incidents(): BelongsToMany
     {
-        return $this->belongsToMany(Incident::class, 'incident_components')->withPivot('status');
+        return $this->belongsToMany(Incident::class, 'incident_components')->withPivot('component_status');
     }
 
     /**

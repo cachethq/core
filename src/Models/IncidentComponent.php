@@ -29,7 +29,7 @@ class IncidentComponent extends Pivot
 
     /** @var array<string, string> */
     protected $casts = [
-        'status' => ComponentStatusEnum::class,
+        'component_status' => ComponentStatusEnum::class,
     ];
 
     /**

@@ -114,7 +114,7 @@ class Incident extends Model
         return $this->belongsToMany(Component::class, 'incident_components')
             ->using(IncidentComponent::class)
             ->withTimestamps()
-            ->withPivot(['status']);
+            ->withPivot(['component_status']);
     }
 
     /**
