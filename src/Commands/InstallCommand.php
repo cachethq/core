@@ -132,9 +132,12 @@ class InstallCommand extends Command
                     return;
                 }
 
-                $value = match($property->getType()?->getName()) {
-                    'bool' => confirm($default ?? $property->getName()),
-                    default => text($default ?? $property->getName(), default: $property->getDefaultValue() ?? '', required: true),
+                /** @var \ReflectionNamedType $namedType */
+                $namedType = $property->getType();
+
+                $value = match($namedType->getName()) {
+                    'bool' => confirm($default ?: $property->getName()),
+                    default => text($default ?: $property->getName(), default: $property->getDefaultValue() ?: '', required: true),
                 };
 
                 $settings->{$property->getName()} = $value;

@@ -15,7 +15,7 @@ it('runs install command successfully without configuration', function () {
         ->assertSuccessful();
 });
 
-it('updates app settings and config filewhen configuration is passed', function () {
+it('updates app settings and config file when configuration is passed', function () {
     File::copy(base_path('.env.example'), base_path('.env'));
 
     $this->artisan('cachet:install')
