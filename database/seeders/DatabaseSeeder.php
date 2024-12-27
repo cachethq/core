@@ -9,7 +9,6 @@ use Cachet\Enums\IncidentTemplateEngineEnum;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
-use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
@@ -51,48 +50,55 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Schedule::create([
-            'name' => 'Database Maintenance',
-            'message' => 'We will be conducting maintenance on our database servers. You may experience degraded performance during this time.',
-            'scheduled_at' => now()->addHours(6),
-            'status' => ScheduleStatusEnum::upcoming,
+            'name' => 'Documentation Maintenance',
+            'message' => 'We will be conducting maintenance on our documentation servers. Documentation may not be available during this time.',
+            'scheduled_at' => now()->subHours(12)->subMinutes(45),
+            'completed_at' => now()->subHours(12),
+        ]);
+
+        Schedule::create([
+            'name' => 'Documentation Maintenance',
+            'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
+            'scheduled_at' => now()->addHours(24),
+            'completed_at' => null,
         ]);
 
         $componentGroup = ComponentGroup::create([
-            'name' => 'Checkmango',
+            'name' => 'Cachet',
             'collapsed' => ComponentGroupVisibilityEnum::expanded,
             'visible' => ResourceVisibilityEnum::guest,
         ]);
 
         $componentGroup->components()->createMany([
             [
-                'name' => 'Dashboard',
-                'description' => 'The Checkmango Dashboard.',
-                'link' => 'https://checkmango.com',
+                'name' => 'Cachet Website',
+                'description' => 'The Cachet website.',
+                'link' => 'https://cachethq.io',
                 'status' => ComponentStatusEnum::operational,
             ], [
-                'name' => 'API',
-                'description' => 'The Checkmango API.',
-                'link' => 'https://developers.checkmango.com',
+                'name' => 'Cachet Documentation',
+                'description' => 'The Cachet docs, powered by Mintlify.',
+                'link' => 'https://docs.cachethq.io',
                 'status' => ComponentStatusEnum::operational,
             ], [
-                'name' => 'Documentation',
-                'description' => 'The Checkmango Documentation.',
-                'link' => 'https://docs.checkmango.com',
-                'status' => ComponentStatusEnum::performance_issues,
+                'name' => 'Cachet Blog',
+                'description' => 'Learn more about Cachet.',
+                'link' => 'https://blog.cachethq.io',
+                'status' => ComponentStatusEnum::operational,
             ],
         ]);
 
         Component::create([
-            'name' => 'Cachet',
-            'description' => 'The open-source status page system.',
-            'link' => 'https://cachethq.io',
+            'name' => 'Laravel Artisan Cheatsheet',
+            'description' => 'The Laravel Artisan Cheatsheet.',
+            'link' => 'https://artisan.page',
             'status' => ComponentStatusEnum::operational,
         ]);
 
         $metric = Metric::create([
-            'name' => 'Checkmango Requests',
+            'name' => 'Cachet API Requests',
             'suffix' => 'req/s',
-            'description' => 'The number of requests to the Checkmango API.',
+            'description' => 'The number of requests to the Cachet API.',
             'default_view' => MetricViewEnum::last_hour,
             'calc_type' => MetricTypeEnum::average,
             'display_chart' => true,
@@ -141,7 +147,7 @@ EOF
         $incident = Incident::create([
             'name' => 'Documentation Performance Degradation',
             'message' => 'We\'re investigating an issue with our documentation causing the site to be slow.',
-            'status' => IncidentStatusEnum::investigating,
+            'status' => IncidentStatusEnum::fixed,
             'visible' => ResourceVisibilityEnum::guest,
             'guid' => Str::uuid(),
             'created_at' => $timestamp = now()->subMinutes(30),
@@ -152,6 +158,15 @@ EOF
         $incident->incidentUpdates()->create([
             'status' => IncidentStatusEnum::identified,
             'message' => 'We\'ve identified the issue and are working on a fix.',
+            'created_at' => $timestamp = $incident->created_at->addMinutes(15),
+            'updated_at' => $timestamp,
+        ]);
+
+        $incident->incidentUpdates()->create([
+            'status' => IncidentStatusEnum::fixed,
+            'message' => 'The documentation is now back online. Happy reading!',
+            'created_at' => $timestamp = $incident->created_at->addMinutes(25),
+            'updated_at' => $timestamp,
         ]);
 
         IncidentTemplate::create([

@@ -3,8 +3,10 @@
 namespace Cachet\Models;
 
 use Cachet\Concerns\HasVisibility;
+use Cachet\Database\Factories\ComponentGroupFactory;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -57,5 +59,13 @@ class ComponentGroup extends Model
         return Incident::query()
             ->whereIn('component_id', $this->components->pluck('id'))
             ->exists();
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return ComponentGroupFactory::new();
     }
 }

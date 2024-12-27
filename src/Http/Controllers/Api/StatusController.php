@@ -4,10 +4,20 @@ namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Status;
 
+/**
+ * @group Cachet
+ */
 class StatusController
 {
     /**
-     * Get the current system status.
+     * Get System Status
+     *
+     * @response {
+     *     "data": {
+     *        "status": "operational",
+     *        "message": "All Systems Operational"
+     *     }
+     * }
      */
     public function __invoke(Status $status)
     {

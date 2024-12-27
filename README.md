@@ -25,34 +25,67 @@
 
 ## Introduction
 
-This package provides the core functionality of Cachet and may be installed into existing Laravel applications. Cachet 3.x will ship as a standalone Laravel application that requires this package.
+This package provides the core functionality of [Cachet](https://github.com/cachethq/cachet) and may be installed into existing Laravel applications. Cachet 3.x will ship as a standalone Laravel application that requires this package.
+
+## Project Status
+
+Cachet 3.x is currently in development and is not yet completely ready for production use. We are actively working on the project and will provide updates as we progress.
+
+- [x] Incident Management
+- [x] Incident Updates
+- [x] Scheduled Maintenance
+- [ ] Scheduled Maintenance Updates
+  - WIP - https://github.com/cachethq/core/pull/109
+- [x] Components
+- [ ] Metrics
+  - API and dashboard are working.
+  - Frontend is in progress.
+- [ ] Subscribers
+- [x] API
+  - Complete but may need some tweaks as we progress.
+- [ ] Webhooks
+- [x] Dashboard
+- [x] Localization
+- [ ] Status Page Customization
+
+## Stack
+
+Cachet is built on:
+
+- [Laravel 11.x](https://laravel.com)
+- [Filament 3.x](https://filamentphp.com)
+- [Tailwind CSS](https://tailwindcss.com)
+- [Alpine.js](https://alpinejs.dev)
 
 ## Development
 
 1. Clone this repository.
 2. Run the following commands from within the `core` directory:
     ```shell
-   composer update
    npm install
-   npm run build
+   composer update
+   composer dev
     ```
-3. Start running Cachet via the Orchestra Workbench:
-    ```shell
-   composer start
-    ```
-4. From within the `core` directory, you can now run to actively compile the frontend assets:
-    ```shell
-    npm run dev
-    ```
-5. Make your changes to the frontend. Currently, HMR is not enabled so manual refreshes are needed.
+3. Develop Cachet.
+
+> [!NOTE] 
+> HMR is not enabled. Manual refreshes are needed to view changes.
 
 ### Dashboard Credentials
 
-When running Cachet via the `composer start` command, Workbench will seed a user that you can use to log in to the dashboard.
+When running Cachet via the `composer dev` command, Workbench will seed a user that you can use to log in to the dashboard.
 Login to the account at `/dashboard` and use credentials:
 
 - **Email:** `test@test.com`
 - **Password:** `test123`
+
+## Sponsors
+
+<p align="center">
+    <a href="https://jump24.co.uk"><img width="100px" src="https://github.com/jumptwentyfour.png" alt="Jump24"></a>
+    <a href="https://dreamtilt.com.au"><img width="100px" src="https://github.com/dreamtilt.png" alt="Dreamtilt"></a>
+    <a href="https://xyhen-it.nl"><img width="100px" src="https://github.com/xyphen-it.png" alt="Xyphen-IT"></a>
+</p>
 
 ## Security Vulnerabilities
 
@@ -61,3 +94,17 @@ Please review our [security policy](https://github.com/cachethq/cachet/security/
 ## License
 
 Cachet Core is open-sourced software licensed under the [MIT license](LICENSE.md).
+
+## Trademarks
+
+Copyright (c) 2023-present Alt Three Services Limited. The Cachet name and logo are trademarks of Alt Three Services Limited. Please see our [trademark guidelines](https://github.com/cachethq/core/blob/main/TRADEMARKS.md) for info on acceptable usage.
+
+## Community
+
+Have questions, comments or feedback? [Start a discussion](https://github.com/cachethq/cachet/discussions/new). For the latest news and release notes, visit [cachethq.io](https://cachethq.io).
+
+## Contributors
+
+<a href="https://github.com/cachethq/core/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=cachethq/core&max=400&columns=20" width="100%"/>
+</a>

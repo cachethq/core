@@ -32,7 +32,8 @@ class IncidentResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->label(__('Name'))
                         ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->autocomplete(false),
                     Forms\Components\ToggleButtons::make('status')
                         ->label(__('Status'))
                         ->inline()
@@ -169,7 +170,9 @@ class IncidentResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->emptyStateHeading(__('Incidents'))
+            ->emptyStateDescription(__('Incidents are used to communicate and track the status of your services.'));
     }
 
     public static function getRelations(): array

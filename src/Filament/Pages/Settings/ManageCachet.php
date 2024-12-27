@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Filament\Pages;
+namespace Cachet\Filament\Pages\Settings;
 
 use Cachet\Settings\AppSettings;
 use Filament\Forms;

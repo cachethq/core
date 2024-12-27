@@ -33,4 +33,22 @@ class CreateComponentRequest extends FormRequest
             'component_group_id' => ['int', 'min:0', Rule::exists('component_groups', 'id')],
         ];
     }
+
+    /**
+     * Specify body parameter documentation for Scribe.
+     */
+    public function bodyParameters(): array
+    {
+        return [
+            'status' => [
+                'description' => 'The status of the component. See [Component Statuses](/v3.x/guide/components#component-statuses) for more information.',
+                'example' => '1',
+                'required' => false,
+                'schema' => [
+                    'type' => 'integer',
+                    'enum' => ComponentStatusEnum::cases(),
+                ],
+            ],
+        ];
+    }
 }

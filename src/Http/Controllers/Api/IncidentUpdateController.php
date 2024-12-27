@@ -14,10 +14,22 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
+/**
+ * @group Incident Updates
+ */
 class IncidentUpdateController extends Controller
 {
     /**
-     * List Incident Updates.
+     * List Incident Updates
+     *
+     * @apiResourceCollection \Cachet\Http\Resources\IncidentUpdate
+     *
+     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     *
+     * @queryParam per_page int How many items to show per page. Example: 20
+     * @queryParam page int Which page to show. Example: 2
+     * @queryParam sort string Field to sort by. Enum: name, created_at Example: name
+     * @queryParam filters string[] Filter the resources.
      */
     public function index(Incident $incident)
     {
@@ -31,7 +43,13 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Create Incident Update.
+     * Create Incident Update
+     *
+     * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     *
+     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     *
+     * @authenticated
      */
     public function store(CreateIncidentUpdateRequest $request, Incident $incident, CreateIncidentUpdate $createIncidentUpdateAction)
     {
@@ -41,7 +59,11 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Get Incident Update.
+     * Get Incident Update
+     *
+     * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     *
+     * @apiResourceModel \Cachet\Models\IncidentUpdate
      */
     public function show(Incident $incident, IncidentUpdate $incidentUpdate)
     {
@@ -51,7 +73,13 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Update Incident Update.
+     * Update Incident Update
+     *
+     * @apiResource \Cachet\Http\Resources\IncidentUpdate
+     *
+     * @apiResourceModel \Cachet\Models\IncidentUpdate
+     *
+     * @authenticated
      */
     public function update(UpdateIncidentUpdateRequest $request, Incident $incident, IncidentUpdate $incidentUpdate, UpdateIncidentUpdate $updateIncidentUpdateAction)
     {
@@ -61,7 +89,11 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Delete Incident Update.
+     * Delete Incident Update
+     *
+     * @response 204
+     *
+     * @authenticated
      */
     public function destroy(Incident $incident, IncidentUpdate $incidentUpdate, DeleteIncidentUpdate $deleteIncidentUpdateAction)
     {

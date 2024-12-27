@@ -19,6 +19,7 @@ workbench:
   build:
     - asset-publish
     - create-sqlite-db
+    - storage-link
     - db:wipe
     - cachet:install
   assets:
