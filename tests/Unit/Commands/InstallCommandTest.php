@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\File;
 it('runs install command successfully without configuration', function () {
     $this->artisan('cachet:install')
         ->expectsOutputToContain('Welcome to the Cachet installer!')
+        ->expectsConfirmation('Do you want to create a new user?', 'no')
         ->expectsConfirmation('Do you want to configure Cachet before installing?', 'no')
         ->expectsOutputToContain('Installing Cachet...')
         ->expectsOutputToContain('Cachet is installed ⚡')
@@ -19,6 +20,7 @@ it('updates app settings and config filewhen configuration is passed', function 
 
     $this->artisan('cachet:install')
         ->expectsOutputToContain('Welcome to the Cachet installer!')
+        ->expectsConfirmation('Do you want to create a new user?', 'no')
         ->expectsConfirmation('Do you want to configure Cachet before installing?', 'yes')
         ->expectsOutputToContain('Configuring Cachet...')
         ->expectsQuestion('Which path do you want Cachet to be accessible from?', '/status')

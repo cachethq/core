@@ -31,6 +31,10 @@ class InstallCommand extends Command
 
         $this->call('migrate', ['--seed' => true, '--seeder' => DatabaseSeeder::class]);
 
+        if (confirm('Do you want to create a new user?', true)) {
+            $this->call(MakeUserCommand::class);
+        }
+        
         if (confirm('Do you want to configure Cachet before installing?', true)) {
             info('Configuring Cachet...');
             $this->configureEnvironmentSettings();
