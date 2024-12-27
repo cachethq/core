@@ -2,6 +2,8 @@
 
 namespace Cachet\Actions\Schedule;
 
+use Cachet\Data\Schedule\ScheduleComponentData;
+use Cachet\Data\Schedule\UpdateScheduleData;
 use Cachet\Models\Schedule;
 
 class UpdateSchedule
@@ -9,14 +11,14 @@ class UpdateSchedule
     /**
      * Handle the action.
      */
-    public function handle(Schedule $schedule, array $data = [], ?array $components = []): Schedule
+    public function handle(Schedule $schedule, UpdateScheduleData $data): Schedule
     {
-        $schedule->update($data);
+        $schedule->update($data->except('components')->toArray());
 
-        if ($components) {
-            $components = collect($components)->map(fn ($component) => [
-                'component_id' => $component['id'],
-                'component_status' => $component['status'],
+        if ($data->components) {
+            $components = collect($data->components)->map(fn (ScheduleComponentData $component) => [
+                'component_id' => $component->id,
+                'component_status' => $component->status,
             ])->all();
 
             $schedule->components()->sync($components);

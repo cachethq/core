@@ -13,7 +13,7 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
     case partial_outage;
     case major_outage;
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
         return match ($this) {
             self::operational => __('All systems are operational.'),
@@ -22,7 +22,7 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): array
     {
         return match ($this) {
             self::operational => Color::Green,
@@ -31,7 +31,7 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return match ($this) {
             self::operational => 'heroicon-m-check-circle',

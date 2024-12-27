@@ -5,6 +5,7 @@ namespace Cachet\Http\Resources;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
+/** @mixin \Cachet\Models\Component */
 class Component extends JsonApiResource
 {
     public function toAttributes(Request $request): array
@@ -19,12 +20,12 @@ class Component extends JsonApiResource
             'enabled' => $this->enabled,
             'meta' => $this->meta,
             'created' => [
-                'human' => optional($this->created_at)->diffForHumans(),
-                'string' => optional($this->created_at)->toDateTimeString(),
+                'human' => $this->created_at?->diffForHumans(),
+                'string' => $this->created_at?->toDateTimeString(),
             ],
             'updated' => [
-                'human' => optional($this->updated_at)->diffForHumans(),
-                'string' => optional($this->updated_at)->toDateTimeString(),
+                'human' => $this->updated_at?->diffForHumans(),
+                'string' => $this->updated_at?->toDateTimeString(),
             ],
         ];
     }

@@ -12,7 +12,7 @@ enum IncidentTemplateEngineEnum: string implements HasColor, HasIcon, HasLabel
     case blade = 'blade';
     case twig = 'twig';
 
-    public function getColor(): string|array|null
+    public function getColor(): array
     {
         return match ($this) {
             self::blade => Color::rgb('rgb(249, 50, 44)'),
@@ -20,7 +20,7 @@ enum IncidentTemplateEngineEnum: string implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
         return match ($this) {
             self::blade => __('Laravel Blade'),
@@ -28,7 +28,7 @@ enum IncidentTemplateEngineEnum: string implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return match ($this) {
             self::blade => 'cachet-laravel',

@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
@@ -8,7 +9,7 @@ it('can have multiple components', function () {
     $incident = Incident::factory()->create();
 
     $components = Component::factory(2)->create();
-    $incident->components()->attach($components, ['status' => IncidentStatusEnum::investigating->value]);
+    $incident->components()->attach($components, ['component_status' => ComponentStatusEnum::performance_issues->value]);
 
     expect($incident->components)->toHaveCount(2)
         ->and($incident->status)->toBeInstanceOf(IncidentStatusEnum::class);
@@ -42,7 +43,7 @@ it('can scope to stickied incidents', function () {
     )->count(2)->create();
 
     expect(Incident::query()->count())->toBe(2)
-        ->and(Incident::query()->stickied()->count())->toBe(1);
+        ->and(Incident::stickied()->count())->toBe(1);
 });
 
 it('can scope to unresolved incidents', function () {
@@ -54,5 +55,5 @@ it('can scope to unresolved incidents', function () {
     )->count(4)->create();
 
     expect(Incident::query()->count())->toBe(4)
-        ->and(Incident::query()->unresolved()->count())->toBe(3);
+        ->and(Incident::unresolved()->count())->toBe(3);
 });

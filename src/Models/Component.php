@@ -2,21 +2,49 @@
 
 namespace Cachet\Models;
 
+use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property ?string $description
+ * @property ?string $link
+ * @property ?ComponentStatusEnum $status
+ * @property ?int $order
+ * @property ?int $component_group_id
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
+ * @property bool $enabled
+ * @property array<string, mixed> $meta
+ * @property ?ComponentGroup $componentGroup
+ *
+ * @method static Builder<static>|static disabled()
+ * @method static Builder<static>|static enabled()
+ * @method static Builder<static>|static outage()
+ * @method static Builder<static>|static status(ComponentStatusEnum $status)
+ * @method static ComponentFactory factory($count = null, $state = [])
+ */
 class Component extends Model
 {
-    use HasFactory, SoftDeletes;
+    /** @use HasFactory<ComponentFactory> */
+    use HasFactory;
 
+    use SoftDeletes;
+
+    /** @var array<string, string> */
     protected $casts = [
         'status' => ComponentStatusEnum::class,
         'order' => 'int',
@@ -24,6 +52,7 @@ class Component extends Model
         'meta' => 'json',
     ];
 
+    /** @var list<string> */
     protected $fillable = [
         'name',
         'description',
@@ -54,7 +83,7 @@ class Component extends Model
      */
     public function incidents(): BelongsToMany
     {
-        return $this->belongsToMany(Incident::class, 'incident_components')->withPivot('status');
+        return $this->belongsToMany(Incident::class, 'incident_components')->withPivot('component_status');
     }
 
     /**
@@ -68,29 +97,37 @@ class Component extends Model
     /**
      * Scope to disabled components only.
      */
-    public function scopeDisabled(Builder $query): Builder
+    public function scopeDisabled(Builder $query): void
     {
-        return $query->where('enabled', false);
+        $query->where('enabled', false);
     }
 
     /**
      * Scope to enabled components only.
      */
-    public function scopeEnabled(Builder $query): Builder
+    public function scopeEnabled(Builder $query): void
     {
-        return $query->where('enabled', true);
+        $query->where('enabled', true);
     }
 
     /**
      * Scope to a specific status.
      */
-    public function scopeStatus(Builder $query, ComponentStatusEnum $status): Builder
+    public function scopeStatus(Builder $query, ComponentStatusEnum $status): void
     {
-        return $query->where('status', $status);
+        $query->where('status', $status);
     }
 
-    public function scopeOutage(Builder $query): Builder
+    public function scopeOutage(Builder $query): void
     {
-        return $query->whereIn('status', ComponentStatusEnum::outage());
+        $query->whereIn('status', ComponentStatusEnum::outage());
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     */
+    protected static function newFactory(): Factory
+    {
+        return ComponentFactory::new();
     }
 }

@@ -4,13 +4,12 @@ namespace Cachet\Database\Factories;
 
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
-use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\ScheduleComponent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Incident>
+ * @extends Factory<ScheduleComponent>
  */
 class ScheduleComponentFactory extends Factory
 {

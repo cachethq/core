@@ -2,20 +2,16 @@
 
 namespace Cachet\Actions\IncidentTemplate;
 
+use Cachet\Data\IncidentTemplate\CreateIncidentTemplateData;
 use Cachet\Models\IncidentTemplate;
-use Illuminate\Support\Str;
 
 class CreateIncidentTemplate
 {
     /**
      * Handle the action.
      */
-    public function handle(array $template): IncidentTemplate
+    public function handle(CreateIncidentTemplateData $data): IncidentTemplate
     {
-        $data = array_merge([
-            'slug' => Str::slug($template['name']),
-        ], $template);
-
-        return IncidentTemplate::create($data);
+        return IncidentTemplate::create($data->toArray());
     }
 }

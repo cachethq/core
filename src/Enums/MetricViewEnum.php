@@ -23,7 +23,7 @@ enum MetricViewEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return match ($this) {
             self::last_hour => 'cachet-metrics',
@@ -33,7 +33,7 @@ enum MetricViewEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string
     {
         return 'info';
     }

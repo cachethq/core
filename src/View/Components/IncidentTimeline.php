@@ -46,7 +46,7 @@ class IncidentTimeline extends Component
         return Incident::query()
             ->with([
                 'components',
-                'incidentUpdates' => fn ($query) => $query->orderByDesc('created_at'),
+                'updates' => fn ($query) => $query->orderByDesc('created_at'),
             ])
             ->visible(auth()->check())
             ->where(function (Builder $query) use ($endDate, $startDate) {
@@ -60,9 +60,8 @@ class IncidentTimeline extends Component
                     ]);
                 });
             })
-            ->orderBy('occurred_at', 'desc')
-            ->orderBy('created_at', 'desc')
             ->get()
+            ->sortByDesc(fn (Incident $incident) => $incident->timestamp)
             ->groupBy(fn (Incident $incident) => $incident->timestamp->toDateString())
             ->union(
                 // Back-fill any missing dates...

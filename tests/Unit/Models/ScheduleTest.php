@@ -3,6 +3,7 @@
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Schedule;
 use Cachet\Models\ScheduleComponent;
+use Illuminate\Support\Carbon;
 
 it('has components', function () {
     $schedule = Schedule::factory()->create();
@@ -17,14 +18,21 @@ it('has components', function () {
 });
 
 it('can get incomplete schedules', function () {
-    [$scheduleA] = Schedule::factory()
-        ->count(3)
-        ->sequence(
-            ['status' => ScheduleStatusEnum::in_progress],
-            ['status' => ScheduleStatusEnum::upcoming],
-            ['status' => ScheduleStatusEnum::complete],
-        )
-        ->create();
+    $scheduleA = Schedule::factory()->inTheFuture()->create();
+    Schedule::factory()->inProgress()->create();
+    Schedule::factory()->inThePast()->create();
+
+    expect(Schedule::query()->incomplete()->get())
+        ->toHaveCount(2)
+        ->first()->id->toBe($scheduleA->id);
+});
+
+it('can get incomplete schedules at midnight', function () {
+    Carbon::setTestNow(Carbon::create(2024, 12, 23, 0));
+
+    $scheduleA = Schedule::factory()->inTheFuture()->create();
+    Schedule::factory()->inProgress()->create();
+    Schedule::factory()->inThePast()->create();
 
     expect(Schedule::query()->incomplete()->get())
         ->toHaveCount(2)
@@ -51,7 +59,6 @@ it('can get schedules in the future', function () {
 
 it('can get schedules from the past', function () {
     Schedule::factory()->inTheFuture()->create();
-    Schedule::factory()->inThePast()->completed()->create();
     $scheduleInPast = Schedule::factory()->inThePast()->create();
 
     expect(Schedule::query()->inThePast()->get())
@@ -59,9 +66,20 @@ it('can get schedules from the past', function () {
         ->first()->id->toBe($scheduleInPast->id);
 });
 
-it('can get schedules previously completed', function () {
-    Schedule::factory()->inThePast()->completed()->count(2)->create();
+it('can determine a schedule\'s upcoming status', function () {
+    $schedule = Schedule::factory()->inTheFuture()->create();
 
-    expect(Schedule::query()->completedPreviously()->get())
-        ->toHaveCount(2);
+    expect($schedule)->status->toBe(ScheduleStatusEnum::upcoming);
+});
+
+it('can determine a schedule\'s in-progress status', function () {
+    $schedule = Schedule::factory()->inProgress()->create();
+
+    expect($schedule)->status->toBe(ScheduleStatusEnum::in_progress);
+});
+
+it('can determine a schedule\'s completed status', function () {
+    $schedule = Schedule::factory()->completed()->create();
+
+    expect($schedule)->status->toBe(ScheduleStatusEnum::complete);
 });

@@ -2,6 +2,7 @@
 
 namespace Cachet\Actions\Component;
 
+use Cachet\Data\Component\UpdateComponentData;
 use Cachet\Events\Components\ComponentStatusWasChanged;
 use Cachet\Models\Component;
 
@@ -10,11 +11,11 @@ class UpdateComponent
     /**
      * Handle the action.
      */
-    public function handle(Component $component, array $data): Component
+    public function handle(Component $component, UpdateComponentData $data): Component
     {
         $oldStatus = $component->status;
 
-        $component->update($data);
+        $component->update($data->toArray());
 
         if ($component->wasChanged('status')) {
             ComponentStatusWasChanged::dispatch(

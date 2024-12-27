@@ -3,8 +3,13 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Routing\Router;
@@ -40,6 +45,11 @@ class CachetCoreServiceProvider extends ServiceProvider
         Route::middlewareGroup('cachet', config('cachet.middleware', []));
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
 
+        Relation::morphMap([
+            'incident' => Incident::class,
+            'schedule' => Schedule::class,
+        ]);
+
         $this->registerCommands();
         $this->registerResources();
         $this->registerPublishing();
@@ -48,6 +58,10 @@ class CachetCoreServiceProvider extends ServiceProvider
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
             'User-Agent', Cachet::USER_AGENT
         ));
+
+        FilamentColor::register([
+            'cachet' => Color::rgb('rgb(4, 193, 71)'),
+        ]);
     }
 
     /**
@@ -70,7 +84,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         RateLimiter::for('cachet-api', function ($request) {
             return Limit::perMinute(config('cachet.api_rate_limit', 300))
-                ->by(optional($request->user())->id ?: $request->ip());
+                ->by($request->user()?->id ?: $request->ip());
         });
     }
 
@@ -92,19 +106,6 @@ class CachetCoreServiceProvider extends ServiceProvider
             Cachet::routes()
                 ->register();
         });
-    }
-
-    /**
-     * Get the Cachet route group configuration array.
-     */
-    private function routeConfiguration(): array
-    {
-        return [
-            'domain' => config('cachet.domain', null),
-            'as' => 'cachet.api.',
-            'prefix' => Cachet::path().'/api',
-            'middleware' => ['cachet:api', 'throttle:cachet-api'],
-        ];
     }
 
     /**
@@ -151,6 +152,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                Commands\MakeUserCommand::class,
                 Commands\SendBeaconCommand::class,
                 Commands\VersionCommand::class,
             ]);
