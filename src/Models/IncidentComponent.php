@@ -4,17 +4,32 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\IncidentComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
+/**
+ * @property int $id
+ * @property int $incident_id
+ * @property int $component_id
+ * @property ?ComponentStatusEnum $status
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property Incident $incident
+ * @property Component $component
+ *
+ * @method static IncidentComponentFactory factory($count = null, $state = [])
+ */
 class IncidentComponent extends Pivot
 {
+    /** @use HasFactory<IncidentComponentFactory> */
     use HasFactory;
 
+    /** @var array<string, string> */
     protected $casts = [
-        'status' => ComponentStatusEnum::class,
+        'component_status' => ComponentStatusEnum::class,
     ];
 
     /**

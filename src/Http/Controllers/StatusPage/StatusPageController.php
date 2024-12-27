@@ -7,7 +7,6 @@ use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\View\View;
 
 class StatusPageController
@@ -19,7 +18,7 @@ class StatusPageController
     {
         return view('cachet::status-page.index', [
             'componentGroups' => ComponentGroup::query()
-                ->with(['components' => fn (HasMany $query) => $query->enabled()->orderBy('order')->withCount('incidents')])
+                ->with(['components' => fn ($query) => $query->enabled()->orderBy('order')->withCount('incidents')])
                 ->visible(auth()->check())
                 ->when(auth()->check(), fn (Builder $query) => $query->users(), fn ($query) => $query->guests())
                 ->get(),
@@ -30,7 +29,7 @@ class StatusPageController
                 ->withCount('incidents')
                 ->get(),
 
-            'schedules' => Schedule::query()->incomplete()->orderBy('scheduled_at')->get(),
+            'schedules' => Schedule::query()->with('updates')->incomplete()->orderBy('scheduled_at')->get(),
         ]);
     }
 

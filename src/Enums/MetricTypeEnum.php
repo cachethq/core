@@ -10,7 +10,7 @@ enum MetricTypeEnum: int implements HasIcon, HasLabel
     case sum = 0;
     case average = 1;
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return match ($this) {
             self::sum => 'cachet-metrics',
@@ -18,7 +18,7 @@ enum MetricTypeEnum: int implements HasIcon, HasLabel
         };
     }
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
         return match ($this) {
             self::sum => __('Sum'),

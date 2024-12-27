@@ -3,6 +3,7 @@ providers:
   - Cachet\CachetCoreServiceProvider
   - Cachet\CachetDashboardServiceProvider
   - Spatie\LaravelSettings\LaravelSettingsServiceProvider
+  - Spatie\LaravelData\LaravelDataServiceProvider
 
 migrations:
   - workbench/database/migrations

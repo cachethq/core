@@ -33,7 +33,7 @@ return [
      | This is the model that will be used to authenticate users. This model
      | must be an instance of Illuminate\Foundation\Auth\User.
      */
-    'user_model' => App\Models\User::class,
+    'user_model' => \App\Models\User::class,
 
     /*
      |--------------------------------------------------------------------------

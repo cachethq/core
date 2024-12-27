@@ -2,12 +2,13 @@
 
 namespace Cachet\Filament\Resources;
 
-use Cachet\Actions\IncidentUpdate\CreateIncidentUpdate as CreateIncidentUpdateAction;
+use Cachet\Actions\Update\CreateUpdate as CreateIncidentUpdateAction;
+use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\IncidentResource\Pages;
 use Cachet\Filament\Resources\IncidentResource\RelationManagers\ComponentsRelationManager;
-use Cachet\Filament\Resources\IncidentResource\RelationManagers\IncidentUpdatesRelationManager;
+use Cachet\Filament\Resources\UpdateResource\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Incident;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -141,7 +142,7 @@ class IncidentResource extends Resource
                     ->label(__('Record Update'))
                     ->color('info')
                     ->action(function (CreateIncidentUpdateAction $createIncidentUpdate, Incident $record, array $data) {
-                        $createIncidentUpdate->handle($record, $data);
+                        $createIncidentUpdate->handle($record, CreateIncidentUpdateData::from($data));
 
                         Notification::make()
                             ->title(__('Incident :name Updated', ['name' => $record->name]))
@@ -158,6 +159,13 @@ class IncidentResource extends Resource
                             ->options(IncidentStatusEnum::class)
                             ->inline()
                             ->required(),
+                        Forms\Components\Select::make('user_id')
+                            ->label(__('User'))
+                            ->hint(__('Who reported this incident.'))
+                            ->relationship('user', 'name')
+                            ->default(auth()->id())
+                            ->searchable()
+                            ->preload(),
                     ]),
                 Action::make('view-incident')
                     ->icon('heroicon-o-eye')
@@ -179,7 +187,7 @@ class IncidentResource extends Resource
     {
         return [
             ComponentsRelationManager::class,
-            IncidentUpdatesRelationManager::class,
+            UpdatesRelationManager::class,
         ];
     }
 

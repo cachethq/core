@@ -15,6 +15,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
+use Cachet\Models\Update;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
 use Cachet\Settings\ThemeSettings;
@@ -32,12 +33,12 @@ class DatabaseSeeder extends Seeder
     {
         DB::table('users')->truncate();
         DB::table('incidents')->truncate();
-        DB::table('incident_updates')->truncate();
         DB::table('components')->truncate();
         DB::table('component_groups')->truncate();
         DB::table('schedules')->truncate();
         DB::table('metrics')->truncate();
         DB::table('metric_points')->truncate();
+        DB::table('updates')->truncate();
 
         /** @var \Illuminate\Foundation\Auth\User $userModel */
         $userModel = config('cachet.user_model');
@@ -56,12 +57,24 @@ class DatabaseSeeder extends Seeder
             'completed_at' => now()->subHours(12),
         ]);
 
-        Schedule::create([
+        tap(Schedule::create([
             'name' => 'Documentation Maintenance',
             'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
             'scheduled_at' => now()->addHours(24),
             'completed_at' => null,
-        ]);
+        ]), function (Schedule $schedule) use ($user) {
+            $update = new Update([
+                'message' => <<<'EOF'
+This scheduled maintenance period has been pushed back by one hour.
+EOF
+                ,
+                'user_id' => $user->id,
+                'created_at' => $timestamp = $schedule->created_at->addMinutes(45),
+                'updated_at' => $timestamp,
+            ]);
+
+            $schedule->updates()->save($update);
+        });
 
         $componentGroup = ComponentGroup::create([
             'name' => 'Cachet',
@@ -69,18 +82,21 @@ class DatabaseSeeder extends Seeder
             'visible' => ResourceVisibilityEnum::guest,
         ]);
 
+        /** @phpstan-ignore-next-line argument.type Larastan bug */
         $componentGroup->components()->createMany([
             [
                 'name' => 'Cachet Website',
                 'description' => 'The Cachet website.',
                 'link' => 'https://cachethq.io',
                 'status' => ComponentStatusEnum::operational,
-            ], [
+            ],
+            [
                 'name' => 'Cachet Documentation',
                 'description' => 'The Cachet docs, powered by Mintlify.',
                 'link' => 'https://docs.cachethq.io',
                 'status' => ComponentStatusEnum::operational,
-            ], [
+            ],
+            [
                 'name' => 'Cachet Blog',
                 'description' => 'Learn more about Cachet.',
                 'link' => 'https://blog.cachethq.io',
@@ -122,7 +138,7 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $timestamp,
             'occurred_at' => $timestamp,
         ]), function (Incident $incident) use ($user) {
-            $incident->incidentUpdates()->create([
+            $update = new Update([
                 'status' => IncidentStatusEnum::identified,
                 'message' => 'We\'ve confirmed the issue is with our DNS provider. We\'re waiting on them to provide an ETA.',
                 'user_id' => $user->id,
@@ -130,7 +146,9 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => $timestamp,
             ]);
 
-            $incident->incidentUpdates()->create([
+            $incident->updates()->save($update);
+
+            $update = new Update([
                 'status' => IncidentStatusEnum::fixed,
                 'message' => <<<'EOF'
 Our DNS provider has fixed the issue. We will continue to monitor the situation.
@@ -142,6 +160,8 @@ EOF
                 'created_at' => $timestamp = $incident->created_at->addMinutes(45),
                 'updated_at' => $timestamp,
             ]);
+
+            $incident->updates()->save($update);
         });
 
         $incident = Incident::create([
@@ -155,19 +175,21 @@ EOF
             'occurred_at' => $timestamp,
         ]);
 
-        $incident->incidentUpdates()->create([
+        $update = new Update([
             'status' => IncidentStatusEnum::identified,
             'message' => 'We\'ve identified the issue and are working on a fix.',
             'created_at' => $timestamp = $incident->created_at->addMinutes(15),
             'updated_at' => $timestamp,
         ]);
 
-        $incident->incidentUpdates()->create([
+        $incident->updates()->create([
             'status' => IncidentStatusEnum::fixed,
             'message' => 'The documentation is now back online. Happy reading!',
             'created_at' => $timestamp = $incident->created_at->addMinutes(25),
             'updated_at' => $timestamp,
         ]);
+
+        $incident->updates()->save($update);
 
         IncidentTemplate::create([
             'name' => 'Third-Party Service Outage',
@@ -186,6 +208,9 @@ HTML;
 
         $themeSettings = app(ThemeSettings::class);
         $themeSettings->app_banner = '';
+        $themeSettings->accent = 'cachet';
+        $themeSettings->accent_content = 'zinc';
+        $themeSettings->accent_pairing = true;
         $themeSettings->save();
     }
 }

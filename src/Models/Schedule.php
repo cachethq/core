@@ -10,19 +10,45 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property ?string $message
+ * @property ?Carbon $scheduled_at
+ * @property ?Carbon $completed_at
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $deleted_at
+ * @property Collection<int, Component> $components
+ * @property Collection<int, Update> $updates
+ *
+ * @method static ScheduleFactory factory($count = null, $state = [])
+ * @method static Builder<static>|static query()
+ * @method static Builder<static>|static incomplete()
+ * @method static Builder<static>|static inProgress()
+ * @method static Builder<static>|static inTheFuture()
+ * @method static Builder<static>|static inThePast()
+ */
 class Schedule extends Model
 {
-    use HasFactory, SoftDeletes;
+    /** @use HasFactory<ScheduleFactory> */
+    use HasFactory;
 
+    use SoftDeletes;
+
+    /** @var array<string, string> */
     protected $casts = [
         'scheduled_at' => 'datetime',
         'completed_at' => 'datetime',
     ];
 
+    /** @var list<string> */
     protected $fillable = [
         'name',
         'message',
@@ -32,8 +58,10 @@ class Schedule extends Model
 
     /**
      * Get the status of the schedule.
+     *
+     * @return Attribute<ScheduleStatusEnum, never>
      */
-    public function status(): Attribute
+    protected function status(): Attribute
     {
         return Attribute::make(
             get: function () {
@@ -50,6 +78,8 @@ class Schedule extends Model
 
     /**
      * Get the components affected by this schedule.
+     *
+     * @return BelongsToMany<Component, $this>
      */
     public function components(): BelongsToMany
     {
@@ -57,6 +87,16 @@ class Schedule extends Model
             Component::class,
             'schedule_components',
         );
+    }
+
+    /**
+     * Get the updates for this schedule.
+     *
+     * @return MorphMany<Update, $this>
+     */
+    public function updates(): MorphMany
+    {
+        return $this->morphMany(Update::class, 'updateable')->chaperone();
     }
 
     /**
@@ -69,19 +109,22 @@ class Schedule extends Model
 
     /**
      * Scope schedules that are incomplete.
+     *
+     * @param  Builder<$this>  $query
      */
-    public function scopeIncomplete(Builder $query): Builder
+    public function scopeIncomplete(Builder $query): void
     {
-        return $query->whereDate('scheduled_at', '>=', Carbon::now())
-            ->whereNull('completed_at');
+        $query->whereNull('completed_at');
     }
 
     /**
      * Scope schedules that are in progress.
+     *
+     * @param  Builder<$this>  $query
      */
-    public function scopeInProgress(Builder $query): Builder
+    public function scopeInProgress(Builder $query): void
     {
-        return $query->whereDate('scheduled_at', '<=', Carbon::now())
+        $query->whereDate('scheduled_at', '<=', Carbon::now())
             ->where(function (Builder $query) {
                 $query->whereDate('completed_at', '>=', Carbon::now())
                     ->orWhereNull('completed_at');
@@ -90,18 +133,22 @@ class Schedule extends Model
 
     /**
      * Scopes schedules to those in the future.
+     *
+     * @param  Builder<$this>  $query
      */
-    public function scopeInTheFuture(Builder $query): Builder
+    public function scopeInTheFuture(Builder $query): void
     {
-        return $query->whereDate('scheduled_at', '>=', Carbon::now());
+        $query->whereDate('scheduled_at', '>=', Carbon::now());
     }
 
     /**
      * Scopes schedules to those scheduled in the past.
+     *
+     * @param  Builder<$this>  $query
      */
-    public function scopeInThePast(Builder $query): Builder
+    public function scopeInThePast(Builder $query): void
     {
-        return $query->where('completed_at', '<=', Carbon::now());
+        $query->where('completed_at', '<=', Carbon::now());
     }
 
     /**
