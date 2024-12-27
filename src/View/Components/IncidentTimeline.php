@@ -19,7 +19,9 @@ class IncidentTimeline extends Component
 
     public function render(): View
     {
-        $incidentDays = $this->appSettings->incident_days - 1;
+        $incidentDays = $this->appSettings->recent_incidents_only ?
+            $this->appSettings->recent_incidents_days - 1 :
+            $this->appSettings->incident_days - 1;
         $startDate = Carbon::createFromFormat('Y-m-d', request('from', now()->toDateString()));
         $endDate = $startDate->clone()->subDays($incidentDays);
 
@@ -33,8 +35,27 @@ class IncidentTimeline extends Component
             'to' => $endDate->toDateString(),
             'nextPeriodFrom' => $startDate->clone()->subDays($incidentDays + 1)->toDateString(),
             'nextPeriodTo' => $startDate->clone()->addDays($incidentDays + 1)->toDateString(),
-            'canPageForward' => $startDate->clone()->isBefore(now()),
+            'canPageForward' => $this->appSettings->recent_incidents_only ? false : $startDate->clone()->isBefore(now()),
+            'canPageBackward' => $this->isDateWithinRange($startDate->clone()),
+            'recent_incidents_only' => $this->appSettings->recent_incidents_only,
+            'recent_incidents_days' => $this->appSettings->recent_incidents_days,
         ]);
+    }
+
+    private function isDateWithinRange($date)
+    {
+        if (!$this->appSettings->recent_incidents_only) {
+            return true;
+        }
+
+        if ($this->appSettings->recent_incidents_only) {
+            return false;
+        }
+
+        $minDate = Carbon::now()->subDays($this->appSettings->recent_incidents_days - 1)->startOfDay();
+        $maxDate = Carbon::now()->endOfDay();
+
+        return $date->isBefore($maxDate->addDays(1)) && $date->isAfter($minDate->subDays(1)->endOfDay());
     }
 
     /**
@@ -43,21 +64,32 @@ class IncidentTimeline extends Component
      */
     private function incidents(Carbon $startDate, Carbon $endDate, bool $onlyDisruptedDays = false): Collection
     {
+        $appSettings = $this->appSettings;
+
         return Incident::query()
             ->with([
                 'components',
                 'updates' => fn ($query) => $query->orderByDesc('created_at'),
             ])
             ->visible(auth()->check())
-            ->where(function (Builder $query) use ($endDate, $startDate) {
-                $query->whereBetween('occurred_at', [
-                    $endDate->startOfDay()->toDateTimeString(),
-                    $startDate->endofDay()->toDateTimeString(),
-                ])->orWhere(function (Builder $query) use ($endDate, $startDate) {
-                    $query->whereNull('occurred_at')->whereBetween('created_at', [
+            ->when($this->appSettings->recent_incidents_only, function ($query) use ($appSettings) {
+                $query->whereDate(
+                    'occurred_at',
+                    '>',
+                    Carbon::now()->subDays($appSettings->recent_incidents_days)->format('Y-m-d')
+                );
+            })
+            ->when(!$this->appSettings->recent_incidents_only, function ($query) use ($endDate, $startDate) {
+                $query->where(function (Builder $query) use ($endDate, $startDate) {
+                    $query->whereBetween('occurred_at', [
                         $endDate->startOfDay()->toDateTimeString(),
                         $startDate->endofDay()->toDateTimeString(),
-                    ]);
+                    ])->orWhere(function (Builder $query) use ($endDate, $startDate) {
+                        $query->whereNull('occurred_at')->whereBetween('created_at', [
+                            $endDate->startOfDay()->toDateTimeString(),
+                            $startDate->endofDay()->toDateTimeString(),
+                        ]);
+                    });
                 });
             })
             ->get()
