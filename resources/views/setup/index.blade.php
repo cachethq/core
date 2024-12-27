@@ -31,33 +31,33 @@
         </div>
 
         <div class="mx-auto w-full max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
-            <form action="#" method="POST" class="rounded-md border bg-white p-5 shadow-lg dark:border-zinc-700 dark:bg-zinc-800 sm:px-8 sm:pb-8 sm:pt-10">
+            <form action="#" method="POST" class="rounded-md border bg-white p-5 shadow-lg dark:border-zinc-700 dark:bg-white/5 sm:px-8 sm:pb-8 sm:pt-10">
                 <div class="grid gap-x-5 gap-y-8 lg:grid-cols-6">
                     <div class="lg:col-span-3">
                         <label for="site-name" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Site Name</label>
-                        <input id="site-name" type="text" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-zinc-800" />
+                        <input id="site-name" type="text" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-white/5" />
                     </div>
                     <div class="lg:col-span-3">
                         <label for="site-domain" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Site Domain</label>
-                        <input id="site-domain" type="text" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-zinc-800" />
+                        <input id="site-domain" type="text" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-white/5" />
                     </div>
                     <div class="lg:col-span-3">
                         <label for="timezone" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Timezone</label>
-                        <select id="timezone" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-zinc-800"></select>
+                        <select id="timezone" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-white/5"></select>
                     </div>
                     <div class="lg:col-span-3">
                         <label for="language" class="text-sm font-medium text-zinc-700 dark:text-zinc-300">Language</label>
-                        <select id="language" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-zinc-800"></select>
+                        <select id="language" class="mt-1 block w-full rounded-md border border-zinc-400 px-3 py-2.5 dark:border-zinc-600 dark:bg-white/5"></select>
                     </div>
                     <div class="lg:col-span-3">
                         <label for="show-support" class="flex items-start gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                            <input id="show-support" type="checkbox" class="block h-5 w-5 rounded border border-zinc-400 text-primary-500 dark:border-zinc-600 dark:bg-zinc-800" />
+                            <input id="show-support" type="checkbox" class="block h-5 w-5 rounded border border-zinc-400 text-primary-500 dark:border-zinc-600 dark:bg-white/5" />
                             <span>Show support for Cachet</span>
                         </label>
                     </div>
                 </div>
                 <div class="mt-5 flex items-center justify-end gap-5">
-                    <button class="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-white px-3 py-2 font-semibold text-zinc-800 transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900/50">
+                    <button class="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-white px-3 py-2 font-semibold text-zinc-800 transition hover:bg-zinc-50 dark:border-zinc-600 dark:bg-white/5 dark:text-zinc-300 dark:hover:bg-zinc-900/50">
                         @svg('cachet-chevron-right', 'rotate-180 size-4')
                         <span>Back</span>
                     </button>

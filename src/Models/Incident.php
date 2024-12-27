@@ -114,7 +114,7 @@ class Incident extends Model
         return $this->belongsToMany(Component::class, 'incident_components')
             ->using(IncidentComponent::class)
             ->withTimestamps()
-            ->withPivot(['status']);
+            ->withPivot(['component_status']);
     }
 
     /**
@@ -145,6 +145,9 @@ class Incident extends Model
         $query->where('status', $status);
     }
 
+    /**
+     * Scope to unresolved incidents.
+     */
     public function scopeUnresolved(Builder $query): void
     {
         $query->whereIn('status', IncidentStatusEnum::unresolved());

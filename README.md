@@ -42,7 +42,10 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [ ] Webhooks
 - [x] Dashboard
 - [x] Localization
-- [ ] Status Page Customization
+- [x] Status Page Customization
+- [ ] Meta
+- [ ] Tags
+- [ ] User Management
 
 ## Stack
 
@@ -55,17 +58,7 @@ Cachet is built on:
 
 ## Development
 
-1. Clone this repository.
-2. Run the following commands from within the `core` directory:
-    ```shell
-   npm install
-   composer update
-   composer dev
-    ```
-3. Develop Cachet.
-
-> [!NOTE] 
-> HMR is not enabled. Manual refreshes are needed to view changes.
+To get started developing Cachet, please check out the [Development Guide](https://docs.cachethq.io/v3.x/development).
 
 ### Dashboard Credentials
 
