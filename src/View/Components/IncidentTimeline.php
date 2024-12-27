@@ -36,26 +36,10 @@ class IncidentTimeline extends Component
             'nextPeriodFrom' => $startDate->clone()->subDays($incidentDays + 1)->toDateString(),
             'nextPeriodTo' => $startDate->clone()->addDays($incidentDays + 1)->toDateString(),
             'canPageForward' => $this->appSettings->recent_incidents_only ? false : $startDate->clone()->isBefore(now()),
-            'canPageBackward' => $this->isDateWithinRange($startDate->clone()),
+            'canPageBackward' => $this->appSettings->recent_incidents_only ? false : true,
             'recent_incidents_only' => $this->appSettings->recent_incidents_only,
             'recent_incidents_days' => $this->appSettings->recent_incidents_days,
         ]);
-    }
-
-    private function isDateWithinRange($date)
-    {
-        if (!$this->appSettings->recent_incidents_only) {
-            return true;
-        }
-
-        if ($this->appSettings->recent_incidents_only) {
-            return false;
-        }
-
-        $minDate = Carbon::now()->subDays($this->appSettings->recent_incidents_days - 1)->startOfDay();
-        $maxDate = Carbon::now()->endOfDay();
-
-        return $date->isBefore($maxDate->addDays(1)) && $date->isAfter($minDate->subDays(1)->endOfDay());
     }
 
     /**
