@@ -16,7 +16,6 @@ use function Laravel\Prompts\info;
 use function Laravel\Prompts\intro;
 use function Laravel\Prompts\text;
 
-
 class InstallCommand extends Command
 {
     protected $name = 'cachet:install';
@@ -31,8 +30,8 @@ class InstallCommand extends Command
 
         $this->call('migrate', ['--seed' => true, '--seeder' => DatabaseSeeder::class]);
 
-        if (confirm('Do you want to create a new user?', true)) {
-            $this->call(MakeUserCommand::class);
+        if (confirm('Do you want to create a new user?', false)) {
+            $this->call('cachet:make:user');
         }
         
         if (confirm('Do you want to configure Cachet before installing?', true)) {
