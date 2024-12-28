@@ -37,8 +37,7 @@ class IncidentTimeline extends Component
             'nextPeriodTo' => $startDate->clone()->addDays($incidentDays + 1)->toDateString(),
             'canPageForward' => $this->appSettings->recent_incidents_only ? false : $startDate->clone()->isBefore(now()),
             'canPageBackward' => $this->appSettings->recent_incidents_only ? false : true,
-            'recent_incidents_only' => $this->appSettings->recent_incidents_only,
-            'recent_incidents_days' => $this->appSettings->recent_incidents_days,
+            'recentIncidentsOnly' => $this->appSettings->recent_incidents_only,
         ]);
     }
 
@@ -48,19 +47,17 @@ class IncidentTimeline extends Component
      */
     private function incidents(Carbon $startDate, Carbon $endDate, bool $onlyDisruptedDays = false): Collection
     {
-        $appSettings = $this->appSettings;
-
         return Incident::query()
             ->with([
                 'components',
                 'updates' => fn ($query) => $query->orderByDesc('created_at'),
             ])
             ->visible(auth()->check())
-            ->when($this->appSettings->recent_incidents_only, function ($query) use ($appSettings) {
+            ->when($this->appSettings->recent_incidents_only, function ($query) {
                 $query->whereDate(
                     'occurred_at',
                     '>',
-                    Carbon::now()->subDays($appSettings->recent_incidents_days)->format('Y-m-d')
+                    Carbon::now()->subDays($this->appSettings->recent_incidents_days)->format('Y-m-d')
                 );
             })
             ->when(!$this->appSettings->recent_incidents_only, function ($query) use ($endDate, $startDate) {

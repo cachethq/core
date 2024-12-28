@@ -2,13 +2,13 @@
     <div class="border-b py-2 dark:border-zinc-700 flex justify-between flex-col md:flex-row md:items-center">
         <div>
             <h2 class="text-2xl font-semibold">
-                {{ $recent_incidents_only ? __('Recent Incidents') : __('Past Incidents') }}</h2>
+                {{ $recentIncidentsOnly ? __('Recent Incidents') : __('Past Incidents') }}</h2>
         </div>
 
         <div class="flex
                 items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400"
             x-data="{ from: new Date(@js($from)), to: new Date(@js($to)) }">
-            <x-filament::input.wrapper :disabled="$recent_incidents_only">
+            <x-filament::input.wrapper :disabled="$recentIncidentsOnly">
                 <x-filament::input
                     type="date"
                     wire:model="date"
@@ -17,7 +17,7 @@
                     x-model="date"
                     x-init="$watch('date', value => window.location = '?from=' + date)"
                     max="{{ now()->toDateString() }}"
-                    :disabled="$recent_incidents_only"
+                    :disabled="$recentIncidentsOnly"
                 />
             </x-filament::input.wrapper>
             &mdash;
