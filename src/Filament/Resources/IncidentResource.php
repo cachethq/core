@@ -4,6 +4,7 @@ namespace Cachet\Filament\Resources;
 
 use Cachet\Actions\Update\CreateUpdate as CreateIncidentUpdateAction;
 use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\IncidentResource\Pages;
@@ -54,11 +55,24 @@ class IncidentResource extends Resource
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
-                    //                    Forms\Components\Select::make('component')
-                    //                        ->multiple()
-                    //                        ->relationship('components', 'name')
-                    //                        ->searchable()
-                    //                        ->preload(),
+                    Forms\Components\Repeater::make('incidentComponents')
+                        ->relationship()
+                        ->defaultItems(0)
+                        ->addActionLabel('Add component')
+                        ->schema([
+                            Forms\Components\Select::make('component_id')
+                                ->preload()
+                                ->required()
+                                ->relationship('component', 'name')
+                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                ->label(__('Component')),
+                            Forms\Components\ToggleButtons::make('component_status')
+                                ->label(__('Status'))
+                                ->inline()
+                                ->options(ComponentStatusEnum::class)
+                                ->required(),
+                        ])
+                        ->label('Components')
                 ])
                     ->columnSpan(3),
                 Section::make()->schema([
