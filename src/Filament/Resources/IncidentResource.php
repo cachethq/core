@@ -56,6 +56,7 @@ class IncidentResource extends Resource
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
                     Forms\Components\Repeater::make('incidentComponents')
+                        ->visibleOn('create')
                         ->relationship()
                         ->defaultItems(0)
                         ->addActionLabel('Add component')
