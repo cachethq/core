@@ -28,7 +28,11 @@ class InstallCommand extends Command
 
         Sleep::for(2)->seconds();
 
-        $this->call('migrate', ['--seed' => true, '--seeder' => DatabaseSeeder::class]);
+        $this->call('migrate', ['--database' => config('cachet.database_connection')]);
+
+        if (confirm('Do you wish to seed any sample data?', true)) {
+            $this->call('db:seed');
+        }
 
         if (confirm('Do you want to create a new user?', false)) {
             $this->call('cachet:make:user');
