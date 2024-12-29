@@ -26,22 +26,34 @@ class InstallCommand extends Command
     {
         intro('Welcome to the Cachet installer!');
 
+        $configureCachet = false;
+
+        if (confirm('Do you want to configure Cachet before installing?', true)) {
+            info('Configuring Cachet...');
+            $this->configureEnvironmentSettings();
+            $configureCachet = true;
+        }
+
         Sleep::for(2)->seconds();
 
         $this->call('migrate', ['--database' => config('cachet.database_connection')]);
 
+        if ($configureCachet) {
+            $settings = $this->configureDatabaseSettings($settings);
+        }
+
         if (confirm('Do you wish to seed any sample data?', true)) {
-            $this->call('db:seed');
+            $this->call(
+                'db:seed',
+                [
+                    'class' => DatabaseSeeder::class,
+                    '--database' => config('cachet.database_connection')
+                ]
+            );
         }
 
         if (confirm('Do you want to create a new user?', false)) {
             $this->call('cachet:make:user');
-        }
-        
-        if (confirm('Do you want to configure Cachet before installing?', true)) {
-            info('Configuring Cachet...');
-            $this->configureEnvironmentSettings();
-            $settings = $this->configureDatabaseSettings($settings);
         }
 
         info('Installing Cachet...');
@@ -76,6 +88,9 @@ class InstallCommand extends Command
             'Do you wish to send anonymous data to cachet to help us understand how Cachet is used?',
             default: config('cachet.beacon')
         );
+
+        // Override default connection to Laravel Settings saves to correct connection
+        app('db')->setDefaultConnection(config('cachet.database_connection'));
 
         $this->writeEnv([
             'CACHET_PATH' => $path,

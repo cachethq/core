@@ -8,9 +8,9 @@ use Illuminate\Support\Facades\File;
 it('runs install command successfully without configuration', function () {
     $this->artisan('cachet:install')
         ->expectsOutputToContain('Welcome to the Cachet installer!')
+        ->expectsConfirmation('Do you want to configure Cachet before installing?', 'no')
         ->expectsConfirmation('Do you wish to seed any sample data?', 'no')
         ->expectsConfirmation('Do you want to create a new user?', 'no')
-        ->expectsConfirmation('Do you want to configure Cachet before installing?', 'no')
         ->expectsOutputToContain('Installing Cachet...')
         ->expectsOutputToContain('Cachet is installed ⚡')
         ->assertSuccessful();
@@ -21,8 +21,6 @@ it('updates app settings and config file when configuration is passed', function
 
     $this->artisan('cachet:install')
         ->expectsOutputToContain('Welcome to the Cachet installer!')
-        ->expectsConfirmation('Do you wish to seed any sample data?', 'no')
-        ->expectsConfirmation('Do you want to create a new user?', 'no')
         ->expectsConfirmation('Do you want to configure Cachet before installing?', 'yes')
         ->expectsOutputToContain('Configuring Cachet...')
         ->expectsQuestion('Which path do you want Cachet to be accessible from?', '/status')
@@ -37,6 +35,8 @@ it('updates app settings and config file when configuration is passed', function
         ->expectsQuestion('How many incident days should be shown in the timeline?', 14)
         ->expectsConfirmation('Should the dashboard login link be shown?', 'no')
         ->expectsQuestion('Major outage threshold %', 50)
+        ->expectsConfirmation('Do you wish to seed any sample data?', 'no')
+        ->expectsConfirmation('Do you want to create a new user?', 'no')
         ->expectsOutputToContain('Installing Cachet...')
         ->expectsOutputToContain('Cachet is installed ⚡')
         ->assertSuccessful();
