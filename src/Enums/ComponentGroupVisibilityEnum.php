@@ -15,9 +15,9 @@ enum ComponentGroupVisibilityEnum: int implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::expanded => __('Always expanded'),
-            self::collapsed => __('Always collapsed'),
-            self::collapsed_unless_incident => __('Collapsed unless active incident'),
+            self::expanded => __('Always Expanded'),
+            self::collapsed => __('Always Collapsed'),
+            self::collapsed_unless_incident => __('Collapsed Unless Ongoing Incident'),
         };
     }
 
