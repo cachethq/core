@@ -59,7 +59,7 @@ class IncidentResource extends Resource
                         ->visibleOn('create')
                         ->relationship()
                         ->defaultItems(0)
-                        ->addActionLabel('Add component')
+                        ->addActionLabel(__('Add Component'))
                         ->schema([
                             Forms\Components\Select::make('component_id')
                                 ->preload()
@@ -73,7 +73,7 @@ class IncidentResource extends Resource
                                 ->options(ComponentStatusEnum::class)
                                 ->required(),
                         ])
-                        ->label('Components')
+                        ->label(__('Components'))
                 ])
                     ->columnSpan(3),
                 Section::make()->schema([
