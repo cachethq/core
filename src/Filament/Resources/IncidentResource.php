@@ -73,7 +73,7 @@ class IncidentResource extends Resource
                                 ->options(ComponentStatusEnum::class)
                                 ->required(),
                         ])
-                        ->label(__('Components'))
+                        ->label(__('Components')),
                 ])
                     ->columnSpan(3),
                 Section::make()->schema([
