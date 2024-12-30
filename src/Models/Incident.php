@@ -118,6 +118,9 @@ class Incident extends Model
             ->withPivot(['component_status']);
     }
 
+    /**
+     * Get the impacted components for this incident.
+     */
     public function incidentComponents(): HasMany
     {
         return $this->hasMany(IncidentComponent::class);
