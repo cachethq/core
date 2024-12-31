@@ -18,6 +18,7 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
     public static function unresolved(): array
     {
         return [
+            self::unknown,
             self::investigating,
             self::identified,
             self::watching,
