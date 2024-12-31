@@ -21,7 +21,7 @@ return [
      |
      | This is the URI path where Cachet will be accessible from.
      */
-    'path' => env('CACHET_PATH', '/status'),
+    'path' => env('CACHET_PATH', '/'),
 
     'guard' => env('CACHET_GUARD', null),
 
