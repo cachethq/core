@@ -31,33 +31,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->truncate();
-        DB::table('incidents')->truncate();
-        DB::table('components')->truncate();
-        DB::table('component_groups')->truncate();
-        DB::table('schedules')->truncate();
-        DB::table('metrics')->truncate();
-        DB::table('metric_points')->truncate();
-        DB::table('updates')->truncate();
-
         /** @var \Illuminate\Foundation\Auth\User $userModel */
         $userModel = config('cachet.user_model');
 
-        $user = $userModel::create([
+        $user = $userModel::query()->firstOrCreate([
             'name' => 'Cachet Demo',
             'email' => 'test@test.com',
             'password' => bcrypt('test123'),
             'email_verified_at' => now(),
         ]);
 
-        Schedule::create([
+        Schedule::query()->firstOrCreate([
             'name' => 'Documentation Maintenance',
             'message' => 'We will be conducting maintenance on our documentation servers. Documentation may not be available during this time.',
             'scheduled_at' => now()->subHours(12)->subMinutes(45),
             'completed_at' => now()->subHours(12),
         ]);
 
-        tap(Schedule::create([
+        tap(Schedule::query()->firstOrCreate([
             'name' => 'Documentation Maintenance',
             'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
             'scheduled_at' => now()->addHours(24),
@@ -76,7 +67,7 @@ EOF
             $schedule->updates()->save($update);
         });
 
-        $componentGroup = ComponentGroup::create([
+        $componentGroup = ComponentGroup::query()->firstOrCreate([
             'name' => 'Cachet',
             'collapsed' => ComponentGroupVisibilityEnum::expanded,
             'visible' => ResourceVisibilityEnum::guest,
@@ -104,14 +95,14 @@ EOF
             ],
         ]);
 
-        Component::create([
+        Component::query()->firstOrCreate([
             'name' => 'Laravel Artisan Cheatsheet',
             'description' => 'The Laravel Artisan Cheatsheet.',
             'link' => 'https://artisan.page',
             'status' => ComponentStatusEnum::operational,
         ]);
 
-        $metric = Metric::create([
+        $metric = Metric::query()->firstOrCreate([
             'name' => 'Cachet API Requests',
             'suffix' => 'req/s',
             'description' => 'The number of requests to the Cachet API.',
@@ -127,7 +118,7 @@ EOF
             'created_at' => now()->subMinutes(random_int(0, $i * 60)),
         ]));
 
-        tap(Incident::create([
+        tap(Incident::query()->firstOrCreate([
             'name' => 'DNS Provider Outage',
             'message' => 'We\'re investigating an issue with our DNS provider causing the site to be offline.',
             'status' => IncidentStatusEnum::fixed,
@@ -164,7 +155,7 @@ EOF
             $incident->updates()->save($update);
         });
 
-        $incident = Incident::create([
+        $incident = Incident::query()->firstOrCreate([
             'name' => 'Documentation Performance Degradation',
             'message' => 'We\'re investigating an issue with our documentation causing the site to be slow.',
             'status' => IncidentStatusEnum::fixed,
@@ -191,33 +182,12 @@ EOF
 
         $incident->updates()->save($update);
 
-        IncidentTemplate::create([
+        IncidentTemplate::query()->firstOrCreate([
             'name' => 'Third-Party Service Outage',
             'slug' => 'third-party-service-outage',
             'template' => 'We\'re investigating an issue with a third-party provider ({{ name }}) causing our services to be offline.',
             'engine' => IncidentTemplateEngineEnum::twig,
         ]);
-
-        $appSettings = app(AppSettings::class);
-        $appSettings->name = 'Cachet v3.x Demo';
-        $appSettings->about = <<<'ABOUT'
-Cachet is a **beautiful** and **powerful** open-source status page system.
-
-To access the [dashboard](/dashboard), use the following credentials:
-- `test@test.com`
-- `test123`
-
-Please [consider sponsoring](https://github.com/cachethq/cachet?sponsor=1) the continued development of Cachet.
-ABOUT;
-        $appSettings->show_support = true;
-        $appSettings->timezone = 'UTC';
-        $appSettings->show_timezone = false;
-        $appSettings->only_disrupted_days = false;
-        $appSettings->incident_days = 7;
-        $appSettings->refresh_rate = null;
-        $appSettings->dashboard_login_link = true;
-        $appSettings->major_outage_threshold = 25;
-        $appSettings->save();
 
         $customizationSettings = app(CustomizationSettings::class);
         $customizationSettings->header = <<<'HTML'

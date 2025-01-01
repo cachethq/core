@@ -5,6 +5,7 @@ namespace Cachet\Models;
 use Cachet\Database\Factories\MetricPointFactory;
 use Cachet\Events\Metrics\MetricPointCreated;
 use Cachet\Events\Metrics\MetricPointDeleted;
+use Cachet\Models\Concerns\ManagesConnections;
 use DateTime;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -29,6 +30,8 @@ class MetricPoint extends Model
 {
     /** @use HasFactory<MetricPointFactory> */
     use HasFactory;
+
+    use ManagesConnections;
 
     /** @var array<string, string> */
     protected $casts = [

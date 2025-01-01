@@ -10,6 +10,7 @@ use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Filament\Resources\IncidentResource;
+use Cachet\Models\Concerns\ManagesConnections;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
@@ -61,6 +62,9 @@ class Incident extends Model
     use HasFactory;
 
     use HasVisibility;
+
+    use ManagesConnections;
+
     use SoftDeletes;
 
     /** @var array<string, string> */

@@ -14,7 +14,15 @@ return new class extends SettingsMigration
         rescue(fn () => $this->migrator->add('app.install_id', Str::random(40)));
         rescue(fn () => $this->migrator->add('app.name', 'Cachet'));
         rescue(fn () => $this->migrator->add('app.domain'));
-        rescue(fn () => $this->migrator->add('app.about'));
+        rescue(fn () => $this->migrator->add('app.about', <<<'ABOUT'
+        Cachet is a **beautiful** and **powerful** open-source status page system.
+        
+        To access the [dashboard](/dashboard), use the following credentials:
+        - `test@test.com`
+        - `test123`
+        
+        Please [consider sponsoring](https://github.com/cachethq/cachet?sponsor=1) the continued development of Cachet.
+        ABOUT));
         rescue(fn () => $this->migrator->add('app.timezone', 'UTC'));
         rescue(fn () => $this->migrator->add('app.locale', 'en'));
         rescue(fn () => $this->migrator->add('app.incident_days', 7));

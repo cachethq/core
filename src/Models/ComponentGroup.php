@@ -6,6 +6,7 @@ use Cachet\Concerns\HasVisibility;
 use Cachet\Database\Factories\ComponentGroupFactory;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Models\Concerns\ManagesConnections;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,6 +30,8 @@ class ComponentGroup extends Model
 {
     /** @use HasFactory<ComponentGroupFactory> */
     use HasFactory;
+
+    use ManagesConnections;
 
     use HasVisibility;
 

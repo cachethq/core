@@ -10,6 +10,7 @@ use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Events\Metrics\MetricCreated;
 use Cachet\Events\Metrics\MetricDeleted;
 use Cachet\Events\Metrics\MetricUpdated;
+use Cachet\Models\Concerns\ManagesConnections;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -43,6 +44,8 @@ class Metric extends Model
     use HasFactory;
 
     use HasVisibility;
+
+    use ManagesConnections;
 
     /** @var array<string, string> */
     protected $casts = [

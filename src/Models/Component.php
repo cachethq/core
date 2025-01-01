@@ -7,6 +7,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
+use Cachet\Models\Concerns\ManagesConnections;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -41,6 +42,8 @@ class Component extends Model
 {
     /** @use HasFactory<ComponentFactory> */
     use HasFactory;
+
+    use ManagesConnections;
 
     use SoftDeletes;
 
