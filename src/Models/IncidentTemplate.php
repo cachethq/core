@@ -4,6 +4,7 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\IncidentTemplateFactory;
 use Cachet\Enums\IncidentTemplateEngineEnum;
+use Cachet\Models\Concerns\ManagesConnections;
 use Cachet\Renderers\BladeRenderer;
 use Cachet\Renderers\TwigRenderer;
 use Carbon\Carbon;
@@ -27,6 +28,8 @@ class IncidentTemplate extends Model
 {
     /** @use HasFactory<IncidentTemplateFactory> */
     use HasFactory;
+
+    use ManagesConnections;
 
     /** @var array<string, string> */
     protected $casts = [

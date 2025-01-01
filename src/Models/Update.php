@@ -4,6 +4,7 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\UpdateFactory;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Concerns\ManagesConnections;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -33,6 +34,8 @@ class Update extends Model
 {
     /** @use HasFactory<UpdateFactory> */
     use HasFactory;
+
+    use ManagesConnections;
 
     /** @var array<string, string> */
     protected $casts = [

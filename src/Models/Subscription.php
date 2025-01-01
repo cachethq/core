@@ -3,6 +3,7 @@
 namespace Cachet\Models;
 
 use Cachet\Database\Factories\SubscriptionFactory;
+use Cachet\Models\Concerns\ManagesConnections;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,6 +25,8 @@ class Subscription extends Model
 {
     /** @use HasFactory<SubscriptionFactory> */
     use HasFactory;
+
+    use ManagesConnections;
 
     /**
      * Get the component the subscription is for.
