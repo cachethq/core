@@ -21,7 +21,7 @@ class RssController
                 ->guests()
                 ->with('updates')
                 ->when($appSettings->recent_incidents_only, function ($query) use ($appSettings) {
-                    $query->where(function (Builder $query) use ($appSettings) {
+                    $query->where(function ($query) use ($appSettings) {
                         $query->whereDate(
                             'occurred_at',
                             '>',

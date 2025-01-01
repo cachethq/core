@@ -54,7 +54,7 @@ class IncidentTimeline extends Component
             ])
             ->visible(auth()->check())
             ->when($this->appSettings->recent_incidents_only, function ($query) {
-                $query->where(function (Builder $query) {
+                $query->where(function ($query) {
                     $query->whereDate(
                         'occurred_at',
                         '>',
