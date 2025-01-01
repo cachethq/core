@@ -21,9 +21,19 @@ class RssController
                 ->guests()
                 ->with('updates')
                 ->when($appSettings->recent_incidents_only, function ($query) use ($appSettings) {
-                    $query->whereDate(
-                        'occurred_at', '>', Carbon::now()->subDays($appSettings->recent_incidents_days)->format('Y-m-d')
-                    );
+                    $query->where(function (Builder $query) use ($appSettings) {
+                        $query->whereDate(
+                            'occurred_at',
+                            '>',
+                            Carbon::now()->subDays($appSettings->recent_incidents_days)->format('Y-m-d')
+                        )->orWhere(function ($query) use ($appSettings) {
+                            $query->whereNull('occurred_at')->whereDate(
+                                'created_at',
+                                '>',
+                                Carbon::now()->subDays($appSettings->recent_incidents_days)->format('Y-m-d')
+                            );
+                        });
+                    });
                 })
                 ->orderByDesc('created_at')
                 ->get(),

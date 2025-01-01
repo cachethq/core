@@ -54,11 +54,19 @@ class IncidentTimeline extends Component
             ])
             ->visible(auth()->check())
             ->when($this->appSettings->recent_incidents_only, function ($query) {
-                $query->whereDate(
-                    'occurred_at',
-                    '>',
-                    Carbon::now()->subDays($this->appSettings->recent_incidents_days)->format('Y-m-d')
-                );
+                $query->where(function (Builder $query) {
+                    $query->whereDate(
+                        'occurred_at',
+                        '>',
+                        Carbon::now()->subDays($this->appSettings->recent_incidents_days)->format('Y-m-d')
+                    )->orWhere(function ($query) {
+                        $query->whereNull('occurred_at')->whereDate(
+                            'created_at',
+                            '>',
+                            Carbon::now()->subDays($this->appSettings->recent_incidents_days)->format('Y-m-d')
+                        );
+                    });
+                });
             })
             ->when(!$this->appSettings->recent_incidents_only, function ($query) use ($endDate, $startDate) {
                 $query->where(function (Builder $query) use ($endDate, $startDate) {
