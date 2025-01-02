@@ -16,7 +16,7 @@ return [
         'empty_state' => [
             'heading' => 'Components',
             'description' => 'Components represent the various parts of your system that can affect the status of your status page.',
-        ]
+        ],
     ],
     'last_updated' => 'Last updated :timestamp',
     'view_details' => 'View Details',

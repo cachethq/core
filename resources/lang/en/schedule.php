@@ -19,7 +19,7 @@ return [
         'actions' => [
             'record_update' => 'Record Update',
             'complete' => 'Complete Maintenance',
-        ]
+        ],
     ],
     'form' => [
         'name_label' => 'Name',

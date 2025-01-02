@@ -9,7 +9,7 @@ return [
             'manage_theme' => 'Manage Theme',
         ],
     ],
-    
+
     'integrations' => [
         'label' => 'Integrations',
         'items' => [

@@ -30,6 +30,6 @@ return [
             'accent_color_label' => 'Accent Color',
             'accent_content_label' => 'Base Color',
             'accent_pairing_label' => 'Accent Pairing',
-        ]
-    ]
+        ],
+    ],
 ];

@@ -19,11 +19,11 @@ return [
         'empty_state' => [
             'heading' => 'Component Groups',
             'description' => 'Group related components together.',
-        ]
+        ],
     ],
     'form' => [
         'name_label' => 'Name',
         'visible_label' => 'Visible',
         'collapsed_label' => 'Collapsed',
-    ]
+    ],
 ];

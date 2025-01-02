@@ -14,7 +14,7 @@ return [
         'empty_state' => [
             'heading' => 'Incident Templates',
             'description' => 'Incident templates are used to create reusable incident messages.',
-        ]
+        ],
     ],
     'form' => [
         'name_label' => 'Name',

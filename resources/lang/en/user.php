@@ -4,5 +4,5 @@ return [
     'level' => [
         'admin' => 'Admin',
         'user' => 'User',
-    ]
+    ],
 ];

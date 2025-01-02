@@ -19,7 +19,7 @@ return [
         ],
         'actions' => [
             'verify_label' => 'Verify',
-        ]
+        ],
     ],
     'form' => [
         'email_label' => 'Email',

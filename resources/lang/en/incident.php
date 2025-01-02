@@ -20,7 +20,7 @@ return [
             'previous' => 'Previous',
             'today' => 'Today',
             'next' => 'Next',
-        ]
+        ],
     ],
     'list' => [
         'headers' => [
@@ -41,7 +41,7 @@ return [
         'empty_state' => [
             'heading' => 'Incidents',
             'description' => 'Incidents are used to communicate and track the status of your services.',
-        ]
+        ],
     ],
     'form' => [
         'name_label' => 'Name',
@@ -60,7 +60,7 @@ return [
             'header' => 'Components',
             'component_label' => 'Component',
             'status_label' => 'Status',
-        ]
+        ],
     ],
     'record_update' => [
         'success_title' => 'Incident :name Updated',
@@ -75,5 +75,5 @@ return [
     'overview' => [
         'total_incidents_label' => 'Total Incidents',
         'total_incidents_description' => 'Total number of incidents.',
-    ]
+    ],
 ];
