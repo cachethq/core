@@ -16,10 +16,10 @@ enum MetricViewEnum: int implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::last_hour => __('cachet::metrics.view_labels.last_hour'),
-            self::today => __('cachet::metrics.view_labels.today'),
-            self::week => __('cachet::metrics.view_labels.week'),
-            self::month => __('cachet::metrics.view_labels.month'),
+            self::last_hour => __('cachet::metric.view_labels.last_hour'),
+            self::today => __('cachet::metric.view_labels.today'),
+            self::week => __('cachet::metric.view_labels.week'),
+            self::month => __('cachet::metric.view_labels.month'),
         };
     }
 

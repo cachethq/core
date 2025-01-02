@@ -19,7 +19,7 @@ class ManageCachet extends SettingsPage
 
     public static function getNavigationLabel(): string
     {
-        return __('cachet::navigation.settings.manage_cachet');
+        return __('cachet::navigation.settings.items.manage_cachet');
     }
 
     public function form(Form $form): Form

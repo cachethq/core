@@ -42,27 +42,27 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->discoverPages(__DIR__.'/Filament/Pages', 'Cachet\\Filament\\Pages')
             ->discoverWidgets(__DIR__.'/Filament/Widgets', 'Cachet\\Filament\\Widgets')
             ->navigationGroups([
-                NavigationGroup::make('settings')
-                    ->label(__('cachet::navigation.settings.label'))
+                NavigationGroup::make()
+                    ->label(fn (): string => __('cachet::navigation.settings.label'))
                     ->collapsed()
                     ->icon('cachet-settings'),
-                NavigationGroup::make('integrations')
-                    ->label(__('cachet::navigation.settings.integrations.label'))
+                NavigationGroup::make()
+                    ->label(fn (): string => __('cachet::navigation.integrations.label'))
                     ->collapsed(),
-                NavigationGroup::make('resources')
-                    ->label(__('cachet::navigation.resources.label'))
+                NavigationGroup::make()
+                    ->label(fn (): string => __('cachet::navigation.resources.label'))
                     ->collapsible(false),
             ])
             ->navigationItems([
-                NavigationItem::make('status_page')
-                    ->label(__('cachet::navigation.resources.status_page'))
+                NavigationItem::make()
+                    ->label(fn (): string => __('cachet::navigation.resources.items.status_page'))
                     ->url(Cachet::path())
-                    ->group(__('cachet::navigation.resources.label'))
+                    ->group(fn (): string => __('cachet::navigation.resources.label'))
                     ->icon('cachet-component-performance-issues'),
-                NavigationItem::make('documentation')
-                    ->label(__('cachet::navigation.resources.documentation'))
+                NavigationItem::make()
+                    ->label(fn (): string => __('cachet::navigation.resources.items.documentation'))
                     ->url('https://docs.cachethq.io/?ref=cachet-dashboard')
-                    ->group(__('cachet::navigation.resources.label'))
+                    ->group(fn (): string => __('cachet::navigation.resources.label'))
                     ->icon('heroicon-o-book-open'),
             ])
             ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('cachet::filament.widgets.add-incident-button'))

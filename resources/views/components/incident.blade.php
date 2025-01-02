@@ -72,7 +72,7 @@
         <div class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-white/5">
             <div class="flex flex-col p-4 divide-y dark:divide-zinc-700">
                 <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">
-                    {{ __('cachet::indicent.no_incidents_reported') }}
+                    {{ __('cachet::incident.no_incidents_reported') }}
                 </div>
             </div>
         </div>

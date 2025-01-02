@@ -18,7 +18,7 @@ class ManageCustomization extends SettingsPage
 
     public static function getNavigationLabel(): string
     {
-        return __('cachet::navigation.settings.manage_customization');
+        return __('cachet::navigation.settings.items.manage_customization');
     }
 
     public function form(Form $form): Form

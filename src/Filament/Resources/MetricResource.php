@@ -77,7 +77,7 @@ class MetricResource extends Resource
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
                     Forms\Components\Toggle::make('display_chart')
-                        ->label(__('cachet::metric.form.dislay_chart_label'))
+                        ->label(__('cachet::metric.form.display_chart_label'))
                         ->default(true)
                         ->required(),
 

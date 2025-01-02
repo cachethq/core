@@ -21,7 +21,7 @@ class ManageTheme extends SettingsPage
 
     public static function getNavigationLabel(): string
     {
-        return __('cachet::navigation.settings.manage_theme');
+        return __('cachet::navigation.settings.items.manage_theme');
     }
 
     public function form(Form $form): Form
@@ -38,7 +38,7 @@ class ManageTheme extends SettingsPage
                 ]),
 
                 Forms\Components\Section::make()->columns(2)
-                    ->heading(__('cachet::settings.manage_theme.status_page_accent.header'))
+                    ->heading(__('cachet::settings.manage_theme.status_page_accent.heading'))
                     ->description(__('cachet::settings.manage_theme.status_page_accent.description'))
                     ->schema([
                         Forms\Components\Select::make('accent')

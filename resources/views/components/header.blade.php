@@ -20,7 +20,7 @@
         <form action="{{ \Cachet\Cachet::dashboardPath() }}/logout" method="POST">
             @csrf
             <button class="text-sm font-medium text-zinc-800 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300 sm:text-base">
-                {{ __('filament-panels::widgets.account.logout-button') }}
+                {{ __('filament-panels::layout.actions.logout.label') }}
             </button>
         </form>
         @endauth

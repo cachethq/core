@@ -85,7 +85,7 @@ class ScheduleResource extends Resource
             ->actions([
                 Action::make('add-update')
                     ->disabled(fn (Schedule $record) => $record->status === ScheduleStatusEnum::complete)
-                    ->label(__('cachet::list.actions.record_update'))
+                    ->label(__('cachet::schedule.list.actions.record_update'))
                     ->color('info')
                     ->action(function (CreateUpdate $createUpdate, Schedule $record, array $data) {
                         $createUpdate->handle($record, CreateScheduleUpdateData::from($data));
@@ -106,7 +106,7 @@ class ScheduleResource extends Resource
                     ]),
                 Tables\Actions\Action::make('complete')
                     ->disabled(fn (Schedule $record): bool => $record->status === ScheduleStatusEnum::complete)
-                    ->label(__('cachet::list.actions.complete'))
+                    ->label(__('cachet::schedule.list.actions.complete'))
                     ->form([
                         Forms\Components\DateTimePicker::make('completed_at')
                             ->required(),
