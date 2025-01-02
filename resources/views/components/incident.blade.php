@@ -4,6 +4,7 @@
     'incidents',
 ])
 
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_BEFORE) }}
 <div class="relative flex flex-col gap-5" x-data="{ forDate: new Date(@js($date)) }">
     <h3 class="text-xl font-semibold"><time datetime="{{ $date }}" x-text="forDate.toLocaleDateString()"></time></h3>
     @forelse($incidents as $incident)
@@ -78,3 +79,4 @@
         </div>
     @endforelse
 </div>
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_AFTER) }}
