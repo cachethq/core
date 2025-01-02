@@ -28,8 +28,6 @@ class OhDear extends Page implements HasForms
 
     protected static ?string $navigationIcon = 'cachet-oh-dear';
 
-    protected static ?string $navigationGroup = 'Integrations';
-
     protected static string $view = 'cachet::filament.pages.integrations.oh-dear';
 
     public string $url;
@@ -39,6 +37,16 @@ class OhDear extends Page implements HasForms
     public ?int $component_group_id = null;
 
     public bool $import_incidents = false;
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('cachet::navigation.integrations.label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('cachet::navigation.integrations.items.oh_dear');
+    }
 
     /**
      * Mount the page.
