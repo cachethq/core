@@ -16,7 +16,7 @@
 
         @if(($incidentCount = $componentGroup->components->sum('incidents_count')) > 0)
         <span class="rounded border border-zinc-800 px-2 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-600 dark:text-zinc-400">
-            {{ trans_choice(':count Incident', $incidentCount) }}
+            {{ trans_choice('cachet::componet_group.incident_count', $incidentCount) }}
         </span>
         @endif
     </div>

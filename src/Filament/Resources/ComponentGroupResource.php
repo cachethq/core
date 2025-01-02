@@ -25,20 +25,20 @@ class ComponentGroupResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
-                        ->label(__('Name'))
+                        ->label(__('cachet::component_group.form.name_label'))
                         ->required()
                         ->maxLength(255)
                         ->columnSpanFull()
                         ->autocomplete(false),
                     Forms\Components\ToggleButtons::make('visible')
-                        ->label(__('Visible'))
+                        ->label(__('cachet::component_group.form.visible_label'))
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
                         ->required()
                         ->columnSpanFull(),
                     Forms\Components\ToggleButtons::make('collapsed')
-                        ->label(__('Collapsed'))
+                        ->label(__('cachet::component_group.form.collapsed_label'))
                         ->required()
                         ->inline()
                         ->options(ComponentGroupVisibilityEnum::class)
@@ -53,22 +53,22 @@ class ComponentGroupResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label(__('cachet::component_group.list.headers.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('visible')
-                    ->label(__('Visible'))
+                    ->label(__('cachet::component_group.list.headers.visible'))
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('collapsed')
-                    ->label(__('Collapsed'))
+                    ->label(__('cachet::component_group.list.headers.collapsed'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Created at'))
+                    ->label(__('cachet::component_group.list.headers.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('Updated at'))
+                    ->label(__('cachet::component_group.list.headers.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -84,8 +84,8 @@ class ComponentGroupResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->emptyStateHeading(__('Component Groups'))
-            ->emptyStateDescription(__('Group related components together.'));
+            ->emptyStateHeading(__('cachet::component_group.list.empty_state.heading'))
+            ->emptyStateDescription(__('cachet::component_group.list.empty_state.description'));
     }
 
     public static function getRelations(): array
@@ -106,11 +106,11 @@ class ComponentGroupResource extends Resource
 
     public static function getLabel(): ?string
     {
-        return __('Component Group');
+        return trans_choice('cachet::component_group.resource_label', 1);
     }
 
     public static function getPluralLabel(): ?string
     {
-        return __('Component Groups');
+        return trans_choice('cachet::component_group.resource_label', 2);
     }
 }

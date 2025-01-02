@@ -24,23 +24,23 @@ class ComponentsRelationManager extends RelationManager
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->label(__('Name'))
+                    ->label(__('cachet::component.form.name_label'))
                     ->required()
                     ->maxLength(255),
                 Forms\Components\ToggleButtons::make('status')
-                    ->label(__('Status'))
+                    ->label(__('cachet::component.form.status_label'))
                     ->inline()
                     ->columnSpanFull()
                     ->options(ComponentStatusEnum::class)
                     ->required(),
                 Forms\Components\MarkdownEditor::make('description')
-                    ->label(__('Description'))
+                    ->label(__('cachet::component.form.description_label'))
                     ->maxLength(255)
                     ->columnSpanFull(),
                 Forms\Components\TextInput::make('link')
-                    ->label(__('Link'))
+                    ->label(__('cachet::component.form.link_label'))
                     ->url()
-                    ->hint(__('An optional link to the component.')),
+                    ->helperText(__('cachet::component.form.link_helper')),
             ]);
     }
 
@@ -48,17 +48,17 @@ class ComponentsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
-            ->modelLabel(__('Component'))
-            ->pluralModelLabel(__('Components'))
+            ->modelLabel(trans_choice('cachet::component.resource_label', 1))
+            ->pluralModelLabel(trans_choice('cachet::component.resource_label', 2))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name')),
+                    ->label(__('cachet::component.list.headers.name')),
                 Tables\Columns\TextColumn::make('status')
-                    ->label(__('Status'))
+                    ->label(__('cachet::component.list.headers.status'))
                     ->badge()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('enabled')
-                    ->label(__('Enabled'))
+                    ->label(__('cachet::component.list.headers.enabled'))
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: false),
             ])

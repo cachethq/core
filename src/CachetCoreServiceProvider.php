@@ -71,7 +71,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'cachet');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'cachet');
 
         $this->configureRateLimiting();
         $this->registerRoutes();
