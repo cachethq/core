@@ -1,7 +1,7 @@
 {
     "+:count Update": "+:count Atualização|+:count Atualizações",
     ":count Incident": ":count Incidente|:count Incidentes",
-    ":name RSS Feed": ":name Feed RSS",
+    ":name RSS Feed": "Feed RSS :name",
     "Add Component": "Adicionar Component",
     "Admin": "Admin",
     "Always Hidden": "Sempre Oculto",
