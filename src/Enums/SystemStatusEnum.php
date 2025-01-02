@@ -16,9 +16,9 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::operational => __('All systems are operational.'),
-            self::partial_outage => __('Some systems are experiencing issues.'),
-            self::major_outage => __('Some systems are experiencing major issues.'),
+            self::operational => __('cachet::system_status.operational'),
+            self::partial_outage => __('cachet::system_status.partial_outage'),
+            self::major_outage => __('cachet::system_status.major_outage'),
         };
     }
 

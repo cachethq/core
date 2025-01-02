@@ -4,7 +4,7 @@
 
         <div>
             <x-filament::button type="submit" color="primary">
-                {{ __('Import Feed') }}
+                {{ __('cachet::integrations.oh_dear.import_feed_button') }}
             </x-filament::button>
         </div>
     </x-filament-panels::form>

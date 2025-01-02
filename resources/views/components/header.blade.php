@@ -12,12 +12,16 @@
 
     @if ($dashboardLoginLink)
     <div class="flex items-center gap-2.5 sm:gap-5">
-        <a href="{{ Cachet\Cachet::dashboardPath() }}" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground">Dashboard</a>
+        <a href="{{ Cachet\Cachet::dashboardPath() }}" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground">
+            {{ __('filament-panels::pages/dashboard.title') }}
+        </a>
         @auth
         {{-- TODO: This form sucks... --}}
         <form action="{{ \Cachet\Cachet::dashboardPath() }}/logout" method="POST">
             @csrf
-            <button class="text-sm font-medium text-zinc-800 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300 sm:text-base">Logout</button>
+            <button class="text-sm font-medium text-zinc-800 transition hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300 sm:text-base">
+                {{ __('filament-panels::layout.actions.logout.label') }}
+            </button>
         </form>
         @endauth
     </div>
