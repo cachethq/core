@@ -36,7 +36,10 @@ class WebhookSubscription extends Model
     {
         return WebhookCall::create()
             ->url($this->url)
-            ->payload($payload)
+            ->payload([
+                'event' => $event->value,
+                'body' => $payload,
+            ])
             ->meta([
                 'subscription_id' => $this->getKey(),
                 'event' => $event->value,
