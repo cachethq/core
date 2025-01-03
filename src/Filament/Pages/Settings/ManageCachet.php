@@ -88,7 +88,8 @@ class ManageCachet extends SettingsPage
                     Forms\Components\Grid::make(2)
                         ->schema([
                             Forms\Components\Toggle::make('recent_incidents_only')
-                                ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_only')),
+                                ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_only'))
+                                ->reactive(),
                             Forms\Components\TextInput::make('recent_incidents_days')
                                 ->numeric()
                                 ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_days'))
