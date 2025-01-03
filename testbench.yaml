@@ -5,6 +5,16 @@ providers:
   - Spatie\LaravelSettings\LaravelSettingsServiceProvider
   - Spatie\LaravelData\LaravelDataServiceProvider
 
+env:
+  - MAIL_MAILER=smtp
+  - MAIL_HOST=127.0.0.1
+  - MAIL_PORT=2525
+  - MAIL_USERNAME=cachet
+  - MAIL_PASSWORD=null
+  - MAIL_ENCRYPTION=null
+  - MAIL_FROM_ADDRESS="hello@cachethq.io"
+  - MAIL_FROM_NAME=Cachet
+
 migrations:
   - workbench/database/migrations
 
