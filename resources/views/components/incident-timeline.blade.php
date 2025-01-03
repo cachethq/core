@@ -2,7 +2,7 @@
     <div class="border-b py-2 dark:border-zinc-700 flex justify-between flex-col md:flex-row md:items-center">
         <div>
             <h2 class="text-2xl font-semibold">
-                {{ $recentIncidentsOnly ? __('Recent Incidents') : __('cachet::incident.timeline.past_incidents_header') }}</h2>
+                {{ $recentIncidentsOnly ? __('cachet::incident.timeline.recent_incidents_header') : __('cachet::incident.timeline.past_incidents_header') }}</h2>
         </div>
 
         <div class="flex

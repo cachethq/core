@@ -88,14 +88,14 @@ class ManageCachet extends SettingsPage
                     Forms\Components\Grid::make(2)
                         ->schema([
                             Forms\Components\Toggle::make('recent_incidents_only')
-                                ->label(__('Show Recent Incidents Only')),
+                                ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_only')),
                             Forms\Components\TextInput::make('recent_incidents_days')
                                 ->numeric()
-                                ->label(__('Number of Days to Show Recent Incidents'))
+                                ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_days'))
                                 ->minValue(0)
                                 ->nullable()
                                 ->step(1)
-                                ->suffix(__('days'))
+                                ->suffix(__('cachet::settings.manage_cachet.recent_incidents_days_suffix_days'))
                                 ->hidden(fn (Get $get) => $get('recent_incidents_only') !== true)
                         ]),
                 ]),
