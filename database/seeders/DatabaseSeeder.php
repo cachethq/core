@@ -217,6 +217,8 @@ ABOUT;
         $appSettings->refresh_rate = null;
         $appSettings->dashboard_login_link = true;
         $appSettings->major_outage_threshold = 25;
+        $appSettings->recent_incidents_only = false;
+        $appSettings->recent_incidents_days = 7;
         $appSettings->save();
 
         $customizationSettings = app(CustomizationSettings::class);
