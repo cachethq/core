@@ -25,11 +25,4 @@ return [
             '24h_success_rate' => 'Success rate (24h)',
         ],
     ],
-    'events' => [
-        'beacon_sent' => 'Beacon sent',
-        'component_created' => 'Component created',
-        'component_updated' => 'Component updated',
-        'component_deleted' => 'Component deleted',
-        'component_status_changed' => 'Component status changed',
-    ],
 ];

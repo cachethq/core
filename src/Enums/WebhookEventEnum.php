@@ -4,8 +4,6 @@ namespace Cachet\Enums;
 
 enum WebhookEventEnum: string
 {
-    case beacon_sent = 'beacon_sent';
-    
     case component_created = 'component_created';
     case component_updated = 'component_updated';
     case component_deleted = 'component_deleted';
