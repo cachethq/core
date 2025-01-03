@@ -2,6 +2,9 @@ import { defineConfig } from 'vite'
 import laravel from 'laravel-vite-plugin'
 
 export default defineConfig({
+  build: {
+    cssMinify: 'lightningcss'
+  },
   plugins: [
     laravel({
       input: [

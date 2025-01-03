@@ -25,7 +25,7 @@
                             <a href="{{ route('cachet.status-page.incident', $incident) }}">{{ $incident->name}}</a>
                         </h3>
                         @auth
-                            <a href="{{ $incident->filamentDashboardEditUrl() }}" class="underline text-right text-sm text-zinc-500 hover:text-zinc-400 dark:text-zinc-400 dark:hover:text-zinc-300" title="{{ __('Edit Incident') }}">
+                            <a href="{{ $incident->filamentDashboardEditUrl() }}" class="underline text-right text-sm text-zinc-500 hover:text-zinc-400 dark:text-zinc-400 dark:hover:text-zinc-300" title="{{ __('cachet::incident.edit_button_title') }}">
                                 <x-heroicon-m-pencil-square class="size-4" />
                             </a>
                         @endauth
@@ -72,7 +72,7 @@
         <div class="bg-white border divide-y rounded-lg ml-9 dark:divide-zinc-700 dark:border-zinc-700 dark:bg-white/5">
             <div class="flex flex-col p-4 divide-y dark:divide-zinc-700">
                 <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">
-                    {{ __('No incidents reported.') }}
+                    {{ __('cachet::incident.no_incidents_reported') }}
                 </div>
             </div>
         </div>

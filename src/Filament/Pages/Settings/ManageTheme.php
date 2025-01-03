@@ -14,7 +14,15 @@ class ManageTheme extends SettingsPage
 {
     protected static string $settings = ThemeSettings::class;
 
-    protected static ?string $navigationGroup = 'Settings';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('cachet::navigation.settings.label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('cachet::navigation.settings.items.manage_theme');
+    }
 
     public function form(Form $form): Form
     {
@@ -24,17 +32,17 @@ class ManageTheme extends SettingsPage
                     Forms\Components\FileUpload::make('app_banner')
                         ->image()
                         ->imageEditor()
-                        ->label(__('Banner Image'))
+                        ->label(__('cachet::settings.manage_theme.app_banner_label'))
                         ->disk('public')
                         ->columnSpanFull(),
                 ]),
 
                 Forms\Components\Section::make()->columns(2)
-                    ->heading(__('Status Page Accent'))
-                    ->description(__('Customize the accent color of your status page. Cachet can automatically select a matching base color.'))
+                    ->heading(__('cachet::settings.manage_theme.status_page_accent.heading'))
+                    ->description(__('cachet::settings.manage_theme.status_page_accent.description'))
                     ->schema([
                         Forms\Components\Select::make('accent')
-                            ->label(__('Accent Color'))
+                            ->label(__('cachet::settings.manage_theme.status_page_accent.accent_color_label'))
                             ->options([
                                 ...collect(Color::all())
                                     ->except(ThemeData::GRAYS)
@@ -57,7 +65,7 @@ class ManageTheme extends SettingsPage
                             }),
 
                         Forms\Components\Select::make('accent_content')
-                            ->label(__('Base Color'))
+                            ->label(__('cachet::settings.manage_theme.status_page_accent.accent_content_label'))
                             ->options(function () {
                                 return [
                                     ...collect(Color::all())->only(ThemeData::GRAYS)->map(function (array $shades, string $color) {
@@ -72,7 +80,7 @@ class ManageTheme extends SettingsPage
                             ->allowHtml(),
 
                         Forms\Components\Toggle::make('accent_pairing')
-                            ->label(__('Accent Pairing'))
+                            ->label(__('cachet::settings.manage_theme.status_page_accent.accent_pairing_label'))
                             ->reactive()
                             ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, ?bool $old, ?bool $state) {
                                 $accent = $get('accent');

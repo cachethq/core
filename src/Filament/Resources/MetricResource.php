@@ -25,44 +25,45 @@ class MetricResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->columns(4)->schema([
                     Forms\Components\TextInput::make('name')
-                        ->label(__('Name'))
+                        ->label(__('cachet::metric.form.name_label'))
                         ->required()
                         ->maxLength(255)
                         ->columnSpan(3)
                         ->autocomplete(false),
                     Forms\Components\TextInput::make('suffix')
-                        ->label(__('Suffix'))
+                        ->label(__('cachet::metric.form.suffix_label'))
                         ->required()
                         ->maxLength(255)
                         ->placeholder('e.g. ms, %, etc.'),
                     Forms\Components\MarkdownEditor::make('description')
-                        ->label(__('Description'))
+                        ->label(__('cachet::metric.form.description_label'))
                         ->maxLength(255)
                         ->columnSpanFull(),
                     Forms\Components\ToggleButtons::make('default_view')
-                        ->label(__('Default view'))
+                        ->label(__('cachet::metric.form.default_view_label'))
                         ->options(MetricViewEnum::class)
                         ->inline()
                         ->required()
                         ->default(MetricViewEnum::last_hour)
                         ->columnSpanFull(),
                     Forms\Components\TextInput::make('default_value')
+                        ->label(__('cachet::metric.form.default_value_label'))
                         ->numeric()
                         ->columnSpan(2),
                     Forms\Components\Select::make('calc_type')
-                        ->label(__('Metric Type'))
+                        ->label(__('cachet::metric.form.calc_type_label'))
                         ->required()
                         ->options(MetricTypeEnum::class)
                         ->default(MetricTypeEnum::sum)
                         ->columnSpan(2),
                     Forms\Components\TextInput::make('places')
-                        ->label(__('Places'))
+                        ->label(__('cachet::metric.form.places_label'))
                         ->required()
                         ->numeric()
                         ->default(2)
                         ->columnSpan(2),
                     Forms\Components\TextInput::make('threshold')
-                        ->label(__('Threshold'))
+                        ->label(__('cachet::metric.form.threshold_label'))
                         ->required()
                         ->numeric()
                         ->default(5)
@@ -70,13 +71,13 @@ class MetricResource extends Resource
                 ])->columnSpan(3),
                 Forms\Components\Section::make()->schema([
                     Forms\Components\ToggleButtons::make('visible')
-                        ->label(__('Visible'))
+                        ->label(__('cachet::metric.form.visible_label'))
                         ->inline()
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
                     Forms\Components\Toggle::make('display_chart')
-                        ->label(__('Display chart'))
+                        ->label(__('cachet::metric.form.display_chart_label'))
                         ->default(true)
                         ->required(),
 
@@ -89,57 +90,57 @@ class MetricResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label(__('cachet::metric.list.headers.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('suffix')
-                    ->label(__('Suffix'))
+                    ->label(__('cachet::metric.list.headers.suffix'))
                     ->fontFamily('mono')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('default_value')
-                    ->label(__('Default value'))
+                    ->label(__('cachet::metric.list.headers.default_value'))
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('calc_type')
-                    ->label(__('Metric Type'))
+                    ->label(__('cachet::metric.list.headers.calc_type'))
                     ->badge()
                     ->sortable(),
                 Tables\Columns\IconColumn::make('display_chart')
-                    ->label(__('Display chart'))
+                    ->label(__('cachet::metric.list.headers.display_chart'))
                     ->boolean(),
                 Tables\Columns\TextColumn::make('places')
-                    ->label(__('Places'))
+                    ->label(__('cachet::metric.list.headers.places'))
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('default_view')
-                    ->label(__('Default view'))
+                    ->label(__('cachet::metric.list.headers.default_view'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('threshold')
-                    ->label(__('Threshold'))
+                    ->label(__('cachet::metric.list.headers.threshold'))
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('order')
-                    ->label(__('Order'))
+                    ->label(__('cachet::metric.list.headers.order'))
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('visible')
-                    ->label(__('Visible'))
+                    ->label(__('cachet::metric.list.headers.visible'))
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('points_count')
-                    ->label(__('Points count'))
+                    ->label(__('cachet::metric.list.headers.points_count'))
                     ->counts('metricPoints'),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Created at'))
+                    ->label(__('cachet::metric.list.headers.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('Updated at'))
+                    ->label(__('cachet::metric.list.headers.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -157,18 +158,18 @@ class MetricResource extends Resource
             ])
             ->reorderable('order')
             ->defaultSort('order')
-            ->emptyStateHeading(__('Metrics'))
-            ->emptyStateDescription(__('Metrics are used to track and display data on your status page.'));
+            ->emptyStateHeading(__('cachet::metric.list.empty_state.heading'))
+            ->emptyStateDescription(__('cachet::metric.list.empty_state.description'));
     }
 
     public static function getLabel(): ?string
     {
-        return __('Metric');
+        return trans_choice('cachet::metric.resource_label', 1);
     }
 
     public static function getPluralLabel(): ?string
     {
-        return __('Metrics');
+        return trans_choice('cachet::metric.resource_label', 2);
     }
 
     public static function getRelations(): array

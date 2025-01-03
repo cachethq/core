@@ -2,7 +2,7 @@
     <div class="border-b py-2 dark:border-zinc-700 flex justify-between flex-col md:flex-row md:items-center">
         <div>
             <h2 class="text-2xl font-semibold">
-                {{ $recentIncidentsOnly ? __('Recent Incidents') : __('Past Incidents') }}</h2>
+                {{ $recentIncidentsOnly ? __('Recent Incidents') : __('cachet::incident.timeline.past_incidents_header') }}</h2>
         </div>
 
         <div class="flex
@@ -37,7 +37,7 @@
             <x-cachet::incident :date="$date" :incidents="$incident" />
         @empty
             <div class="text-zinc-500 dark:text-zinc-400 text-center">
-                {{ __('No incidents reported between :from and :to.', ['from' => $from, 'to' => $to]) }}
+                {{ __('cachet::incident.timeline.no_incidents_reported_between', ['from' => $from, 'to' => $to]) }}
             </div>
         @endforelse
     </div>
@@ -47,21 +47,19 @@
             <a href="{{ route('cachet.status-page', ['from' => $nextPeriodFrom]) }}"
                 class="flex items-center gap-1 border dark:border-zinc-400 py-2 px-3 rounded-lg text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
                 <x-heroicon-m-chevron-left class="size-5" />
-                {{ __('Previous') }}
+                {{ __('cachet::incident.timeline.navigate.previous') }}
             </a>
         @endif
 
-        @if ($canPageForward)
-            <a href="{{ route('cachet.status-page') }}"
-                class="flex items-center gap-1 border dark:border-zinc-400 py-2 px-3 rounded-lg text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
-                {{ __('Today') }}
-            </a>
+        @if($canPageForward)
+        <a href="{{ route('cachet.status-page') }}" class="flex items-center gap-1 border dark:border-zinc-400 py-2 px-3 rounded-lg text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
+            {{ __('cachet::incident.timeline.navigate.today') }}
+        </a>
 
-            <a href="{{ route('cachet.status-page', ['from' => $nextPeriodTo]) }}"
-                class="flex items-center gap-1 border dark:border-zinc-400 py-2 px-3 rounded-lg text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
-                {{ __('Next') }}
-                <x-heroicon-m-chevron-right class="size-5" />
-            </a>
+        <a href="{{ route('cachet.status-page', ['from' => $nextPeriodTo]) }}" class="flex items-center gap-1 border dark:border-zinc-400 py-2 px-3 rounded-lg text-zinc-500 dark:text-zinc-400 hover:underline text-sm">
+            {{ __('cachet::incident.timeline.navigate.next') }}
+            <x-heroicon-m-chevron-right class="size-5" />
+        </a>
         @endif
     </div>
 </div>
