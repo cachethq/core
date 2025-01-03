@@ -3,12 +3,13 @@
 namespace Cachet\Models;
 
 use Cachet\Enums\WebhookEventEnum;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 
 class WebhookAttempt extends Model
 {
-    use MassPrunable;
+    use MassPrunable, HasFactory;
 
     protected $fillable = [
         'subscription_id',
@@ -20,6 +21,7 @@ class WebhookAttempt extends Model
     ];
 
     protected $casts = [
+        'payload' => 'json',
         'event' => WebhookEventEnum::class,
     ];
 
