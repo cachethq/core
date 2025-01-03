@@ -3,9 +3,9 @@
 namespace Cachet\Http\Controllers;
 
 use Cachet\Models\Incident;
+use Cachet\Settings\AppSettings;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
-use Cachet\Settings\AppSettings;
 
 class RssController
 {

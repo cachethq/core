@@ -2,12 +2,12 @@
 
 namespace Cachet\Filament\Pages\Settings;
 
-use Filament\Forms;
-use Filament\Forms\Get;
-use Filament\Forms\Form;
-use Illuminate\Support\Str;
 use Cachet\Settings\AppSettings;
+use Filament\Forms;
+use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Pages\SettingsPage;
+use Illuminate\Support\Str;
 
 class ManageCachet extends SettingsPage
 {
@@ -96,7 +96,7 @@ class ManageCachet extends SettingsPage
                                 ->nullable()
                                 ->step(1)
                                 ->suffix(__('cachet::settings.manage_cachet.recent_incidents_days_suffix_days'))
-                                ->hidden(fn (Get $get) => $get('recent_incidents_only') !== true)
+                                ->hidden(fn (Get $get) => $get('recent_incidents_only') !== true),
                         ]),
                 ]),
             ]);

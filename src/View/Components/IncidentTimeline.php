@@ -68,7 +68,7 @@ class IncidentTimeline extends Component
                     });
                 });
             })
-            ->when(!$this->appSettings->recent_incidents_only, function ($query) use ($endDate, $startDate) {
+            ->when(! $this->appSettings->recent_incidents_only, function ($query) use ($endDate, $startDate) {
                 $query->where(function (Builder $query) use ($endDate, $startDate) {
                     $query->whereBetween('occurred_at', [
                         $endDate->startOfDay()->toDateTimeString(),
