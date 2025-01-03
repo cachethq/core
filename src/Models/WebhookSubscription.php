@@ -27,6 +27,11 @@ class WebhookSubscription extends Model
             ->orWhereJsonContains('selected_events', $event->value);
     }
 
+    public function attempts()
+    {
+        return $this->hasMany(WebhookAttempt::class, 'subscription_id')->latest();
+    }
+
     public function makeCall(WebhookEventEnum $event, array $payload): WebhookCall
     {
         return WebhookCall::create()
