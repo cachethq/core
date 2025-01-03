@@ -9,12 +9,15 @@ return [
         'major_outage_threshold_label' => 'Schwellenwert für schwere Ausfälle',
         'refresh_rate_label' => 'Automatisch Seite neuladen',
         'refresh_rate_label_input_suffix_seconds' => 'Sekunden',
+        'recent_incidents_days_suffix_days' => 'Tage',
         'toggles' => [
             'support_cachet' => 'Cachet unterstützen',
             'show_timezone' => 'Zeitzone anzeigen',
             'show_dashboard_link' => 'Dashboard-Link anzeigen',
             'display_graphs' => 'Diagramme anzeigen',
             'only_show_disrupted_days' => 'Nur Tage mit Vorfällen anzeigen',
+            'recent_incidents_only' => 'Nur aktuelle Vorfälle anzeigen',
+            'recent_incidents_days' => 'Anzahl der Tage, an denen aktuelle Vorfälle angezeigt werden sollen',
         ],
     ],
     'manage_customization' => [
