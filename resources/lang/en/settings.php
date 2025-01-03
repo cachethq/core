@@ -9,12 +9,15 @@ return [
         'major_outage_threshold_label' => 'Major Outage Threshold',
         'refresh_rate_label' => 'Automatically Refresh Page',
         'refresh_rate_label_input_suffix_seconds' => 'seconds',
+        'recent_incidents_days_suffix_days' => 'days',
         'toggles' => [
             'support_cachet' => 'Support Cachet',
             'show_timezone' => 'Show Timezone',
             'show_dashboard_link' => 'Show Dashboard Link',
             'display_graphs' => 'Display Graphs',
             'only_show_disrupted_days' => 'Only Show Disrupted Days',
+            'recent_incidents_only' => 'Show Recent Incidents Only',
+            'recent_incidents_days' => 'Number of Days to Show Recent Incidents',
         ],
     ],
     'manage_customization' => [

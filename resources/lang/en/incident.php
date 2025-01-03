@@ -15,6 +15,7 @@ return [
     'no_incidents_reported' => 'No incidents reported.',
     'timeline' => [
         'past_incidents_header' => 'Past Incidents',
+        'recent_incidents_header' => 'Recent Incidents',
         'no_incidents_reported_between' => 'No incidents reported between :from and :to',
         'navigate' => [
             'previous' => 'Previous',

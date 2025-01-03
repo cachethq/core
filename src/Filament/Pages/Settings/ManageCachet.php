@@ -2,11 +2,12 @@
 
 namespace Cachet\Filament\Pages\Settings;
 
-use Cachet\Settings\AppSettings;
 use Filament\Forms;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
-use Filament\Pages\SettingsPage;
 use Illuminate\Support\Str;
+use Cachet\Settings\AppSettings;
+use Filament\Pages\SettingsPage;
 
 class ManageCachet extends SettingsPage
 {
@@ -84,6 +85,19 @@ class ManageCachet extends SettingsPage
                         ->label(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days')),
                     Forms\Components\Toggle::make('dashboard_login_link')
                         ->label(__('cachet::settings.manage_cachet.toggles.show_dashboard_link')),
+                    Forms\Components\Grid::make(2)
+                        ->schema([
+                            Forms\Components\Toggle::make('recent_incidents_only')
+                                ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_only')),
+                            Forms\Components\TextInput::make('recent_incidents_days')
+                                ->numeric()
+                                ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_days'))
+                                ->minValue(0)
+                                ->nullable()
+                                ->step(1)
+                                ->suffix(__('cachet::settings.manage_cachet.recent_incidents_days_suffix_days'))
+                                ->hidden(fn (Get $get) => $get('recent_incidents_only') !== true)
+                        ]),
                 ]),
             ]);
     }
