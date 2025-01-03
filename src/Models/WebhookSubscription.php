@@ -24,6 +24,10 @@ class WebhookSubscription extends Model
         'selected_events',
     ];
 
+    protected $hidden = [
+        'secret',
+    ];
+
     /**
      * @var array<string, string>
      */
