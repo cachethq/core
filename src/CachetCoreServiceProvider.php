@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Listeners\SendWebhookListener;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
@@ -14,6 +15,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
@@ -55,6 +57,8 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
+
+        Event::listen('Cachet\Events\Incidents\*', SendWebhookListener::class);
 
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
             'User-Agent', Cachet::USER_AGENT
