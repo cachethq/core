@@ -87,8 +87,8 @@ class WebhookSubscriptionResource extends Resource
                 Tables\Columns\TextColumn::make('url')
                     ->label(__('cachet::webhook.list.headers.url'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('24h_success_rate')
-                    ->label(__('cachet::webhook.list.headers.24h_success_rate')),
+                Tables\Columns\TextColumn::make('success_rate_24h')
+                    ->label(__('cachet::webhook.list.headers.success_rate_24h')),
             ])
             ->filters([
                 //

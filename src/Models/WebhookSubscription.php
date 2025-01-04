@@ -71,4 +71,26 @@ class WebhookSubscription extends Model
             ])
             ->useSecret($this->secret);
     }
+
+    /**
+     * Formats the success rate as a percentage.
+     */
+    public function getSuccessRate24hAttribute($value)
+    {
+        return number_format(($value ?? 0) * 100, 2) . '%';
+    }
+
+    /**
+     * Recalculate the success rate for the last 24 hours based on the attempts.
+     */
+    public function recalculateSuccessRate(): self
+    {
+        $attempts24hQuery = $this->attempts()->where('created_at', '>=', now()->subDay());
+        $totalAttempts24h = $attempts24hQuery->count();
+        $successfulAttempts24h = $attempts24hQuery->whereSuccessful()->count();
+
+        $this->success_rate_24h = $totalAttempts24h > 0 ? $successfulAttempts24h / $totalAttempts24h : 0;
+
+        return $this;
+    }
 }

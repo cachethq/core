@@ -2,10 +2,16 @@
     @forelse($attempts as $attempt)
         <div class="flex items-center space-x-2">
             <div @class([
-                'bg-red-500' => $attempt->response_code < 200 || $attempt->response_code > 299,
-                'bg-primary-500' => $attempt->response_code >= 200 && $attempt->response_code <= 299,
-                'flex-shrink-0 whitespace-nowrap text-white px-2 py-1 rounded-md font-semibold' => true,
-            ])>{{ $attempt->response_code }}</div>
+                'bg-red-100 text-red-500' => !$attempt->isSuccess(),
+                'bg-primary-100 text-primary-500' => $attempt->isSuccess(),
+                'flex-shrink-0 whitespace-nowrap px-1 py-1 rounded-md font-semibold' => true,
+            ])>
+                @if ($attempt->isSuccess())
+                    <x-heroicon-m-check class="size-5" />
+                @else
+                    <x-heroicon-m-x-mark class="size-5" />
+                @endif
+            </div>
 
             <div class="font-mono font-medium flex-1">{{ $attempt->event }}</div>
             <div class="text-gray-500 flex-shrink-0">{{ $attempt->created_at?->toDateTimeString() }}</div>

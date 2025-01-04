@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->boolean('send_all_events')->default(true);
             $table->json('selected_events')->nullable();
+            $table->decimal('success_rate_24h', 5, 2)->nullable();
+
             $table->timestamps();
         });
     }

@@ -22,7 +22,7 @@ return [
     'list' => [
         'headers' => [
             'url' => 'Payload URL',
-            '24h_success_rate' => 'Success rate (24h)',
+            'success_rate_24h' => 'Success rate (24h)',
         ],
     ],
 ];
