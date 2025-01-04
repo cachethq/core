@@ -33,7 +33,9 @@ return [
      | This is the model that will be used to authenticate users. This model
      | must be an instance of Illuminate\Foundation\Auth\User.
      */
-    'user_model' => \App\Models\User::class,
+    'user_model' => env('CACHET_USER_MODEL', \App\Models\User::class),
+
+    'user_migrations' => env('CACHET_USER_MIGRATIONS', true),
 
     /*
      |--------------------------------------------------------------------------
