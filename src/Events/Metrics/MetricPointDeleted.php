@@ -2,6 +2,8 @@
 
 namespace Cachet\Events\Metrics;
 
+use Cachet\Concerns\SendsWebhook;
+use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\MetricPoint;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -11,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 
 class MetricPointDeleted
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, SendsWebhook;
 
     /**
      * Create a new event instance.
@@ -31,5 +33,15 @@ class MetricPointDeleted
         return [
             new PrivateChannel('channel-name'),
         ];
+    }
+
+    public function getWebhookPayload(): array
+    {
+        return $this->metric->toArray();
+    }
+
+    public function getWebhookEventName(): WebhookEventEnum
+    {
+        return WebhookEventEnum::metric_point_deleted;
     }
 }

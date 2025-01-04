@@ -107,4 +107,18 @@ return [
      |
      */
     'docker' => env('CACHET_DOCKER', false),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Webhooks
+     |--------------------------------------------------------------------------
+     |
+     | Configure how Cachet sends webhooks for events.
+     |
+     */
+    'webhooks' => [
+        'logs' => [
+            'prune_logs_after_days' => 30,
+        ],
+    ],
 ];

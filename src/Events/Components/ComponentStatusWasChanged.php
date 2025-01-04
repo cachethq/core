@@ -2,7 +2,9 @@
 
 namespace Cachet\Events\Components;
 
+use Cachet\Concerns\SendsWebhook;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\Component;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -11,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 
 class ComponentStatusWasChanged
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels, SendsWebhook;
 
     /**
      * Create a new event instance.
@@ -31,5 +33,19 @@ class ComponentStatusWasChanged
         return [
             new PrivateChannel('channel-name'),
         ];
+    }
+
+    public function getWebhookPayload(): array
+    {
+        return [
+            'component_id' => $this->component->getKey(),
+            'old_status' => $this->oldStatus->value,
+            'new_status' => $this->newStatus->value,
+        ];
+    }
+
+    public function getWebhookEventName(): WebhookEventEnum
+    {
+        return WebhookEventEnum::component_status_changed;
     }
 }
