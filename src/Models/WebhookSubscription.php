@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\WebhookServer\WebhookCall;
 
 class WebhookSubscription extends Model
@@ -49,7 +50,7 @@ class WebhookSubscription extends Model
     /**
      * Get the attempts for this subscription.
      */
-    public function attempts()
+    public function attempts(): HasMany
     {
         return $this->hasMany(WebhookAttempt::class, 'subscription_id')->latest();
     }

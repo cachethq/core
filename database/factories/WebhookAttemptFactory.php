@@ -8,7 +8,7 @@ use Cachet\Models\WebhookSubscription;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\Component>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\WebhookAttempt>
  */
 class WebhookAttemptFactory extends Factory
 {

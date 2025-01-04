@@ -36,7 +36,7 @@ class ComponentCreated
 
     public function getWebhookPayload(): array
     {
-        return $this->incident->toArray();
+        return $this->component->toArray();
     }
 
     public function getWebhookEventName(): WebhookEventEnum

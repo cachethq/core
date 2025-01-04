@@ -23,6 +23,9 @@ class DispatchWebhooks
         }
     }
 
+    /**
+     * @return Collection<WebhookSubscription>
+     */
     private function getWebhookSubscriptionsForEvent(): Collection
     {
         return WebhookSubscription::whereEvent($this->eventName)->get();
