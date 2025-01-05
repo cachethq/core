@@ -5,6 +5,7 @@ return [
         'section_heading' => 'Support Cachet',
         'consider_supporting' => 'Please consider supporting Cachet via *GitHub Sponsors*.',
         'keep_up_to_date' => 'Keep up to date with the latest news and releases by following the *Cachet blog*.',
+        'work_in_progress_text' => 'Cachet is under active development. Things are still subject to change.',
     ],
     'powered_by' => 'Powered by',
     'open_source_status_page' => 'The open-source status page.',
