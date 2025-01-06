@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Incident;
 
-use Cachet\Data\Incident\CreateIncidentData;
+use Cachet\Data\Incident\CreateIncidentRequestData;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
@@ -14,7 +14,7 @@ class CreateIncident
     /**
      * Handle the action.
      */
-    public function handle(CreateIncidentData $data): Incident
+    public function handle(CreateIncidentRequestData $data): Incident
     {
         if (isset($data->template)) {
             $template = IncidentTemplate::query()
@@ -35,7 +35,7 @@ class CreateIncident
     /**
      * Render the incident template with the given data.
      */
-    private function parseTemplate(IncidentTemplate $template, CreateIncidentData $data): string
+    private function parseTemplate(IncidentTemplate $template, CreateIncidentRequestData $data): string
     {
         $vars = array_merge($data->templateVars, [
             'incident' => [

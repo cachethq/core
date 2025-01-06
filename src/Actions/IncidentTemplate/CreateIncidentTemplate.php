@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\IncidentTemplate;
 
-use Cachet\Data\IncidentTemplate\CreateIncidentTemplateData;
+use Cachet\Data\IncidentTemplate\CreateIncidentTemplateRequestData;
 use Cachet\Models\IncidentTemplate;
 
 class CreateIncidentTemplate
@@ -10,7 +10,7 @@ class CreateIncidentTemplate
     /**
      * Handle the action.
      */
-    public function handle(CreateIncidentTemplateData $data): IncidentTemplate
+    public function handle(CreateIncidentTemplateRequestData $data): IncidentTemplate
     {
         return IncidentTemplate::create($data->toArray());
     }

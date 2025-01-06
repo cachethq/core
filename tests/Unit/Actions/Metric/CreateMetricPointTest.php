@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Metric\CreateMetricPoint;
-use Cachet\Data\Metric\CreateMetricPointData;
+use Cachet\Data\Metric\CreateMetricPointRequestData;
 use Cachet\Events\Metrics\MetricPointCreated;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
@@ -13,7 +13,7 @@ it('creates a metric point if it is the first point', function () {
 
     $metric = Metric::factory()->create();
 
-    $point = app(CreateMetricPoint::class)->handle($metric, CreateMetricPointData::from([
+    $point = app(CreateMetricPoint::class)->handle($metric, CreateMetricPointRequestData::from([
         'value' => 1,
     ]));
 
@@ -55,7 +55,7 @@ it('increments the counter if within the metric\'s threshold', function () {
         'threshold' => 1,
     ]);
 
-    $point = app(CreateMetricPoint::class)->handle($metric, CreateMetricPointData::from([
+    $point = app(CreateMetricPoint::class)->handle($metric, CreateMetricPointRequestData::from([
         'value' => 1,
     ]));
 
@@ -77,7 +77,7 @@ it('creates a metric point if it is outside of the metric\'s threshold', functio
         'threshold' => 1,
     ]);
 
-    $point = app(CreateMetricPoint::class)->handle($metric, CreateMetricPointData::from([
+    $point = app(CreateMetricPoint::class)->handle($metric, CreateMetricPointRequestData::from([
         'value' => 1,
     ]));
 
@@ -99,7 +99,7 @@ it('creates a metric point for a given timestamp', function ($timestamp) {
         'threshold' => 1,
     ]);
 
-    $point = app(CreateMetricPoint::class)->handle($metric, CreateMetricPointData::from([
+    $point = app(CreateMetricPoint::class)->handle($metric, CreateMetricPointRequestData::from([
         'value' => 1,
         'timestamp' => $timestamp,
     ]));

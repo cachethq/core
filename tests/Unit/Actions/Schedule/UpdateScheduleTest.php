@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Schedule\UpdateSchedule;
-use Cachet\Data\Schedule\UpdateScheduleData;
+use Cachet\Data\Schedule\UpdateScheduleRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
@@ -9,7 +9,7 @@ use Cachet\Models\Schedule;
 it('can update a schedule', function () {
     $schedule = Schedule::factory()->create();
 
-    $data = UpdateScheduleData::from([
+    $data = UpdateScheduleRequestData::from([
         'name' => 'Schedule Updated',
     ]);
 
@@ -23,7 +23,7 @@ it('can update a schedule with components', function () {
     $schedule = Schedule::factory()->create();
     [$componentA, $componentB] = Component::factory()->count(2)->create();
 
-    $data = UpdateScheduleData::from([
+    $data = UpdateScheduleRequestData::from([
         'components' => [
             ['id' => $componentA->id, 'status' => ComponentStatusEnum::performance_issues],
             ['id' => $componentB->id, 'status' => ComponentStatusEnum::major_outage],

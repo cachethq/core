@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\ComponentGroup\CreateComponentGroup;
-use Cachet\Data\ComponentGroup\CreateComponentGroupData;
+use Cachet\Data\ComponentGroup\CreateComponentGroupRequestData;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 
@@ -19,7 +19,7 @@ it('can create a component group with just a name', function () {
 })->todo('Make visible default to non-null value?');
 
 it('can create a component group with a name, order and visibility', function () {
-    $data = CreateComponentGroupData::from([
+    $data = CreateComponentGroupRequestData::from([
         'name' => 'Services',
         'order' => 2,
         'visible' => ResourceVisibilityEnum::authenticated->value,
@@ -36,7 +36,7 @@ it('can create a component group with a name, order and visibility', function ()
 it('can create a component group and add components', function () {
     $components = Component::factory()->count(3)->create();
 
-    $data = CreateComponentGroupData::from([
+    $data = CreateComponentGroupRequestData::from([
         'name' => 'Services',
         'components' => $components->pluck('id')->values()->all(),
     ]);

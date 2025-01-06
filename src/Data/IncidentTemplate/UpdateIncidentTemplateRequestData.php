@@ -5,19 +5,29 @@ namespace Cachet\Data\IncidentTemplate;
 use Cachet\Data\BaseData;
 use Cachet\Enums\IncidentTemplateEngineEnum;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Attributes\Validation\Enum;
 use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-final class UpdateIncidentTemplateData extends BaseData
+final class UpdateIncidentTemplateRequestData extends BaseData
 {
     public function __construct(
-        #[Max(255)]
         public readonly ?string $name = null,
         public readonly ?string $template = null,
         private readonly ?string $slug = null,
-        #[Enum(IncidentTemplateEngineEnum::class)]
         public readonly ?IncidentTemplateEngineEnum $engine = null,
     ) {}
+
+    public static function rules(ValidationContext $context): array
+    {
+        return [
+            'name' => ['string', 'max:255'],
+            'slug' => ['string'],
+            'template' => ['string'],
+            'engine' => [Rule::enum(IncidentTemplateEngineEnum::class)],
+        ];
+    }
 
     public function slug(): string
     {

@@ -3,32 +3,29 @@
 namespace Cachet\Data\ComponentGroup;
 
 use Cachet\Data\BaseData;
-use Cachet\Enums\ResourceVisibilityEnum;
 use Illuminate\Validation\Rule;
-use Spatie\LaravelData\Attributes\Validation\Enum;
 use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\ListType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-final class CreateComponentGroupData extends BaseData
+final class UpdateComponentGroupRequestData extends BaseData
 {
     public function __construct(
-        #[Max(255), Required]
-        public readonly string $name,
-        #[IntegerType, Min(0)]
+        public readonly ?string $name = null,
         public readonly ?int $order = null,
-        #[Enum(ResourceVisibilityEnum::class)]
-        public readonly ?ResourceVisibilityEnum $visible = null,
-        #[ListType]
+        public readonly ?bool $visible = null,
         public readonly ?array $components = null,
     ) {}
 
     public static function rules(ValidationContext $context): array
     {
         return [
+            'name' => ['string', 'max:255'],
+            'order' => ['int', 'min:0'],
+            'visible' => ['bool'],
+            'components' => ['array'],
             'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
         ];
     }

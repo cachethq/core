@@ -1,8 +1,8 @@
 <?php
 
 use Cachet\Actions\Update\CreateUpdate;
-use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
-use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateData;
+use Cachet\Data\IncidentUpdate\CreateIncidentUpdateRequestData;
+use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
@@ -10,7 +10,7 @@ use Cachet\Models\Schedule;
 it('can create an incident update', function () {
     $incident = Incident::factory()->create();
 
-    $data = CreateIncidentUpdateData::from([
+    $data = CreateIncidentUpdateRequestData::from([
         'message' => 'This is an update message.',
         'status' => IncidentStatusEnum::investigating,
     ]);
@@ -26,7 +26,7 @@ it('an incident\'s computed latest status equals the new status', function () {
         'status' => IncidentStatusEnum::investigating,
     ]);
 
-    $data = CreateIncidentUpdateData::from([
+    $data = CreateIncidentUpdateRequestData::from([
         'message' => 'This is an update message.',
         'status' => IncidentStatusEnum::identified,
     ]);
@@ -42,7 +42,7 @@ it('an incident\'s computed latest status equals the new status', function () {
 it('can create a schedule update', function () {
     $schedule = Schedule::factory()->create();
 
-    $data = CreateScheduleUpdateData::from([
+    $data = CreateScheduleUpdateRequestData::from([
         'message' => 'This is an update message for a schedule.',
         'status' => IncidentStatusEnum::investigating,
     ]);

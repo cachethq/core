@@ -6,12 +6,14 @@ use Cachet\Data\BaseData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
+use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Attributes\Validation\Enum;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\RequiredWithout;
+use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-final class CreateIncidentData extends BaseData
+final class CreateIncidentRequestData extends BaseData
 {
     public function __construct(
         #[Max(255)]
@@ -32,6 +34,23 @@ final class CreateIncidentData extends BaseData
         #[Enum(ComponentStatusEnum::class)]
         public readonly ?ComponentStatusEnum $componentStatus = null,
     ) {}
+
+    public static function rules(ValidationContext $context): array
+    {
+        return [
+            'name' => ['required', 'string', 'max:255'],
+            'message' => ['required_without:template', 'string'],
+            'template' => ['required_without:message', 'string'],
+            'status' => ['required', Rule::enum(IncidentStatusEnum::class)],
+            'visible' => ['boolean'],
+            'stickied' => ['boolean'],
+            'notifications' => ['boolean'],
+            'occurred_at' => ['nullable', 'string'],
+            'template_vars' => ['array'],
+            'component_id' => [Rule::exists('components', 'id')],
+            'component_status' => ['nullable', Rule::enum(ComponentStatusEnum::class), 'required_with:component_id'],
+        ];
+    }
 
     public function withMessage(string $message): self
     {

@@ -3,7 +3,7 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Actions\Update\CreateUpdate as CreateIncidentUpdateAction;
-use Cachet\Data\IncidentUpdate\CreateIncidentUpdateData;
+use Cachet\Data\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
@@ -157,7 +157,7 @@ class IncidentResource extends Resource
                     ->label(__('cachet::incident.list.actions.record_update'))
                     ->color('info')
                     ->action(function (CreateIncidentUpdateAction $createIncidentUpdate, Incident $record, array $data) {
-                        $createIncidentUpdate->handle($record, CreateIncidentUpdateData::from($data));
+                        $createIncidentUpdate->handle($record, CreateIncidentUpdateRequestData::from($data));
 
                         Notification::make()
                             ->title(__('cachet::incident.record_update.success_title', ['name' => $record->name]))

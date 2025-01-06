@@ -1,14 +1,14 @@
 <?php
 
 use Cachet\Actions\Update\EditUpdate;
-use Cachet\Data\IncidentUpdate\EditIncidentUpdateData;
-use Cachet\Data\ScheduleUpdate\EditScheduleUpdateData;
+use Cachet\Data\IncidentUpdate\EditIncidentUpdateRequestData;
+use Cachet\Data\ScheduleUpdate\EditScheduleUpdateRequestData;
 use Cachet\Models\Update;
 
 it('can update an incident update', function () {
     $update = Update::factory()->forIncident()->create();
 
-    $data = EditIncidentUpdateData::from([
+    $data = EditIncidentUpdateRequestData::from([
         'message' => 'Incident Updated',
     ]);
 
@@ -22,7 +22,7 @@ it('can update an incident update', function () {
 it('can update a schedule update', function () {
     $update = Update::factory()->forSchedule()->create();
 
-    $data = EditScheduleUpdateData::from([
+    $data = EditScheduleUpdateRequestData::from([
         'message' => 'Schedule Updated',
     ]);
 

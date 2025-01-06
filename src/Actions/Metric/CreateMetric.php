@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Metric;
 
-use Cachet\Data\Metric\CreateMetricData;
+use Cachet\Data\Metric\CreateMetricRequestData;
 use Cachet\Models\Metric;
 
 class CreateMetric
@@ -10,7 +10,7 @@ class CreateMetric
     /**
      * Handle the action.
      */
-    public function handle(CreateMetricData $data): Metric
+    public function handle(CreateMetricRequestData $data): Metric
     {
         return Metric::create($data->toArray());
     }

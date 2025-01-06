@@ -2,8 +2,8 @@
 
 namespace Cachet\Actions\Schedule;
 
-use Cachet\Data\Schedule\CreateScheduleData;
-use Cachet\Data\Schedule\ScheduleComponentData;
+use Cachet\Data\Schedule\CreateScheduleRequestData;
+use Cachet\Data\Schedule\ScheduleComponentRequestData;
 use Cachet\Models\Schedule;
 
 class CreateSchedule
@@ -11,14 +11,14 @@ class CreateSchedule
     /**
      * Handle the action.
      */
-    public function handle(CreateScheduleData $data): Schedule
+    public function handle(CreateScheduleRequestData $data): Schedule
     {
         return tap(Schedule::create($data->except('components')->toArray()), function (Schedule $schedule) use ($data) {
             if (! $data->components) {
                 return;
             }
 
-            $components = collect($data->components)->map(fn (ScheduleComponentData $component) => [
+            $components = collect($data->components)->map(fn (ScheduleComponentRequestData $component) => [
                 'component_id' => $component->id,
                 'component_status' => $component->status,
             ])->all();

@@ -7,17 +7,26 @@ use Cachet\Rules\FactorOfSixty;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Rule;
+use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-final class UpdateMetricData extends BaseData
+final class UpdateMetricRequestData extends BaseData
 {
     public function __construct(
-        #[Max(255)]
         public readonly string $name,
-        #[Max(255)]
         public readonly ?string $suffix = null,
         public readonly ?string $description = null,
         public readonly ?float $defaultValue = null,
-        #[Min(0), Max(60), Rule(new FactorOfSixty)]
         public readonly ?int $threshold = null,
     ) {}
+
+    public static function rules(ValidationContext $context): array
+    {
+        return [
+            'name' => ['string', 'max:255'],
+            'suffix' => ['string', 'max:255'],
+            'description' => ['string'],
+            'default_value' => ['decimal:1,2'],
+            'threshold' => ['int', 'min:0', 'max:60', new FactorOfSixty],
+        ];
+    }
 }

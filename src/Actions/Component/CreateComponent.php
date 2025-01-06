@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Component;
 
-use Cachet\Data\Component\CreateComponentData;
+use Cachet\Data\Component\CreateComponentRequestData;
 use Cachet\Models\Component;
 
 class CreateComponent
@@ -10,7 +10,7 @@ class CreateComponent
     /**
      * Handle the action.
      */
-    public function handle(CreateComponentData $component): Component
+    public function handle(CreateComponentRequestData $component): Component
     {
         return Component::create($component->toArray());
     }
