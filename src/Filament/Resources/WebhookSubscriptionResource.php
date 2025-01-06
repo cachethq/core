@@ -6,6 +6,7 @@ use Cachet\Enums\WebhookEventEnum;
 use Cachet\Enums\WebhookEventSelectionEnum;
 use Cachet\Filament\Resources\WebhookSubscriptionResource\Pages;
 use Cachet\Models\WebhookSubscription;
+use Cachet\View\Htmlable\TextWithLink;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
@@ -13,8 +14,6 @@ use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Facades\Blade;
 
 class WebhookSubscriptionResource extends Resource
 {
@@ -46,18 +45,10 @@ class WebhookSubscriptionResource extends Resource
                     Forms\Components\TextInput::make('secret')
                         ->label(__('cachet::webhook.form.secret_label'))
                         ->helperText(
-                            new class implements Htmlable {
-                                public function toHtml()
-                                {
-                                    return Blade::render(
-                                        preg_replace(
-                                            "/\*(.*)\*/",
-                                            "<x-filament::link href=\"https://docs.cachethq.io/v3.x/guide/webhooks\" target=\"_blank\" rel=\"nofollow noopener\">$1</x-filament::link>",
-                                            __('cachet::webhook.form.secret_helper')
-                                        )
-                                    );
-                                }
-                            }
+                            TextWithLink::make(
+                                text: __('cachet::webhook.form.secret_helper'),
+                                url: 'https://docs.cachethq.io/v3.x/guide/webhooks',
+                            )
                         )
                         ->required()
                         ->maxLength(255)
