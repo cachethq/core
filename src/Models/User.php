@@ -10,6 +10,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property bool $is_admin
+ */
 class User extends Authenticatable implements CachetUser, MustVerifyEmail
 {
     /** @use HasFactory<\Cachet\Database\Factories\UserFactory> */
@@ -24,6 +31,7 @@ class User extends Authenticatable implements CachetUser, MustVerifyEmail
         'name',
         'email',
         'password',
+        'is_admin',
     ];
 
     /**
@@ -46,7 +54,16 @@ class User extends Authenticatable implements CachetUser, MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'bool',
         ];
+    }
+
+    /**
+     * Determine if the user is an admin.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->is_admin;
     }
 
     /**
