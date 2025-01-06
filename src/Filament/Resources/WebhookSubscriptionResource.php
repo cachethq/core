@@ -3,7 +3,6 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Enums\WebhookEventEnum;
-use Cachet\Enums\WebhookEventSelectionEnum;
 use Cachet\Filament\Resources\WebhookSubscriptionResource\Pages;
 use Cachet\Models\WebhookSubscription;
 use Cachet\View\Htmlable\TextWithLink;
