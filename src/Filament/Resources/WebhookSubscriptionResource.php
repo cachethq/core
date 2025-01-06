@@ -13,6 +13,8 @@ use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Blade;
 
 class WebhookSubscriptionResource extends Resource
 {
@@ -43,7 +45,20 @@ class WebhookSubscriptionResource extends Resource
                         ->autocomplete(false),
                     Forms\Components\TextInput::make('secret')
                         ->label(__('cachet::webhook.form.secret_label'))
-                        ->helperText(__('cachet::webhook.form.secret_helper'))
+                        ->helperText(
+                            new class implements Htmlable {
+                                public function toHtml()
+                                {
+                                    return Blade::render(
+                                        preg_replace(
+                                            "/\*(.*)\*/",
+                                            "<x-filament::link href=\"https://docs.cachethq.io/v3.x/guide/webhooks\" target=\"_blank\" rel=\"nofollow noopener\">$1</x-filament::link>",
+                                            __('cachet::webhook.form.secret_helper')
+                                        )
+                                    );
+                                }
+                            }
+                        )
                         ->required()
                         ->maxLength(255)
                         ->columnSpanFull()
