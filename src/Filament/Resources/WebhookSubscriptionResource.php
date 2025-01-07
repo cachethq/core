@@ -71,7 +71,7 @@ class WebhookSubscriptionResource extends Resource
                             ->columnSpanFull(),
                     ])
                     ->visible(fn (Get $get) => !$get('send_all_events')),
-                ])->columnSpan(2),
+                ]),
 
                 Section::make()->schema(fn (WebhookSubscription $subscription) => [
                     Forms\Components\ViewField::make('attempts')
@@ -80,8 +80,7 @@ class WebhookSubscriptionResource extends Resource
                         ])      
                 ])
                 ->visibleOn(['edit'])
-                ->heading(__('cachet::webhook.attempts.heading'))
-                ->columnSpan(2),
+                ->heading(__('cachet::webhook.attempts.heading')),
             ])->columns(4);
     }
 
