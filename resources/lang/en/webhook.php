@@ -14,6 +14,8 @@ return [
         'description_label' => 'Description',
         'event_selection_label' => 'Send all events?',
         'events_label' => 'Events',
+        'edit_secret_label' => 'Edit secret',
+        'update_secret_label' => 'Update secret',
     ],
     'attempts' => [
         'heading' => 'Attempts',

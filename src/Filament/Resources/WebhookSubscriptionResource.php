@@ -60,6 +60,19 @@ class WebhookSubscriptionResource extends Resource
         
                     self::secretField()
                         ->visibleOn(['create']),
+
+                    Forms\Components\Actions\ActionContainer::make(
+                        \Filament\Forms\Components\Actions\Action::make('edit_secret')
+                            ->label(__('cachet::webhook.form.edit_secret_label'))
+                            ->modal()
+                            ->form([
+                                self::secretField()
+                            ])
+                            ->action(function (array $data, WebhookSubscription $webhookSubscription) {
+                                $webhookSubscription->update($data);
+                            })
+                            ->modalSubmitActionLabel(__('cachet::webhook.form.update_secret_label'))
+                    )->visibleOn(['edit']),
         
                     Forms\Components\TextInput::make('description')
                         ->label(__('cachet::webhook.form.description_label'))
