@@ -64,6 +64,16 @@ class CachetDashboardServiceProvider extends PanelProvider
                     ->url('https://docs.cachethq.io/?ref=cachet-dashboard')
                     ->group(fn (): string => __('cachet::navigation.resources.label'))
                     ->icon('heroicon-o-book-open'),
+                NavigationItem::make()
+                    ->label(fn (): string => __('cachet::navigation.resources.items.discord'))
+                    ->url('https://discord.gg/gUv2qySfCU')
+                    ->group(fn (): string => __('cachet::navigation.resources.label'))
+                    ->icon('cachet-discord'),
+                NavigationItem::make()
+                    ->label(fn (): string => __('cachet::navigation.resources.items.sponsor'))
+                    ->url('https://github.com/sponsors/cachethq')
+                    ->group(fn (): string => __('cachet::navigation.resources.label'))
+                    ->icon('heroicon-o-heart'),
             ])
             ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('cachet::filament.widgets.add-incident-button'))
             ->middleware([
