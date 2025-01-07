@@ -3,10 +3,9 @@
 namespace Cachet\Data\ScheduleUpdate;
 
 use Cachet\Data\BaseData;
-use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-class CreateScheduleUpdateRequestData extends BaseData
+final class CreateScheduleUpdateRequestData extends BaseData
 {
     public function __construct(
         public readonly string $message,
