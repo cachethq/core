@@ -8,6 +8,8 @@ use Filament\Resources\Pages\EditRecord;
 
 class EditWebhookSubscription extends EditRecord
 {
+    protected static string $view = 'cachet::filament.pages.settings.edit-webhook-subscription';
+
     protected static string $resource = WebhookSubscriptionResource::class;
 
     protected function getHeaderActions(): array
