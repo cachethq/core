@@ -22,6 +22,7 @@ return [
             'status_page' => 'Statusseite',
             'documentation' => 'Dokumentation',
             'discord' => 'Discord beitreten',
+            'sponsor' => 'Cachet unterstützen',
         ],
     ],
 ];
