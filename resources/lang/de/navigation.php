@@ -21,6 +21,7 @@ return [
         'items' => [
             'status_page' => 'Statusseite',
             'documentation' => 'Dokumentation',
+            'discord' => 'Discord beitreten',
         ],
     ],
 ];
