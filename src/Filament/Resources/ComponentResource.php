@@ -23,29 +23,29 @@ class ComponentResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
-                        ->label(__('Name'))
+                        ->label(__('cachet::component.form.name_label'))
                         ->required()
                         ->maxLength(255)
                         ->autocomplete(false),
                     Forms\Components\ToggleButtons::make('status')
-                        ->label(__('Status'))
+                        ->label(__('cachet::component.form.status_label'))
                         ->inline()
                         ->columnSpanFull()
                         ->options(ComponentStatusEnum::class)
                         ->required(),
                     Forms\Components\MarkdownEditor::make('description')
-                        ->label(__('Description'))
+                        ->label(__('cachet::component.form.description_label'))
                         ->maxLength(255)
                         ->columnSpanFull(),
                     Forms\Components\Select::make('component_group_id')
                         ->relationship('group', 'name')
                         ->searchable()
                         ->preload()
-                        ->label(__('Component Group')),
+                        ->label(__('cachet::component.form.component_group_label')),
                     Forms\Components\TextInput::make('link')
-                        ->label(__('Link'))
+                        ->label(__('cachet::component.form.link_label'))
                         ->url()
-                        ->hint(__('An optional link to the component.')),
+                        ->label(__('cachet::component.form.link_helper')),
                 ]),
 
                 Forms\Components\Section::make()->columns(2)->schema([
@@ -62,36 +62,36 @@ class ComponentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label(__('cachet::component.list.headers.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->label(__('Status'))
+                    ->label(__('cachet::component.list.headers.status'))
                     ->badge()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order')
-                    ->label(__('Order'))
+                    ->label(__('cachet::component.list.headers.order'))
                     ->numeric()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('group.name')
-                    ->label(__('Group'))
+                    ->label(__('cachet::component.list.headers.group'))
                     ->sortable(),
                 Tables\Columns\IconColumn::make('enabled')
-                    ->label(__('Enabled'))
+                    ->label(__('cachet::component.list.headers.enabled'))
                     ->boolean()
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Created at'))
+                    ->label(__('cachet::component.list.headers.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('Updated at'))
+                    ->label(__('cachet::component.list.headers.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
-                    ->label(__('Deleted at'))
+                    ->label(__('cachet::component.list.headers.deleted_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -108,8 +108,8 @@ class ComponentResource extends Resource
                 ]),
             ])
             ->reorderable('order')
-            ->emptyStateHeading(__('Components'))
-            ->emptyStateDescription(__('Components represent the various parts of your system that can affect the status of your status page.'));
+            ->emptyStateHeading(__('cachet::component.list.empty_state.heading'))
+            ->emptyStateDescription(__('cachet::component.list.empty_state.description'));
     }
 
     public static function getRelations(): array
@@ -130,12 +130,12 @@ class ComponentResource extends Resource
 
     public static function getLabel(): ?string
     {
-        return __('Component');
+        return trans_choice('cachet::component.resource_label', 1);
     }
 
     public static function getPluralLabel(): ?string
     {
-        return __('Components');
+        return trans_choice('cachet::component.resource_label', 2);
     }
 
     public static function getNavigationBadge(): ?string

@@ -11,7 +11,7 @@
         </div>
 
         <p class="text-xs text-right">
-            Incident UUID: {{ $incident->guid }}
+            {{ __('cachet::incident.form.guid_label') . ' ' . $incident->guid }}
         </p>
     </div>
 

@@ -34,9 +34,9 @@ enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::authenticated => __('Users'),
-            self::guest => __('Guests'),
-            self::hidden => __('Always Hidden'),
+            self::authenticated => __('cachet::resource.visibility.authenticated'),
+            self::guest => __('cachet::resource.visibility.guest'),
+            self::hidden => __('cachet::resource.visibility.hidden'),
         };
     }
 

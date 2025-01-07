@@ -51,6 +51,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         ]);
 
         $this->registerCommands();
+        $this->registerSchedules();
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
@@ -71,7 +72,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'cachet');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'cachet');
 
         $this->configureRateLimiting();
         $this->registerRoutes();
@@ -164,5 +165,21 @@ class CachetCoreServiceProvider extends ServiceProvider
                 'Version' => app(Cachet::class)->version(),
             ]);
         }
+    }
+
+    /**
+     * Register the package's schedules.
+     */
+    private function registerSchedules(): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->app->booted(function () {
+            $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+
+            $schedule->command('cachet:beacon')->daily();
+        });
     }
 }

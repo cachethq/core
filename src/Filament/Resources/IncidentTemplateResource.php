@@ -28,26 +28,26 @@ class IncidentTemplateResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\TextInput::make('name')
-                        ->label(__('Name'))
+                        ->label(__('cachet::incident_template.form.name_label'))
                         ->required()
                         ->live(debounce: 250)
                         ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
                         ->autocomplete(false),
                     Forms\Components\TextInput::make('slug')
-                        ->label(__('Slug'))
+                        ->label(__('cachet::incident_template.form.slug_label'))
                         ->required(),
                     Forms\Components\Textarea::make('template')
-                        ->label(__('Template'))
+                        ->label(__('cachet::incident_template.form.template_label'))
                         ->hint(fn (Get $get) => new HtmlString(Blade::render(match ($get('engine')) {
-                            IncidentTemplateEngineEnum::twig => '<x-filament::link href="https://twig.symfony.com/doc/">Twig Documentation</x-filament::link>',
-                            IncidentTemplateEngineEnum::blade => '<x-filament::link href="https://laravel.com/blade">Laravel Blade Documentation</x-filament::link>',
+                            IncidentTemplateEngineEnum::twig => '<x-filament::link href="https://twig.symfony.com/doc/">'.__('cachet::incident_template.engine.twig_docs').'</x-filament::link>',
+                            IncidentTemplateEngineEnum::blade => '<x-filament::link href="https://laravel.com/blade">'.__('cachet::incident_template.engine.laravel_blade_docs').'</x-filament::link>',
                             default => null,
                         })))
                         ->required()
                         ->rows(8)
                         ->columnSpanFull(),
                     Forms\Components\Select::make('engine')
-                        ->label(__('Engine'))
+                        ->label(__('cachet::incident_template.form.engine_label'))
                         ->options(IncidentTemplateEngineEnum::class)
                         ->default(IncidentTemplateEngineEnum::twig)
                         ->live()
@@ -61,28 +61,28 @@ class IncidentTemplateResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label(__('cachet::incident_template.list.headers.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('slug')
-                    ->label(__('Slug'))
+                    ->label(__('cachet::incident_template.list.headers.slug'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('engine')
-                    ->label(__('Engine'))
+                    ->label(__('cachet::incident_template.list.headers.engine'))
                     ->sortable()
                     ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('Created at'))
+                    ->label(__('cachet::incident_template.list.headers.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('Updated at'))
+                    ->label(__('cachet::incident_template.list.headers.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
-                    ->label(__('Deleted at'))
+                    ->label(__('cachet::incident_template.list.headers.deleted_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -98,8 +98,8 @@ class IncidentTemplateResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->emptyStateHeading(__('Incident Templates'))
-            ->emptyStateDescription(__('Incident templates are used to create reusable incident messages.'));
+            ->emptyStateHeading(__('cachet::incident_template.list.empty_state.heading'))
+            ->emptyStateDescription(__('cachet::incident_template.list.empty_state.description'));
     }
 
     public static function getRelations(): array
@@ -120,11 +120,11 @@ class IncidentTemplateResource extends Resource
 
     public static function getLabel(): ?string
     {
-        return __('Incident Template');
+        return trans_choice('cachet::incident_template.resource_label', 1);
     }
 
     public static function getPluralLabel(): ?string
     {
-        return __('Incident Templates');
+        return trans_choice('cachet::incident_template.resource_label', 2);
     }
 }

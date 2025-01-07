@@ -10,8 +10,8 @@ enum UserLevelEnum: int
     public function getLabel(): string
     {
         return match ($this->value) {
-            self::admin->value => __('Admin'),
-            self::user->value => __('User'),
+            self::admin->value => __('cachet::user.level.admin'),
+            self::user->value => __('cachet::user.level.user'),
         };
     }
 }
