@@ -14,7 +14,7 @@ class TextWithLink implements Htmlable
 
     public static function make(string $text, string $url): self
     {
-        return new static($text, $url);
+        return new self($text, $url);
     }
 
     private function replaceAsterisksWithComponent(): string
