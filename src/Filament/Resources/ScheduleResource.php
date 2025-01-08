@@ -3,7 +3,7 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Actions\Update\CreateUpdate;
-use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateData;
+use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Filament\Resources\ScheduleResource\Pages;
 use Cachet\Filament\Resources\UpdateResource\RelationManagers\UpdatesRelationManager;
@@ -88,7 +88,7 @@ class ScheduleResource extends Resource
                     ->label(__('cachet::schedule.list.actions.record_update'))
                     ->color('info')
                     ->action(function (CreateUpdate $createUpdate, Schedule $record, array $data) {
-                        $createUpdate->handle($record, CreateScheduleUpdateData::from($data));
+                        $createUpdate->handle($record, CreateScheduleUpdateRequestData::from($data));
 
                         Notification::make()
                             ->title(__('cachet::schedule.add_update.success_title', ['name' => $record->name]))

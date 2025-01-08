@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Incident\CreateIncident;
-use Cachet\Data\Incident\CreateIncidentData;
+use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Models\IncidentTemplate;
@@ -12,7 +12,7 @@ beforeEach(function () {
 });
 
 it('can create an incident', function () {
-    $data = CreateIncidentData::from([
+    $data = CreateIncidentRequestData::from([
         'name' => 'My Incident',
         'message' => 'This is an incident message.',
     ]);
@@ -27,7 +27,7 @@ it('can create an incident', function () {
 });
 
 it('can create an incident with a given status', function () {
-    $data = CreateIncidentData::from([
+    $data = CreateIncidentRequestData::from([
         'name' => 'My Incident',
         'message' => 'This is an incident message',
         'status' => IncidentStatusEnum::investigating,
@@ -49,7 +49,7 @@ it('can create an incident with a twig template', function () {
         'template' => 'This is a template: {{ incident.name }} foo: {{ foo }}',
     ]);
 
-    $data = CreateIncidentData::from([
+    $data = CreateIncidentRequestData::from([
         'name' => 'My Incident',
         'template' => 'my-template',
         'template_vars' => [
@@ -73,7 +73,7 @@ it('can create an incident with a blade template', function () {
         'template' => 'This is a template: {{ $incident[\'name\'] }} foo: {{ $foo }}',
     ]);
 
-    $data = CreateIncidentData::from([
+    $data = CreateIncidentRequestData::from([
         'name' => 'My Incident',
         'template' => 'my-template',
         'template_vars' => [

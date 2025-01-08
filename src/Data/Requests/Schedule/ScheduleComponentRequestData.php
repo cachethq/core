@@ -1,13 +1,13 @@
 <?php
 
-namespace Cachet\Data\Schedule;
+namespace Cachet\Data\Requests\Schedule;
 
+use Cachet\Data\BaseData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Spatie\LaravelData\Attributes\Validation\Exists;
-use Spatie\LaravelData\Data;
 
-final class ScheduleComponentData extends Data
+final class ScheduleComponentRequestData extends BaseData
 {
     public function __construct(
         #[Exists(Component::class, 'id')]

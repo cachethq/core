@@ -2,8 +2,8 @@
 
 namespace Cachet\Actions\Update;
 
-use Cachet\Data\IncidentUpdate\EditIncidentUpdateData;
-use Cachet\Data\ScheduleUpdate\EditScheduleUpdateData;
+use Cachet\Data\Requests\IncidentUpdate\EditIncidentUpdateRequestData;
+use Cachet\Data\Requests\ScheduleUpdate\EditScheduleUpdateRequestData;
 use Cachet\Models\Update;
 
 class EditUpdate
@@ -11,7 +11,7 @@ class EditUpdate
     /**
      * Handle the action.
      */
-    public function handle(Update $update, EditIncidentUpdateData|EditScheduleUpdateData $data): Update
+    public function handle(Update $update, EditIncidentUpdateRequestData|EditScheduleUpdateRequestData $data): Update
     {
         return tap($update, function (Update $update) use ($data) {
             $update->update($data->toArray());

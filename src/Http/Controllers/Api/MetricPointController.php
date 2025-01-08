@@ -4,7 +4,7 @@ namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Actions\Metric\CreateMetricPoint;
 use Cachet\Actions\Metric\DeleteMetricPoint;
-use Cachet\Data\Metric\CreateMetricPointData;
+use Cachet\Data\Requests\Metric\CreateMetricPointRequestData;
 use Cachet\Http\Resources\MetricPoint as MetricPointResource;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
@@ -51,7 +51,7 @@ class MetricPointController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateMetricPointData $data, Metric $metric, CreateMetricPoint $createMetricPointAction)
+    public function store(CreateMetricPointRequestData $data, Metric $metric, CreateMetricPoint $createMetricPointAction)
     {
         $metricPoint = $createMetricPointAction->handle($metric, $data);
 
