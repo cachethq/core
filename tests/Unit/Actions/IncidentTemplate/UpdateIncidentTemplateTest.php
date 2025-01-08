@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\IncidentTemplate\UpdateIncidentTemplate;
-use Cachet\Data\IncidentTemplate\UpdateIncidentTemplateRequestData;
+use Cachet\Data\Requests\IncidentTemplate\UpdateIncidentTemplateRequestData;
 use Cachet\Enums\IncidentTemplateEngineEnum;
 use Cachet\Models\IncidentTemplate;
 

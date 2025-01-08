@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Component;
 
-use Cachet\Data\Component\CreateComponentRequestData;
+use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Models\Component;
 
 class CreateComponent

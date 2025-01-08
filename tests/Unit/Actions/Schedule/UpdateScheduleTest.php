@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Schedule\UpdateSchedule;
-use Cachet\Data\Schedule\UpdateScheduleRequestData;
+use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;

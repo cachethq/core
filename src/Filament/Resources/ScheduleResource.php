@@ -3,7 +3,7 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Actions\Update\CreateUpdate;
-use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateRequestData;
+use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Filament\Resources\ScheduleResource\Pages;
 use Cachet\Filament\Resources\UpdateResource\RelationManagers\UpdatesRelationManager;

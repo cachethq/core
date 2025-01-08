@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Metric;
 
-use Cachet\Data\Metric\UpdateMetricRequestData;
+use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
 use Cachet\Models\Metric;
 
 class UpdateMetric

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Data\Incident;
+namespace Cachet\Data\Requests\Incident;
 
 use Cachet\Data\BaseData;
 use Cachet\Enums\IncidentStatusEnum;

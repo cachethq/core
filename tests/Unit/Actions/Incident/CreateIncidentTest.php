@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Incident\CreateIncident;
-use Cachet\Data\Incident\CreateIncidentRequestData;
+use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Models\IncidentTemplate;

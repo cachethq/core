@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Metric\UpdateMetric;
-use Cachet\Data\Metric\UpdateMetricRequestData;
+use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
 use Cachet\Events\Metrics\MetricUpdated;
 use Cachet\Models\Metric;
 use Illuminate\Support\Facades\Event;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Data\ComponentGroup;
+namespace Cachet\Data\Requests\ComponentGroup;
 
 use Cachet\Data\BaseData;
 use Illuminate\Validation\Rule;

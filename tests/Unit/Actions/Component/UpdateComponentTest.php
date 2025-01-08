@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Component\UpdateComponent;
-use Cachet\Data\Component\UpdateComponentRequestData;
+use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentStatusWasChanged;
 use Cachet\Events\Components\ComponentUpdated;

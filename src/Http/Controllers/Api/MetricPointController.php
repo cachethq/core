@@ -4,7 +4,7 @@ namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Actions\Metric\CreateMetricPoint;
 use Cachet\Actions\Metric\DeleteMetricPoint;
-use Cachet\Data\Metric\CreateMetricPointRequestData;
+use Cachet\Data\Requests\Metric\CreateMetricPointRequestData;
 use Cachet\Http\Resources\MetricPoint as MetricPointResource;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;

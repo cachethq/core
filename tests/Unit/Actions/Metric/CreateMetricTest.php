@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Metric\CreateMetric;
-use Cachet\Data\Metric\CreateMetricRequestData;
+use Cachet\Data\Requests\Metric\CreateMetricRequestData;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Events\Metrics\MetricCreated;
 use Illuminate\Support\Facades\Event;

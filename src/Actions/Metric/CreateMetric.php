@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Metric;
 
-use Cachet\Data\Metric\CreateMetricRequestData;
+use Cachet\Data\Requests\Metric\CreateMetricRequestData;
 use Cachet\Models\Metric;
 
 class CreateMetric

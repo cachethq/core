@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Component\CreateComponent;
-use Cachet\Data\Component\CreateComponentRequestData;
+use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Illuminate\Support\Facades\Event;

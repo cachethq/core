@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Data\Metric;
+namespace Cachet\Data\Requests\Metric;
 
 use Cachet\Data\BaseData;
 use Cachet\Rules\FactorOfSixty;

@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\IncidentTemplate\CreateIncidentTemplate;
-use Cachet\Data\IncidentTemplate\CreateIncidentTemplateRequestData;
+use Cachet\Data\Requests\IncidentTemplate\CreateIncidentTemplateRequestData;
 use Cachet\Enums\IncidentTemplateEngineEnum;
 
 it('can create an incident template', function () {

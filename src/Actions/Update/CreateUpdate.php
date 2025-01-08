@@ -2,8 +2,8 @@
 
 namespace Cachet\Actions\Update;
 
-use Cachet\Data\IncidentUpdate\CreateIncidentUpdateRequestData;
-use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateRequestData;
+use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
+use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;

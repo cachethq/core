@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Data\IncidentTemplate;
+namespace Cachet\Data\Requests\IncidentTemplate;
 
 use Cachet\Data\BaseData;
 use Cachet\Enums\IncidentTemplateEngineEnum;

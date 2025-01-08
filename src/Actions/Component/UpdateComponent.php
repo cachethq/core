@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Component;
 
-use Cachet\Data\Component\UpdateComponentRequestData;
+use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Events\Components\ComponentStatusWasChanged;
 use Cachet\Models\Component;
 

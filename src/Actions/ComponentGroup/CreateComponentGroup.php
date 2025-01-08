@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\ComponentGroup;
 
-use Cachet\Data\ComponentGroup\CreateComponentGroupRequestData;
+use Cachet\Data\Requests\ComponentGroup\CreateComponentGroupRequestData;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 

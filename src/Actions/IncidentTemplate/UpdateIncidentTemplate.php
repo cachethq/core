@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\IncidentTemplate;
 
-use Cachet\Data\IncidentTemplate\UpdateIncidentTemplateRequestData;
+use Cachet\Data\Requests\IncidentTemplate\UpdateIncidentTemplateRequestData;
 use Cachet\Models\IncidentTemplate;
 
 class UpdateIncidentTemplate

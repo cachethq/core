@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Data\ScheduleUpdate;
+namespace Cachet\Data\Requests\ScheduleUpdate;
 
 use Cachet\Data\BaseData;
 use Spatie\LaravelData\Support\Validation\ValidationContext;

@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
-use Cachet\Data\ComponentGroup\UpdateComponentGroupRequestData;
+use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 

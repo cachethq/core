@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Schedule\CreateSchedule;
-use Cachet\Data\Schedule\CreateScheduleRequestData;
+use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Models\Component;
 
 it('can create a schedule without components', function () {

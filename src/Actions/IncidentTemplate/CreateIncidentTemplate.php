@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\IncidentTemplate;
 
-use Cachet\Data\IncidentTemplate\CreateIncidentTemplateRequestData;
+use Cachet\Data\Requests\IncidentTemplate\CreateIncidentTemplateRequestData;
 use Cachet\Models\IncidentTemplate;
 
 class CreateIncidentTemplate

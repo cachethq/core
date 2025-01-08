@@ -1,6 +1,6 @@
 <?php
 
-namespace Cachet\Data\Schedule;
+namespace Cachet\Data\Requests\Schedule;
 
 use Cachet\Data\BaseData;
 use Cachet\Enums\ComponentStatusEnum;

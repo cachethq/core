@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Incident\UpdateIncident;
-use Cachet\Data\Incident\UpdateIncidentRequestData;
+use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Models\Incident;
 

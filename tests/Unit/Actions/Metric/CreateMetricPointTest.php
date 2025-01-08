@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Metric\CreateMetricPoint;
-use Cachet\Data\Metric\CreateMetricPointRequestData;
+use Cachet\Data\Requests\Metric\CreateMetricPointRequestData;
 use Cachet\Events\Metrics\MetricPointCreated;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;

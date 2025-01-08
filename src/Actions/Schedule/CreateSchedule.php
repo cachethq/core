@@ -2,8 +2,8 @@
 
 namespace Cachet\Actions\Schedule;
 
-use Cachet\Data\Schedule\CreateScheduleRequestData;
-use Cachet\Data\Schedule\ScheduleComponentRequestData;
+use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
+use Cachet\Data\Requests\Schedule\ScheduleComponentRequestData;
 use Cachet\Models\Schedule;
 
 class CreateSchedule

@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\ComponentGroup\CreateComponentGroup;
-use Cachet\Data\ComponentGroup\CreateComponentGroupRequestData;
+use Cachet\Data\Requests\ComponentGroup\CreateComponentGroupRequestData;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 

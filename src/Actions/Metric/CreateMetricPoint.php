@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Metric;
 
-use Cachet\Data\Metric\CreateMetricPointRequestData;
+use Cachet\Data\Requests\Metric\CreateMetricPointRequestData;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
 

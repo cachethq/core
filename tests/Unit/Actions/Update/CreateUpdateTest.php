@@ -1,8 +1,8 @@
 <?php
 
 use Cachet\Actions\Update\CreateUpdate;
-use Cachet\Data\IncidentUpdate\CreateIncidentUpdateRequestData;
-use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateRequestData;
+use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
+use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;

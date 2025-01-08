@@ -1,8 +1,8 @@
 <?php
 
 use Cachet\Actions\Update\EditUpdate;
-use Cachet\Data\IncidentUpdate\EditIncidentUpdateRequestData;
-use Cachet\Data\ScheduleUpdate\EditScheduleUpdateRequestData;
+use Cachet\Data\Requests\IncidentUpdate\EditIncidentUpdateRequestData;
+use Cachet\Data\Requests\ScheduleUpdate\EditScheduleUpdateRequestData;
 use Cachet\Models\Update;
 
 it('can update an incident update', function () {
