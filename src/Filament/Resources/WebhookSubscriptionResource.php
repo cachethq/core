@@ -38,6 +38,8 @@ class WebhookSubscriptionResource extends Resource
                     url: 'https://docs.cachethq.io/v3.x/guide/webhooks',
                 )
             )
+            ->password()
+            ->revealable()
             ->required()
             ->maxLength(255)
             ->columnSpanFull()
@@ -57,7 +59,7 @@ class WebhookSubscriptionResource extends Resource
                         ->maxLength(255)
                         ->columnSpanFull()
                         ->autocomplete(false),
-        
+
                     self::secretField()
                         ->visibleOn(['create']),
 
@@ -73,7 +75,7 @@ class WebhookSubscriptionResource extends Resource
                             })
                             ->modalSubmitActionLabel(__('cachet::webhook.form.update_secret_label'))
                     )->visibleOn(['edit']),
-        
+
                     Forms\Components\TextInput::make('description')
                         ->label(__('cachet::webhook.form.description_label'))
                         ->maxLength(255)
