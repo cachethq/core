@@ -42,7 +42,7 @@ class ManageTheme extends SettingsPage
                                     ->map(function (array $shades, string $color) {
                                         $colorName = __(ucwords($color));
 
-                                        return "<div class=\"theme-swatch\" style=\"--swatch: {$shades[400]}\"></div> {$colorName}";
+                                        return "<div class=\"flex items-center\"><div class=\"theme-swatch\" style=\"--swatch: {$shades[400]}\"></div><div>{$colorName}</div></div>";
                                     }),
                             ])
                             ->native(false)
@@ -63,7 +63,7 @@ class ManageTheme extends SettingsPage
                                     ...collect(Color::all())->only(ThemeData::GRAYS)->map(function (array $shades, string $color) {
                                         $colorName = __(ucwords($color));
 
-                                        return "<div class=\"theme-swatch\" style=\"--swatch: {$shades[400]}\"></div> {$colorName}";
+                                        return "<div class=\"flex items-center\"><div class=\"theme-swatch\" style=\"--swatch: {$shades[400]}\"></div><div>{$colorName}</div></div>";
                                     }),
                                 ];
                             })
