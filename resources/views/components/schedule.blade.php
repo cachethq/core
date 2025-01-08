@@ -1,3 +1,4 @@
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_SCHEDULES_BEFORE) }}
 <li class="p-4" x-data="{ timestamp: new Date(@js($schedule->scheduled_at)) }">
     <div class="flex flex-col-reverse items-start justify-between gap-4 md:flex-row md:items-center">
         <div class="flex items-start gap-2.5 w-full">
@@ -37,3 +38,4 @@
         </div>
     </div>
 </li>
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_SCHEDULES_AFTER) }}

@@ -1,3 +1,5 @@
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_ABOUT_BEFORE) }}
+
 @if ($about !== '')
 <div>
     <h1 class="text-3xl font-semibold">{{ $title }}</h1>
@@ -6,3 +8,5 @@
     </div>
 </div>
 @endif
+
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_ABOUT_AFTER) }}
