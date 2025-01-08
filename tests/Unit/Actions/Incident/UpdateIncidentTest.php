@@ -1,14 +1,14 @@
 <?php
 
 use Cachet\Actions\Incident\UpdateIncident;
-use Cachet\Data\Incident\UpdateIncidentData;
+use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Models\Incident;
 
 it('can update an incident', function () {
     $incident = Incident::factory()->create();
 
-    $data = UpdateIncidentData::from([
+    $data = UpdateIncidentRequestData::from([
         'name' => 'Incident Updated',
     ]);
 
@@ -23,7 +23,7 @@ it('dispatches the IncidentUpdated event', function () {
 
     $incident = Incident::factory()->create();
 
-    app(UpdateIncident::class)->handle($incident, UpdateIncidentData::from([
+    app(UpdateIncident::class)->handle($incident, UpdateIncidentRequestData::from([
         'name' => 'New Incident Title',
     ]));
 

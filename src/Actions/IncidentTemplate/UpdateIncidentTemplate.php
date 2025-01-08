@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\IncidentTemplate;
 
-use Cachet\Data\IncidentTemplate\UpdateIncidentTemplateData;
+use Cachet\Data\Requests\IncidentTemplate\UpdateIncidentTemplateRequestData;
 use Cachet\Models\IncidentTemplate;
 
 class UpdateIncidentTemplate
@@ -10,7 +10,7 @@ class UpdateIncidentTemplate
     /**
      * Handle the action.
      */
-    public function handle(IncidentTemplate $incidentTemplate, UpdateIncidentTemplateData $data): IncidentTemplate
+    public function handle(IncidentTemplate $incidentTemplate, UpdateIncidentTemplateRequestData $data): IncidentTemplate
     {
         $incidentTemplate->update($data->toArray());
 

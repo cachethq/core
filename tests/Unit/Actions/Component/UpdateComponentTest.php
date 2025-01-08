@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Component\UpdateComponent;
-use Cachet\Data\Component\UpdateComponentData;
+use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Events\Components\ComponentStatusWasChanged;
 use Cachet\Events\Components\ComponentUpdated;
@@ -16,7 +16,7 @@ it('can update a component', function () {
         'description' => 'My component description.',
     ]);
 
-    $data = UpdateComponentData::from([
+    $data = UpdateComponentRequestData::from([
         'name' => 'My Updated Component',
         'description' => 'My updated component description.',
     ]);
@@ -43,7 +43,7 @@ it('dispatches ComponentStatusWasChanged when the status is changed', function (
         'status' => ComponentStatusEnum::operational,
     ]);
 
-    app(UpdateComponent::class)->handle($component, UpdateComponentData::from([
+    app(UpdateComponent::class)->handle($component, UpdateComponentRequestData::from([
         'status' => ComponentStatusEnum::major_outage,
     ]));
 

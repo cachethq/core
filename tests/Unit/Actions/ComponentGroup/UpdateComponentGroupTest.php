@@ -1,14 +1,14 @@
 <?php
 
 use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
-use Cachet\Data\ComponentGroup\UpdateComponentGroupData;
+use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 
 it('can update a component group with just a name', function () {
     $componentGroup = ComponentGroup::factory()->create();
 
-    $data = UpdateComponentGroupData::from([
+    $data = UpdateComponentGroupRequestData::from([
         'name' => 'Services',
     ]);
 
@@ -22,7 +22,7 @@ it('can update a component group without touching components', function () {
     Component::factory()->count(3)->create();
     $componentGroup = ComponentGroup::factory()->create();
 
-    $data = UpdateComponentGroupData::from([
+    $data = UpdateComponentGroupRequestData::from([
         'name' => 'Services',
     ]);
 
@@ -39,7 +39,7 @@ it('can update a component group with components', function () {
     $components = Component::factory()->count(3)->create();
     $componentGroup = ComponentGroup::factory()->create();
 
-    $componentGroup = app(UpdateComponentGroup::class)->handle($componentGroup, UpdateComponentGroupData::from([
+    $componentGroup = app(UpdateComponentGroup::class)->handle($componentGroup, UpdateComponentGroupRequestData::from([
         'components' => $components->pluck('id')->values()->all(),
     ]));
 
