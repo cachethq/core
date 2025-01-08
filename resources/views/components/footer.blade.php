@@ -3,7 +3,7 @@
     @if($showSupport)
     <div class="flex items-center justify-center gap-2">
         {{ __('cachet::cachet.powered_by') }}
-        <a href="https://cachethq.io" title="{{ __('cachet::cachet.open_source_stats_page') }}" rel="noopener" class="inline-flex items-center font-semibold transition hover:opacity-80">
+        <a href="https://cachethq.io" title="{{ __('cachet::cachet.open_source_status_page') }}" rel="noopener" class="inline-flex items-center font-semibold transition hover:opacity-80">
             <x-cachet::logo class="hidden h-5 w-auto sm:block" />
             <x-cachet::logomark class="h-5 w-auto sm:hidden" />
             <span class="ml-2">{{ $cachetVersion }}</span>
