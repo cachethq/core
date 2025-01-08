@@ -313,7 +313,9 @@ jobs:
     needs:
       - static-analysis
       - mysql
-      - postgres
+      - postgres13
+      - postgres14
+      - postgres15
       - sqlite
     runs-on: ubuntu-latest
 
