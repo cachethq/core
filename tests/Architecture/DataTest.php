@@ -10,6 +10,18 @@ test('data test')
     ->toBeFinal()
     ->ignoring(BaseData::class);
 
+test('data requests test')
+    ->expect('Cachet\Data\Requests')
+    ->toHaveConstructor()
+    ->toExtend(BaseData::class)
+    ->toHaveSuffix('RequestData')
+    ->toOnlyBeUsedIn([
+        'Cachet\Actions',
+        'Cachet\Data',
+        'Cachet\Http\Controllers',
+        'Cachet\Filament\Resources'
+    ]);
+
 test('base data test')
     ->expect(BaseData::class)
     ->toHaveMethodsDocumented()
