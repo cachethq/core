@@ -3,8 +3,6 @@
 namespace Cachet\Data\Requests\Metric;
 
 use Cachet\Data\BaseData;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateMetricPointRequestData extends BaseData

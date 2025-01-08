@@ -5,11 +5,6 @@ namespace Cachet\Data\Requests\Component;
 use Cachet\Data\BaseData;
 use Cachet\Enums\ComponentStatusEnum;
 use Illuminate\Validation\Rule;
-use Spatie\LaravelData\Attributes\Validation\Enum;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateComponentRequestData extends BaseData

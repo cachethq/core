@@ -4,10 +4,6 @@ namespace Cachet\Data\Requests\ComponentGroup;
 
 use Cachet\Data\BaseData;
 use Illuminate\Validation\Rule;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\ListType;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class UpdateComponentGroupRequestData extends BaseData

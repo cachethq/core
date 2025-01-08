@@ -5,11 +5,6 @@ namespace Cachet\Data\Requests\Metric;
 use Cachet\Data\BaseData;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Rules\FactorOfSixty;
-use Spatie\LaravelData\Attributes\Validation\Enum;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\Rule;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateMetricRequestData extends BaseData

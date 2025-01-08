@@ -4,9 +4,6 @@ namespace Cachet\Data\Requests\Metric;
 
 use Cachet\Data\BaseData;
 use Cachet\Rules\FactorOfSixty;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Rule;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class UpdateMetricRequestData extends BaseData

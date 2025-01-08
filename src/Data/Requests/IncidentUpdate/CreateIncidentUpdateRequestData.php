@@ -5,8 +5,6 @@ namespace Cachet\Data\Requests\IncidentUpdate;
 use Cachet\Data\BaseData;
 use Cachet\Enums\IncidentStatusEnum;
 use Illuminate\Validation\Rule;
-use Spatie\LaravelData\Attributes\Validation\Enum;
-use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateIncidentUpdateRequestData extends BaseData

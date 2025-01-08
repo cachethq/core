@@ -19,7 +19,7 @@ test('data requests test')
         'Cachet\Actions',
         'Cachet\Data',
         'Cachet\Http\Controllers',
-        'Cachet\Filament\Resources'
+        'Cachet\Filament\Resources',
     ]);
 
 test('base data test')
