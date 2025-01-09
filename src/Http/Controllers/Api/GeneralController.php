@@ -3,20 +3,15 @@
 namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Cachet;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
-/**
- * @group Cachet
- */
+#[Group('Cachet', weight: 0)]
 class GeneralController extends Controller
 {
     /**
      * Test the API
-     *
-     * @response {
-     *     "data": "Pong!"
-     * }
      */
     public function ping(): JsonResponse
     {
@@ -25,17 +20,12 @@ class GeneralController extends Controller
 
     /**
      * Get Version
-     *
-     * @response {
-     *     "data": {
-     *        "version": "3.x-dev"
-     *    }
-     * }
      */
     public function version(): JsonResponse
     {
         return response()->json([
             'data' => [
+                /** @var "'3.x-dev'" */
                 'version' => Cachet::version(),
             ],
         ]);

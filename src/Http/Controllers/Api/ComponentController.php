@@ -9,13 +9,12 @@ use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Components
- */
+#[Group('Components', weight: 1)]
 class ComponentController extends Controller
 {
     /**
@@ -28,10 +27,6 @@ class ComponentController extends Controller
 
     /**
      * List Components
-     *
-     * @apiResourceCollection \Cachet\Http\Resources\Component
-     *
-     * @apiResourceModel \Cachet\Models\Component
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
@@ -54,12 +49,6 @@ class ComponentController extends Controller
 
     /**
      * Create Component
-     *
-     * @apiResource \Cachet\Http\Resources\Component
-     *
-     * @apiResourceModel \Cachet\Models\Component
-     *
-     * @authenticated
      */
     public function store(CreateComponentRequestData $data, CreateComponent $createComponentAction)
     {
@@ -72,10 +61,6 @@ class ComponentController extends Controller
 
     /**
      * Get Component
-     *
-     * @apiResource \Cachet\Http\Resources\Component
-     *
-     * @apiResourceModel \Cachet\Models\Component
      *
      * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
      */
@@ -92,12 +77,6 @@ class ComponentController extends Controller
 
     /**
      * Update Component
-     *
-     * @apiResource \Cachet\Http\Resources\Component
-     *
-     * @apiResourceModel \Cachet\Models\Component
-     *
-     * @authenticated
      */
     public function update(UpdateComponentRequestData $data, Component $component, UpdateComponent $updateComponentAction)
     {
@@ -108,10 +87,6 @@ class ComponentController extends Controller
 
     /**
      * Delete Component
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Component $component, DeleteComponent $deleteComponentAction)
     {

@@ -3,27 +3,21 @@
 namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Status;
+use Dedoc\Scramble\Attributes\Group;
 
-/**
- * @group Cachet
- */
+#[Group('Cachet')]
 class StatusController
 {
     /**
      * Get System Status
-     *
-     * @response {
-     *     "data": {
-     *        "status": "operational",
-     *        "message": "All Systems Operational"
-     *     }
-     * }
      */
     public function __invoke(Status $status)
     {
         return response()->json([
             'data' => [
+                /** @example "operational" */
                 'status' => $status->current()->name,
+                /** @example "All Systems Operational" */
                 'message' => $status->current()->getLabel(),
             ],
         ]);

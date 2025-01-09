@@ -10,14 +10,13 @@ use Cachet\Data\Requests\IncidentUpdate\EditIncidentUpdateRequestData;
 use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Incident;
 use Cachet\Models\Update;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Incident Updates
- */
+#[Group('Incident Updates', weight: 4)]
 class IncidentUpdateController extends Controller
 {
     /**
@@ -49,12 +48,6 @@ class IncidentUpdateController extends Controller
 
     /**
      * Create Incident Update
-     *
-     * @apiResource \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
-     *
-     * @authenticated
      */
     public function store(CreateIncidentUpdateRequestData $data, Incident $incident, CreateUpdate $createUpdateAction)
     {
@@ -65,10 +58,6 @@ class IncidentUpdateController extends Controller
 
     /**
      * Get Incident Update
-     *
-     * @apiResource \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
      *
      * @queryParam include Include related resources. Enum: incident. Example: incident
      */
@@ -87,12 +76,6 @@ class IncidentUpdateController extends Controller
 
     /**
      * Update Incident Update
-     *
-     * @apiResource \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
-     *
-     * @authenticated
      */
     public function update(EditIncidentUpdateRequestData $data, Incident $incident, Update $update, EditUpdate $editUpdateAction)
     {
@@ -103,10 +86,6 @@ class IncidentUpdateController extends Controller
 
     /**
      * Delete Incident Update
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Incident $incident, Update $update, DeleteUpdate $deleteUpdateAction)
     {

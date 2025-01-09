@@ -9,21 +9,16 @@ use Cachet\Data\Requests\ComponentGroup\CreateComponentGroupRequestData;
 use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Component Groups
- */
+#[Group('Component Groups', weight: 2)]
 class ComponentGroupController extends Controller
 {
     /**
      * List Component Groups
-     *
-     * @apiResource \Cachet\Http\Resources\ComponentGroup
-     *
-     * @apiResourceModel \Cachet\Models\ComponentGroup
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
@@ -42,12 +37,6 @@ class ComponentGroupController extends Controller
 
     /**
      * Create Component Group
-     *
-     * @apiResource \Cachet\Http\Resources\ComponentGroup
-     *
-     * @apiResourceModel \Cachet\Models\ComponentGroup
-     *
-     * @authenticated
      */
     public function store(CreateComponentGroupRequestData $data, CreateComponentGroup $createComponentGroupAction)
     {
@@ -58,10 +47,6 @@ class ComponentGroupController extends Controller
 
     /**
      * Get Component Group
-     *
-     * @apiResource \Cachet\Http\Resources\ComponentGroup
-     *
-     * @apiResourceModel \Cachet\Models\ComponentGroup
      *
      * @queryParam include Include related resources. Enum: components. Example: components
      */
@@ -78,12 +63,6 @@ class ComponentGroupController extends Controller
 
     /**
      * Update Component Group
-     *
-     * @apiResource \Cachet\Http\Resources\ComponentGroup
-     *
-     * @apiResourceModel \Cachet\Models\ComponentGroup
-     *
-     * @authenticated
      */
     public function update(UpdateComponentGroupRequestData $data, ComponentGroup $componentGroup, UpdateComponentGroup $updateComponentGroupAction)
     {
@@ -94,12 +73,6 @@ class ComponentGroupController extends Controller
 
     /**
      * Delete Component Group
-     *
-     * @apiResource \Cachet\Http\Resources\ComponentGroup
-     *
-     * @apiResourceModel \Cachet\Models\ComponentGroup
-     *
-     * @authenticated
      */
     public function destroy(ComponentGroup $componentGroup, DeleteComponentGroup $deleteComponentGroupAction)
     {
