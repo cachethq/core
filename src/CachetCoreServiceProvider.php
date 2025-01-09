@@ -3,9 +3,13 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Documentation\AddAuthenticationToOperation;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -63,6 +67,8 @@ class CachetCoreServiceProvider extends ServiceProvider
         FilamentColor::register([
             'cachet' => Color::rgb('rgb(4, 193, 71)'),
         ]);
+
+        $this->configureScramble();
     }
 
     /**
@@ -181,5 +187,25 @@ class CachetCoreServiceProvider extends ServiceProvider
 
             $schedule->command('cachet:beacon')->daily();
         });
+    }
+
+    /**
+     * Scramble is installed as dev dependency hence the class existence check.
+     */
+    private function configureScramble(): void
+    {
+        if (! class_exists(Scramble::class)) {
+            return;
+        }
+
+        Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
+            $openApi->info->description = 'API documentation for Cachet, the open source status page system.';
+
+            $openApi->secure(
+                SecurityScheme::http('bearer')
+            );
+        });
+
+        Scramble::registerExtension(AddAuthenticationToOperation::class);
     }
 }

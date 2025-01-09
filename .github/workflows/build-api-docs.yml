@@ -1,0 +1,52 @@
+on:
+  schedule:
+    - cron: '0 7 * * *'
+
+env:
+  DOCS_REPOSITORY: romalytvynenko/cachet-docs
+  DOCS_BRANCH: feat/api-docs-generation
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Install Scramble PRO
+        run: |
+          composer config repositories.scramble-pro '{"type": "composer", "url": "https://satis.dedoc.co"}'
+          composer config http-basic.satis.dedoc.co ${{ secrets.SCRAMBLE_USERNAME }} ${{ secrets.SCRAMBLE_KEY }}
+          composer require dedoc/scramble-pro:dev-feat/timacdonald-json-api-support --dev
+
+      - name: Checkout documentation repository
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ env.DOCS_REPOSITORY }}
+          ref: ${{ env.DOCS_BRANCH }}
+          path: 'docs-repository'
+
+      - name: Build API docs
+        run: php vendor/bin/testbench scramble:export --path=docs-repository/api-reference/openapi.json
+
+      - name: Setup git config
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "<>"
+
+      - name: Commit and push generated template
+        run: |
+          export COMMIT_MESSAGE="Generated API specification from ${{ github.repository }}/${{ github.ref}}@${{ github.sha }}"
+          cd docs-repository
+          git add .
+          git diff-index --quiet HEAD || (git commit -m "$COMMIT_MESSAGE" && git push)

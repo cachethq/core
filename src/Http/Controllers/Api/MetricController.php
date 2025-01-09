@@ -9,22 +9,17 @@ use Cachet\Data\Requests\Metric\CreateMetricRequestData;
 use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Metrics
- */
+#[Group('Metrics', weight: 6)]
 class MetricController extends Controller
 {
     /**
      * List Metrics
-     *
-     * @apiResourceCollection \Cachet\Http\Resources\Metric
-     *
-     * @apiResourceModel \Cachet\Models\Metric
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
@@ -51,12 +46,6 @@ class MetricController extends Controller
 
     /**
      * Create Metric
-     *
-     * @apiResource \Cachet\Http\Resources\Metric
-     *
-     * @apiResourceModel \Cachet\Models\Metric
-     *
-     * @authenticated
      */
     public function store(CreateMetricRequestData $data, CreateMetric $createMetricAction)
     {
@@ -67,10 +56,6 @@ class MetricController extends Controller
 
     /**
      * Get Metric
-     *
-     * @apiResource \Cachet\Http\Resources\Metric
-     *
-     * @apiResourceModel \Cachet\Models\Metric
      *
      * @queryParam include Include related resources. Enum: points. Example: points
      */
@@ -87,12 +72,6 @@ class MetricController extends Controller
 
     /**
      * Update Metric
-     *
-     * @apiResource \Cachet\Http\Resources\Metric
-     *
-     * @apiResourceModel \Cachet\Models\Metric
-     *
-     * @authenticated
      */
     public function update(UpdateMetricRequestData $data, Metric $metric, UpdateMetric $updateMetricAction)
     {
@@ -103,10 +82,6 @@ class MetricController extends Controller
 
     /**
      * Delete Metric
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Metric $metric, DeleteMetric $deleteMetricAction)
     {

@@ -10,23 +10,18 @@ use Cachet\Data\Requests\ScheduleUpdate\EditScheduleUpdateRequestData;
 use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Schedule Updates
- */
+#[Group('Schedule Updates', weight: 9)]
 class ScheduleUpdateController extends Controller
 {
     /**
      * List Schedule Updates
-     *
-     * @apiResourceCollection \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
@@ -49,12 +44,6 @@ class ScheduleUpdateController extends Controller
 
     /**
      * Create Schedule Update
-     *
-     * @apiResource \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
-     *
-     * @authenticated
      */
     public function store(CreateScheduleUpdateRequestData $data, Schedule $schedule, CreateUpdate $createUpdateAction)
     {
@@ -65,10 +54,6 @@ class ScheduleUpdateController extends Controller
 
     /**
      * Get Schedule Update
-     *
-     * @apiResource \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
      *
      * @queryParam include Include related resources. Enum: schedule. Example: schedule
      */
@@ -87,12 +72,6 @@ class ScheduleUpdateController extends Controller
 
     /**
      * Update Schedule Update
-     *
-     * @apiResource \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
-     *
-     * @authenticated
      */
     public function update(EditScheduleUpdateRequestData $data, Schedule $schedule, Update $update, EditUpdate $editUpdateAction)
     {
@@ -103,10 +82,6 @@ class ScheduleUpdateController extends Controller
 
     /**
      * Delete Schedule Update
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Schedule $schedule, Update $update, DeleteUpdate $deleteUpdateAction)
     {

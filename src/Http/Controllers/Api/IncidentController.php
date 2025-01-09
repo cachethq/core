@@ -9,14 +9,13 @@ use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Incidents
- */
+#[Group('Incidents', weight: 3)]
 class IncidentController extends Controller
 {
     /**
@@ -30,10 +29,6 @@ class IncidentController extends Controller
 
     /**
      * List Incidents
-     *
-     * @apiResourceCollection \Cachet\Http\Resources\Incident
-     *
-     * @apiResourceModel \Cachet\Models\Incident
      *
      * @queryParam per_page int How many items to show per page. Example: 20
      * @queryParam page int Which page to show. Example: 2
@@ -58,12 +53,6 @@ class IncidentController extends Controller
 
     /**
      * Create Incident
-     *
-     * @apiResource \Cachet\Http\Resources\Incident
-     *
-     * @apiResourceModel \Cachet\Models\Incident
-     *
-     * @authenticated
      */
     public function store(CreateIncidentRequestData $data, CreateIncident $createIncidentAction)
     {
@@ -74,10 +63,6 @@ class IncidentController extends Controller
 
     /**
      * Get Incident
-     *
-     * @apiResource \Cachet\Http\Resources\Incident
-     *
-     * @apiResourceModel \Cachet\Models\Incident
      *
      * @queryParam include Include related resources. Enum: components, updates, user. Example: updates
      */
@@ -94,12 +79,6 @@ class IncidentController extends Controller
 
     /**
      * Update Incident
-     *
-     * @apiResource \Cachet\Http\Resources\Incident
-     *
-     * @apiResourceModel \Cachet\Models\Incident
-     *
-     * @authenticated
      */
     public function update(UpdateIncidentRequestData $data, Incident $incident, UpdateIncident $updateIncidentAction)
     {
@@ -110,10 +89,6 @@ class IncidentController extends Controller
 
     /**
      * Delete Incident
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Incident $incident, DeleteIncident $deleteIncidentAction)
     {
