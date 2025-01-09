@@ -2,6 +2,7 @@
 
 namespace Cachet\Models;
 
+use Cachet\Cachet;
 use Cachet\Database\Factories\WebhookSubscriptionFactory;
 use Cachet\Enums\WebhookEventEnum;
 use Illuminate\Database\Eloquent\Builder;
@@ -62,6 +63,9 @@ class WebhookSubscription extends Model
     {
         return WebhookCall::create()
             ->url($this->url)
+            ->withHeaders([
+                'User-Agent' => Cachet::WEBHOOK_USER_AGENT,
+            ])
             ->payload([
                 'event' => $event->value,
                 'body' => $payload,
