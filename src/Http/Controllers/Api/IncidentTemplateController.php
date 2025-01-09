@@ -5,8 +5,8 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\IncidentTemplate\CreateIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\DeleteIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\UpdateIncidentTemplate;
-use Cachet\Data\IncidentTemplate\CreateIncidentTemplateData;
-use Cachet\Data\IncidentTemplate\UpdateIncidentTemplateData;
+use Cachet\Data\Requests\IncidentTemplate\CreateIncidentTemplateRequestData;
+use Cachet\Data\Requests\IncidentTemplate\UpdateIncidentTemplateRequestData;
 use Cachet\Http\Resources\IncidentTemplate as IncidentTemplateResource;
 use Cachet\Models\IncidentTemplate;
 use Illuminate\Http\Response;
@@ -51,7 +51,7 @@ class IncidentTemplateController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateIncidentTemplateData $data, CreateIncidentTemplate $createIncidentTemplateAction)
+    public function store(CreateIncidentTemplateRequestData $data, CreateIncidentTemplate $createIncidentTemplateAction)
     {
         $template = $createIncidentTemplateAction->handle($data);
 
@@ -81,7 +81,7 @@ class IncidentTemplateController extends Controller
      *
      * @authenticated
      */
-    public function update(UpdateIncidentTemplateData $data, IncidentTemplate $incidentTemplate, UpdateIncidentTemplate $updateIncidentTemplateAction)
+    public function update(UpdateIncidentTemplateRequestData $data, IncidentTemplate $incidentTemplate, UpdateIncidentTemplate $updateIncidentTemplateAction)
     {
         $template = $updateIncidentTemplateAction->handle($incidentTemplate, $data);
 

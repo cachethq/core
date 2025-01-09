@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Metric;
 
-use Cachet\Data\Metric\CreateMetricPointData;
+use Cachet\Data\Requests\Metric\CreateMetricPointRequestData;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
 
@@ -11,7 +11,7 @@ class CreateMetricPoint
     /**
      * Handle the action.
      */
-    public function handle(Metric $metric, ?CreateMetricPointData $data = null): MetricPoint
+    public function handle(Metric $metric, ?CreateMetricPointRequestData $data = null): MetricPoint
     {
         $lastPoint = $metric->metricPoints()->latest()->first();
 

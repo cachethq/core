@@ -1,11 +1,11 @@
 <?php
 
 use Cachet\Actions\Schedule\CreateSchedule;
-use Cachet\Data\Schedule\CreateScheduleData;
+use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Models\Component;
 
 it('can create a schedule without components', function () {
-    $data = CreateScheduleData::from([
+    $data = CreateScheduleRequestData::from([
         'name' => 'My Scheduled Maintenance',
         'message' => 'Something will go down...',
         'scheduled_at' => '2023-09-01 12:00:00',
@@ -23,7 +23,7 @@ it('can create a schedule without components', function () {
 it('can create a schedule with components', function () {
     [$componentA, $componentB] = Component::factory()->count(2)->create();
 
-    $data = CreateScheduleData::from([
+    $data = CreateScheduleRequestData::from([
         'name' => 'My Scheduled Maintenance',
         'message' => 'Something will go down...',
         'scheduled_at' => '2023-09-01 12:00:00',

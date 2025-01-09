@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\Component;
 
-use Cachet\Data\Component\UpdateComponentData;
+use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Events\Components\ComponentStatusWasChanged;
 use Cachet\Models\Component;
 
@@ -11,7 +11,7 @@ class UpdateComponent
     /**
      * Handle the action.
      */
-    public function handle(Component $component, UpdateComponentData $data): Component
+    public function handle(Component $component, UpdateComponentRequestData $data): Component
     {
         $oldStatus = $component->status;
 
