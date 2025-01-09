@@ -40,6 +40,8 @@ class WebhookSubscriptionResource extends Resource
                     url: 'https://docs.cachethq.io/v3.x/guide/webhooks',
                 )
             )
+            ->password()
+            ->revealable()
             ->required()
             ->maxLength(255)
             ->columnSpanFull()
@@ -59,7 +61,7 @@ class WebhookSubscriptionResource extends Resource
                         ->maxLength(255)
                         ->columnSpanFull()
                         ->autocomplete(false),
-        
+
                     self::secretField()
                         ->visibleOn(['create']),
 
