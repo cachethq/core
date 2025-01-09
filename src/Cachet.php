@@ -16,6 +16,11 @@ class Cachet
     public const USER_AGENT = 'Cachet/3.0 (+https://docs.cachethq.io)';
 
     /**
+     * The user agent used by Cachet's webhooks.
+     */
+    public const WEBHOOK_USER_AGENT = 'Cachet/3.0 Webhook (+https://docs.cachethq.io)';
+
+    /**
      * Get the current user using `cachet.guard`.
      */
     public static function user(?Request $request = null)
