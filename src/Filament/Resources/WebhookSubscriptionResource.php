@@ -7,6 +7,8 @@ use Cachet\Filament\Resources\WebhookSubscriptionResource\Pages;
 use Cachet\Models\WebhookSubscription;
 use Cachet\View\Htmlable\TextWithLink;
 use Filament\Forms;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -61,8 +63,8 @@ class WebhookSubscriptionResource extends Resource
                     self::secretField()
                         ->visibleOn(['create']),
 
-                    Forms\Components\Actions\ActionContainer::make(
-                        \Filament\Forms\Components\Actions\Action::make('edit_secret')
+                    Actions::make([
+                        Action::make('edit_secret')
                             ->label(__('cachet::webhook.form.edit_secret_label'))
                             ->modal()
                             ->form([
@@ -72,8 +74,8 @@ class WebhookSubscriptionResource extends Resource
                                 $webhookSubscription->update($data);
                             })
                             ->modalSubmitActionLabel(__('cachet::webhook.form.update_secret_label'))
-                    )->visibleOn(['edit']),
-        
+                    ])->visibleOn(['edit']),
+
                     Forms\Components\TextInput::make('description')
                         ->label(__('cachet::webhook.form.description_label'))
                         ->maxLength(255)
