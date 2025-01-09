@@ -1,0 +1,30 @@
+name: Frontend Setup
+
+on:
+  workflow_call:
+    inputs:
+      cache-key:
+        required: true
+        type: string
+
+jobs:
+  setup-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache frontend dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ inputs.cache-key }}
+          restore-keys: |
+            frontend-deps-
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build

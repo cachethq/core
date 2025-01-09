@@ -80,11 +80,10 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Reuse Frontend Setup
+        uses: ./.github/workflows/frontend-setup.yml
+        with:
+          cache-key: frontend-deps-${{ hashFiles('**/package-lock.json') }}
 
       - name: Build tests environment
         run: composer build
@@ -137,11 +136,10 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Reuse Frontend Setup
+        uses: ./.github/workflows/frontend-setup.yml
+        with:
+          cache-key: frontend-deps-${{ hashFiles('**/package-lock.json') }}
 
       - name: Build tests environment
         run: composer build
@@ -194,11 +192,10 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Reuse Frontend Setup
+        uses: ./.github/workflows/frontend-setup.yml
+        with:
+          cache-key: frontend-deps-${{ hashFiles('**/package-lock.json') }}
 
       - name: Build tests environment
         run: composer build
@@ -251,11 +248,10 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Reuse Frontend Setup
+        uses: ./.github/workflows/frontend-setup.yml
+        with:
+          cache-key: frontend-deps-${{ hashFiles('**/package-lock.json') }}
 
       - name: Build tests environment
         run: composer build
@@ -296,11 +292,10 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Reuse Frontend Setup
+        uses: ./.github/workflows/frontend-setup.yml
+        with:
+          cache-key: frontend-deps-${{ hashFiles('**/package-lock.json') }}
 
       - name: Build tests environment
         run: composer build
