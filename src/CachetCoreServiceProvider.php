@@ -3,6 +3,8 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Listeners\SendWebhookListener;
+use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
@@ -14,10 +16,13 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
+use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
 
 class CachetCoreServiceProvider extends ServiceProvider
 {
@@ -55,6 +60,9 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
+
+        Event::listen('Cachet\Events\Incidents\*', SendWebhookListener::class);
+        Event::listen([WebhookCallSucceededEvent::class, WebhookCallFailedEvent::class], WebhookCallEventListener::class);
 
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
             'User-Agent', Cachet::USER_AGENT
