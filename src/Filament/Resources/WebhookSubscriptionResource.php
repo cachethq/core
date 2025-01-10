@@ -70,12 +70,12 @@ class WebhookSubscriptionResource extends Resource
                             ->label(__('cachet::webhook.form.edit_secret_label'))
                             ->modal()
                             ->form([
-                                self::secretField()
+                                self::secretField(),
                             ])
                             ->action(function (array $data, WebhookSubscription $webhookSubscription) {
                                 $webhookSubscription->update($data);
                             })
-                            ->modalSubmitActionLabel(__('cachet::webhook.form.update_secret_label'))
+                            ->modalSubmitActionLabel(__('cachet::webhook.form.update_secret_label')),
                     ])->visibleOn(['edit']),
 
                     Forms\Components\TextInput::make('description')
@@ -95,7 +95,7 @@ class WebhookSubscriptionResource extends Resource
                             ->options(WebhookEventEnum::class)
                             ->columnSpanFull(),
                     ])
-                    ->visible(fn (Get $get) => !$get('send_all_events')),
+                        ->visible(fn (Get $get) => ! $get('send_all_events')),
                 ])->columnSpan(4),
             ])->columns(4);
     }

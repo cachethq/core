@@ -12,15 +12,12 @@ use Illuminate\Queue\SerializesModels;
 
 class IncidentUpdated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels, SendsWebhook;
+    use Dispatchable, InteractsWithSockets, SendsWebhook, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Incident $incident)
-    {
-
-    }
+    public function __construct(public Incident $incident) {}
 
     /**
      * Get the channels the event should broadcast on.

@@ -13,7 +13,7 @@ use Illuminate\Queue\SerializesModels;
 
 class MetricPointDeleted
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels, SendsWebhook;
+    use Dispatchable, InteractsWithSockets, SendsWebhook, SerializesModels;
 
     /**
      * Create a new event instance.

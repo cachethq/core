@@ -14,6 +14,6 @@ trait SendsWebhook
 
     public function getWebhookEventName(): WebhookEventEnum
     {
-        throw new Exception('You must implement the getWebhookEventName method on ' . static::class);
+        throw new Exception('You must implement the getWebhookEventName method on '.static::class);
     }
 }

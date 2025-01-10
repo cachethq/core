@@ -34,7 +34,7 @@ class WebhookSubscription extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'selected_events' => AsEnumCollection::class . ':' . WebhookEventEnum::class,
+        'selected_events' => AsEnumCollection::class.':'.WebhookEventEnum::class,
     ];
 
     /**
@@ -84,7 +84,7 @@ class WebhookSubscription extends Model
      */
     public function getSuccessRate24hAttribute($value)
     {
-        return number_format(($value ?? 0) * 100, 2) . '%';
+        return number_format(($value ?? 0) * 100, 2).'%';
     }
 
     /**

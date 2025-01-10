@@ -7,9 +7,7 @@ use Cachet\Concerns\SendsWebhook;
 
 class SendWebhookListener
 {
-    public function __construct(private DispatchWebhooks $dispatcher)
-    {
-    }
+    public function __construct(private DispatchWebhooks $dispatcher) {}
 
     public function handle(string $eventName, array $data)
     {

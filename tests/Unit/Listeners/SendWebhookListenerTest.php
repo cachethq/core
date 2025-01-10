@@ -10,7 +10,8 @@ use function Pest\Laravel\mock;
 it('sends when the event uses SendsWebhook', function () {
     $dispatchWebhooks = mock(DispatchWebhooks::class)->makePartial();
 
-    $event = new class {
+    $event = new class
+    {
         use SendsWebhook;
 
         public function getWebhookPayload(): array

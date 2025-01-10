@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class WebhookAttempt extends Model
 {
-    use MassPrunable, HasFactory;
+    use HasFactory, MassPrunable;
 
     protected $fillable = [
         'subscription_id',

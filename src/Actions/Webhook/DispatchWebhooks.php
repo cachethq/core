@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 class DispatchWebhooks
 {
     protected mixed $event;
+
     protected WebhookEventEnum $eventName;
 
     public function handle(mixed $event): void
