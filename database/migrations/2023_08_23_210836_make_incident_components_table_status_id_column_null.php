@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('incident_components', function (Blueprint $table) {
-            $table->unsignedInteger('status_id')->nullable()->change();
-
             $table->renameColumn('status_id', 'status');
+            $table->unsignedInteger('status')->nullable()->change();
         });
     }
 };
