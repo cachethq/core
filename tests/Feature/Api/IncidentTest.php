@@ -4,6 +4,9 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 
+use Laravel\Sanctum\Sanctum;
+use Workbench\App\User;
+
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -182,7 +185,31 @@ it('can get an incident with updates', function () {
     ]);
 });
 
+it('cannot create an incident if not authenticated', function () {
+    $response = postJson('/status/api/incidents', [
+        'name' => 'New Incident Occurred',
+        'message' => 'Something went wrong.',
+        'status' => 2,
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot create an incident without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $response = postJson('/status/api/incidents', [
+        'name' => 'New Incident Occurred',
+        'message' => 'Something went wrong.',
+        'status' => 2,
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can create an incident', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
     $response = postJson('/status/api/incidents', $payload = [
         'name' => 'New Incident Occurred',
         'message' => 'Something went wrong.',
@@ -204,6 +231,8 @@ it('can create an incident', function () {
 });
 
 it('can create an incident with a template', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
     $incidentTemplate = IncidentTemplate::factory()->twig()->create();
 
     $response = postJson('/status/api/incidents', [
@@ -227,6 +256,8 @@ it('can create an incident with a template', function () {
 });
 
 it('cannot create an incident with bad data', function (array $payload) {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
     $response = postJson('/status/api/incidents', $payload);
 
     $response->assertUnprocessable();
@@ -237,7 +268,35 @@ it('cannot create an incident with bad data', function (array $payload) {
     fn () => ['name' => 'New Incident', 'template' => 123, 'status' => 999],
 ]);
 
+it('cannot update an incident if not authenticated', function () {
+    $incident = Incident::factory()->create();
+
+    $response = putJson('/status/api/incidents/'.$incident->id, [
+        'name' => 'New Incident Occurred',
+        'message' => 'Something went wrong.',
+        'status' => 2,
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot update an incident without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $incident = Incident::factory()->create();
+
+    $response = putJson('/status/api/incidents/'.$incident->id, [
+        'name' => 'New Incident Occurred',
+        'message' => 'Something went wrong.',
+        'status' => 2,
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can update an incident', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
     $incident = Incident::factory()->create();
 
     $response = putJson('/status/api/incidents/'.$incident->id, [
@@ -250,6 +309,8 @@ it('can update an incident', function () {
 });
 
 it('can update an incident while passing null data', function (array $payload) {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
     $incident = Incident::factory()->create();
 
     $response = putJson('/status/api/incidents/'.$incident->id, $payload);
@@ -269,6 +330,8 @@ it('can update an incident while passing null data', function (array $payload) {
 ]);
 
 it('cannot update an incident with bad data', function (array $payload) {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
     $incident = Incident::factory()->create();
 
     $response = putJson('/status/api/incidents/'.$incident->id, $payload);
@@ -280,7 +343,27 @@ it('cannot update an incident with bad data', function (array $payload) {
     fn () => ['name' => 'New Incident', 'message' => null, 'status' => 999],
 ]);
 
+it('cannot delete an incident if not authenticated', function () {
+    $incident = Incident::factory()->create();
+
+    $response = deleteJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot delete an incident without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $incident = Incident::factory()->create();
+
+    $response = deleteJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertForbidden();
+});
+
 it('can delete an incident', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.delete']);
+
     $incident = Incident::factory()->create();
 
     $response = deleteJson('/status/api/incidents/'.$incident->id);

@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Incident\CreateIncident;
 use Cachet\Actions\Incident\DeleteIncident;
 use Cachet\Actions\Incident\UpdateIncident;
+use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Http\Resources\Incident as IncidentResource;
@@ -19,6 +20,8 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 class IncidentController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * The list of allowed includes.
      */
@@ -67,6 +70,8 @@ class IncidentController extends Controller
      */
     public function store(CreateIncidentRequestData $data, CreateIncident $createIncidentAction)
     {
+        $this->guard('incidents.manage');
+
         $incident = $createIncidentAction->handle($data);
 
         return IncidentResource::make($incident);
@@ -103,6 +108,8 @@ class IncidentController extends Controller
      */
     public function update(UpdateIncidentRequestData $data, Incident $incident, UpdateIncident $updateIncidentAction)
     {
+        $this->guard('incidents.manage');
+
         $updateIncidentAction->handle($incident, $data);
 
         return IncidentResource::make($incident->fresh());
@@ -117,6 +124,8 @@ class IncidentController extends Controller
      */
     public function destroy(Incident $incident, DeleteIncident $deleteIncidentAction)
     {
+        $this->guard('incidents.delete');
+
         $deleteIncidentAction->handle($incident);
 
         return response()->noContent();
