@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Resources;
 
+use Cachet\Concerns\CachetUser;
 use Cachet\Filament\Resources\UserResource\Pages;
 use Cachet\Filament\Resources\UserResource\RelationManagers;
 use Filament\Forms;
@@ -12,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
@@ -23,32 +25,34 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\Section::make()->columns()->schema([
                     Forms\Components\TextInput::make('name')
-                        ->label(__('Name'))
+                        ->label(__('cachet::user.form.name_label'))
                         ->required()
                         ->maxLength(255)
                         ->autocomplete(false),
 
                     Forms\Components\TextInput::make('email')
-                        ->label(__('Email address'))
+                        ->label(__('cachet::user.form.email_label'))
                         ->email()
                         ->required()
                         ->maxLength(255)
                         ->autocomplete(false)
-                        ->unique('users', 'email'),
+                        ->unique('users', 'email', ignoreRecord: true),
 
                     Forms\Components\TextInput::make('password')
-                        ->label(__('Password'))
+                        ->label(__('cachet::user.form.password_label'))
                         ->password()
                         ->required(fn (string $context): bool => $context === 'create')
                         ->maxLength(255)
-                        ->autocomplete(false),
+                        ->autocomplete(false)
+                        ->dehydrateStateUsing(fn ($state) => Hash::make($state))
+                        ->dehydrated(fn ($state) => filled($state)),
 
                     Forms\Components\TextInput::make('password_confirmation')
                         ->password()
                         ->required(fn (string $context): bool => $context === 'create')
                         ->maxLength(255)
                         ->same('password')
-                        ->label(__('Confirm Password')),
+                        ->label(__('cachet::user.form.password_confirmation_label')),
                 ])
             ]);
     }
@@ -58,15 +62,15 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('Name'))
+                    ->label(__('cachet::user.list.headers.name'))
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email')
-                    ->label(__('Email address'))
+                    ->label(__('cachet::user.list.headers.email'))
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('email_verified_at')
-                    ->label(__('Email Verified At'))
+                    ->label(__('cachet::user.list.headers.email_verified_at'))
                     ->dateTime(),
             ])
             ->filters([
@@ -75,9 +79,9 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('verify-email')
-                    ->label(__('Verify Email'))
+                    ->label(__('cachet::user.list.actions.verify_email'))
                     ->icon('heroicon-o-check-badge')
-                    ->disabled(fn (Authenticatable $record): bool => $record->hasVerifiedEmail())
+                    ->disabled(fn (CachetUser $record): bool => $record->hasVerifiedEmail())
                     ->action(fn (Builder $query, Authenticatable $record) => $record->sendEmailVerificationNotification()),
             ])
             ->bulkActions([
@@ -101,6 +105,16 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    public static function getLabel(): ?string
+    {
+        return trans_choice('cachet::user.resource_label', 1);
+    }
+
+    public static function getPluralLabel(): ?string
+    {
+        return trans_choice('cachet::user.resource_label', 2);
     }
 
     public static function getModel(): string
