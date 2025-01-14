@@ -81,7 +81,7 @@ class UserResource extends Resource
                 Tables\Actions\Action::make('verify-email')
                     ->label(__('cachet::user.list.actions.verify_email'))
                     ->icon('heroicon-o-check-badge')
-                    ->disabled(fn (CachetUser $record): bool => $record->hasVerifiedEmail())
+                    ->disabled(fn (Authenticatable $record): bool => $record->hasVerifiedEmail())
                     ->action(fn (Builder $query, Authenticatable $record) => $record->sendEmailVerificationNotification()),
             ])
             ->bulkActions([
