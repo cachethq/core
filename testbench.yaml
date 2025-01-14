@@ -6,6 +6,7 @@ providers:
   - Spatie\LaravelData\LaravelDataServiceProvider
 
 env:
+  - AUTH_MODEL=\Workbench\App\User
   - MAIL_MAILER=smtp
   - MAIL_HOST=127.0.0.1
   - MAIL_PORT=2525
