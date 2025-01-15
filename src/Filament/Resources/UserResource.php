@@ -20,7 +20,7 @@ class UserResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()->is_admin;
+        return auth()->user()->isAdmin();
     }
 
     public static function form(Form $form): Form
@@ -59,7 +59,8 @@ class UserResource extends Resource
                         ->label(__('cachet::user.form.password_confirmation_label')),
 
                     Forms\Components\Toggle::make('is_admin')
-                        ->label(__('cachet::user.form.is_admin_label')),
+                        ->label(__('cachet::user.form.is_admin_label'))
+                        ->disabled(fn (Authenticatable $record) => auth()->user()->is($record)),
                 ])
             ]);
     }
@@ -81,7 +82,7 @@ class UserResource extends Resource
                     ->dateTime(),
 
                 Tables\Columns\ToggleColumn::make('is_admin')
-                    ->disabled(fn () => !auth()->user()->is_admin)
+                    ->disabled(fn (Authenticatable $record) => auth()->user()->is($record))
                     ->label(__('cachet::user.list.headers.is_admin')),
             ])
             ->filters([
