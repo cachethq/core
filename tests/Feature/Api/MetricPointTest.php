@@ -2,7 +2,6 @@
 
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
-
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 

@@ -1,9 +1,7 @@
 <?php
 
 use Cachet\Models\IncidentTemplate;
-
 use Laravel\Sanctum\Sanctum;
-
 use Workbench\App\User;
 
 use function Pest\Laravel\deleteJson;

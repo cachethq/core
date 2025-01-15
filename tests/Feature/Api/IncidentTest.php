@@ -3,7 +3,6 @@
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
-
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 

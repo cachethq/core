@@ -3,7 +3,6 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Filament\Resources\UserResource\Pages;
-use Cachet\Filament\Resources\UserResource\RelationManagers;
 use Cachet\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -60,7 +59,7 @@ class UserResource extends Resource
                     Forms\Components\Toggle::make('is_admin')
                         ->label(__('cachet::user.form.is_admin_label'))
                         ->disabled(fn (?User $record) => $record?->is(auth()->user())),
-                ])
+                ]),
             ]);
     }
 

@@ -2,7 +2,6 @@
 
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
-
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 

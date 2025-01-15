@@ -3,7 +3,6 @@
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
-
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 

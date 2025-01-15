@@ -2,9 +2,7 @@
 
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
-
 use Laravel\Sanctum\Sanctum;
-
 use Workbench\App\User;
 
 use function Pest\Laravel\deleteJson;

@@ -4,9 +4,7 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\Update;
 use Illuminate\Database\Eloquent\Relations\Relation;
-
 use Laravel\Sanctum\Sanctum;
-
 use Workbench\App\User;
 
 use function Pest\Laravel\deleteJson;

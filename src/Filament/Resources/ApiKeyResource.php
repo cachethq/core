@@ -3,7 +3,6 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Cachet;
-use Cachet\Enums\ApiAbility;
 use Cachet\Filament\Resources\ApiKeyResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -62,7 +61,7 @@ class ApiKeyResource extends Resource
                         ->hint(__('cachet::api_key.form.abilities_hint'))
                         ->hintColor('warning')
                         ->options(self::getAbilities())
-                        ->columns(3)
+                        ->columns(3),
                 ])->columnSpan(4),
             ])->columns(4);
     }
@@ -87,7 +86,7 @@ class ApiKeyResource extends Resource
                     ->label(__('cachet::api_key.list.headers.expires_at'))
                     ->sortable()
                     ->color(fn (PersonalAccessToken $record) => $record->expires_at ? null : 'gray')
-                    ->badge(fn (PersonalAccessToken $record) => !$record->expires_at)
+                    ->badge(fn (PersonalAccessToken $record) => ! $record->expires_at)
                     ->getStateUsing(fn (PersonalAccessToken $record) => $record->expires_at?->format(Table::$defaultDateDisplayFormat) ?? 'N/A'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('cachet::api_key.list.headers.updated_at'))

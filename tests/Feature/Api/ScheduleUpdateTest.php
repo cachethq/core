@@ -3,7 +3,6 @@
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 use Illuminate\Database\Eloquent\Relations\Relation;
-
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 

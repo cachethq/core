@@ -1,6 +1,5 @@
 <?php
 
-use Cachet\Enums\ApiAbility;
 use Cachet\Http\Controllers\Api\ComponentController;
 use Cachet\Http\Controllers\Api\ComponentGroupController;
 use Cachet\Http\Controllers\Api\GeneralController;

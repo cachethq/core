@@ -2,9 +2,7 @@
 
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Models\Metric;
-
 use Laravel\Sanctum\Sanctum;
-
 use Workbench\App\User;
 
 use function Pest\Laravel\deleteJson;
