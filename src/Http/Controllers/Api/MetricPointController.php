@@ -4,7 +4,8 @@ namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Actions\Metric\CreateMetricPoint;
 use Cachet\Actions\Metric\DeleteMetricPoint;
-use Cachet\Data\Metric\CreateMetricPointData;
+use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Data\Requests\Metric\CreateMetricPointRequestData;
 use Cachet\Http\Resources\MetricPoint as MetricPointResource;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
@@ -17,6 +18,8 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 class MetricPointController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Metric Points
      *
@@ -51,8 +54,10 @@ class MetricPointController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateMetricPointData $data, Metric $metric, CreateMetricPoint $createMetricPointAction)
+    public function store(CreateMetricPointRequestData $data, Metric $metric, CreateMetricPoint $createMetricPointAction)
     {
+        $this->guard('metric-points.manage');
+
         $metricPoint = $createMetricPointAction->handle($metric, $data);
 
         return MetricPointResource::make($metricPoint)
@@ -89,6 +94,8 @@ class MetricPointController extends Controller
      */
     public function destroy(Metric $metric, MetricPoint $metricPoint, DeleteMetricPoint $deleteMetricPointAction)
     {
+        $this->guard('metric-points.delete');
+
         $deleteMetricPointAction->handle($metricPoint);
 
         return response()->noContent();

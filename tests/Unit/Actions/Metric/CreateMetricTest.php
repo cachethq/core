@@ -1,14 +1,14 @@
 <?php
 
 use Cachet\Actions\Metric\CreateMetric;
-use Cachet\Data\Metric\CreateMetricData;
+use Cachet\Data\Requests\Metric\CreateMetricRequestData;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Events\Metrics\MetricCreated;
 use Illuminate\Support\Facades\Event;
 
 it('can create a metric', function () {
     Event::fake();
-    $data = CreateMetricData::from([
+    $data = CreateMetricRequestData::from([
         'name' => 'Foo',
         'suffix' => 'Bar',
         'description' => 'Baz',

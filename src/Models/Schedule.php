@@ -114,8 +114,7 @@ class Schedule extends Model
      */
     public function scopeIncomplete(Builder $query): void
     {
-        $query->whereDate('scheduled_at', '>=', Carbon::now())
-            ->whereNull('completed_at');
+        $query->whereNull('completed_at');
     }
 
     /**

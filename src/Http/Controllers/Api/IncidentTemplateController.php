@@ -5,8 +5,9 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\IncidentTemplate\CreateIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\DeleteIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\UpdateIncidentTemplate;
-use Cachet\Data\IncidentTemplate\CreateIncidentTemplateData;
-use Cachet\Data\IncidentTemplate\UpdateIncidentTemplateData;
+use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Data\Requests\IncidentTemplate\CreateIncidentTemplateRequestData;
+use Cachet\Data\Requests\IncidentTemplate\UpdateIncidentTemplateRequestData;
 use Cachet\Http\Resources\IncidentTemplate as IncidentTemplateResource;
 use Cachet\Models\IncidentTemplate;
 use Illuminate\Http\Response;
@@ -18,6 +19,8 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 class IncidentTemplateController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Incident Templates
      *
@@ -51,8 +54,10 @@ class IncidentTemplateController extends Controller
      *
      * @authenticated
      */
-    public function store(CreateIncidentTemplateData $data, CreateIncidentTemplate $createIncidentTemplateAction)
+    public function store(CreateIncidentTemplateRequestData $data, CreateIncidentTemplate $createIncidentTemplateAction)
     {
+        $this->guard('incident-templates.manage');
+
         $template = $createIncidentTemplateAction->handle($data);
 
         return IncidentTemplateResource::make($template);
@@ -81,8 +86,10 @@ class IncidentTemplateController extends Controller
      *
      * @authenticated
      */
-    public function update(UpdateIncidentTemplateData $data, IncidentTemplate $incidentTemplate, UpdateIncidentTemplate $updateIncidentTemplateAction)
+    public function update(UpdateIncidentTemplateRequestData $data, IncidentTemplate $incidentTemplate, UpdateIncidentTemplate $updateIncidentTemplateAction)
     {
+        $this->guard('incident-templates.manage');
+
         $template = $updateIncidentTemplateAction->handle($incidentTemplate, $data);
 
         return IncidentTemplateResource::make($template);
@@ -97,6 +104,8 @@ class IncidentTemplateController extends Controller
      */
     public function destroy(IncidentTemplate $incidentTemplate)
     {
+        $this->guard('incident-templates.delete');
+
         app(DeleteIncidentTemplate::class)->handle($incidentTemplate);
 
         return response()->noContent();

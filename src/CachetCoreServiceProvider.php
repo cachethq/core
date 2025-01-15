@@ -3,6 +3,8 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Listeners\SendWebhookListener;
+use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
@@ -15,10 +17,13 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
+use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
 
 class CachetCoreServiceProvider extends ServiceProvider
 {
@@ -53,9 +58,13 @@ class CachetCoreServiceProvider extends ServiceProvider
         ]);
 
         $this->registerCommands();
+        $this->registerSchedules();
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
+
+        Event::listen('Cachet\Events\Incidents\*', SendWebhookListener::class);
+        Event::listen([WebhookCallSucceededEvent::class, WebhookCallFailedEvent::class], WebhookCallEventListener::class);
 
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
             'User-Agent', Cachet::USER_AGENT
@@ -73,7 +82,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'cachet');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'cachet');
 
         $this->configureRateLimiting();
         $this->registerRoutes();
@@ -166,5 +175,21 @@ class CachetCoreServiceProvider extends ServiceProvider
                 'Version' => app(Cachet::class)->version(),
             ]);
         }
+    }
+
+    /**
+     * Register the package's schedules.
+     */
+    private function registerSchedules(): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->app->booted(function () {
+            $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+
+            $schedule->command('cachet:beacon')->daily();
+        });
     }
 }

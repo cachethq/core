@@ -2,7 +2,7 @@
 
 namespace Cachet\Actions\ComponentGroup;
 
-use Cachet\Data\ComponentGroup\CreateComponentGroupData;
+use Cachet\Data\Requests\ComponentGroup\CreateComponentGroupRequestData;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 
@@ -14,7 +14,7 @@ class CreateComponentGroup
     /**
      * Handle the action.
      */
-    public function handle(CreateComponentGroupData $data): ComponentGroup
+    public function handle(CreateComponentGroupRequestData $data): ComponentGroup
     {
         return tap(ComponentGroup::create(
             $data->except('components')->toArray(),

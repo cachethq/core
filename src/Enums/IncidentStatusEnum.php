@@ -18,6 +18,7 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
     public static function unresolved(): array
     {
         return [
+            self::unknown,
             self::investigating,
             self::identified,
             self::watching,
@@ -38,11 +39,11 @@ enum IncidentStatusEnum: int implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::investigating => __('Investigating'),
-            self::identified => __('Identified'),
-            self::watching => __('Watching'),
-            self::fixed => __('Fixed'),
-            default => __('Reported'),
+            self::investigating => __('cachet::incident.status.investigating'),
+            self::identified => __('cachet::incident.status.identified'),
+            self::watching => __('cachet::incident.status.watching'),
+            self::fixed => __('cachet::incident.status.fixed'),
+            default => __('cachet::incident.status.reported'),
         };
     }
 

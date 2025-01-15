@@ -1,7 +1,7 @@
 <?php
 
 use Cachet\Actions\Metric\UpdateMetric;
-use Cachet\Data\Metric\UpdateMetricData;
+use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
 use Cachet\Events\Metrics\MetricUpdated;
 use Cachet\Models\Metric;
 use Illuminate\Support\Facades\Event;
@@ -10,7 +10,7 @@ it('can update a metric', function () {
     Event::fake();
     $metric = Metric::factory()->create();
 
-    $data = UpdateMetricData::from([
+    $data = UpdateMetricRequestData::from([
         'name' => 'Updated Metric',
     ]);
 

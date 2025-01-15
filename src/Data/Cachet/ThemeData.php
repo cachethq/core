@@ -9,7 +9,7 @@ use Filament\Support\Facades\FilamentColor;
 use Spatie\LaravelData\Attributes\Computed;
 use Spatie\LaravelData\Attributes\Validation\Required;
 
-class ThemeData extends BaseData
+final class ThemeData extends BaseData
 {
     public const GRAYS = ['slate', 'gray', 'zinc', 'neutral', 'stone'];
 

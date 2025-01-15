@@ -4,8 +4,12 @@ use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
+use Laravel\Sanctum\Sanctum;
+use Workbench\App\User;
+
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
+use function Pest\Laravel\postJson;
 use function Pest\Laravel\putJson;
 
 it('can list schedule updates', function () {
@@ -89,7 +93,72 @@ it('can get an schedule update with schedule', function () {
     ]);
 });
 
+it('cannot create a schedule if not authenticated', function () {
+    $schedule = Schedule::factory()->create();
+
+    $response = postJson("/status/api/schedules/{$schedule->id}/updates", [
+        'message' => 'This is a message.',
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot create a schedule without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $schedule = Schedule::factory()->create();
+
+    $response = postJson("/status/api/schedules/{$schedule->id}/updates", [
+        'message' => 'This is a message.',
+    ]);
+
+    $response->assertForbidden();
+});
+
+it('can create a schedule update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedule-updates.manage']);
+
+    $schedule = Schedule::factory()->create();
+
+    $response = postJson("/status/api/schedules/{$schedule->id}/updates", [
+        'message' => 'This is a message.',
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('updates', [
+        'message' => 'This is a message.',
+    ]);
+});
+
+it('cannot update a schedule if not authenticated', function () {
+    $scheduleUpdate = Update::factory()->forSchedule()->create();
+
+    $data = [
+        'message' => 'This is an updated message.',
+    ];
+
+    $response = putJson("/status/api/schedules/{$scheduleUpdate->updateable_id}/updates/{$scheduleUpdate->id}", $data);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot update a schedule without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $scheduleUpdate = Update::factory()->forSchedule()->create();
+
+    $data = [
+        'message' => 'This is an updated message.',
+    ];
+
+    $response = putJson("/status/api/schedules/{$scheduleUpdate->updateable_id}/updates/{$scheduleUpdate->id}", $data);
+
+    $response->assertForbidden();
+});
+
 it('can update an schedule update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedule-updates.manage']);
+
     $scheduleUpdate = Update::factory()->forSchedule()->create();
 
     $data = [
@@ -106,7 +175,27 @@ it('can update an schedule update', function () {
     ]);
 });
 
+it('cannot delete a schedule if not authenticated', function () {
+    $scheduleUpdate = Update::factory()->forSchedule()->create();
+
+    $response = deleteJson("/status/api/schedules/{$scheduleUpdate->updateable_id}/updates/{$scheduleUpdate->id}");
+
+    $response->assertUnauthorized();
+});
+
+it('cannot delete a schedule without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $scheduleUpdate = Update::factory()->forSchedule()->create();
+
+    $response = deleteJson("/status/api/schedules/{$scheduleUpdate->updateable_id}/updates/{$scheduleUpdate->id}");
+
+    $response->assertForbidden();
+});
+
 it('can delete an schedule update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedule-updates.delete']);
+
     $scheduleUpdate = Update::factory()->forSchedule()->create();
 
     $response = deleteJson("/status/api/schedules/{$scheduleUpdate->updateable_id}/updates/{$scheduleUpdate->id}");
@@ -118,6 +207,8 @@ it('can delete an schedule update', function () {
 });
 
 it('cannot delete an schedule update from another schedule', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedule-updates.delete']);
+
     $schedule = Schedule::factory()->create();
     $scheduleUpdate = Update::factory()->forSchedule()->create();
 

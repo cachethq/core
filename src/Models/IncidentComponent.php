@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property int $id
  * @property int $incident_id
  * @property int $component_id
- * @property ?ComponentStatusEnum $status
+ * @property ?ComponentStatusEnum $component_status
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property Incident $incident
@@ -24,12 +24,14 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class IncidentComponent extends Pivot
 {
+    protected $table = 'incident_components';
+
     /** @use HasFactory<IncidentComponentFactory> */
     use HasFactory;
 
     /** @var array<string, string> */
     protected $casts = [
-        'status' => ComponentStatusEnum::class,
+        'component_status' => ComponentStatusEnum::class,
     ];
 
     /**

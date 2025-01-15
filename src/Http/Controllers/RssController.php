@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers;
 use Cachet\Models\Incident;
 use Cachet\Settings\AppSettings;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 
 class RssController
 {
@@ -19,6 +20,21 @@ class RssController
             'incidents' => Incident::query()
                 ->guests()
                 ->with('updates')
+                ->when($appSettings->recent_incidents_only, function ($query) use ($appSettings) {
+                    $query->where(function ($query) use ($appSettings) {
+                        $query->whereDate(
+                            'occurred_at',
+                            '>',
+                            Carbon::now()->subDays($appSettings->recent_incidents_days)->format('Y-m-d')
+                        )->orWhere(function ($query) use ($appSettings) {
+                            $query->whereNull('occurred_at')->whereDate(
+                                'created_at',
+                                '>',
+                                Carbon::now()->subDays($appSettings->recent_incidents_days)->format('Y-m-d')
+                            );
+                        });
+                    });
+                })
                 ->orderByDesc('created_at')
                 ->get(),
         ])->header('Content-Type', 'application/rss+xml');

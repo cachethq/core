@@ -16,18 +16,9 @@ class Cachet
     public const USER_AGENT = 'Cachet/3.0 (+https://docs.cachethq.io)';
 
     /**
-     * Get the default CSS variables.
-     *
-     * @return array<string, list<string>>
+     * The user agent used by Cachet's webhooks.
      */
-    public static function cssVariables(): array
-    {
-        return [
-            // Variable => [Light, Dark]
-            'background' => ['#F9FAFB', '#18181B'],
-            'text' => ['#3F3F46', '#D4D4D8'],
-        ];
-    }
+    public const WEBHOOK_USER_AGENT = 'Cachet/3.0 Webhook (+https://docs.cachethq.io)';
 
     /**
      * Get the current user using `cachet.guard`.
@@ -75,5 +66,21 @@ class Cachet
     public static function version(): string
     {
         return trim(file_get_contents(__DIR__.'/../VERSION'));
+    }
+
+    /** @return array<string, list<string>> */
+    public static function getResourceApiAbilities(): array
+    {
+        return [
+            'components' => ['manage', 'delete'],
+            'component-groups' => ['manage', 'delete'],
+            'incidents' => ['manage', 'delete'],
+            'incident-updates' => ['manage', 'delete'],
+            'incident-templates' => ['manage', 'delete'],
+            'metrics' => ['manage', 'delete'],
+            'metric-points' => ['manage', 'delete'],
+            'schedules' => ['manage', 'delete'],
+            'schedule-updates' => ['manage', 'delete'],
+        ];
     }
 }

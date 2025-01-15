@@ -21,7 +21,7 @@ return [
      |
      | This is the URI path where Cachet will be accessible from.
      */
-    'path' => env('CACHET_PATH', '/status'),
+    'path' => env('CACHET_PATH', '/'),
 
     'guard' => env('CACHET_GUARD', null),
 
@@ -33,7 +33,9 @@ return [
      | This is the model that will be used to authenticate users. This model
      | must be an instance of Illuminate\Foundation\Auth\User.
      */
-    'user_model' => \App\Models\User::class,
+    'user_model' => env('CACHET_USER_MODEL', \App\Models\User::class),
+
+    'user_migrations' => env('CACHET_USER_MIGRATIONS', true),
 
     /*
      |--------------------------------------------------------------------------
@@ -107,4 +109,21 @@ return [
      |
      */
     'docker' => env('CACHET_DOCKER', false),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Webhooks
+     |--------------------------------------------------------------------------
+     |
+     | Configure how Cachet sends webhooks for events.
+     |
+     */
+    'webhooks' => [
+        'queue_connection' => env('CACHET_WEBHOOK_QUEUE_CONNECTION', 'default'),
+        'queue_name' => env('CACHET_WEBHOOK_QUEUE_NAME', 'webhooks'),
+
+        'logs' => [
+            'prune_logs_after_days' => 30,
+        ],
+    ],
 ];
