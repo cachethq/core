@@ -59,7 +59,7 @@ class UserResource extends Resource
 
                     Forms\Components\Toggle::make('is_admin')
                         ->label(__('cachet::user.form.is_admin_label'))
-                        ->disabled(fn (User $record) => auth()->user()->is($record)),
+                        ->disabled(fn (?User $record) => $record?->is(auth()->user())),
                 ])
             ]);
     }
