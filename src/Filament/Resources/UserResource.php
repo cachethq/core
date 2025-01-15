@@ -4,14 +4,13 @@ namespace Cachet\Filament\Resources;
 
 use Cachet\Filament\Resources\UserResource\Pages;
 use Cachet\Filament\Resources\UserResource\RelationManagers;
+use Cachet\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
@@ -60,7 +59,7 @@ class UserResource extends Resource
 
                     Forms\Components\Toggle::make('is_admin')
                         ->label(__('cachet::user.form.is_admin_label'))
-                        ->disabled(fn (Authenticatable $record) => auth()->user()->is($record)),
+                        ->disabled(fn (User $record) => auth()->user()->is($record)),
                 ])
             ]);
     }
@@ -82,7 +81,7 @@ class UserResource extends Resource
                     ->dateTime(),
 
                 Tables\Columns\ToggleColumn::make('is_admin')
-                    ->disabled(fn (Authenticatable $record) => auth()->user()->is($record))
+                    ->disabled(fn (User $record) => auth()->user()->is($record))
                     ->label(__('cachet::user.list.headers.is_admin')),
             ])
             ->filters([
@@ -93,8 +92,8 @@ class UserResource extends Resource
                 Tables\Actions\Action::make('verify-email')
                     ->label(__('cachet::user.list.actions.verify_email'))
                     ->icon('heroicon-o-check-badge')
-                    ->disabled(fn (Authenticatable $record): bool => $record->hasVerifiedEmail())
-                    ->action(fn (Builder $query, Authenticatable $record) => $record->sendEmailVerificationNotification()),
+                    ->disabled(fn (User $record): bool => $record->hasVerifiedEmail())
+                    ->action(fn (Builder $query, User $record) => $record->sendEmailVerificationNotification()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

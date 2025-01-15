@@ -59,7 +59,7 @@ class MakeUserCommand extends Command
             $this->promptEmail();
         }
 
-        if (is_null($this->isAdmin)) {
+        if (! $this->isAdmin) {
             $this->promptIsAdmin();
         }
 
