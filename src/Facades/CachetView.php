@@ -19,7 +19,7 @@ class CachetView extends Facade
         return ViewManager::class;
     }
 
-    public static function registerRenderHook(string $name, Closure $hook, string | array | null $scopes = null): void
+    public static function registerRenderHook(string $name, Closure $hook, string|array|null $scopes = null): void
     {
         static::resolved(function (ViewManager $viewManager) use ($name, $hook, $scopes) {
             $viewManager->registerRenderHook($name, $hook, $scopes);
