@@ -4,6 +4,7 @@ namespace Cachet\Commands;
 
 use Illuminate\Console\Command;
 
+use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\password;
 use function Laravel\Prompts\text;
 
@@ -14,7 +15,7 @@ class MakeUserCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'cachet:make:user {email?} {--password=}';
+    protected $signature = 'cachet:make:user {email?} {--password= : The user\'s password} {--admin : Whether the user is an admin}';
 
     /**
      * The console command description.
@@ -39,25 +40,36 @@ class MakeUserCommand extends Command
     protected ?string $password = null;
 
     /**
+     * Whether the user is an admin.
+     */
+    protected ?bool $isAdmin = null;
+
+    /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        if ($password = $this->option('password')) {
-            $this->password = $password;
+        $this->email = $this->argument('email');
+        $this->isAdmin = $this->option('admin');
+        $this->password = $this->option('password');
+
+        $this->promptName();
+
+        if (! $this->email) {
+            $this->promptEmail();
         }
 
-        if ($this->email = $this->argument('email')) {
-            $this->createUser();
-
-            return;
+        if (is_null($this->isAdmin)) {
+            $this->promptIsAdmin();
         }
 
-        $this
-            ->promptEmail()
-            ->promptName()
-            ->promptPassword()
-            ->createUser();
+        if (! $this->password) {
+            $this->promptPassword();
+        }
+
+        $this->createUser();
+
+        return self::SUCCESS;
     }
 
     /**
@@ -95,6 +107,16 @@ class MakeUserCommand extends Command
     }
 
     /**
+     * Prompt the user for whether they are an admin.
+     */
+    protected function promptIsAdmin(): self
+    {
+        $this->isAdmin = confirm('Is the user an admin?', default: false);
+
+        return $this;
+    }
+
+    /**
      * Create the user.
      */
     protected function createUser(): void
@@ -105,6 +127,7 @@ class MakeUserCommand extends Command
             'name' => $this->data['name'],
             'email' => $this->email,
             'password' => bcrypt($this->password),
+            'is_admin' => $this->isAdmin,
         ]);
 
         $this->components->info('User created successfully.');
