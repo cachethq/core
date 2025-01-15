@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property int $id
@@ -20,7 +21,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements CachetUser, MustVerifyEmail
 {
     /** @use HasFactory<\Cachet\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.

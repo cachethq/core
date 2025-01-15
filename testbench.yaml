@@ -4,6 +4,7 @@ providers:
   - Cachet\CachetDashboardServiceProvider
   - Spatie\LaravelSettings\LaravelSettingsServiceProvider
   - Spatie\LaravelData\LaravelDataServiceProvider
+  - Laravel\Sanctum\SanctumServiceProvider
 
 env:
   - AUTH_MODEL=\Workbench\App\User

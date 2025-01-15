@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
+use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Http\Resources\Component as ComponentResource;
@@ -18,6 +19,8 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 class ComponentController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * The list of allowed includes.
      */
@@ -63,6 +66,8 @@ class ComponentController extends Controller
      */
     public function store(CreateComponentRequestData $data, CreateComponent $createComponentAction)
     {
+        $this->guard('components.manage');
+
         $component = $createComponentAction->handle(
             $data,
         );
@@ -101,6 +106,8 @@ class ComponentController extends Controller
      */
     public function update(UpdateComponentRequestData $data, Component $component, UpdateComponent $updateComponentAction)
     {
+        $this->guard('components.manage');
+
         $updateComponentAction->handle($component, $data);
 
         return ComponentResource::make($component->fresh());
@@ -115,6 +122,8 @@ class ComponentController extends Controller
      */
     public function destroy(Component $component, DeleteComponent $deleteComponentAction)
     {
+        $this->guard('components.delete');
+
         // @todo what happens to incidents linked to this component?
         // @todo re-calculate existing component orders?
 

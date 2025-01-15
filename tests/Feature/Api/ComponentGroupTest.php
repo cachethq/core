@@ -3,6 +3,10 @@
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 
+use Laravel\Sanctum\Sanctum;
+
+use Workbench\App\User;
+
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -65,7 +69,27 @@ it('can get a component group with components', function () {
     $response->assertJsonFragment(['id' => $componentGroup->id]);
 });
 
+it('cannot create a component group when not authenticated', function () {
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot create a component group without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can create a component group without components', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
     $response = postJson('/status/api/component-groups', [
         'name' => 'New Group',
     ]);
@@ -80,6 +104,8 @@ it('can create a component group without components', function () {
 });
 
 it('can create a component group and attach existing components', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
     $components = Component::factory()->create();
 
     $response = postJson('/status/api/component-groups', [
@@ -99,7 +125,31 @@ it('can create a component group and attach existing components', function () {
     ]);
 });
 
+it('cannot update a component group when not authenticated', function () {
+    $componentGroup = ComponentGroup::factory()->create();
+
+    $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
+        'name' => 'Updated Component Group Name',
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot update a component group without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $componentGroup = ComponentGroup::factory()->create();
+
+    $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
+        'name' => 'Updated Component Group Name',
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can update a component group', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
     $componentGroup = ComponentGroup::factory()->create();
 
     $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
@@ -116,6 +166,8 @@ it('can update a component group', function () {
 });
 
 it('can update a component group with components', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
     $components = Component::factory()->count(3)->create();
     $componentGroup = ComponentGroup::factory()->create();
 
@@ -136,7 +188,27 @@ it('can update a component group with components', function () {
     ]);
 });
 
+it('cannot delete a component group when not authenticated', function () {
+    $componentGroup = ComponentGroup::factory()->create();
+
+    $response = deleteJson('/status/api/component-groups/'.$componentGroup->id);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot delete a component group without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $componentGroup = ComponentGroup::factory()->create();
+
+    $response = deleteJson('/status/api/component-groups/'.$componentGroup->id);
+
+    $response->assertForbidden();
+});
+
 it('can delete a component group', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.delete']);
+
     $componentGroup = ComponentGroup::factory()->create();
 
     $response = deleteJson('/status/api/component-groups/'.$componentGroup->id);
@@ -148,6 +220,8 @@ it('can delete a component group', function () {
 });
 
 it('updates components group id when a group is deleted', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.delete']);
+
     $componentGroup = ComponentGroup::factory()->hasComponents(2)->create();
 
     $response = deleteJson('/status/api/component-groups/'.$componentGroup->id);

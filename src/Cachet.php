@@ -67,4 +67,20 @@ class Cachet
     {
         return trim(file_get_contents(__DIR__.'/../VERSION'));
     }
+
+    /** @return array<string, list<string>> */
+    public static function getResourceApiAbilities(): array
+    {
+        return [
+            'components' => ['manage', 'delete'],
+            'component-groups' => ['manage', 'delete'],
+            'incidents' => ['manage', 'delete'],
+            'incident-updates' => ['manage', 'delete'],
+            'incident-templates' => ['manage', 'delete'],
+            'metrics' => ['manage', 'delete'],
+            'metric-points' => ['manage', 'delete'],
+            'schedules' => ['manage', 'delete'],
+            'schedule-updates' => ['manage', 'delete'],
+        ];
+    }
 }
