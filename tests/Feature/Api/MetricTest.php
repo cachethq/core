@@ -3,6 +3,10 @@
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Models\Metric;
 
+use Laravel\Sanctum\Sanctum;
+
+use Workbench\App\User;
+
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
@@ -150,7 +154,29 @@ it('can get a metric', function () {
     ]);
 });
 
+it('cannot create a metric if not authenticated', function () {
+    $response = postJson('/status/api/metrics', [
+        'name' => 'New Metric',
+        'suffix' => 'cups of tea',
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot create a metric without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $response = postJson('/status/api/metrics', [
+        'name' => 'New Metric',
+        'suffix' => 'cups of tea',
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can create a metric', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
     $response = postJson('/status/api/metrics', [
         'name' => 'New Metric',
         'suffix' => 'cups of tea',
@@ -166,7 +192,33 @@ it('can create a metric', function () {
     ]);
 });
 
+it('cannot update a metric if not authenticated', function () {
+    $metric = Metric::factory()->create();
+
+    $response = putJson('/status/api/metrics/'.$metric->id, [
+        'name' => 'Updated Metric',
+        'suffix' => 'cups of tea',
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot update a metric without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $metric = Metric::factory()->create();
+
+    $response = putJson('/status/api/metrics/'.$metric->id, [
+        'name' => 'Updated Metric',
+        'suffix' => 'cups of tea',
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can update a metric', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
     $metric = Metric::factory()->create();
 
     $response = putJson('/status/api/metrics/'.$metric->id, [
@@ -181,6 +233,8 @@ it('can update a metric', function () {
 });
 
 it('cannot update a metric with bad data', function (array $payload) {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
     $metric = Metric::factory()->create();
 
     $response = putJson('/status/api/metrics/'.$metric->id, $payload);
@@ -192,7 +246,27 @@ it('cannot update a metric with bad data', function (array $payload) {
     fn () => ['name' => 123],
 ]);
 
+it('cannot delete a metric if not authenticated', function () {
+    $metric = Metric::factory()->hasMetricPoints(1)->create();
+
+    $response = deleteJson('/status/api/metrics/'.$metric->id);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot delete a metric without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $metric = Metric::factory()->hasMetricPoints(1)->create();
+
+    $response = deleteJson('/status/api/metrics/'.$metric->id);
+
+    $response->assertForbidden();
+});
+
 it('can delete metric', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.delete']);
+
     $metric = Metric::factory()->hasMetricPoints(1)->create();
 
     $response = deleteJson('/status/api/metrics/'.$metric->id);

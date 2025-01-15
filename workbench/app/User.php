@@ -2,23 +2,18 @@
 
 namespace Workbench\App;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Cachet\Models\User as CachetUser;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Workbench\Database\Factories\UserFactory;
 
-class User extends Authenticatable
+class User extends CachetUser
 {
-    use Notifiable;
+    /** @use HasFactory<UserFactory> */
+    use HasFactory;
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
-
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    protected static function newFactory(): Factory
+    {
+        return UserFactory::new();
+    }
 }

@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
+use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Data\Requests\IncidentUpdate\EditIncidentUpdateRequestData;
 use Cachet\Http\Resources\Update as UpdateResource;
@@ -20,6 +21,8 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 class IncidentUpdateController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Incident Updates
      *
@@ -58,6 +61,8 @@ class IncidentUpdateController extends Controller
      */
     public function store(CreateIncidentUpdateRequestData $data, Incident $incident, CreateUpdate $createUpdateAction)
     {
+        $this->guard('incident-updates.manage');
+
         $update = $createUpdateAction->handle($incident, $data);
 
         return UpdateResource::make($update);
@@ -96,6 +101,8 @@ class IncidentUpdateController extends Controller
      */
     public function update(EditIncidentUpdateRequestData $data, Incident $incident, Update $update, EditUpdate $editUpdateAction)
     {
+        $this->guard('incident-updates.manage');
+
         $editUpdateAction->handle($update, $data);
 
         return UpdateResource::make($update->fresh());
@@ -110,6 +117,8 @@ class IncidentUpdateController extends Controller
      */
     public function destroy(Incident $incident, Update $update, DeleteUpdate $deleteUpdateAction)
     {
+        $this->guard('incident-updates.delete');
+
         $deleteUpdateAction->handle($update);
 
         return response()->noContent();
