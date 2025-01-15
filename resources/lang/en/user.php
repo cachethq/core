@@ -22,5 +22,6 @@ return [
         'email_label' => 'Email Address',
         'password_label' => 'Password',
         'password_confirmation_label' => 'Confirm Password',
+        'is_admin_label' => 'Admin',
     ],
 ];

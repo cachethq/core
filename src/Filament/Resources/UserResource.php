@@ -2,7 +2,6 @@
 
 namespace Cachet\Filament\Resources;
 
-use Cachet\Concerns\CachetUser;
 use Cachet\Filament\Resources\UserResource\Pages;
 use Cachet\Filament\Resources\UserResource\RelationManagers;
 use Filament\Forms;
@@ -12,12 +11,17 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->is_admin;
+    }
 
     public static function form(Form $form): Form
     {
@@ -53,6 +57,9 @@ class UserResource extends Resource
                         ->maxLength(255)
                         ->same('password')
                         ->label(__('cachet::user.form.password_confirmation_label')),
+
+                    Forms\Components\Toggle::make('is_admin')
+                        ->label(__('cachet::user.form.is_admin_label')),
                 ])
             ]);
     }
@@ -72,6 +79,10 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->label(__('cachet::user.list.headers.email_verified_at'))
                     ->dateTime(),
+
+                Tables\Columns\ToggleColumn::make('is_admin')
+                    ->disabled(fn () => !auth()->user()->is_admin)
+                    ->label(__('cachet::user.list.headers.is_admin')),
             ])
             ->filters([
                 //
