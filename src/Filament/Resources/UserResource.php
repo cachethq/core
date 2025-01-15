@@ -11,11 +11,17 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
     protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()->is_admin;
+    }
 
     public static function form(Form $form): Form
     {
@@ -75,6 +81,7 @@ class UserResource extends Resource
                     ->dateTime(),
 
                 Tables\Columns\ToggleColumn::make('is_admin')
+                    ->disabled(fn () => !auth()->user()->is_admin)
                     ->label(__('cachet::user.list.headers.is_admin')),
             ])
             ->filters([
