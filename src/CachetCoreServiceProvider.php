@@ -8,6 +8,7 @@ use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Cachet\View\ViewManager;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -36,6 +37,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         }
 
         $this->app->singleton(Cachet::class);
+        $this->app->singleton(ViewManager::class);
     }
 
     /**

@@ -1,5 +1,6 @@
 @props(['componentGroup' => null])
 
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_COMPONENT_GROUPS_BEFORE) }}
 <div x-data x-disclosure {{ $attributes
     ->merge(array_filter([
         'default-open' => $componentGroup->isExpanded(),
@@ -29,3 +30,4 @@
         </ul>
     </div>
 </div>
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_COMPONENT_GROUPS_AFTER) }}

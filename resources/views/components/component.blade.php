@@ -1,3 +1,4 @@
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_COMPONENTS_BEFORE) }}
 <li class="px-4 py-3">
     <div class="flex items-center justify-between">
         <div class="flex flex-col grow gap-y-1">
@@ -37,3 +38,4 @@
         </div>
     </div>
 </li>
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_AFTER) }}

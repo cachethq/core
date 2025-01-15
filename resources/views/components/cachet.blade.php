@@ -41,9 +41,12 @@
         </style>
     </head>
     <body class="flex min-h-screen flex-col items-stretch antialiased">
+        {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_BEFORE) }}
         {{ $slot }}
 
         <!-- Custom Cachet Footer -->
         {!! $cachet_footer !!}
+
+        {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_AFTER) }}
     </body>
 </html>
