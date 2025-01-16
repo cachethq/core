@@ -11,7 +11,10 @@ use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Incident;
 use Cachet\Models\Update;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -22,15 +25,10 @@ class IncidentUpdateController extends Controller
     /**
      * List Incident Updates
      *
-     * @apiResourceCollection \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
-     *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, created_at. Example: name
-     * @queryParam include Include related resources. Enum: incident. Example: incident
+     * @response AnonymousResourceCollection<Paginator<UpdateResource>>
      */
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Incident $incident)
     {
         $query = Update::query()

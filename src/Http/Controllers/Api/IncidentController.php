@@ -10,8 +10,11 @@ use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -30,11 +33,12 @@ class IncidentController extends Controller
     /**
      * List Incidents
      *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, id, status. Example: status
      * @queryParam include Include related resources. Enum: components, updates, user Example: updates
+     *
+     * @return AnonymousResourceCollection<Paginator<IncidentResource>>
      */
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $query = Incident::query()

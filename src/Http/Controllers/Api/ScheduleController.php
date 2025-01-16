@@ -10,7 +10,10 @@ use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Schedule;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -20,12 +23,11 @@ class ScheduleController extends Controller
     /**
      * List Schedules
      *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, id, scheduled_at, completed_at, enabled. Example: name
-     * @queryParam include Include related resources. Enum: components, updates, user. Example: components
-     * @queryParam filters[name] string Filter the resources. Example: name=api
+     * @response AnonymousResourceCollection<Paginator<ScheduleResource>>
      */
+    #[QueryParameter('filter[name]', 'Filter the resources.', example: 'api')]
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $schedules = QueryBuilder::for(Schedule::class)
@@ -49,8 +51,6 @@ class ScheduleController extends Controller
 
     /**
      * Get Schedule
-     *
-     * @queryParam include Include related resources. Enum: components, updates, user. Example: components
      */
     public function show(Schedule $schedule)
     {

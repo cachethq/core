@@ -11,8 +11,11 @@ use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -23,11 +26,10 @@ class ScheduleUpdateController extends Controller
     /**
      * List Schedule Updates
      *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, created_at. Example: name
-     * @queryParam include Include related resources. Enum: schedule. Example: schedule
+     * @response AnonymousResourceCollection<Paginator<UpdateResource>>
      */
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Schedule $schedule)
     {
         $query = Update::query()
@@ -54,8 +56,6 @@ class ScheduleUpdateController extends Controller
 
     /**
      * Get Schedule Update
-     *
-     * @queryParam include Include related resources. Enum: schedule. Example: schedule
      */
     public function show(Schedule $schedule, Update $update)
     {

@@ -10,7 +10,10 @@ use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -20,11 +23,10 @@ class ComponentGroupController extends Controller
     /**
      * List Component Groups
      *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, id. Example: name
-     * @queryParam include Include related resources. Enum: components. Example: components
+     * @response AnonymousResourceCollection<Paginator<ComponentGroupResource>>
      */
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $componentGroups = QueryBuilder::for(ComponentGroup::class)

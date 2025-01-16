@@ -7,10 +7,15 @@ use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
 use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Http\Resources\Component as ComponentResource;
+use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Component;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -28,14 +33,15 @@ class ComponentController extends Controller
     /**
      * List Components
      *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, status, enabled. Example: name
      * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
-     * @queryParam filters[name] string Filter by name. Example: My Component
-     * @queryParam filters[status] Filter by status. Enum: 1 , 2, 3. Example: 1
-     * @queryParam filters[enabled] Filter by enabled status. Enum: 0, 1. Example: 1
+     *
+     * @response AnonymousResourceCollection<Paginator<ComponentResource>>
      */
+    #[QueryParameter('filter[status]', 'Filter by status', type: ComponentStatusEnum::class, example: 1)]
+    #[QueryParameter('filter[name]', 'Filter by name.', example: 'My Component')]
+    #[QueryParameter('filter[enabled]', 'Filter by enabled status.', type: 'bool', example: '1')]
+    ##[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $components = QueryBuilder::for(Component::class)

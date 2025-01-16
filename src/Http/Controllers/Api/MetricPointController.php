@@ -9,7 +9,10 @@ use Cachet\Http\Resources\MetricPoint as MetricPointResource;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -19,11 +22,10 @@ class MetricPointController extends Controller
     /**
      * List Metric Points
      *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, order, id. Example: name
-     * @queryParam include Include related resources. Enum: metric. Example: metric
+     * @response AnonymousResourceCollection<Paginator<MetricPointResource>>
      */
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Metric $metric)
     {
         $query = MetricPoint::query()
@@ -51,8 +53,6 @@ class MetricPointController extends Controller
 
     /**
      * Get Metric Point
-     *
-     * @queryParam include Include related resources. Enum: metric. Example: metric
      */
     public function show(Metric $metric, MetricPoint $metricPoint)
     {

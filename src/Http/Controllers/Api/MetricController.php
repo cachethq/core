@@ -7,11 +7,15 @@ use Cachet\Actions\Metric\DeleteMetric;
 use Cachet\Actions\Metric\UpdateMetric;
 use Cachet\Data\Requests\Metric\CreateMetricRequestData;
 use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
+use Cachet\Enums\MetricTypeEnum;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
 use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -21,13 +25,12 @@ class MetricController extends Controller
     /**
      * List Metrics
      *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, order, id. Example: name
-     * @queryParam include Include related resources. Enum: points. Example: points
-     * @queryParam filters[name] string Filter by name. Example: metric name
-     * @queryParam filters[calc_type] Enum:Cachet\Enums\MetricTypeEnum Filter by calculation type. Example: sum,avg
+     * @response AnonymousResourceCollection<Paginator<MetricResource>>
      */
+    #[QueryParameter('filter[name]', 'Filter by name.', example: 'metric name')]
+    #[QueryParameter('filter[calc_type]', 'Filter by calculation type.', type: MetricTypeEnum::class)]
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $query = Metric::query()
