@@ -56,7 +56,7 @@ class IncidentController extends Controller
             ->allowedFilters([
                 'name',
                 AllowedFilter::exact('status'),
-                'occurred_at'
+                'occurred_at',
             ])
             ->allowedSorts(['name', 'status', 'id'])
             ->simplePaginate(request('per_page', 15));

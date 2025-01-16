@@ -43,7 +43,7 @@ class IncidentUpdateController extends Controller
             ->where('updateable_type', 'incident');
 
         $updates = QueryBuilder::for($query)
-            ->allowedFilters([AllowedFilter::exact('status'),])
+            ->allowedFilters([AllowedFilter::exact('status')])
             ->allowedIncludes(['incident'])
             ->allowedSorts(['status', 'created_at'])
             ->simplePaginate(request('per_page', 15));

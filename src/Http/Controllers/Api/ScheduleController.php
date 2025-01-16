@@ -40,7 +40,7 @@ class ScheduleController extends Controller
     {
         $schedules = QueryBuilder::for(Schedule::class)
             ->allowedIncludes(['components', 'updates', 'user'])
-            ->allowedFilters(['name', AllowedFilter::exact('status'),])
+            ->allowedFilters(['name', AllowedFilter::exact('status')])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(request('per_page', 15));
 
