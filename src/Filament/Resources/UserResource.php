@@ -56,6 +56,14 @@ class UserResource extends Resource
                         ->same('password')
                         ->label(__('cachet::user.form.password_confirmation_label')),
 
+                    Forms\Components\Select::make('preferred_locale')
+                        ->selectablePlaceholder(false)
+                        ->options([
+                            null => __('cachet::user.form.preferred_locale_system_default'),
+                            ...config('cachet.supported_locales')
+                        ])
+                        ->label(__('cachet::user.form.preferred_locale')),
+
                     Forms\Components\Toggle::make('is_admin')
                         ->label(__('cachet::user.form.is_admin_label'))
                         ->disabled(fn (?User $record) => $record?->is(auth()->user())),

@@ -34,6 +34,7 @@ class User extends Authenticatable implements CachetUser, MustVerifyEmail, HasLo
         'email',
         'password',
         'is_admin',
+        'preferred_locale',
     ];
 
     /**
@@ -78,6 +79,6 @@ class User extends Authenticatable implements CachetUser, MustVerifyEmail, HasLo
 
     public function preferredLocale()
     {
-        return $this->preferred_locale ?? config('app.locale');
+        return $this->preferred_locale;
     }
 }
