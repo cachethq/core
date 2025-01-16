@@ -13,6 +13,7 @@ use Cachet\Models\Incident;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -52,7 +53,11 @@ class IncidentController extends Controller
 
         $incidents = QueryBuilder::for($query)
             ->allowedIncludes(self::ALLOWED_INCLUDES)
-            ->allowedFilters(['name', 'status', 'occurred_at'])
+            ->allowedFilters([
+                'name',
+                AllowedFilter::exact('status'),
+                'occurred_at'
+            ])
             ->allowedSorts(['name', 'status', 'id'])
             ->simplePaginate(request('per_page', 15));
 

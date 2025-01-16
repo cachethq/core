@@ -12,6 +12,7 @@ use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -48,7 +49,11 @@ class ComponentController extends Controller
     {
         $components = QueryBuilder::for(Component::class)
             ->allowedIncludes(self::ALLOWED_INCLUDES)
-            ->allowedFilters(['name', 'status', 'enabled'])
+            ->allowedFilters([
+                'name',
+                AllowedFilter::exact('status'),
+                AllowedFilter::exact('enabled'),
+            ])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(request('per_page', 15));
 

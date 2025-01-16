@@ -13,6 +13,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Update;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -42,7 +43,7 @@ class IncidentUpdateController extends Controller
             ->where('updateable_type', 'incident');
 
         $updates = QueryBuilder::for($query)
-            ->allowedFilters(['status'])
+            ->allowedFilters([AllowedFilter::exact('status'),])
             ->allowedIncludes(['incident'])
             ->allowedSorts(['status', 'created_at'])
             ->simplePaginate(request('per_page', 15));
