@@ -40,7 +40,7 @@ class ComponentController extends Controller
     #[QueryParameter('filter[status]', 'Filter by status', type: ComponentStatusEnum::class, example: 1)]
     #[QueryParameter('filter[name]', 'Filter by name.', example: 'My Component')]
     #[QueryParameter('filter[enabled]', 'Filter by enabled status.', type: 'bool', example: '1')]
-    ##[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
