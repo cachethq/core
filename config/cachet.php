@@ -126,4 +126,17 @@ return [
             'prune_logs_after_days' => 30,
         ],
     ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Supported Locales
+     |--------------------------------------------------------------------------
+     |
+     | Configure which locales are supported by Cachet.
+     |
+     */
+    'supported_locales' => [
+        'en' => 'English',
+        'en_GB' => 'English (UK)',
+    ],
 ];
