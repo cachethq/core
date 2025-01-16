@@ -16,7 +16,10 @@ class Component extends JsonApiResource
             'description' => $this->description,
             'link' => $this->link,
             'order' => $this->order,
-            'status' => $this->status,
+            'status' => [
+                'human' => $this->status?->getLabel(),
+                'value' => $this->status?->value,
+            ],
             'enabled' => $this->enabled,
             'meta' => $this->meta,
             'created' => [

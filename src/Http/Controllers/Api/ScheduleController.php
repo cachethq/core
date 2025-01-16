@@ -12,6 +12,7 @@ use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Schedule;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
@@ -32,13 +33,14 @@ class ScheduleController extends Controller
      * @queryParam page int Which page to show. Example: 2
      * @queryParam sort Field to sort by. Enum: name, id, scheduled_at, completed_at, enabled. Example: name
      * @queryParam include Include related resources. Enum: components, updates, user. Example: components
-     * @queryParam filters[name] string Filter the resources. Example: name=api
+     * @queryParam filters[name] string Filter the resources by name. Example: api
+     * @queryParam filters[status] string Filter the resources by status. Example: 1
      */
     public function index()
     {
         $schedules = QueryBuilder::for(Schedule::class)
             ->allowedIncludes(['components', 'updates', 'user'])
-            ->allowedFilters(['name'])
+            ->allowedFilters(['name', AllowedFilter::exact('status'),])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(request('per_page', 15));
 
