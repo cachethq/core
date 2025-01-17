@@ -18,6 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $email
  * @property string $password
  * @property bool $is_admin
+ * @property string $preferred_locale
  */
 class User extends Authenticatable implements CachetUser, MustVerifyEmail, HasLocalePreference
 {
