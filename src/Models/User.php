@@ -5,6 +5,7 @@ namespace Cachet\Models;
 use Cachet\Concerns\CachetUser;
 use Cachet\Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,8 +18,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $email
  * @property string $password
  * @property bool $is_admin
+ * @property string $preferred_locale
  */
-class User extends Authenticatable implements CachetUser, MustVerifyEmail
+class User extends Authenticatable implements CachetUser, MustVerifyEmail, HasLocalePreference
 {
     /** @use HasFactory<\Cachet\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
@@ -33,6 +35,7 @@ class User extends Authenticatable implements CachetUser, MustVerifyEmail
         'email',
         'password',
         'is_admin',
+        'preferred_locale',
     ];
 
     /**
@@ -73,5 +76,10 @@ class User extends Authenticatable implements CachetUser, MustVerifyEmail
     protected static function newFactory(): Factory
     {
         return UserFactory::new();
+    }
+
+    public function preferredLocale()
+    {
+        return $this->preferred_locale;
     }
 }

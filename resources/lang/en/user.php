@@ -22,6 +22,8 @@ return [
         'email_label' => 'Email Address',
         'password_label' => 'Password',
         'password_confirmation_label' => 'Confirm Password',
+        'preferred_locale' => 'Preferred Locale',
+        'preferred_locale_system_default' => 'System Default',
         'is_admin_label' => 'Admin',
     ],
 ];
