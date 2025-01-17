@@ -7,6 +7,7 @@ return [
             'manage_cachet' => 'Cachet verwalten',
             'manage_customization' => 'Anpassung verwalten',
             'manage_theme' => 'Darstellung verwalten',
+            'manage_api_keys' => 'API Schlüssel verwalten',
             'manage_webhooks' => 'Webhooks verwalten',
         ],
     ],
