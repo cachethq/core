@@ -9,7 +9,7 @@ class SetAppLocale
 {
     public function handle(Request $request, Closure $next)
     {
-        /** @var \Cachet\Models\User */
+        /** @var ?\Cachet\Models\User */
         $user = $request->user();
 
         if ($user) {
