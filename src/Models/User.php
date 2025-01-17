@@ -20,7 +20,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property bool $is_admin
  * @property string $preferred_locale
  */
-class User extends Authenticatable implements CachetUser, MustVerifyEmail, HasLocalePreference
+class User extends Authenticatable implements CachetUser, HasLocalePreference, MustVerifyEmail
 {
     /** @use HasFactory<\Cachet\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;

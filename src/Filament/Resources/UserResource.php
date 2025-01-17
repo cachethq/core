@@ -60,7 +60,7 @@ class UserResource extends Resource
                         ->selectablePlaceholder(false)
                         ->options([
                             null => __('cachet::user.form.preferred_locale_system_default'),
-                            ...config('cachet.supported_locales')
+                            ...config('cachet.supported_locales'),
                         ])
                         ->label(__('cachet::user.form.preferred_locale')),
 
