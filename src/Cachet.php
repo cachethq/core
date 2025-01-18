@@ -57,7 +57,7 @@ class Cachet
      */
     public static function dashboardPath(): string
     {
-        return '/'.ltrim(config('cachet.dashboard_path', app()->joinPaths(rtrim(static::path(), '/'), 'dashboard')), '/');
+        return '/'.ltrim(config('cachet.dashboard_path', app()->joinPaths(rtrim(static::path(), '/\\'), 'dashboard')), '/\\');
     }
 
     /**
