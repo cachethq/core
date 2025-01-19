@@ -109,7 +109,7 @@ class IncidentResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('cachet::incident.list.headers.name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('latest_status')
                     ->label(__('cachet::incident.list.headers.status'))
                     ->sortable()
                     ->badge(),
