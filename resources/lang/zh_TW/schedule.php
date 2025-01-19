@@ -26,7 +26,7 @@ return [
         'message_label' => '消息',
         'scheduled_at_label' => '預定時間',
         'completed_at_label' => '完成時間',
-        ],
+    ],
     'add_update' => [
         'success_title' => '計劃 :name 已更新',
         'success_body' => '已記錄新的計劃更新。',

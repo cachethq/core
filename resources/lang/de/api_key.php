@@ -1,4 +1,5 @@
 <?php
+
 return [
     'resource_label' => 'API Schlüssel|API Schlüssel',
     'show_token' => [
