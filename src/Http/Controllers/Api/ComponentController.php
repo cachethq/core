@@ -33,8 +33,6 @@ class ComponentController extends Controller
     /**
      * List Components
      *
-     * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
-     *
      * @response AnonymousResourceCollection<Paginator<ComponentResource>>
      */
     #[QueryParameter('filter[status]', 'Filter by status', type: ComponentStatusEnum::class, example: 1)]
@@ -67,8 +65,6 @@ class ComponentController extends Controller
 
     /**
      * Get Component
-     *
-     * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
      */
     public function show(Component $component)
     {

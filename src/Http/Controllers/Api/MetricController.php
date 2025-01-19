@@ -59,8 +59,6 @@ class MetricController extends Controller
 
     /**
      * Get Metric
-     *
-     * @queryParam include Include related resources. Enum: points. Example: points
      */
     public function show(Metric $metric)
     {

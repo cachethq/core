@@ -56,8 +56,6 @@ class IncidentUpdateController extends Controller
 
     /**
      * Get Incident Update
-     *
-     * @queryParam include Include related resources. Enum: incident. Example: incident
      */
     public function show(Incident $incident, Update $update)
     {

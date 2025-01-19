@@ -33,8 +33,6 @@ class IncidentController extends Controller
     /**
      * List Incidents
      *
-     * @queryParam include Include related resources. Enum: components, updates, user Example: updates
-     *
      * @return AnonymousResourceCollection<Paginator<IncidentResource>>
      */
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
@@ -67,8 +65,6 @@ class IncidentController extends Controller
 
     /**
      * Get Incident
-     *
-     * @queryParam include Include related resources. Enum: components, updates, user. Example: updates
      */
     public function show(Incident $incident)
     {

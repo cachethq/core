@@ -49,8 +49,6 @@ class ComponentGroupController extends Controller
 
     /**
      * Get Component Group
-     *
-     * @queryParam include Include related resources. Enum: components. Example: components
      */
     public function show(ComponentGroup $componentGroup)
     {
