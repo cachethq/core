@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Schedule\CreateSchedule;
 use Cachet\Actions\Schedule\DeleteSchedule;
 use Cachet\Actions\Schedule\UpdateSchedule;
+use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
@@ -15,24 +16,28 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Schedules', weight: 8)]
 class ScheduleController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Schedules
      *
      * @response AnonymousResourceCollection<Paginator<ScheduleResource>>
      */
-    #[QueryParameter('filter[name]', 'Filter the resources.', example: 'api')]
+    #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
+    #[QueryParameter('filter[status]', 'Filter the resources by status.', example: 1)]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $schedules = QueryBuilder::for(Schedule::class)
             ->allowedIncludes(['components', 'updates', 'user'])
-            ->allowedFilters(['name'])
+            ->allowedFilters(['name', AllowedFilter::exact('status')])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(request('per_page', 15));
 
@@ -44,6 +49,8 @@ class ScheduleController extends Controller
      */
     public function store(CreateScheduleRequestData $data, CreateSchedule $createScheduleAction)
     {
+        $this->guard('schedules.manage');
+
         $schedule = $createScheduleAction->handle($data);
 
         return ScheduleResource::make($schedule);
@@ -68,6 +75,8 @@ class ScheduleController extends Controller
      */
     public function update(UpdateScheduleRequestData $data, Schedule $schedule, UpdateSchedule $updateScheduleAction)
     {
+        $this->guard('schedules.manage');
+
         $updateScheduleAction->handle($schedule, $data);
 
         return ScheduleResource::make($schedule->fresh());
@@ -78,6 +87,8 @@ class ScheduleController extends Controller
      */
     public function destroy(Schedule $schedule, DeleteSchedule $deleteScheduleAction)
     {
+        $this->guard('schedules.delete');
+
         $deleteScheduleAction->handle($schedule);
 
         return response()->noContent();

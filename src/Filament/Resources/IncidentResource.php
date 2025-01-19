@@ -109,7 +109,7 @@ class IncidentResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('cachet::incident.list.headers.name'))
                     ->searchable(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('latest_status')
                     ->label(__('cachet::incident.list.headers.status'))
                     ->sortable()
                     ->badge(),
@@ -227,7 +227,9 @@ class IncidentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::unresolved()->count();
+        return static::getModel()::unresolved()
+            ->get()
+            ->filter(fn (Incident $incident) => in_array($incident->latest_status, IncidentStatusEnum::unresolved()))->count();
     }
 
     public static function getNavigationBadgeColor(): string

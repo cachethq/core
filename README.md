@@ -39,13 +39,13 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [ ] Subscribers
 - [x] API
   - Complete but may need some tweaks as we progress.
-- [ ] Webhooks
+- [x] Webhooks
 - [x] Dashboard
 - [x] Localization
 - [x] Status Page Customization
 - [ ] Meta
 - [ ] Tags
-- [ ] User Management
+- [x] User Management
 
 ## Stack
 

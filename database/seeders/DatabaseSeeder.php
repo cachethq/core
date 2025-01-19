@@ -39,6 +39,8 @@ class DatabaseSeeder extends Seeder
         DB::table('metrics')->truncate();
         DB::table('metric_points')->truncate();
         DB::table('updates')->truncate();
+        DB::table('webhook_attempts')->truncate();
+        DB::table('webhook_subscriptions')->truncate();
 
         /** @var \Illuminate\Foundation\Auth\User $userModel */
         $userModel = config('cachet.user_model');
@@ -48,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@test.com',
             'password' => bcrypt('test123'),
             'email_verified_at' => now(),
+            'is_admin' => true,
         ]);
 
         Schedule::create([

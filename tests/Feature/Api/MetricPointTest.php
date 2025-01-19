@@ -2,6 +2,8 @@
 
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
+use Laravel\Sanctum\Sanctum;
+use Workbench\App\User;
 
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
@@ -57,7 +59,31 @@ it('can get a metric point', function () {
     ]);
 });
 
+it('cannot create a metric point if not authenticated', function () {
+    $metric = Metric::factory()->create();
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points', [
+        'value' => 10,
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot create a metric point without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $metric = Metric::factory()->create();
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points', [
+        'value' => 10,
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can create a metric point', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metric-points.manage']);
+
     $metric = Metric::factory()->create();
 
     $response = postJson('/status/api/metrics/'.$metric->id.'/points', [
@@ -72,7 +98,27 @@ it('can create a metric point', function () {
     ]);
 });
 
+it('cannot delete a metric point if not authenticated', function () {
+    $metricPoint = MetricPoint::factory()->forMetric()->create();
+
+    $response = deleteJson('/status/api/metrics/'.$metricPoint->metric_id.'/points/'.$metricPoint->id);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot delete a metric point without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $metricPoint = MetricPoint::factory()->forMetric()->create();
+
+    $response = deleteJson('/status/api/metrics/'.$metricPoint->metric_id.'/points/'.$metricPoint->id);
+
+    $response->assertForbidden();
+});
+
 it('can delete a metric point', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metric-points.delete']);
+
     $metricPoint = MetricPoint::factory()->forMetric()->create();
 
     $response = deleteJson('/status/api/metrics/'.$metricPoint->metric_id.'/points/'.$metricPoint->id);

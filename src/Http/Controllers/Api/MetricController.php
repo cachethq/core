@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Metric\CreateMetric;
 use Cachet\Actions\Metric\DeleteMetric;
 use Cachet\Actions\Metric\UpdateMetric;
+use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Metric\CreateMetricRequestData;
 use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
 use Cachet\Enums\MetricTypeEnum;
@@ -22,6 +23,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 #[Group('Metrics', weight: 6)]
 class MetricController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Metrics
      *
@@ -52,6 +55,8 @@ class MetricController extends Controller
      */
     public function store(CreateMetricRequestData $data, CreateMetric $createMetricAction)
     {
+        $this->guard('metrics.manage');
+
         $metric = $createMetricAction->handle($data);
 
         return MetricResource::make($metric);
@@ -76,6 +81,8 @@ class MetricController extends Controller
      */
     public function update(UpdateMetricRequestData $data, Metric $metric, UpdateMetric $updateMetricAction)
     {
+        $this->guard('metrics.manage');
+
         $updateMetricAction->handle($metric, $data);
 
         return MetricResource::make($metric->fresh());
@@ -86,6 +93,8 @@ class MetricController extends Controller
      */
     public function destroy(Metric $metric, DeleteMetric $deleteMetricAction)
     {
+        $this->guard('metrics.delete');
+
         $deleteMetricAction->handle($metric);
 
         return response()->noContent();

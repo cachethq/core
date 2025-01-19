@@ -2,6 +2,8 @@
 
 namespace Cachet\Events\Incidents;
 
+use Cachet\Concerns\SendsWebhook;
+use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\Incident;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -10,15 +12,12 @@ use Illuminate\Queue\SerializesModels;
 
 class IncidentUpdated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SendsWebhook, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(public Incident $incident)
-    {
-        //
-    }
+    public function __construct(public Incident $incident) {}
 
     /**
      * Get the channels the event should broadcast on.
@@ -30,5 +29,15 @@ class IncidentUpdated
         return [
             new PrivateChannel('channel-name'),
         ];
+    }
+
+    public function getWebhookPayload(): array
+    {
+        return $this->incident->toArray();
+    }
+
+    public function getWebhookEventName(): WebhookEventEnum
+    {
+        return WebhookEventEnum::incident_updated;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Cachet\Events\Components;
 
+use Cachet\Concerns\SendsWebhook;
+use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\Component;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -10,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class ComponentCreated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SendsWebhook, SerializesModels;
 
     /**
      * Create a new event instance.
@@ -30,5 +32,15 @@ class ComponentCreated
         return [
             new PrivateChannel('channel-name'),
         ];
+    }
+
+    public function getWebhookPayload(): array
+    {
+        return $this->component->toArray();
+    }
+
+    public function getWebhookEventName(): WebhookEventEnum
+    {
+        return WebhookEventEnum::component_created;
     }
 }

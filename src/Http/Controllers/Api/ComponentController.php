@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
+use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
@@ -17,11 +18,14 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Components', weight: 1)]
 class ComponentController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * The list of allowed includes.
      */
@@ -44,7 +48,11 @@ class ComponentController extends Controller
     {
         $components = QueryBuilder::for(Component::class)
             ->allowedIncludes(self::ALLOWED_INCLUDES)
-            ->allowedFilters(['name', 'status', 'enabled'])
+            ->allowedFilters([
+                'name',
+                AllowedFilter::exact('status'),
+                AllowedFilter::exact('enabled'),
+            ])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(request('per_page', 15));
 
@@ -56,6 +64,8 @@ class ComponentController extends Controller
      */
     public function store(CreateComponentRequestData $data, CreateComponent $createComponentAction)
     {
+        $this->guard('components.manage');
+
         $component = $createComponentAction->handle(
             $data,
         );
@@ -82,6 +92,8 @@ class ComponentController extends Controller
      */
     public function update(UpdateComponentRequestData $data, Component $component, UpdateComponent $updateComponentAction)
     {
+        $this->guard('components.manage');
+
         $updateComponentAction->handle($component, $data);
 
         return ComponentResource::make($component->fresh());
@@ -92,6 +104,8 @@ class ComponentController extends Controller
      */
     public function destroy(Component $component, DeleteComponent $deleteComponentAction)
     {
+        $this->guard('components.delete');
+
         // @todo what happens to incidents linked to this component?
         // @todo re-calculate existing component orders?
 

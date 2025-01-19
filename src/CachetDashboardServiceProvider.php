@@ -2,6 +2,7 @@
 
 namespace Cachet;
 
+use Cachet\Http\Middleware\SetAppLocale;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -86,6 +87,7 @@ class CachetDashboardServiceProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                SetAppLocale::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

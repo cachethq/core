@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
+use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Data\Requests\ScheduleUpdate\EditScheduleUpdateRequestData;
 use Cachet\Http\Resources\Update as UpdateResource;
@@ -23,6 +24,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 #[Group('Schedule Updates', weight: 9)]
 class ScheduleUpdateController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Schedule Updates
      *
@@ -49,6 +52,8 @@ class ScheduleUpdateController extends Controller
      */
     public function store(CreateScheduleUpdateRequestData $data, Schedule $schedule, CreateUpdate $createUpdateAction)
     {
+        $this->guard('schedule-updates.manage');
+
         $update = $createUpdateAction->handle($schedule, $data);
 
         return UpdateResource::make($update);
@@ -75,6 +80,8 @@ class ScheduleUpdateController extends Controller
      */
     public function update(EditScheduleUpdateRequestData $data, Schedule $schedule, Update $update, EditUpdate $editUpdateAction)
     {
+        $this->guard('schedule-updates.manage');
+
         $editUpdateAction->handle($update, $data);
 
         return UpdateResource::make($update->fresh());
@@ -85,6 +92,8 @@ class ScheduleUpdateController extends Controller
      */
     public function destroy(Schedule $schedule, Update $update, DeleteUpdate $deleteUpdateAction)
     {
+        $this->guard('schedule-updates.delete');
+
         $deleteUpdateAction->handle($update);
 
         return response()->noContent();

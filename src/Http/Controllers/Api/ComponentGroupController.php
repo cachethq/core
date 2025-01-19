@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\ComponentGroup\CreateComponentGroup;
 use Cachet\Actions\ComponentGroup\DeleteComponentGroup;
 use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
+use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\ComponentGroup\CreateComponentGroupRequestData;
 use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
@@ -20,6 +21,8 @@ use Spatie\QueryBuilder\QueryBuilder;
 #[Group('Component Groups', weight: 2)]
 class ComponentGroupController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Component Groups
      *
@@ -42,6 +45,8 @@ class ComponentGroupController extends Controller
      */
     public function store(CreateComponentGroupRequestData $data, CreateComponentGroup $createComponentGroupAction)
     {
+        $this->guard('component-groups.manage');
+
         $componentGroup = $createComponentGroupAction->handle($data);
 
         return ComponentGroupResource::make($componentGroup);
@@ -66,6 +71,8 @@ class ComponentGroupController extends Controller
      */
     public function update(UpdateComponentGroupRequestData $data, ComponentGroup $componentGroup, UpdateComponentGroup $updateComponentGroupAction)
     {
+        $this->guard('component-groups.manage');
+
         $updateComponentGroupAction->handle($componentGroup, $data);
 
         return ComponentGroupResource::make($componentGroup->fresh());
@@ -76,6 +83,7 @@ class ComponentGroupController extends Controller
      */
     public function destroy(ComponentGroup $componentGroup, DeleteComponentGroup $deleteComponentGroupAction)
     {
+        $this->guard('component-groups.delete');
         $deleteComponentGroupAction->handle($componentGroup);
 
         return response()->noContent();

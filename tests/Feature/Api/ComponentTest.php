@@ -3,6 +3,8 @@
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
+use Laravel\Sanctum\Sanctum;
+use Workbench\App\User;
 
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
@@ -170,7 +172,31 @@ it('can get a component with group', function () {
     $response->assertJsonFragment(['id' => $component->id]);
 });
 
+it('cannot create a component when not authenticated', function () {
+    $response = postJson('/status/api/components', [
+        'name' => 'Test',
+        'description' => 'This is a new component, created by the API.',
+        'order' => 2,
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot create a component without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $response = postJson('/status/api/components', [
+        'name' => 'Test',
+        'description' => 'This is a new component, created by the API.',
+        'order' => 2,
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can create a component', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
     $response = postJson('/status/api/components', [
         'name' => 'Test',
         'description' => 'This is a new component, created by the API.',
@@ -190,6 +216,8 @@ it('can create a component', function () {
 });
 
 it('can create a component and attach to a component group', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
     $componentGroup = ComponentGroup::factory()->create();
     $response = postJson('/status/api/components', [
         'name' => 'Test',
@@ -209,6 +237,8 @@ it('can create a component and attach to a component group', function () {
 });
 
 it('cannot attach a new component to a component group that does not exist', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
     $response = postJson('/status/api/components', [
         'name' => 'Test',
         'description' => 'This is a new component, created by the API.',
@@ -223,7 +253,37 @@ it('cannot attach a new component to a component group that does not exist', fun
     ]);
 });
 
+it('cannot update a component when not authenticated', function () {
+    $component = Component::factory()->create([
+        'order' => 10,
+    ]);
+
+    $response = putJson('/status/api/components/'.$component->id, [
+        'name' => 'Updated Component Name',
+        'description' => 'This is an updated component.',
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot update a component without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $component = Component::factory()->create([
+        'order' => 10,
+    ]);
+
+    $response = putJson('/status/api/components/'.$component->id, [
+        'name' => 'Updated Component Name',
+        'description' => 'This is an updated component.',
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can update a component', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
     $component = Component::factory()->create([
         'order' => 10,
     ]);
@@ -246,6 +306,8 @@ it('can update a component', function () {
 });
 
 it('can update a component and attach it to a component group', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
     $componentGroup = ComponentGroup::factory()->create();
     $component = Component::factory()->create([
         'order' => 10,
@@ -271,6 +333,8 @@ it('can update a component and attach it to a component group', function () {
 });
 
 it('cannot update a component and attach it to a component group that does not exist', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
     $component = Component::factory()->create();
 
     $response = putJson('/status/api/components/'.$component->id, [
@@ -286,7 +350,27 @@ it('cannot update a component and attach it to a component group that does not e
     ]);
 });
 
+it('cannot delete a component when not authenticated', function () {
+    $component = Component::factory()->create();
+
+    $response = deleteJson('/status/api/components/'.$component->id);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot delete a component without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
+    $component = Component::factory()->create();
+
+    $response = deleteJson('/status/api/components/'.$component->id);
+
+    $response->assertForbidden();
+});
+
 it('can delete a component', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.delete']);
+
     $component = Component::factory()->create();
 
     $response = deleteJson('/status/api/components/'.$component->id);

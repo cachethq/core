@@ -2,6 +2,8 @@
 
 namespace Cachet\Events\Subscribers;
 
+use Cachet\Concerns\SendsWebhook;
+use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\Subscriber;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -10,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class SubscriberCreated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SendsWebhook, SerializesModels;
 
     /**
      * Create a new event instance.
@@ -30,5 +32,15 @@ class SubscriberCreated
         return [
             new PrivateChannel('channel-name'),
         ];
+    }
+
+    public function getWebhookPayload(): array
+    {
+        return $this->subscriber->toArray();
+    }
+
+    public function getWebhookEventName(): WebhookEventEnum
+    {
+        return WebhookEventEnum::subscriber_created;
     }
 }

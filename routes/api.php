@@ -20,17 +20,50 @@ Route::apiResources([
     'incident-templates' => IncidentTemplateController::class,
     'metrics' => MetricController::class,
     'schedules' => ScheduleController::class,
-]);
+], ['except' => ['store', 'update', 'destroy']]);
 
-Route::apiResource('incidents.updates', IncidentUpdateController::class)
+Route::apiResource('incidents.updates', IncidentUpdateController::class, [
+    'except' => ['store', 'update', 'destroy'],
+])
     ->scoped(['updateable_id']);
 
-Route::apiResource('schedules.updates', ScheduleUpdateController::class)
+Route::apiResource('schedules.updates', ScheduleUpdateController::class, [
+    'except' => ['store', 'update', 'destroy'],
+])
     ->scoped(['updateable_id']);
 
-Route::apiResource('metrics.points', MetricPointController::class)
+Route::apiResource('metrics.points', MetricPointController::class, [
+    'except' => ['store', 'update', 'destroy'],
+])
     ->parameter('points', 'metricPoint')
     ->scoped();
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::apiResources([
+        'components' => ComponentController::class,
+        'component-groups' => ComponentGroupController::class,
+        'incidents' => IncidentController::class,
+        'incident-templates' => IncidentTemplateController::class,
+        'metrics' => MetricController::class,
+        'schedules' => ScheduleController::class,
+    ], ['except' => ['index', 'show']]);
+
+    Route::apiResource('incidents.updates', IncidentUpdateController::class, [
+        'except' => ['index', 'show'],
+    ])
+        ->scoped(['updateable_id']);
+
+    Route::apiResource('schedules.updates', ScheduleUpdateController::class, [
+        'except' => ['index', 'show'],
+    ])
+        ->scoped(['updateable_id']);
+
+    Route::apiResource('metrics.points', MetricPointController::class, [
+        'except' => ['index', 'show'],
+    ])
+        ->parameter('points', 'metricPoint')
+        ->scoped();
+});
 
 Route::get('/ping', [GeneralController::class, 'ping'])->name('ping');
 Route::get('/version', [GeneralController::class, 'version'])->name('version');
