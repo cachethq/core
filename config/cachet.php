@@ -136,7 +136,12 @@ return [
      |
      */
     'supported_locales' => [
+        'de' => 'Deutsch',
+        'de_DE' => 'Deutsch (DE)',
         'en' => 'English',
         'en_GB' => 'English (UK)',
+        'pt_BR' => 'Português (BR)',
+        'zh_CN' => '简体中文',
+        'zh_TW' => '繁體中文',
     ],
 ];
