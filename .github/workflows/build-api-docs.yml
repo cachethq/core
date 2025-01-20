@@ -7,7 +7,7 @@ on:
 
 env:
   DOCS_REPOSITORY: cachethq/docs
-  DOCS_BRANCH: main
+  DOCS_BRANCH: 3.x
 
 jobs:
   build:
