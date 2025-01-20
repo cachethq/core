@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -30,7 +30,7 @@ jobs:
           composer require dedoc/scramble-pro:0.7.0-alpha.1 --dev
 
       - name: Checkout documentation repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           repository: ${{ env.DOCS_REPOSITORY }}
           ref: ${{ env.DOCS_BRANCH }}
@@ -40,9 +40,7 @@ jobs:
         run: php vendor/bin/testbench scramble:export --path=docs-repository/api-reference/openapi.json
 
       - name: Setup git config
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "<>"
+        uses: fregante/setup-git-user@v2
 
       - name: Commit and push generated template
         run: |

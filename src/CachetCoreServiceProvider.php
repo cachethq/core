@@ -209,7 +209,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         }
 
         Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
-            $openApi->info->description = 'API documentation for Cachet, the open source status page system.';
+            $openApi->info->description = 'API documentation for Cachet, the open-source, self-hosted status page system.';
 
             $openApi->secure(
                 SecurityScheme::http('bearer')
