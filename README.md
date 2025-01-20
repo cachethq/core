@@ -74,6 +74,7 @@ Login to the account at `/dashboard` and use credentials:
     <a href="https://jump24.co.uk"><img width="100px" src="https://github.com/jumptwentyfour.png" alt="Jump24"></a>
     <a href="https://dreamtilt.com.au"><img width="100px" src="https://github.com/dreamtilt.png" alt="Dreamtilt"></a>
     <a href="https://xyphen-it.nl"><img width="100px" src="https://github.com/xyphen-it.png" alt="Xyphen-IT"></a>
+    <a href="https://coderabbit.ai/"><img width="100px" src="https://github.com/coderabbitai.png" alt="Code Rabbit"></a>
 </p>
 
 ## Security Vulnerabilities
