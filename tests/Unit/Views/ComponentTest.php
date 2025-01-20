@@ -9,7 +9,7 @@ uses(InteractsWithViews::class);
 
 it('shows the current status for a component with no linked incidents', function () {
     $component = Component::factory()->create([
-        'status' => ComponentStatusEnum::operational->value
+        'status' => ComponentStatusEnum::operational->value,
     ]);
 
     $view = $this->view('cachet::components.component', [
