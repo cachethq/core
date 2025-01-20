@@ -3,7 +3,6 @@
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
-use Carbon\Carbon;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 
 uses(InteractsWithViews::class);
@@ -47,13 +46,13 @@ it('shows the latest status for a component multiple linked incidents', function
         'status' => ComponentStatusEnum::operational->value,
     ]);
 
-    $this->travelTo(now()->subMinutes(2), function () use ($component) {
+    $this->travelTo(now()->subSeconds(2), function () use ($component) {
         $component->incidents()->attach(Incident::factory()->create(), [
             'component_status' => ComponentStatusEnum::unknown->value,
         ]);
     });
 
-    $this->travelTo(now()->subMinutes(1), function () use ($component) {
+    $this->travelTo(now()->subSeconds(1), function () use ($component) {
         $component->incidents()->attach(Incident::factory()->create(), [
             'component_status' => ComponentStatusEnum::performance_issues->value,
         ]);

@@ -82,10 +82,15 @@ class Component extends Model
 
     /**
      * Get the incidents for the component.
+     *
+     * @return BelongsToMany<Incident, $this>
      */
     public function incidents(): BelongsToMany
     {
-        return $this->belongsToMany(Incident::class, 'incident_components')->withPivot('component_status');
+        return $this->belongsToMany(Incident::class, 'incident_components')
+            ->using(IncidentComponent::class)
+            ->withTimestamps()
+            ->withPivot('component_status');
     }
 
     /**
@@ -130,11 +135,7 @@ class Component extends Model
      */
     public function latestStatus(): Attribute
     {
-        return Attribute::get(fn () => ComponentStatusEnum::tryFrom($this->incidents()
-            ->latest()
-            ->first()
-            ?->pivot
-            ->component_status) ?? $this->status);
+        return Attribute::get(fn () => $this->incidents()->latest()->first()?->pivot->component_status ?? $this->status);
     }
 
     /**
