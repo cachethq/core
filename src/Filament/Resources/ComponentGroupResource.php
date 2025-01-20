@@ -84,6 +84,8 @@ class ComponentGroupResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
+            ->reorderable('order')
+            ->defaultSort('order')
             ->emptyStateHeading(__('cachet::component_group.list.empty_state.heading'))
             ->emptyStateDescription(__('cachet::component_group.list.empty_state.description'));
     }

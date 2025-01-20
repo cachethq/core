@@ -108,6 +108,7 @@ class ComponentResource extends Resource
                 ]),
             ])
             ->reorderable('order')
+            ->defaultSort('order')
             ->emptyStateHeading(__('cachet::component.list.empty_state.heading'))
             ->emptyStateDescription(__('cachet::component.list.empty_state.description'));
     }
