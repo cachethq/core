@@ -136,7 +136,8 @@ return [
      |
      */
     'supported_locales' => [
-        'de' => 'Deutsch',
+        'de_AT' => 'Deutsch (AT)',
+        'de_CH' => 'Deutsch (CH)',
         'de_DE' => 'Deutsch (DE)',
         'en' => 'English',
         'en_GB' => 'English (UK)',
