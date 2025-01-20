@@ -1,0 +1,46 @@
+on:
+  schedule:
+    - cron: '0 7 * * *'
+
+env:
+  DOCS_REPOSITORY: cachethq/docs
+  DOCS_BRANCH: main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Install Scramble PRO
+        run: |
+          composer config repositories.scramble-pro '{"type": "composer", "url": "https://satis.dedoc.co"}'
+          composer config http-basic.satis.dedoc.co ${{ secrets.SCRAMBLE_USERNAME }} ${{ secrets.SCRAMBLE_KEY }}
+          composer require dedoc/scramble-pro:0.7.0-alpha.1 --dev
+
+      - name: Checkout documentation repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.DOCS_REPOSITORY }}
+          ref: ${{ env.DOCS_BRANCH }}
+          path: 'docs-repository'
+
+      - name: Build API docs
+        run: php vendor/bin/testbench scramble:export --path=docs-repository/api-reference/openapi.json
+
+      - name: Commit and push generated specification
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Generated API specification from ${{ github.repository }}/${{ github.ref}}@${{ github.sha }}"
+          repository: "docs-repository"

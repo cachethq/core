@@ -4,6 +4,7 @@ namespace Cachet\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use Dedoc\Scramble\ScrambleServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Support\SupportServiceProvider;
@@ -37,6 +38,7 @@ abstract class TestCase extends Orchestra
             BladeIconsServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             WidgetsServiceProvider::class,
+            ScrambleServiceProvider::class,
         ]);
     }
 
