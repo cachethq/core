@@ -19,7 +19,7 @@
                 <div>
                     @if ($component->incidents_count > 0)
                         <a href="{{ route('cachet.status-page.incident', [$component->incidents->first()]) }}">
-                            <x-cachet::badge :status="$component->status" />
+                            <x-cachet::badge :status="$component->latest_status" />
                         </a>
                     @else
                         <x-cachet::badge :status="$status" />

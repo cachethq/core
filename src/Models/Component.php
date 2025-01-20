@@ -9,6 +9,7 @@ use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -121,6 +122,18 @@ class Component extends Model
     public function scopeOutage(Builder $query): void
     {
         $query->whereIn('status', ComponentStatusEnum::outage());
+    }
+
+    /**
+     * Get the latest status for the component.
+     */
+    public function latestStatus(): Attribute
+    {
+        return Attribute::get(fn () => ComponentStatusEnum::tryFrom($this->incidents()
+            ->latest()
+            ->first()
+            ?->pivot
+            ->component_status) ?? $this->status);
     }
 
     /**
