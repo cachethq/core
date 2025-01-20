@@ -39,7 +39,7 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "dedoc/scramble": "dev-feat/endpoint-groups-sorting",
+        "dedoc/scramble": "0.12.0-alpha.1",
         "larastan/larastan": "^3.0",
         "laravel/pail": "^1.1",
         "orchestra/testbench": "^9.5.1",
