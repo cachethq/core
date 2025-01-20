@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ?string $description
  * @property ?string $link
  * @property ?ComponentStatusEnum $status
+ * @property ComponentStatusEnum $latest_status
  * @property ?int $order
  * @property ?int $component_group_id
  * @property ?Carbon $created_at
