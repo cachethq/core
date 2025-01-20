@@ -63,6 +63,7 @@ class ComponentResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('cachet::component.list.headers.name'))
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label(__('cachet::component.list.headers.status'))

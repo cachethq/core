@@ -54,6 +54,7 @@ class ComponentGroupResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('cachet::component_group.list.headers.name'))
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('visible')
                     ->label(__('cachet::component_group.list.headers.visible'))
