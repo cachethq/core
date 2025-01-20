@@ -1,6 +1,9 @@
+name: Build API Reference
+
 on:
   schedule:
     - cron: '0 7 * * *'
+  workflow_dispatch:
 
 env:
   DOCS_REPOSITORY: cachethq/docs
