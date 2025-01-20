@@ -30,7 +30,7 @@ class IncidentTemplateResource extends Resource
                     Forms\Components\TextInput::make('name')
                         ->label(__('cachet::incident_template.form.name_label'))
                         ->required()
-                        ->live(debounce: 250)
+                        ->live(onBlur: true)
                         ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
                         ->autocomplete(false),
                     Forms\Components\TextInput::make('slug')
