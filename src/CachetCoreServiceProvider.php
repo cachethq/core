@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Documentation\AddAuthenticationToOperation;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\Incident;
@@ -12,7 +13,6 @@ use Cachet\View\ViewManager;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
-use Cachet\Documentation\AddAuthenticationToOperation;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;

@@ -10,7 +10,6 @@ use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Http\Resources\Component as ComponentResource;
-use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Component;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
