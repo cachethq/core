@@ -1,4 +1,7 @@
 on:
+  push:
+    branches:
+      - 'automated-api-docs-generation'
   schedule:
     - cron: '0 7 * * *'
 
