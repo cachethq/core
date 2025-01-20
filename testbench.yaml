@@ -5,6 +5,7 @@ providers:
   - Spatie\LaravelSettings\LaravelSettingsServiceProvider
   - Spatie\LaravelData\LaravelDataServiceProvider
   - Laravel\Sanctum\SanctumServiceProvider
+  - Filament\FilamentServiceProvider
 
 env:
   - AUTH_MODEL=\Workbench\App\User

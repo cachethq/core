@@ -49,6 +49,7 @@ use Illuminate\Support\Str;
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
  * @property-read Carbon $timestamp
+ * @property-read IncidentComponent $pivot
  *
  * @method static IncidentFactory factory($count = null, $state = [])
  * @method static Builder<static>|static status(IncidentStatusEnum $status)
