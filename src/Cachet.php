@@ -39,7 +39,7 @@ class Cachet
     /**
      * Get the configured user model.
      *
-     * @return Model<Authenticatable>
+     * @return Model
      */
     public static function userModel(): Model
     {
