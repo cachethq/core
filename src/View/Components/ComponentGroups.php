@@ -2,7 +2,6 @@
 
 namespace Cachet\View\Components;
 
-use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Models\ComponentGroup;
 use Closure;
 use Illuminate\Database\Eloquent\Builder;
