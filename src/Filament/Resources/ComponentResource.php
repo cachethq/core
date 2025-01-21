@@ -46,6 +46,8 @@ class ComponentResource extends Resource
                         ->label(__('cachet::component.form.link_label'))
                         ->url()
                         ->label(__('cachet::component.form.link_helper')),
+                    Forms\Components\Toggle::make('checked')
+                        ->label(__('cachet::component.form.checked_label')),
                 ]),
 
                 Forms\Components\Section::make()->columns(2)->schema([
@@ -83,6 +85,11 @@ class ComponentResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('cachet::component.list.headers.created_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('checked_at')
+                    ->label(__('cachet::component.list.headers.checked_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
