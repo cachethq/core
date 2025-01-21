@@ -6,7 +6,7 @@ return [
     'visibility' => [
         'expanded' => 'Immer ausgeklappt',
         'collapsed' => 'Immer eingeklappt',
-        'collapsed_unless_incident' => 'ingeklappt - außer bei aktivem Vorfall',
+        'collapsed_unless_incident' => 'Eingeklappt - außer bei aktivem Vorfall',
     ],
     'list' => [
         'headers' => [
