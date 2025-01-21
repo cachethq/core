@@ -14,7 +14,7 @@ return [
             'threshold' => 'Drempelwaarde',
             'order' => 'Serie',
             'visible' => 'Zichtbaar',
-S            'created_at' => 'Gemaakt op',
+S           'created_at' => 'Gemaakt op',
             'updated_at' => 'Bijgewerkt op',
         ],
         'empty_state' => [
