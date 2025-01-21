@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Cachet\Filament\Components\Subscriptions;
 
+use Closure;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -11,6 +12,7 @@ use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Illuminate\Contracts\View\View;
 use Livewire\Component;
 
 /**
@@ -54,17 +56,8 @@ class CreateSubscriptionForm extends Component implements HasActions, HasForms
         dd($state);
     }
 
-    public function render(): string
+    public function render(): View|Closure|string
     {
-        return <<<'blade'
-            <form wire:submit.prevent="store" class="space-y-6 max-w-6xl">
-                {{ $this->form }}
-                
-                <div class="flex justify-end space-x-2">
-                    <x-filament::button size="lg" color="gray" tag="a" :href="route('cachet.status-page')">Cancel</x-filament::button>
-                    <x-filament::button size="lg" type="submit">Subscribe</x-filament::button>
-                </div>
-            </form>
-        blade;
+        return view('cachet::pages.subscriptions.create-subscription-form');
     }
 }
