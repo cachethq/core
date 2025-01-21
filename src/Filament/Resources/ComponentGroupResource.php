@@ -44,7 +44,7 @@ class ComponentGroupResource extends Resource
                         ->required()
                         ->inline()
                         ->options(ComponentGroupVisibilityEnum::class)
-                        ->default(ComponentGroupVisibilityEnum::expanded)
+                        ->default(ComponentGroupVisibilityEnum::expanded->value)
                         ->columnSpanFull(),
                 ]),
                 Forms\Components\Section::make()->schema([
@@ -79,7 +79,7 @@ class ComponentGroupResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order_column')
                     ->icon(fn ($record) => match (true) {
-                        $record->order_column->value === ResourceOrderColumnEnum::Manual->value => 'heroicon-o-chevron-up-down',
+                        $record->order_column === ResourceOrderColumnEnum::Manual => 'heroicon-o-chevron-up-down',
                         $record->order_direction === ResourceOrderDirectionEnum::Asc => 'heroicon-o-arrow-up',
                         $record->order_direction === ResourceOrderDirectionEnum::Desc => 'heroicon-o-arrow-down',
                     })

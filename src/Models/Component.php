@@ -149,7 +149,7 @@ class Component extends Model
             ResourceOrderColumnEnum::LastUpdated => $this->updated_at,
             ResourceOrderColumnEnum::Name => $this->name,
             ResourceOrderColumnEnum::Manual => $this->order,
-            ResourceOrderColumnEnum::Status => $this->status->value,
+            default => $this->status->value,
         };
     }
 
