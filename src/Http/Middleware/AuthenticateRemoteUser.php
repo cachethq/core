@@ -3,6 +3,7 @@
 namespace Cachet\Http\Middleware;
 
 use Cachet\Cachet;
+use Cachet\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,9 +19,10 @@ class AuthenticateRemoteUser
     {
         if ($remoteUser = $request->headers->get('REMOTE_USER')) {
             $userModel = Cachet::userModel();
-            $user = $userModel::where('email', $remoteUser)->first();
+            /** @var User|null $user */
+            $user = $userModel::query()->where('email', $remoteUser)->first();
 
-            if ($user) {
+            if ($user !== null) {
                 auth()->login($user);
             }
         }
