@@ -18,7 +18,7 @@ class AuthenticateRemoteUser
     {
         if ($remoteUser = $request->headers->get('REMOTE_USER')) {
             $userModel = Cachet::userModel();
-            $user = $userModel::where('email', $remoteUser)->firstOrFail();
+            $user = $userModel::where('email', $remoteUser)->first();
 
             if ($user) {
                 auth()->login($user);
