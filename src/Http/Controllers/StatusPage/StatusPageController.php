@@ -2,11 +2,14 @@
 
 namespace Cachet\Http\Controllers\StatusPage;
 
+use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class StatusPageController
@@ -17,18 +20,6 @@ class StatusPageController
     public function index(): View
     {
         return view('cachet::status-page.index', [
-            'componentGroups' => ComponentGroup::query()
-                ->with(['components' => fn ($query) => $query->enabled()->orderBy('order')->withCount('incidents')])
-                ->visible(auth()->check())
-                ->when(auth()->check(), fn (Builder $query) => $query->users(), fn ($query) => $query->guests())
-                ->get(),
-            'ungroupedComponents' => Component::query()
-                ->enabled()
-                ->whereNull('component_group_id')
-                ->orderBy('order')
-                ->withCount('incidents')
-                ->get(),
-
             'schedules' => Schedule::query()->with('updates')->incomplete()->orderBy('scheduled_at')->get(),
         ]);
     }

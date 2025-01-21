@@ -5,6 +5,8 @@ namespace Cachet\Models;
 use Cachet\Concerns\HasVisibility;
 use Cachet\Database\Factories\ComponentGroupFactory;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Cachet\Enums\ResourceOrderColumnEnum;
+use Cachet\Enums\ResourceOrderDirectionEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -34,7 +36,8 @@ class ComponentGroup extends Model
 
     /** @var array<string, string> */
     protected $casts = [
-        'order' => 'int',
+        'order_column' => ResourceOrderColumnEnum::class,
+        'order_direction' => ResourceOrderDirectionEnum::class,
         'collapsed' => ComponentGroupVisibilityEnum::class,
         'visible' => ResourceVisibilityEnum::class,
     ];
@@ -43,6 +46,8 @@ class ComponentGroup extends Model
     protected $fillable = [
         'name',
         'order',
+        'order_column',
+        'order_direction',
         'collapsed',
         'visible',
     ];
@@ -54,7 +59,7 @@ class ComponentGroup extends Model
      */
     public function components(): HasMany
     {
-        return $this->hasMany(Component::class);
+        return $this->hasMany(Component::class)->chaperone('group');
     }
 
     public function isCollapsible(): bool

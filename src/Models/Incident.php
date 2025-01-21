@@ -124,7 +124,7 @@ class Incident extends Model
      */
     public function incidentComponents(): HasMany
     {
-        return $this->hasMany(IncidentComponent::class);
+        return $this->hasMany(IncidentComponent::class)->chaperone();
     }
 
     /**
