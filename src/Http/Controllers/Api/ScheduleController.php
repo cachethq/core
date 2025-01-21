@@ -10,14 +10,16 @@ use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Schedule;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Schedules
- */
+#[Group('Schedules', weight: 8)]
 class ScheduleController extends Controller
 {
     use GuardsApiAbilities;
@@ -25,17 +27,12 @@ class ScheduleController extends Controller
     /**
      * List Schedules
      *
-     * @apiResourceCollection \Cachet\Http\Resources\Schedule
-     *
-     * @apiResourceModel \Cachet\Models\Schedule
-     *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, id, scheduled_at, completed_at, enabled. Example: name
-     * @queryParam include Include related resources. Enum: components, updates, user. Example: components
-     * @queryParam filters[name] string Filter the resources by name. Example: api
-     * @queryParam filters[status] string Filter the resources by status. Example: 1
+     * @response AnonymousResourceCollection<Paginator<ScheduleResource>>
      */
+    #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
+    #[QueryParameter('filter[status]', 'Filter the resources by status.', example: 1)]
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $schedules = QueryBuilder::for(Schedule::class)
@@ -49,12 +46,6 @@ class ScheduleController extends Controller
 
     /**
      * Create Schedule
-     *
-     * @apiResource \Cachet\Http\Resources\Schedule
-     *
-     * @apiResourceModel \Cachet\Models\Schedule
-     *
-     * @authenticated
      */
     public function store(CreateScheduleRequestData $data, CreateSchedule $createScheduleAction)
     {
@@ -67,12 +58,6 @@ class ScheduleController extends Controller
 
     /**
      * Get Schedule
-     *
-     * @apiResource \Cachet\Http\Resources\Schedule
-     *
-     * @apiResourceModel \Cachet\Models\Schedule
-     *
-     * @queryParam include Include related resources. Enum: components, updates, user. Example: components
      */
     public function show(Schedule $schedule)
     {
@@ -87,12 +72,6 @@ class ScheduleController extends Controller
 
     /**
      * Update Schedule
-     *
-     * @apiResource \Cachet\Http\Resources\Schedule
-     *
-     * @apiResourceModel \Cachet\Models\Schedule
-     *
-     * @authenticated
      */
     public function update(UpdateScheduleRequestData $data, Schedule $schedule, UpdateSchedule $updateScheduleAction)
     {
@@ -105,10 +84,6 @@ class ScheduleController extends Controller
 
     /**
      * Delete Schedule
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Schedule $schedule, DeleteSchedule $deleteScheduleAction)
     {
