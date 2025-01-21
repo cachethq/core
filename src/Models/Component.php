@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ComponentStatusEnum $latest_status
  * @property ?int $order
  * @property ?int $component_group_id
+ * @property ?bool $checked
+ * @property ?Carbon $checked_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
@@ -34,6 +36,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ?ComponentGroup $componentGroup
  * @property-read IncidentComponent|null $pivot
  *
+ * @method static Builder<static>|static checked()
  * @method static Builder<static>|static disabled()
  * @method static Builder<static>|static enabled()
  * @method static Builder<static>|static outage()
@@ -49,6 +52,7 @@ class Component extends Model
 
     /** @var array<string, string> */
     protected $casts = [
+        'checked' => 'bool',
         'status' => ComponentStatusEnum::class,
         'order' => 'int',
         'enabled' => 'bool',
@@ -65,6 +69,8 @@ class Component extends Model
         'component_group_id',
         'enabled',
         'meta',
+        'checked',
+        'checked_at',
     ];
 
     protected $dispatchesEvents = [
@@ -112,6 +118,14 @@ class Component extends Model
     public function subscribers(): BelongsToMany
     {
         return $this->belongsToMany(Subscriber::class, 'subscriptions');
+    }
+
+    /**
+     * Scope to checked components only.
+     */
+    public function scopeChecked(Builder $query): void
+    {
+        $query->where('checked', true);
     }
 
     /**
