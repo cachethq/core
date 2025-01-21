@@ -2,6 +2,7 @@
 
 namespace Cachet\Commands;
 
+use Cachet\Cachet;
 use Illuminate\Console\Command;
 
 use function Laravel\Prompts\confirm;
@@ -121,7 +122,7 @@ class MakeUserCommand extends Command
      */
     protected function createUser(): void
     {
-        $userModel = config('cachet.user_model');
+        $userModel = Cachet::userModel();
 
         $userModel::create([
             'name' => $this->data['name'],
