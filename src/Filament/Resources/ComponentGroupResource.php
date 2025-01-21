@@ -82,6 +82,7 @@ class ComponentGroupResource extends Resource
                         $record->order_column === ResourceOrderColumnEnum::Manual => 'heroicon-o-chevron-up-down',
                         $record->order_direction === ResourceOrderDirectionEnum::Asc => 'heroicon-o-arrow-up',
                         $record->order_direction === ResourceOrderDirectionEnum::Desc => 'heroicon-o-arrow-down',
+                        default => null,
                     })
                     ->label(__('cachet::component_group.list.headers.order_column'))
                     ->sortable(),
