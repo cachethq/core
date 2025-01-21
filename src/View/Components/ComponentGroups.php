@@ -39,7 +39,7 @@ class ComponentGroups extends ViewComponent
                 $group->components = $group->components
                     ->sortBy(
                         fn (\Cachet\Models\Component $component) => $component->orderableBy($group),
-                        descending: $group->order_direction->descending()
+                        descending: $group->order_direction?->descending()
                     );
 
                 return $group;
