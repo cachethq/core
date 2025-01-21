@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Resources;
 
+use Cachet\Cachet;
 use Cachet\Filament\Resources\UserResource\Pages;
 use Cachet\Models\User;
 use Filament\Forms;
@@ -137,6 +138,6 @@ class UserResource extends Resource
 
     public static function getModel(): string
     {
-        return config('cachet.user_model');
+        return Cachet::userModel()::class;
     }
 }

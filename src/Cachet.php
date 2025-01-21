@@ -36,7 +36,7 @@ class Cachet
     }
 
     /**
-     * Get the user model used by Cachet.
+     * Get the configured user model.
      */
     public static function userModel(): Model
     {
