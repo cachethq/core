@@ -35,6 +35,7 @@ jobs:
       - name: Checkout documentation repository
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.DOCS_API_TOKEN }}
           repository: ${{ env.DOCS_REPOSITORY }}
           ref: ${{ env.DOCS_BRANCH }}
           path: 'docs-repository'
