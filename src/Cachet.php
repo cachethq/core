@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use Cachet\Http\Middleware\RedirectIfAuthenticated;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,16 @@ class Cachet
         }
 
         return $request->user($guard);
+    }
+
+    /**
+     * Get the user model used by Cachet.
+     */
+    public static function userModel(): Model
+    {
+        $userModel = config('cachet.user_model');
+
+        return new $userModel;
     }
 
     /**

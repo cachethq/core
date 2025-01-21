@@ -1,0 +1,30 @@
+<?php
+
+namespace Cachet\Http\Middleware;
+
+use Cachet\Cachet;
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class AuthenticateRemoteUser
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        if ($remoteUser = $request->headers->get('REMOTE_USER')) {
+            $userModel = Cachet::userModel();
+            $user = $userModel::where('email', $remoteUser)->firstOrFail();
+
+            if ($user) {
+                auth()->login($user);
+            }
+        }
+
+        return $next($request);
+    }
+}
