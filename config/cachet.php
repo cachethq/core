@@ -70,7 +70,7 @@ return [
      */
     'middleware' => [
         'web',
-//        \Cachet\Http\Middleware\AuthenticateRemoteUser::class,
+        //        \Cachet\Http\Middleware\AuthenticateRemoteUser::class,
     ],
 
     'api_middleware' => [

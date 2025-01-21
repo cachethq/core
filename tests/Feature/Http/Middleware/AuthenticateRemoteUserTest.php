@@ -15,7 +15,7 @@ it('authenticates remote user if REMOTE_USER header is present', function () {
         return new Response('OK');
     };
 
-    $middleware = new AuthenticateRemoteUser();
+    $middleware = new AuthenticateRemoteUser;
 
     $response = $middleware->handle($request, $next);
 
@@ -31,7 +31,7 @@ it('does not authenticate remote user if REMOTE_USER header is not present', fun
         return new Response('OK');
     };
 
-    $middleware = new AuthenticateRemoteUser();
+    $middleware = new AuthenticateRemoteUser;
 
     $response = $middleware->handle($request, $next);
 
