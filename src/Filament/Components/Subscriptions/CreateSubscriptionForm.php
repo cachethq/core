@@ -35,7 +35,7 @@ class CreateSubscriptionForm extends Component implements HasActions, HasForms
                 Forms\Components\Section::make(heading: __('cachet::subscriptions.create.heading'))
                     ->columns()
                     ->schema([
-                        Forms\Components\TextInput::make('email_address')
+                        Forms\Components\TextInput::make('email')
                             ->label(__('cachet::subscriptions.create.form.email.label'))
                             ->placeholder(__('cachet::subscriptions.create.form.email.placeholder'))
                             ->required()
@@ -43,10 +43,6 @@ class CreateSubscriptionForm extends Component implements HasActions, HasForms
                             ->maxLength(255)
                             ->autofocus()
                             ->autocomplete('email'),
-                        Forms\Components\TextInput::make('phone_number')
-                            ->label(__('cachet::subscriptions.create.form.phone.label'))
-                            ->placeholder(__('cachet::subscriptions.create.form.phone.placeholder'))
-                            ->tel(),
                     ]),
             ]);
     }
