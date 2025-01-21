@@ -77,7 +77,8 @@
         "laravel": {
             "providers": [
                 "Cachet\\CachetCoreServiceProvider",
-                "Cachet\\CachetDashboardServiceProvider"
+                "Cachet\\CachetDashboardServiceProvider",
+                "Cachet\\CachetSubscriberServiceProvider"
             ]
         }
     },

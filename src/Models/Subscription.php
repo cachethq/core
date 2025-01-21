@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property int $subscriber_id
- * @property int $component_od
+ * @property int $component_id
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property Subscriber $subscriber

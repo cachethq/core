@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Filament\Components\Subscriptions\CreateSubscriptionForm;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\Incident;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
 
@@ -38,6 +40,9 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(Cachet::class);
         $this->app->singleton(ViewManager::class);
+        $this->booting(function () {
+            $this->registerLivewireComponents();
+        });
     }
 
     /**
@@ -154,6 +159,11 @@ class CachetCoreServiceProvider extends ServiceProvider
                 'prefix' => 'cachet',
             ]);
         });
+    }
+
+    private function registerLivewireComponents(): void
+    {
+        Livewire::component('cachet::subscriptions.create-form', CreateSubscriptionForm::class);
     }
 
     /**

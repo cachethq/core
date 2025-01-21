@@ -6,6 +6,12 @@
 
         <x-cachet::about />
 
+        <div class="flex items-center justify-end">
+            <a href="{{ route('subscriptions.create') }}" class="text-sm text-custom-800 dark:text-custom-200 font-semibold underline">
+                {{ __('cachet::subscriptions.button_label') }}
+            </a>
+        </div>
+
         @foreach($componentGroups as $componentGroup)
         <x-cachet::component-group :component-group="$componentGroup"/>
         @endforeach
