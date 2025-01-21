@@ -3,7 +3,6 @@
 namespace Cachet;
 
 use Cachet\Http\Middleware\RedirectIfAuthenticated;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -38,8 +37,6 @@ class Cachet
 
     /**
      * Get the configured user model.
-     *
-     * @return Model<Authenticatable>
      */
     public static function userModel(): Model
     {
