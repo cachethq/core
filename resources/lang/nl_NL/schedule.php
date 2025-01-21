@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'resource_label' => 'Schema|Schema''s',
+    'resource_label' => 'Schema|Schema\'s',
     'list' => [
         'headers' => [
             'name' => 'Naam',
@@ -13,7 +13,7 @@ return [
             'deleted_at' => 'Verwijderd op',
         ],
         'empty_state' => [
-            'heading' => 'Schema''S',
+            'heading' => 'Schema\'s',
             'description' => 'Plan en organiseer uw onderhoud.',
         ],
         'actions' => [

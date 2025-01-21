@@ -14,7 +14,8 @@ return [
             'threshold' => 'Drempelwaarde',
             'order' => 'Serie',
             'visible' => 'Zichtbaar',
-S           'created_at' => 'Gemaakt op',
+            'points_count' => 'Scoren',
+            'created_at' => 'Gemaakt op',
             'updated_at' => 'Bijgewerkt op',
         ],
         'empty_state' => [
