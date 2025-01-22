@@ -146,5 +146,6 @@ return [
         'pt_BR' => 'Português (BR)',
         'zh_CN' => '简体中文',
         'zh_TW' => '繁體中文',
+        'ph' => 'Filipino',
     ],
 ];
