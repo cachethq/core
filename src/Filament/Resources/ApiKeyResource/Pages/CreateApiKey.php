@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Cachet\Filament\Resources\ApiKeyResource\Pages;
 
 use Cachet\Filament\Resources\ApiKeyResource;

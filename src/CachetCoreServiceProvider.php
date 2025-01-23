@@ -4,9 +4,11 @@ namespace Cachet;
 
 use BladeUI\Icons\Factory;
 use Cachet\Documentation\AddAuthenticationToOperation;
-use Cachet\Filament\Components\Subscriptions\CreateSubscriptionForm;
+use Cachet\Events\Subscribers\SubscriberCreated;
+use Cachet\Listeners\SendSubscriberVerificationEmail;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
+use Cachet\Livewire\Components\Subscribers\CreateSubscriberForm;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
@@ -71,9 +73,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
-
-        Event::listen('Cachet\Events\Incidents\*', SendWebhookListener::class);
-        Event::listen([WebhookCallSucceededEvent::class, WebhookCallFailedEvent::class], WebhookCallEventListener::class);
+        $this->registerEvents();
 
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
             'User-Agent', Cachet::USER_AGENT
@@ -169,7 +169,7 @@ class CachetCoreServiceProvider extends ServiceProvider
 
     private function registerLivewireComponents(): void
     {
-        Livewire::component('cachet::subscriptions.create-form', CreateSubscriptionForm::class);
+        Livewire::component('cachet::subscribers.partials.create-subscriber-form', CreateSubscriberForm::class);
     }
 
     /**
@@ -227,5 +227,15 @@ class CachetCoreServiceProvider extends ServiceProvider
         });
 
         Scramble::registerExtension(AddAuthenticationToOperation::class);
+    }
+
+    /**
+     * Register the package's events.
+     */
+    private function registerEvents(): void
+    {
+        Event::listen(SubscriberCreated::class, SendSubscriberVerificationEmail::class);
+        Event::listen('Cachet\Events\Incidents\*', SendWebhookListener::class);
+        Event::listen([WebhookCallSucceededEvent::class, WebhookCallFailedEvent::class], WebhookCallEventListener::class);
     }
 }
