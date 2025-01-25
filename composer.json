@@ -30,6 +30,7 @@
         "illuminate/queue": "^11.23.0",
         "illuminate/support": "^11.23.0",
         "laravel/sanctum": "^4.0",
+        "livewire/volt": "^1.6",
         "nesbot/carbon": "^2.70",
         "spatie/laravel-data": "^4.11",
         "spatie/laravel-query-builder": "^5.5",
@@ -78,7 +79,8 @@
         "laravel": {
             "providers": [
                 "Cachet\\CachetCoreServiceProvider",
-                "Cachet\\CachetDashboardServiceProvider"
+                "Cachet\\CachetDashboardServiceProvider",
+                "Cachet\\CachetSubscriberServiceProvider"
             ]
         }
     },

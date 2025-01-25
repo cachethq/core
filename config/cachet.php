@@ -113,6 +113,19 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet Queue
+     |--------------------------------------------------------------------------
+     |
+     | Configure the default queue connection and queue name used by cachet.
+     |
+     */
+    'queue' => [
+        'connection' => env('CACHET_QUEUE_CONNECTION', env('QUEUE_CONNECTION', 'database')),
+        'name' => env('CACHET_QUEUE_NAME', 'default'),
+    ],
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Webhooks
      |--------------------------------------------------------------------------
      |
@@ -120,12 +133,28 @@ return [
      |
      */
     'webhooks' => [
-        'queue_connection' => env('CACHET_WEBHOOK_QUEUE_CONNECTION', 'default'),
-        'queue_name' => env('CACHET_WEBHOOK_QUEUE_NAME', 'webhooks'),
+        'queue_connection' => env('CACHET_WEBHOOK_QUEUE_CONNECTION', env('CACHET_QUEUE_CONNECTION', 'database')),
+        'queue_name' => env('CACHET_WEBHOOK_QUEUE_NAME', env('CACHET_QUEUE_NAME', 'webhooks')),
 
         'logs' => [
             'prune_logs_after_days' => 30,
         ],
+    ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Subscribers
+     |--------------------------------------------------------------------------
+     |
+     | Configure how Cachet sends notifications to subscribers as well as the
+     | expiry time of the verification link when a new subscriber is created.
+     |
+     */
+    'subscribers' => [
+        'queue_connection' => env('CACHET_SUBSCRIBERS_QUEUE_CONNECTION', env('CACHET_QUEUE_CONNECTION', 'database')),
+        'queue_name' => env('CACHET_SUBSCRIBERS_QUEUE_NAME', env('CACHET_QUEUE_NAME', 'subscribers')),
+
+        'verification_expiry_minutes' => 60,
     ],
 
     /*

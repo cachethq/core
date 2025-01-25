@@ -6,9 +6,12 @@ providers:
   - Spatie\LaravelData\LaravelDataServiceProvider
   - Laravel\Sanctum\SanctumServiceProvider
   - Filament\FilamentServiceProvider
+  - Livewire\Volt\VoltServiceProvider
 
 env:
   - AUTH_MODEL=\Workbench\App\User
+  - CACHET_PATH="/status"
+  - CACHET_QUEUE_CONNECTION=sync
   - MAIL_MAILER=smtp
   - MAIL_HOST=127.0.0.1
   - MAIL_PORT=2525

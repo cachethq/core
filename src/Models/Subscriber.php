@@ -2,11 +2,13 @@
 
 namespace Cachet\Models;
 
+use Cachet\Concerns\SubscriberMustVerifyEmail;
 use Cachet\Database\Factories\SubscriberFactory;
 use Cachet\Events\Subscribers\SubscriberCreated;
 use Cachet\Events\Subscribers\SubscriberUnsubscribed;
 use Cachet\Events\Subscribers\SubscriberVerified;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,10 +28,11 @@ use Illuminate\Support\Str;
  * @property ?string $slack_webhook_url
  * @property Collection<int, Component> $components
  */
-class Subscriber extends Model
+class Subscriber extends Model implements MustVerifyEmailContract
 {
     /** @use HasFactory<SubscriberFactory> */
     use HasFactory;
+    use SubscriberMustVerifyEmail;
 
     /** @var array<string, string> */
     protected $casts = [
