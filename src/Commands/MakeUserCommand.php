@@ -16,7 +16,7 @@ class MakeUserCommand extends Command
      *
      * @var string
      */
-        protected $signature = 'cachet:make:user {email?} {--password= : The user\'s password} {--admin : Whether the user is an admin} {--name= : The name of the user }';
+    protected $signature = 'cachet:make:user {email?} {--password= : The user\'s password} {--admin : Whether the user is an admin} {--name= : The name of the user }';
 
     /**
      * The console command description.
