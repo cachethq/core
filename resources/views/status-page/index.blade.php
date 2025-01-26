@@ -1,10 +1,10 @@
 <x-cachet::layouts.cachet>
 
-    <x-cachet::success-banner />
-
     <x-cachet::status-bar />
 
     <x-cachet::about />
+
+    <x-cachet::success-banner />
 
     <div class="flex items-center justify-end">
         <a href="{{ route('cachet.subscribers.create') }}" class="text-sm text-custom-800 dark:text-custom-200 font-semibold underline">

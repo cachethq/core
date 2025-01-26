@@ -33,7 +33,7 @@ return [
         'email_label' => 'Email',
         'components_label' => 'Notify me about',
         'components_hint' => 'Select all the items you would like to receive email updates for.',
-        'success_message' => 'You are now subscribed to updates.',
+        'success_message' => 'Please verify your email address to start receiving updates.',
         'cancel_label' => 'Cancel',
         'submit_label' => 'Subscribe',
     ],
