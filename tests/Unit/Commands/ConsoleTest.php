@@ -18,4 +18,3 @@ it('registers a scheduled job', function () {
     expect($events)
         ->toContain($scheduledCommand);
 });
-
