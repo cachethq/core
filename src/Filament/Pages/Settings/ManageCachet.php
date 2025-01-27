@@ -18,6 +18,11 @@ class ManageCachet extends SettingsPage
         return __('cachet::navigation.settings.label');
     }
 
+    public function getTitle(): string
+    {
+        return self::getNavigationLabel();
+    }
+
     public static function getNavigationLabel(): string
     {
         return __('cachet::navigation.settings.items.manage_cachet');

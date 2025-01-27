@@ -14,6 +14,11 @@ class ManageTheme extends SettingsPage
 {
     protected static string $settings = ThemeSettings::class;
 
+    public function getTitle(): string
+    {
+        return self::getNavigationLabel();
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');
