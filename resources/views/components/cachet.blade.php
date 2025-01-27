@@ -15,12 +15,14 @@
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website" />
         <meta property="og:url" content="{{ url(Cachet::path()) }}" />
+        <meta property="og:image" content="{{ asset('/vendor/cachethq/cachet/android-chrome-512x512.png') }}" />
         <meta property="og:title" content="{{ $title ?: config('cachet.title', 'Cachet') }}" />
         <meta property="og:description" content="{{ $description }}" />
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="{{ url(Cachet::path()) }}" />
+        <meta property="twitter:image" content="{{ asset('/vendor/cachethq/cachet/android-chrome-512x512.png') }}" />
         <meta property="twitter:title" content="{{ $title ?: config('cachet.title', 'Cachet') }}" />
         <meta property="twitter:description" content="{{ $description }}" />
 
