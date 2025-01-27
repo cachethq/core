@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
@@ -20,6 +21,11 @@ class UserResource extends Resource
     public static function canAccess(): bool
     {
         return auth()->user()->isAdmin();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return ! Cachet::demoMode() && (auth()->user()->is($record) || auth()->user()->isAdmin());
     }
 
     public static function form(Form $form): Form
