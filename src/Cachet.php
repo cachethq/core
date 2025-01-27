@@ -94,4 +94,12 @@ class Cachet
             'schedule-updates' => ['manage', 'delete'],
         ];
     }
+
+    /**
+     * Determine if Cachet is running in demo mode.
+     */
+    public static function demoMode(): bool
+    {
+        return (bool) config('cachet.demo_mode');
+    }
 }

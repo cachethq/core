@@ -168,6 +168,8 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerCommands(): void
     {
         if ($this->app->runningInConsole()) {
+            $this->loadRoutesFrom(__DIR__.'/../routes/console.php');
+
             $this->commands([
                 Commands\MakeUserCommand::class,
                 Commands\SendBeaconCommand::class,

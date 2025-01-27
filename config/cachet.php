@@ -148,4 +148,16 @@ return [
         'zh_TW' => '繁體中文',
         'ph' => 'Filipino',
     ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Demo Mode
+     |--------------------------------------------------------------------------
+     |
+     | Whether to run Cachet in demo mode. This will adjust some of the default
+     | settings to allow Cachet to run in a demo environment.
+     |
+     */
+    'demo_mode' => env('CACHET_DEMO_MODE', false),
+
 ];
