@@ -132,8 +132,8 @@ return [
      * global strategy here, or override it on a specific data object.
      */
     'name_mapping_strategy' => [
-        'input' => \Spatie\LaravelData\Mappers\SnakeCaseMapper::class,
-        'output' => \Spatie\LaravelData\Mappers\SnakeCaseMapper::class,
+        'input' => null,
+        'output' => null,
     ],
 
     /**
