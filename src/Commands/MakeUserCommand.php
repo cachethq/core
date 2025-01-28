@@ -59,8 +59,6 @@ class MakeUserCommand extends Command
             $this->promptName();
         }
 
-        $this->promptName();
-
         if (! $this->email) {
             $this->promptEmail();
         }
