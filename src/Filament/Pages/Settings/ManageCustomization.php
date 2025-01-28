@@ -5,7 +5,6 @@ namespace Cachet\Filament\Pages\Settings;
 use Cachet\Settings\CustomizationSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Pages\SettingsPage;
 
 class ManageCustomization extends SettingsPage
 {
@@ -14,11 +13,6 @@ class ManageCustomization extends SettingsPage
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');
-    }
-
-    public function getTitle(): string
-    {
-        return self::getNavigationLabel();
     }
 
     public static function getNavigationLabel(): string

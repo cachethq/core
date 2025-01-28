@@ -6,18 +6,12 @@ use Cachet\Data\Cachet\ThemeData;
 use Cachet\Settings\ThemeSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Pages\SettingsPage;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 
 class ManageTheme extends SettingsPage
 {
     protected static string $settings = ThemeSettings::class;
-
-    public function getTitle(): string
-    {
-        return self::getNavigationLabel();
-    }
 
     public static function getNavigationGroup(): ?string
     {

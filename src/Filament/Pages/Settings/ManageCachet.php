@@ -6,7 +6,6 @@ use Cachet\Settings\AppSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Pages\SettingsPage;
 use Illuminate\Support\Str;
 
 class ManageCachet extends SettingsPage
@@ -16,11 +15,6 @@ class ManageCachet extends SettingsPage
     public static function getNavigationGroup(): ?string
     {
         return __('cachet::navigation.settings.label');
-    }
-
-    public function getTitle(): string
-    {
-        return self::getNavigationLabel();
     }
 
     public static function getNavigationLabel(): string
