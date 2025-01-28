@@ -5,7 +5,6 @@ namespace Cachet\Filament\Pages\Settings;
 use Cachet\Settings\CustomizationSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Pages\SettingsPage;
 
 class ManageCustomization extends SettingsPage
 {

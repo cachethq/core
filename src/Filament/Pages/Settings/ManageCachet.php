@@ -6,7 +6,6 @@ use Cachet\Settings\AppSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Pages\SettingsPage;
 use Illuminate\Support\Str;
 
 class ManageCachet extends SettingsPage
