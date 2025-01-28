@@ -27,8 +27,21 @@ return [
         'verified_at_label' => 'Verified at',
         'global_label' => 'Global',
     ],
+    'subscribe_button_label' => 'Subscribe',
+    'public_form' => [
+        'heading' => 'Subscribe to updates',
+        'email_label' => 'Email',
+        'components_label' => 'Notify me about',
+        'components_hint' => 'Select all the items you would like to receive email updates for.',
+        'success_message' => 'Please verify your email address to start receiving updates.',
+        'cancel_label' => 'Cancel',
+        'submit_label' => 'Subscribe',
+    ],
     'overview' => [
         'total_subscribers_label' => 'Total Subscribers',
         'total_subscribers_description' => 'Total number of subscribers.',
     ],
+    'messages' => [
+        'email_verified' => 'Your email has been verified.',
+    ]
 ];
