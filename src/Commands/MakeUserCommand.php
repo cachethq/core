@@ -127,6 +127,8 @@ class MakeUserCommand extends Command
     {
         $userModel = Cachet::userModel();
 
+        dump($userModel);
+
         $userModel::create([
             'name' => $this->data['name'],
             'email' => $this->email,
