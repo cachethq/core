@@ -117,6 +117,51 @@ it('can filter schedules by name', function () {
     $response->assertJsonPath('data.0.attributes.id', $schedule->id);
 });
 
+it('can filter schedules by status upcoming', function () {
+    $schedule = Schedule::factory()->inTheFuture()->create();
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => 'upcoming',
+        ],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
+});
+
+it('can filter schedules by status complete', function () {
+    $schedule = Schedule::factory()->inThePast()->create();
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => 'complete',
+        ],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
+});
+
+it('can filter schedules by status in progress', function () {
+    $schedule = Schedule::factory()->inProgress()->create();
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => 'in_progress',
+        ],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
+});
+
 it('can get a schedule', function () {
     $schedule = Schedule::factory()->create();
 

@@ -8,6 +8,7 @@ use Cachet\Actions\Schedule\UpdateSchedule;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
+use Cachet\Filters\ScheduleStatusFilter;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Schedule;
 use Dedoc\Scramble\Attributes\Group;
@@ -30,14 +31,14 @@ class ScheduleController extends Controller
      * @response AnonymousResourceCollection<Paginator<ScheduleResource>>
      */
     #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
-    #[QueryParameter('filter[status]', 'Filter the resources by status.', example: 1)]
+    #[QueryParameter('filter[status]', 'Filter the resources by status.', type: 'string', examples: ['in_progress', 'completed', 'upcoming'])]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $schedules = QueryBuilder::for(Schedule::class)
             ->allowedIncludes(['components', 'updates', 'user'])
-            ->allowedFilters(['name', AllowedFilter::exact('status')])
+            ->allowedFilters(['name', AllowedFilter::custom('status', new ScheduleStatusFilter)])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(request('per_page', 15));
 
