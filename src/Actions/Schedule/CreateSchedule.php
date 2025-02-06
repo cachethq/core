@@ -5,6 +5,7 @@ namespace Cachet\Actions\Schedule;
 use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\ScheduleComponentRequestData;
 use Cachet\Models\Schedule;
+use Illuminate\Database\Eloquent\Model;
 
 class CreateSchedule
 {
@@ -13,7 +14,9 @@ class CreateSchedule
      */
     public function handle(CreateScheduleRequestData $data): Schedule
     {
-        return tap(Schedule::create($data->except('components')->toArray()), function (Schedule $schedule) use ($data) {
+        /** @var Schedule $model */
+        $model = tap(Schedule::create($data->except('components')->toArray()), function (Model $schedule) use ($data) {
+            /** @var Schedule $schedule */
             if (! $data->components) {
                 return;
             }
@@ -27,5 +30,6 @@ class CreateSchedule
 
             // @todo Dispatch notification that maintenance was scheduled.
         });
+        return $model;
     }
 }

@@ -19,6 +19,7 @@ use Cachet\Models\Update;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
 use Cachet\Settings\ThemeSettings;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -65,7 +66,8 @@ class DatabaseSeeder extends Seeder
             'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
             'scheduled_at' => now()->addHours(24),
             'completed_at' => null,
-        ]), function (Schedule $schedule) use ($user) {
+        ]), function (Model $schedule) use ($user) {
+            /** @var Schedule $schedule */
             $update = new Update([
                 'message' => <<<'EOF'
 This scheduled maintenance period has been pushed back by one hour.

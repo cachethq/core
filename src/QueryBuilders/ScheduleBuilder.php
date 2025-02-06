@@ -2,6 +2,7 @@
 
 namespace Cachet\QueryBuilders;
 
+use Cachet\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static \Cachet\QueryBuilders\ScheduleBuilder inProgress()
  * @method static \Cachet\QueryBuilders\ScheduleBuilder inTheFuture()
  * @method static \Cachet\QueryBuilders\ScheduleBuilder inThePast()
+ * @mixin Schedule
  */
 class ScheduleBuilder extends Builder
 {
