@@ -31,8 +31,8 @@ return [
     'status' => [
         'operational' => 'Functioneel',
         'performance_issues' => 'Prestatieproblemen',
-        'partial_outage' => 'Gedeeltelijke mislukking',
-        'major_outage' => 'Ernstige mislukking',
+        'partial_outage' => 'Gedeeltelijke storing',
+        'major_outage' => 'Ernstige storing',
         'unknown' => 'Onbekend',
     ],
 
