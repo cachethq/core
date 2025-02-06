@@ -11,12 +11,12 @@ class ScheduleStatusFilter implements Filter
     public function __invoke(Builder $query, $value, string $property)
     {
         match($value) {
-            ScheduleStatusEnum::complete,
-            'complete' => $query->inThePast(),
-            ScheduleStatusEnum::in_progress,
-            'in_progress' => $query->inProgress(),
-            ScheduleStatusEnum::upcoming,
-            'upcoming' => $query->inTheFuture(),
+            (string) ScheduleStatusEnum::complete->value,
+            ScheduleStatusEnum::complete->name => $query->inThePast(),
+            (string) ScheduleStatusEnum::in_progress->value,
+            ScheduleStatusEnum::in_progress->name => $query->inProgress(),
+            (string) ScheduleStatusEnum::upcoming->value,
+            ScheduleStatusEnum::upcoming->name => $query->inTheFuture(),
         };
     }
 
