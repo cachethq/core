@@ -23,8 +23,10 @@ class ScheduleBuilder extends Builder
      */
     public function incomplete(): self
     {
-        $this->whereDate('completed_at', '>=', Carbon::now())
-            ->orWhereNull('completed_at');
+        $this->where(function (ScheduleBuilder $query) {
+            $query->where('completed_at', '>=', Carbon::now())
+                ->orWhereNull('completed_at');
+        });
         return $this;
     }
 
@@ -35,9 +37,9 @@ class ScheduleBuilder extends Builder
      */
     public function inProgress(): self
     {
-        $this->whereDate('scheduled_at', '<=', Carbon::now())
+        $this->where('scheduled_at', '<=', Carbon::now())
             ->where(function (ScheduleBuilder $query) {
-                $query->whereDate('completed_at', '>=', Carbon::now())
+                $query->where('completed_at', '>=', Carbon::now())
                     ->orWhereNull('completed_at');
             });
         return $this;
@@ -50,7 +52,7 @@ class ScheduleBuilder extends Builder
      */
     public function inTheFuture(): self
     {
-        $this->whereDate('scheduled_at', '>=', Carbon::now());
+        $this->where('scheduled_at', '>=', Carbon::now());
         return $this;
     }
 
