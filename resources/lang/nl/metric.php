@@ -5,7 +5,7 @@ return [
     'list' => [
         'headers' => [
             'name' => 'Naam',
-            'suffix' => 'Suffix',
+            'suffix' => 'Achtervoegsel',
             'default_value' => 'Standaardwaarde',
             'calc_type' => 'Metrisch type',
             'display_chart' => 'Diagram weergeven',
@@ -25,7 +25,7 @@ return [
     ],
     'form' => [
         'name_label' => 'Name',
-        'suffix_label' => 'Suffix',
+        'suffix_label' => 'Achtervoegsel',
         'description_label' => 'Beschrijving',
         'default_view_label' => 'Standaard weergave',
         'default_value_label' => 'Standaardwaarde',
