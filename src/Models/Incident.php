@@ -3,6 +3,7 @@
 namespace Cachet\Models;
 
 use Cachet\Concerns\HasVisibility;
+use Cachet\Contracts\Support\Sequencable;
 use Cachet\Database\Factories\IncidentFactory;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
@@ -11,6 +12,7 @@ use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Filament\Resources\IncidentResource;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -56,7 +58,7 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|static unresolved()
  * @method static Builder<static>|static stickied()
  */
-class Incident extends Model
+class Incident extends Model implements Sequencable
 {
     /** @use HasFactory<IncidentFactory> */
     use HasFactory;
@@ -180,6 +182,12 @@ class Incident extends Model
             get: fn () => $this->occurred_at ?: $this->created_at
         );
     }
+
+    public function getSequenceTimestamp(): CarbonInterface
+    {
+        return $this->timestamp;
+    }
+
 
     /**
      * Determine the latest status of the incident.

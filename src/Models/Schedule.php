@@ -2,8 +2,12 @@
 
 namespace Cachet\Models;
 
+use Cachet\Contracts\Support\Sequencable;
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
+use Cachet\Filament\Resources\ScheduleResource;
+use Cachet\QueryBuilders\ScheduleBuilder;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -35,7 +39,7 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|static inTheFuture()
  * @method static Builder<static>|static inThePast()
  */
-class Schedule extends Model
+class Schedule extends Model implements Sequencable
 {
     /** @use HasFactory<ScheduleFactory> */
     use HasFactory;
@@ -106,6 +110,41 @@ class Schedule extends Model
     {
         return Str::of($this->message)->markdown();
     }
+
+    /**
+     * Determine the latest status of the incident.
+     *
+     * @return Attribute<ScheduleStatusEnum|null, never>
+     */
+    protected function latestStatus(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                return $this->updates()->latest()->first()->status ?? $this->status;
+            }
+        );
+    }
+
+    /**
+     * @return Attribute<Carbon, never>
+     */
+    protected function timestamp(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->completed_at ?? $this->scheduled_at
+        );
+    }
+
+    public function getSequenceTimestamp(): CarbonInterface
+    {
+        return $this->timestamp;
+    }
+
+    public function filamentDashboardEditUrl(): string
+    {
+        return ScheduleResource::getUrl(name: 'edit', parameters: ['record' => $this->id]);
+    }
+
 
     /**
      * Scope schedules that are incomplete.
