@@ -5,6 +5,7 @@ return [
         'site_name_label' => 'Pangalan ng Site',
         'about_this_site_label' => 'Tungkol sa Site na Ito',
         'timezone_label' => 'Oras na Rehiyon',
+        'timezone_other' => 'Iba pang mga oras',
         'incident_days_label' => 'Mga Araw ng Insidente',
         'major_outage_threshold_label' => 'Limitasyon ng Malaking Pagka-aberya',
         'refresh_rate_label' => 'Awtomatikong I-refresh ang Pahina',
