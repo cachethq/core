@@ -7,7 +7,7 @@ return [
         'investigating' => 'Onderzoek',
         'identified' => 'Geïdentificeerd',
         'watching' => 'Observatie',
-        'fixed' => 'Vast',
+        'fixed' => 'Opgelost',
         'reported' => 'Gerapporteerd',
     ],
     'edit_button' => 'Incident bewerken',

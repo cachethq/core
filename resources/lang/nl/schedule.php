@@ -18,7 +18,7 @@ return [
         ],
         'actions' => [
             'record_update' => 'Update publiceren',
-            'complete' => 'Volledig onderhoud',
+            'complete' => 'Onderhoud afronden',
         ],
     ],
     'form' => [
@@ -36,7 +36,7 @@ return [
         ],
     ],
     'status' => [
-        'upcoming' => 'Spoedig',
+        'upcoming' => 'Gepland',
         'in_progress' => 'Actief',
         'complete' => 'Voltooid',
     ],
