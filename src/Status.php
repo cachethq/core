@@ -80,8 +80,8 @@ class Status
         return $this->incidents ??= Incident::query()
             ->toBase()
             ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when ? in (incidents.status, latest_update.status) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed->value])
-            ->selectRaw('sum(case when ? not in (incidents.status, latest_update.status) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed->value])
+            ->selectRaw('sum(case when ? in (incidents.status, coalesce(latest_update.status, ?)) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed->value, ''])
+            ->selectRaw('sum(case when ? not in (incidents.status, coalesce(latest_update.status, ?)) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed->value, ''])
             ->joinSub(function (Builder $query) {
                 $query
                     ->select('iu1.updateable_id', 'iu1.status')
@@ -92,8 +92,8 @@ class Status
                             ->from('updates')
                             ->where('updates.updateable_type', Relation::getMorphAlias(Incident::class))
                             ->groupBy('updateable_id');
-                    }, 'iu2', 'iu1.id', '=', 'iu2.max_id');
-            }, 'latest_update', 'latest_update.updateable_id', '=', 'incidents.id')
+                    }, 'iu2', 'iu1.id', '=', 'iu2.max_id', 'left');
+            }, 'latest_update', 'latest_update.updateable_id', '=', 'incidents.id', 'left')
             ->first();
     }
 }
