@@ -168,8 +168,6 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerCommands(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->loadRoutesFrom(__DIR__.'/../routes/console.php');
-
             $this->commands([
                 Commands\MakeUserCommand::class,
                 Commands\SendBeaconCommand::class,
@@ -196,8 +194,14 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->app->booted(function () {
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+            $demoMode = fn () => Cachet::demoMode();
 
             $schedule->command('cachet:beacon')->daily();
+
+            $schedule->command('db:seed', [
+                '--class' => \Cachet\Database\Seeders\DatabaseSeeder::class,
+                '--force' => true,
+            ])->everyThirtyMinutes()->when($demoMode);
         });
     }
 
