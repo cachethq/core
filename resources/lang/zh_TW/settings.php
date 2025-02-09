@@ -18,6 +18,8 @@ return [
             'only_show_disrupted_days' => '僅顯示受干擾天數',
             'recent_incidents_only' => '僅顯示最近事件',
             'recent_incidents_days' => '顯示最近事件的天數',
+            'api_enabled' => '啟用 Api',
+            'api_protected' => 'Api 需要身份驗證',
         ],
     ],
     'manage_customization' => [

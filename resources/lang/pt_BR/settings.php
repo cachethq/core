@@ -18,6 +18,8 @@ return [
             'only_show_disrupted_days' => 'Exibir Apenas Dias com Interrupções',
             'recent_incidents_only' => 'Exibir Apenas Incidentes Recentes',
             'recent_incidents_days' => 'Número de Dias para Exibir Incidentes Recentes',
+            'api_enabled' => 'API Ativada',
+            'api_protected' => 'API requer autenticação',
         ],
     ],
     'manage_customization' => [

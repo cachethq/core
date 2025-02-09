@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Spatie\LaravelSettings\Exceptions\MissingSettings;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
 
@@ -111,14 +112,28 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerRoutes(): void
     {
         $this->callAfterResolving('router', function (Router $router, Application $application) {
-            $router->group([
-                'domain' => config('cachet.domain'),
-                'as' => 'cachet.api.',
-                'prefix' => Cachet::path().'/api',
-                'middleware' => ['cachet:api', 'throttle:cachet-api'],
-            ], function (Router $router) {
-                $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
-            });
+            $settings = app(AppSettings::class);
+            try {
+                if ($settings->api_enabled) {
+                    $middleware = ['cachet:api', 'throttle:cachet-api'];
+                    if ($settings->api_protected) {
+                        $middleware[] = 'auth:sanctum';
+                    }
+
+                    $router->group([
+                        'domain' => config('cachet.domain'),
+                        'as' => 'cachet.api.',
+                        'prefix' => Cachet::path().'/api',
+                        'middleware' => $middleware,
+                    ], function (Router $router) {
+                        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+                    });
+                }
+            } catch (MissingSettings $exception) {
+                if(! $application->runningInConsole()) {
+                    throw new \Exception("Please run `php artisan migrate` to load missing settings.");
+                }
+            }
 
             Cachet::routes()
                 ->register();

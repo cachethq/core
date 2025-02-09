@@ -18,6 +18,8 @@ return [
             'only_show_disrupted_days' => 'Nur Tage mit Vorfällen anzeigen',
             'recent_incidents_only' => 'Nur aktuelle Vorfälle anzeigen',
             'recent_incidents_days' => 'Anzahl der Tage, an denen aktuelle Vorfälle angezeigt werden sollen',
+            'api_enabled' => 'API aktiviert',
+            'api_protected' => 'API erfordert Authentifizierung',
         ],
     ],
     'manage_customization' => [

@@ -32,6 +32,10 @@ class AppSettings extends Settings
 
     public int $recent_incidents_days = 7;
 
+    public bool $api_enabled = true;
+
+    public bool $api_protected = false;
+
     public static function group(): string
     {
         return 'app';
