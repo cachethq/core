@@ -64,7 +64,7 @@ class ScheduleUpdateController extends Controller
      */
     public function show(Schedule $schedule, Update $update)
     {
-        $updateQuery = QueryBuilder::for($update)
+        $updateQuery = QueryBuilder::for(Update::query()->where($update->getRouteKeyName(), $update->getRouteKey()))
             ->allowedIncludes([
                 AllowedInclude::relationship('schedule', 'updateable'),
             ])

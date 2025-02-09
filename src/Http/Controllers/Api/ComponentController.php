@@ -77,7 +77,7 @@ class ComponentController extends Controller
      */
     public function show(Component $component)
     {
-        $componentQuery = QueryBuilder::for($component)
+        $componentQuery = QueryBuilder::for(Component::query()->where($component->getRouteKeyName(), $component->getRouteKey()))
             ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->first();
 

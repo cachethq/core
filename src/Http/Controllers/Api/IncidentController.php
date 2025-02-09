@@ -78,7 +78,7 @@ class IncidentController extends Controller
      */
     public function show(Incident $incident)
     {
-        $incidentQuery = QueryBuilder::for($incident)
+        $incidentQuery = QueryBuilder::for(Incident::query()->where($incident->getRouteKeyName(), $incident->getRouteKey()))
             ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->first();
 

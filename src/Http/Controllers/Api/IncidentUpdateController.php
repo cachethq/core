@@ -65,7 +65,7 @@ class IncidentUpdateController extends Controller
      */
     public function show(Incident $incident, Update $update)
     {
-        $updateQuery = QueryBuilder::for($update)
+        $updateQuery = QueryBuilder::for(Update::query()->where($update->getRouteKeyName(), $update->getRouteKey()))
             ->allowedIncludes([
                 AllowedInclude::relationship('incident', 'updateable'),
             ])

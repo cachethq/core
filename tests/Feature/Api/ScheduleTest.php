@@ -122,7 +122,7 @@ it('can filter schedules by status upcoming', function () {
 
     $query = http_build_query([
         'filter' => [
-            'status' => 'upcoming',
+            'status' => \Cachet\Enums\ScheduleStatusEnum::upcoming,
         ],
     ]);
 
@@ -137,7 +137,7 @@ it('can filter schedules by status complete', function () {
 
     $query = http_build_query([
         'filter' => [
-            'status' => 'complete',
+            'status' => \Cachet\Enums\ScheduleStatusEnum::complete,
         ],
     ]);
 
@@ -152,7 +152,7 @@ it('can filter schedules by status in progress', function () {
 
     $query = http_build_query([
         'filter' => [
-            'status' => 'in_progress',
+            'status' => \Cachet\Enums\ScheduleStatusEnum::in_progress,
         ],
     ]);
 
@@ -160,6 +160,27 @@ it('can filter schedules by status in progress', function () {
 
     $response->assertJsonCount(1, 'data');
     $response->assertJsonPath('data.0.attributes.id', $schedule->id);
+});
+
+it('can filter schedules by multiple statuses', function () {
+    $scheduleCompleted = Schedule::factory()->completed()->create();
+    $scheduleInProgress = Schedule::factory()->inProgress()->create();
+
+    $query = http_build_query([
+        'filter' => [
+            'status' => implode(",", [
+                \Cachet\Enums\ScheduleStatusEnum::in_progress->value,
+                \Cachet\Enums\ScheduleStatusEnum::complete->value,
+                ]
+            ),
+        ],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertJsonCount(2, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $scheduleCompleted->id);
+    $response->assertJsonPath('data.1.attributes.id', $scheduleInProgress->id);
 });
 
 it('can get a schedule', function () {
