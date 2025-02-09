@@ -109,6 +109,7 @@ class ManageCachet extends SettingsPage
                                 ->reactive(),
                             Forms\Components\Toggle::make('api_protected')
                                 ->label(__('cachet::settings.manage_cachet.toggles.api_protected'))
+                                ->visible(fn (Get $get) => $get('api_enabled'))
                                 ->reactive(),
                         ]),
                 ]),
