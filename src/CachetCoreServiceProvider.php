@@ -112,27 +112,33 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerRoutes(): void
     {
         $this->callAfterResolving('router', function (Router $router, Application $application) {
-            $settings = app(AppSettings::class);
+            $apiEnabled = true;
+            $apiProtected = false;
             try {
-                if ($settings->api_enabled) {
-                    $middleware = ['cachet:api', 'throttle:cachet-api'];
-                    if ($settings->api_protected) {
-                        $middleware[] = 'auth:sanctum';
-                    }
+                $settings = app(AppSettings::class);
+                $apiEnabled = $settings->api_enabled;
+                $apiProtected = $settings->api_protected;
 
-                    $router->group([
-                        'domain' => config('cachet.domain'),
-                        'as' => 'cachet.api.',
-                        'prefix' => Cachet::path().'/api',
-                        'middleware' => $middleware,
-                    ], function (Router $router) {
-                        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
-                    });
-                }
             } catch (MissingSettings $exception) {
                 if(! $application->runningInConsole()) {
                     throw new \Exception("Please run `php artisan migrate` to load missing settings.");
                 }
+            }
+
+            if ($apiEnabled) {
+                $middleware = ['cachet:api', 'throttle:cachet-api'];
+                if ($apiProtected) {
+                    $middleware[] = 'auth:sanctum';
+                }
+
+                $router->group([
+                    'domain' => config('cachet.domain'),
+                    'as' => 'cachet.api.',
+                    'prefix' => Cachet::path().'/api',
+                    'middleware' => $middleware,
+                ], function (Router $router) {
+                    $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+                });
             }
 
             Cachet::routes()
