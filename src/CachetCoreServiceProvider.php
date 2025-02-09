@@ -123,6 +123,8 @@ class CachetCoreServiceProvider extends ServiceProvider
                 if(! $application->runningInConsole()) {
                     throw new \Exception("Please run `php artisan migrate` to load missing settings.");
                 }
+            } catch (\Exception $exception) {
+                // do nothing
             }
 
             if ($apiEnabled) {
