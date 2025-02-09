@@ -28,16 +28,16 @@ class ScheduleStatusFilter implements Filter
         $this->toQuery($enum, $query);
     }
 
-    public function multiValueFilter(array $value, Builder $query)
+    public function multiValueFilter(array $value, ScheduleBuilder $query)
     {
-        $query->where(function (Builder $query) use ($value) {
+        $query->where(function (ScheduleBuilder $query) use ($value) {
             foreach($value as $status) {
                 $status = $this->toEnum($status);
                 if (! $status instanceof ScheduleStatusEnum) {
                     continue;
                 }
 
-                $query->orWhere(function (Builder $query) use ($status) {
+                $query->orWhere(function (ScheduleBuilder $query) use ($status) {
                     $this->toQuery($status, $query);
                 });
             }
@@ -45,7 +45,7 @@ class ScheduleStatusFilter implements Filter
     }
 
 
-    protected function toQuery(ScheduleStatusEnum $value, Builder $query)
+    protected function toQuery(ScheduleStatusEnum $value, ScheduleBuilder $query)
     {
         match($value) {
             ScheduleStatusEnum::complete => $query->inThePast(),
