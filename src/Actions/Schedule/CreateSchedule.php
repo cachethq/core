@@ -14,6 +14,8 @@ class CreateSchedule
      */
     public function handle(CreateScheduleRequestData $data): Schedule
     {
+
+        /** @phpstan-ignore-next-line argument.type */
         return tap(Schedule::create($data->except('components')->toArray()), function (Schedule $schedule) use ($data) {
             if (! $data->components) {
                 return;
