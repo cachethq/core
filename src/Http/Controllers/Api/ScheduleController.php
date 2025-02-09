@@ -8,15 +8,13 @@ use Cachet\Actions\Schedule\UpdateSchedule;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
+use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Filters\ScheduleStatusFilter;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Schedule;
-use Dedoc\Scramble\Attributes\Example;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -32,11 +30,7 @@ class ScheduleController extends Controller
      * @response AnonymousResourceCollection<Paginator<ScheduleResource>>
      */
     #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
-    #[QueryParameter('filter[status]', 'Filter the resources by status.', type: 'string', examples: [
-        'in_progress' => new Example('in_process'),
-        'completed'   => new Example('completed'),
-        'upcoming'    => new Example('upcoming')
-    ])]
+    #[QueryParameter('filter[status]', 'Filter the resources by status.', type: ScheduleStatusEnum::class)]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
