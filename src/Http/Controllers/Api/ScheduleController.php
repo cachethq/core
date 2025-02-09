@@ -61,7 +61,7 @@ class ScheduleController extends Controller
      */
     public function show(Schedule $schedule)
     {
-        $scheduleQuery = QueryBuilder::for($schedule)
+        $scheduleQuery = QueryBuilder::for(Schedule::where([$schedule->getRouteKeyName() => $schedule->getKey()]))
             ->allowedIncludes(['components', 'updates', 'user'])
             ->first();
 
