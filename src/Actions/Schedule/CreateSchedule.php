@@ -14,9 +14,7 @@ class CreateSchedule
      */
     public function handle(CreateScheduleRequestData $data): Schedule
     {
-        /** @var Schedule $model */
-        $model = tap(Schedule::create($data->except('components')->toArray()), function (Model $schedule) use ($data) {
-            /** @var Schedule $schedule */
+        return tap(Schedule::create($data->except('components')->toArray()), function (Schedule $schedule) use ($data) {
             if (! $data->components) {
                 return;
             }
@@ -30,6 +28,5 @@ class CreateSchedule
 
             // @todo Dispatch notification that maintenance was scheduled.
         });
-        return $model;
     }
 }
