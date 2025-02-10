@@ -9,6 +9,7 @@ use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ?string $description
  * @property ?string $link
  * @property ?ComponentStatusEnum $status
+ * @property ComponentStatusEnum $latest_status
  * @property ?int $order
  * @property ?int $component_group_id
  * @property ?Carbon $created_at
@@ -80,10 +82,15 @@ class Component extends Model
 
     /**
      * Get the incidents for the component.
+     *
+     * @return BelongsToMany<Incident, $this>
      */
     public function incidents(): BelongsToMany
     {
-        return $this->belongsToMany(Incident::class, 'incident_components')->withPivot('status');
+        return $this->belongsToMany(Incident::class, 'incident_components')
+            ->using(IncidentComponent::class)
+            ->withTimestamps()
+            ->withPivot('component_status');
     }
 
     /**
@@ -121,6 +128,14 @@ class Component extends Model
     public function scopeOutage(Builder $query): void
     {
         $query->whereIn('status', ComponentStatusEnum::outage());
+    }
+
+    /**
+     * Get the latest status for the component.
+     */
+    public function latestStatus(): Attribute
+    {
+        return Attribute::get(fn () => $this->incidents()->latest()->first()?->pivot->component_status ?? $this->status);
     }
 
     /**

@@ -1,3 +1,4 @@
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_COMPONENTS_BEFORE) }}
 <li class="px-4 py-3">
     <div class="flex items-center justify-between">
         <div class="flex flex-col grow gap-y-1">
@@ -11,14 +12,14 @@
                         </button>
                         <div x-popover:panel x-cloak x-transition.opacity x-anchor.right.offset.8="$refs.anchor" class="rounded bg-zinc-900 dark:bg-zinc-200 px-2 py-1 text-xs font-medium text-zinc-100 drop-shadow dark:text-zinc-800">
                             <span class="pointer-events-none absolute -left-1.5 size-4 rotate-45 bg-zinc-900 dark:bg-zinc-200"></span>
-                            <p class="relative">{{ __('Last Updated :timestamp', ['timestamp' => $component->updated_at]) }}</p>
+                            <p class="relative">{{ __('cachet::component.last_updated', ['timestamp' => $component->updated_at]) }}</p>
                         </div>
                     </div>
                 </div>
                 <div>
                     @if ($component->incidents_count > 0)
                         <a href="{{ route('cachet.status-page.incident', [$component->incidents->first()]) }}">
-                            <x-cachet::badge :status="$component->status" />
+                            <x-cachet::badge :status="$component->latest_status" />
                         </a>
                     @else
                         <x-cachet::badge :status="$status" />
@@ -31,9 +32,10 @@
                 <p class="">{!! $component->description !!}</p>
                 @endif
                 @if($component->link)
-                <a href="{{ $component->link }}" class="text-zinc-700 underline dark:text-zinc-300" target="_blank" rel="nofollow noopener">{{ __('View Details') }}</a>
+                <a href="{{ $component->link }}" class="text-zinc-700 underline dark:text-zinc-300" target="_blank" rel="nofollow noopener">{{ __('cachet::component.view_details') }}</a>
                 @endif
             </div>
         </div>
     </div>
 </li>
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_AFTER) }}

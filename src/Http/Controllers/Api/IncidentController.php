@@ -5,20 +5,26 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Incident\CreateIncident;
 use Cachet\Actions\Incident\DeleteIncident;
 use Cachet\Actions\Incident\UpdateIncident;
-use Cachet\Data\Incident\CreateIncidentData;
-use Cachet\Data\Incident\UpdateIncidentData;
+use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
+use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Incidents
- */
+#[Group('Incidents', weight: 3)]
 class IncidentController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * The list of allowed includes.
      */
@@ -31,15 +37,10 @@ class IncidentController extends Controller
     /**
      * List Incidents
      *
-     * @apiResourceCollection \Cachet\Http\Resources\Incident
-     *
-     * @apiResourceModel \Cachet\Models\Incident
-     *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, id, status. Example: status
-     * @queryParam include Include related resources. Enum: components, updates, user Example: updates
+     * @return AnonymousResourceCollection<Paginator<IncidentResource>>
      */
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $query = Incident::query()
@@ -49,7 +50,11 @@ class IncidentController extends Controller
 
         $incidents = QueryBuilder::for($query)
             ->allowedIncludes(self::ALLOWED_INCLUDES)
-            ->allowedFilters(['name', 'status', 'occurred_at'])
+            ->allowedFilters([
+                'name',
+                AllowedFilter::exact('status'),
+                'occurred_at',
+            ])
             ->allowedSorts(['name', 'status', 'id'])
             ->simplePaginate(request('per_page', 15));
 
@@ -58,15 +63,11 @@ class IncidentController extends Controller
 
     /**
      * Create Incident
-     *
-     * @apiResource \Cachet\Http\Resources\Incident
-     *
-     * @apiResourceModel \Cachet\Models\Incident
-     *
-     * @authenticated
      */
-    public function store(CreateIncidentData $data, CreateIncident $createIncidentAction)
+    public function store(CreateIncidentRequestData $data, CreateIncident $createIncidentAction)
     {
+        $this->guard('incidents.manage');
+
         $incident = $createIncidentAction->handle($data);
 
         return IncidentResource::make($incident);
@@ -74,12 +75,6 @@ class IncidentController extends Controller
 
     /**
      * Get Incident
-     *
-     * @apiResource \Cachet\Http\Resources\Incident
-     *
-     * @apiResourceModel \Cachet\Models\Incident
-     *
-     * @queryParam include Include related resources. Enum: components, updates, user. Example: updates
      */
     public function show(Incident $incident)
     {
@@ -94,15 +89,11 @@ class IncidentController extends Controller
 
     /**
      * Update Incident
-     *
-     * @apiResource \Cachet\Http\Resources\Incident
-     *
-     * @apiResourceModel \Cachet\Models\Incident
-     *
-     * @authenticated
      */
-    public function update(UpdateIncidentData $data, Incident $incident, UpdateIncident $updateIncidentAction)
+    public function update(UpdateIncidentRequestData $data, Incident $incident, UpdateIncident $updateIncidentAction)
     {
+        $this->guard('incidents.manage');
+
         $updateIncidentAction->handle($incident, $data);
 
         return IncidentResource::make($incident->fresh());
@@ -110,13 +101,11 @@ class IncidentController extends Controller
 
     /**
      * Delete Incident
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Incident $incident, DeleteIncident $deleteIncidentAction)
     {
+        $this->guard('incidents.delete');
+
         $deleteIncidentAction->handle($incident);
 
         return response()->noContent();

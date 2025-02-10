@@ -27,11 +27,11 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::operational => __('Operational'),
-            self::performance_issues => __('Performance Issues'),
-            self::partial_outage => __('Partial Outage'),
-            self::major_outage => __('Major Outage'),
-            default => __('Unknown'),
+            self::operational => __('cachet::component.status.operational'),
+            self::performance_issues => __('cachet::component.status.performance_issues'),
+            self::partial_outage => __('cachet::component.status.partial_outage'),
+            self::major_outage => __('cachet::component.status.major_outage'),
+            default => __('cachet::component.status.unknown'),
         };
     }
 

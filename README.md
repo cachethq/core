@@ -39,10 +39,13 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [ ] Subscribers
 - [x] API
   - Complete but may need some tweaks as we progress.
-- [ ] Webhooks
+- [x] Webhooks
 - [x] Dashboard
 - [x] Localization
-- [ ] Status Page Customization
+- [x] Status Page Customization
+- [ ] Meta
+- [ ] Tags
+- [x] User Management
 
 ## Stack
 
@@ -55,17 +58,7 @@ Cachet is built on:
 
 ## Development
 
-1. Clone this repository.
-2. Run the following commands from within the `core` directory:
-    ```shell
-   npm install
-   composer update
-   composer dev
-    ```
-3. Develop Cachet.
-
-> [!NOTE] 
-> HMR is not enabled. Manual refreshes are needed to view changes.
+To get started developing Cachet, please check out the [Development Guide](https://docs.cachethq.io/v3.x/development).
 
 ### Dashboard Credentials
 
@@ -81,6 +74,7 @@ Login to the account at `/dashboard` and use credentials:
     <a href="https://jump24.co.uk"><img width="100px" src="https://github.com/jumptwentyfour.png" alt="Jump24"></a>
     <a href="https://dreamtilt.com.au"><img width="100px" src="https://github.com/dreamtilt.png" alt="Dreamtilt"></a>
     <a href="https://xyphen-it.nl"><img width="100px" src="https://github.com/xyphen-it.png" alt="Xyphen-IT"></a>
+    <a href="https://coderabbit.ai/"><img width="100px" src="https://github.com/coderabbitai.png" alt="Code Rabbit"></a>
 </p>
 
 ## Security Vulnerabilities

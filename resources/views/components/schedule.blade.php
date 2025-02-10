@@ -1,3 +1,4 @@
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_SCHEDULES_BEFORE) }}
 <li class="p-4" x-data="{ timestamp: new Date(@js($schedule->scheduled_at)) }">
     <div class="flex flex-col-reverse items-start justify-between gap-4 md:flex-row md:items-center">
         <div class="flex items-start gap-2.5 w-full">
@@ -19,7 +20,7 @@
                     </div>
                 </div>
 
-                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $schedule->formattedMessage() !!}</div>
+                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">{!! $schedule->formattedMessage() !!}</div>
             </div>
         </div>
     </div>
@@ -31,9 +32,10 @@
                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
                     {{ $update->created_at->diffForHumans() }} — <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
                 </span>
-                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-primary-500 prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
+                <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
             </div>
             @endforeach
         </div>
     </div>
 </li>
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_SCHEDULES_AFTER) }}

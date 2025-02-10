@@ -39,6 +39,8 @@ class DatabaseSeeder extends Seeder
         DB::table('metrics')->truncate();
         DB::table('metric_points')->truncate();
         DB::table('updates')->truncate();
+        DB::table('webhook_attempts')->truncate();
+        DB::table('webhook_subscriptions')->truncate();
 
         /** @var \Illuminate\Foundation\Auth\User $userModel */
         $userModel = config('cachet.user_model');
@@ -48,6 +50,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@test.com',
             'password' => bcrypt('test123'),
             'email_verified_at' => now(),
+            'is_admin' => true,
         ]);
 
         Schedule::create([
@@ -217,6 +220,8 @@ ABOUT;
         $appSettings->refresh_rate = null;
         $appSettings->dashboard_login_link = true;
         $appSettings->major_outage_threshold = 25;
+        $appSettings->recent_incidents_only = false;
+        $appSettings->recent_incidents_days = 7;
         $appSettings->save();
 
         $customizationSettings = app(CustomizationSettings::class);
@@ -229,6 +234,9 @@ HTML;
 
         $themeSettings = app(ThemeSettings::class);
         $themeSettings->app_banner = '';
+        $themeSettings->accent = 'cachet';
+        $themeSettings->accent_content = 'zinc';
+        $themeSettings->accent_pairing = true;
         $themeSettings->save();
     }
 }

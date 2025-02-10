@@ -5,19 +5,26 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
-use Cachet\Data\Component\CreateComponentData;
-use Cachet\Data\Component\UpdateComponentData;
+use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Data\Requests\Component\CreateComponentRequestData;
+use Cachet\Data\Requests\Component\UpdateComponentRequestData;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Components
- */
+#[Group('Components', weight: 1)]
 class ComponentController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * The list of allowed includes.
      */
@@ -29,23 +36,22 @@ class ComponentController extends Controller
     /**
      * List Components
      *
-     * @apiResourceCollection \Cachet\Http\Resources\Component
-     *
-     * @apiResourceModel \Cachet\Models\Component
-     *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, status, enabled. Example: name
-     * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
-     * @queryParam filters[name] string Filter by name. Example: My Component
-     * @queryParam filters[status] Filter by status. Enum: 1 , 2, 3. Example: 1
-     * @queryParam filters[enabled] Filter by enabled status. Enum: 0, 1. Example: 1
+     * @response AnonymousResourceCollection<Paginator<ComponentResource>>
      */
+    #[QueryParameter('filter[status]', 'Filter by status', type: ComponentStatusEnum::class, example: 1)]
+    #[QueryParameter('filter[name]', 'Filter by name.', example: 'My Component')]
+    #[QueryParameter('filter[enabled]', 'Filter by enabled status.', type: 'bool', example: '1')]
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $components = QueryBuilder::for(Component::class)
             ->allowedIncludes(self::ALLOWED_INCLUDES)
-            ->allowedFilters(['name', 'status', 'enabled'])
+            ->allowedFilters([
+                'name',
+                AllowedFilter::exact('status'),
+                AllowedFilter::exact('enabled'),
+            ])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(request('per_page', 15));
 
@@ -54,15 +60,11 @@ class ComponentController extends Controller
 
     /**
      * Create Component
-     *
-     * @apiResource \Cachet\Http\Resources\Component
-     *
-     * @apiResourceModel \Cachet\Models\Component
-     *
-     * @authenticated
      */
-    public function store(CreateComponentData $data, CreateComponent $createComponentAction)
+    public function store(CreateComponentRequestData $data, CreateComponent $createComponentAction)
     {
+        $this->guard('components.manage');
+
         $component = $createComponentAction->handle(
             $data,
         );
@@ -72,12 +74,6 @@ class ComponentController extends Controller
 
     /**
      * Get Component
-     *
-     * @apiResource \Cachet\Http\Resources\Component
-     *
-     * @apiResourceModel \Cachet\Models\Component
-     *
-     * @queryParam include Include related resources. Enum: group, incidents. Example: group,incidents
      */
     public function show(Component $component)
     {
@@ -92,15 +88,11 @@ class ComponentController extends Controller
 
     /**
      * Update Component
-     *
-     * @apiResource \Cachet\Http\Resources\Component
-     *
-     * @apiResourceModel \Cachet\Models\Component
-     *
-     * @authenticated
      */
-    public function update(UpdateComponentData $data, Component $component, UpdateComponent $updateComponentAction)
+    public function update(UpdateComponentRequestData $data, Component $component, UpdateComponent $updateComponentAction)
     {
+        $this->guard('components.manage');
+
         $updateComponentAction->handle($component, $data);
 
         return ComponentResource::make($component->fresh());
@@ -108,13 +100,11 @@ class ComponentController extends Controller
 
     /**
      * Delete Component
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Component $component, DeleteComponent $deleteComponentAction)
     {
+        $this->guard('components.delete');
+
         // @todo what happens to incidents linked to this component?
         // @todo re-calculate existing component orders?
 

@@ -2,6 +2,8 @@
 
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
+use Laravel\Sanctum\Sanctum;
+use Workbench\App\User;
 
 use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
@@ -126,7 +128,33 @@ it('can get a schedule', function () {
     ]);
 });
 
+it('cannot create a schedule if not authenticated', function () {
+    $response = postJson('/status/api/schedules', [
+        'name' => 'New Scheduled Maintenance',
+        'message' => 'Something will go wrong.',
+        'scheduled_at' => now()->addWeek()->toDateTimeString(),
+        'completed_at' => now()->addWeek()->addDay()->toDateTimeString(),
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot create a schedule without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $response = postJson('/status/api/schedules', [
+        'name' => 'New Scheduled Maintenance',
+        'message' => 'Something will go wrong.',
+        'scheduled_at' => now()->addWeek()->toDateTimeString(),
+        'completed_at' => now()->addWeek()->addDay()->toDateTimeString(),
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can create a schedule', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
     $response = postJson('/status/api/schedules', [
         'name' => 'New Scheduled Maintenance',
         'message' => 'Something will go wrong.',
@@ -152,6 +180,8 @@ it('can create a schedule', function () {
 });
 
 it('can create a schedule with components', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
     [$componentA, $componentB] = Component::factory(2)->create();
 
     $response = postJson('/status/api/schedules', [
@@ -183,6 +213,8 @@ it('can create a schedule with components', function () {
 });
 
 it('cannot create a schedule with bad data', function (array $payload) {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
     $response = postJson('/status/api/schedules', $payload);
 
     $response->assertUnprocessable();
@@ -193,7 +225,33 @@ it('cannot create a schedule with bad data', function (array $payload) {
     fn () => ['name' => 'Invalid Scheduled At', 'message' => 'Something', 'scheduled_at' => 'invalid'],
 ]);
 
+it('cannot update a schedule if not authenticated', function () {
+    $schedule = Schedule::factory()->create();
+
+    $response = putJson('/status/api/schedules/'.$schedule->id, [
+        'name' => 'Updated Scheduled Maintenance',
+        'message' => 'Something went wrong.',
+    ]);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot update a schedule without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $schedule = Schedule::factory()->create();
+
+    $response = putJson('/status/api/schedules/'.$schedule->id, [
+        'name' => 'Updated Scheduled Maintenance',
+        'message' => 'Something went wrong.',
+    ]);
+
+    $response->assertForbidden();
+});
+
 it('can update a schedule', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
     $schedule = Schedule::factory()->create();
 
     $response = putJson('/status/api/schedules/'.$schedule->id, [
@@ -212,6 +270,8 @@ it('can update a schedule', function () {
 });
 
 it('can update a schedule with components', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
     [$componentA, $componentB] = Component::factory(2)->create();
 
     $schedule = Schedule::factory()->create();
@@ -235,7 +295,27 @@ it('can update a schedule with components', function () {
     ]);
 });
 
+it('cannot delete a schedule if not authenticated', function () {
+    $schedule = Schedule::factory()->create();
+
+    $response = deleteJson('/status/api/schedules/'.$schedule->id);
+
+    $response->assertUnauthorized();
+});
+
+it('cannot delete a schedule without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $schedule = Schedule::factory()->create();
+
+    $response = deleteJson('/status/api/schedules/'.$schedule->id);
+
+    $response->assertForbidden();
+});
+
 it('can delete a schedule', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.delete']);
+
     $schedule = Schedule::factory()->create();
 
     $response = deleteJson('/status/api/schedules/'.$schedule->id);

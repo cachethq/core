@@ -3,19 +3,31 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Documentation\AddAuthenticationToOperation;
+use Cachet\Listeners\SendWebhookListener;
+use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Cachet\View\ViewManager;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
+use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
 
 class CachetCoreServiceProvider extends ServiceProvider
 {
@@ -29,6 +41,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         }
 
         $this->app->singleton(Cachet::class);
+        $this->app->singleton(ViewManager::class);
     }
 
     /**
@@ -49,13 +62,23 @@ class CachetCoreServiceProvider extends ServiceProvider
         ]);
 
         $this->registerCommands();
+        $this->registerSchedules();
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
 
+        Event::listen('Cachet\Events\Incidents\*', SendWebhookListener::class);
+        Event::listen([WebhookCallSucceededEvent::class, WebhookCallFailedEvent::class], WebhookCallEventListener::class);
+
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
             'User-Agent', Cachet::USER_AGENT
         ));
+
+        FilamentColor::register([
+            'cachet' => Color::rgb('rgb(4, 193, 71)'),
+        ]);
+
+        $this->configureScramble();
     }
 
     /**
@@ -65,7 +88,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'cachet');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadJsonTranslationsFrom(__DIR__.'/../resources/lang');
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'cachet');
 
         $this->configureRateLimiting();
         $this->registerRoutes();
@@ -158,5 +181,47 @@ class CachetCoreServiceProvider extends ServiceProvider
                 'Version' => app(Cachet::class)->version(),
             ]);
         }
+    }
+
+    /**
+     * Register the package's schedules.
+     */
+    private function registerSchedules(): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->app->booted(function () {
+            $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+            $demoMode = fn () => Cachet::demoMode();
+
+            $schedule->command('cachet:beacon')->daily();
+
+            $schedule->command('db:seed', [
+                '--class' => \Cachet\Database\Seeders\DatabaseSeeder::class,
+                '--force' => true,
+            ])->everyThirtyMinutes()->when($demoMode);
+        });
+    }
+
+    /**
+     * Scramble is installed as dev dependency hence the class existence check.
+     */
+    private function configureScramble(): void
+    {
+        if (! class_exists(Scramble::class)) {
+            return;
+        }
+
+        Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
+            $openApi->info->description = 'API documentation for Cachet, the open-source, self-hosted status page system.';
+
+            $openApi->secure(
+                SecurityScheme::http('bearer')
+            );
+        });
+
+        Scramble::registerExtension(AddAuthenticationToOperation::class);
     }
 }

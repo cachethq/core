@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
@@ -48,6 +49,7 @@ use Illuminate\Support\Str;
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
  * @property-read Carbon $timestamp
+ * @property-read IncidentComponent $pivot
  *
  * @method static IncidentFactory factory($count = null, $state = [])
  * @method static Builder<static>|static status(IncidentStatusEnum $status)
@@ -114,7 +116,15 @@ class Incident extends Model
         return $this->belongsToMany(Component::class, 'incident_components')
             ->using(IncidentComponent::class)
             ->withTimestamps()
-            ->withPivot(['status']);
+            ->withPivot(['component_status']);
+    }
+
+    /**
+     * Get the impacted components for this incident.
+     */
+    public function incidentComponents(): HasMany
+    {
+        return $this->hasMany(IncidentComponent::class);
     }
 
     /**
@@ -145,6 +155,9 @@ class Incident extends Model
         $query->where('status', $status);
     }
 
+    /**
+     * Scope to unresolved incidents.
+     */
     public function scopeUnresolved(Builder $query): void
     {
         $query->whereIn('status', IncidentStatusEnum::unresolved());

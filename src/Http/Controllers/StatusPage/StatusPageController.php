@@ -20,6 +20,7 @@ class StatusPageController
             'componentGroups' => ComponentGroup::query()
                 ->with(['components' => fn ($query) => $query->enabled()->orderBy('order')->withCount('incidents')])
                 ->visible(auth()->check())
+                ->orderBy('order')
                 ->when(auth()->check(), fn (Builder $query) => $query->users(), fn ($query) => $query->guests())
                 ->get(),
             'ungroupedComponents' => Component::query()

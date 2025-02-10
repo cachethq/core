@@ -5,13 +5,20 @@ namespace Cachet\Filament\Pages\Settings;
 use Cachet\Settings\CustomizationSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Pages\SettingsPage;
 
 class ManageCustomization extends SettingsPage
 {
     protected static string $settings = CustomizationSettings::class;
 
-    protected static ?string $navigationGroup = 'Settings';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('cachet::navigation.settings.label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('cachet::navigation.settings.items.manage_customization');
+    }
 
     public function form(Form $form): Form
     {
@@ -19,17 +26,17 @@ class ManageCustomization extends SettingsPage
             ->schema([
                 Forms\Components\Section::make()->columns(1)->schema([
                     Forms\Components\Textarea::make('header')
-                        ->label(__('Custom Header HTML'))
+                        ->label(__('cachet::settings.manage_customization.header_label'))
                         ->rows(8)
                         ->extraAttributes(['class' => 'font-mono']),
                     Forms\Components\Textarea::make('footer')
-                        ->label(__('Custom Footer HTML'))
+                        ->label(__('cachet::settings.manage_customization.footer_label'))
                         ->rows(8)
                         ->extraAttributes(['class' => 'font-mono']),
                 ]),
                 Forms\Components\Section::make()->columns(1)->schema([
                     Forms\Components\Textarea::make('stylesheet')
-                        ->label(__('Custom CSS'))
+                        ->label(__('cachet::settings.manage_customization.stylesheet_label'))
                         ->rows(8)
                         ->extraAttributes(['class' => 'font-mono']),
                 ]),

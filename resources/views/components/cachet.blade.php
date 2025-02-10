@@ -1,6 +1,6 @@
 @use('Cachet\Cachet')
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-background-light text-base-light dark:bg-background-dark dark:text-base-dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-accent-background text-zinc-700 dark:text-zinc-300">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -15,12 +15,14 @@
         <!-- Open Graph / Facebook -->
         <meta property="og:type" content="website" />
         <meta property="og:url" content="{{ url(Cachet::path()) }}" />
+        <meta property="og:image" content="{{ asset('/vendor/cachethq/cachet/android-chrome-512x512.png') }}" />
         <meta property="og:title" content="{{ $title ?: config('cachet.title', 'Cachet') }}" />
         <meta property="og:description" content="{{ $description }}" />
 
         <!-- Twitter -->
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="{{ url(Cachet::path()) }}" />
+        <meta property="twitter:image" content="{{ asset('/vendor/cachethq/cachet/android-chrome-512x512.png') }}" />
         <meta property="twitter:title" content="{{ $title ?: config('cachet.title', 'Cachet') }}" />
         <meta property="twitter:description" content="{{ $description }}" />
 
@@ -35,21 +37,18 @@
         {!! $cachet_header !!}
 
         <style type="text/css">
-            /* Cachet custom styles */
-            :root {
-                @foreach (\Cachet\Cachet::cssVariables() as $key => $value)
-                    --{{ $key }}-light: {{ $value[0] }};
-                    --{{ $key }}-dark: {{ $value[1] }};
-                @endforeach
-            }
+            {{ $theme->styles  }}
 
             {!! $cachet_css !!}
         </style>
     </head>
     <body class="flex min-h-screen flex-col items-stretch antialiased">
+        {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_BEFORE) }}
         {{ $slot }}
 
         <!-- Custom Cachet Footer -->
         {!! $cachet_footer !!}
+
+        {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_AFTER) }}
     </body>
 </html>

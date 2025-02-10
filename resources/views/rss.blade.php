@@ -3,7 +3,7 @@
 ?>
 <rss version="2.0">
     <channel>
-        <title><![CDATA[ {{ __(':name RSS Feed', ['name' => $statusPageName]) }} ]]></title>
+        <title><![CDATA[ {{ __('cachet::cachet.rss_feed', ['name' => $statusPageName]) }} ]]></title>
         <link><![CDATA[ {{ route('cachet.rss') }} ]]></link>
         @if($statusAbout)
         <description><![CDATA[ {{ $statusAbout  }} ]]></description>

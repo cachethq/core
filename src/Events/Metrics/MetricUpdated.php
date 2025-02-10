@@ -2,6 +2,8 @@
 
 namespace Cachet\Events\Metrics;
 
+use Cachet\Concerns\SendsWebhook;
+use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\Metric;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -10,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class MetricUpdated
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SendsWebhook, SerializesModels;
 
     /**
      * Create a new event instance.
@@ -30,5 +32,15 @@ class MetricUpdated
         return [
             new PrivateChannel('channel-name'),
         ];
+    }
+
+    public function getWebhookPayload(): array
+    {
+        return $this->metric->toArray();
+    }
+
+    public function getWebhookEventName(): WebhookEventEnum
+    {
+        return WebhookEventEnum::metric_updated;
     }
 }

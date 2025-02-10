@@ -5,34 +5,35 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Metric\CreateMetric;
 use Cachet\Actions\Metric\DeleteMetric;
 use Cachet\Actions\Metric\UpdateMetric;
-use Cachet\Data\Metric\CreateMetricData;
-use Cachet\Data\Metric\UpdateMetricData;
+use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Data\Requests\Metric\CreateMetricRequestData;
+use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
+use Cachet\Enums\MetricTypeEnum;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Metrics
- */
+#[Group('Metrics', weight: 6)]
 class MetricController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Metrics
      *
-     * @apiResourceCollection \Cachet\Http\Resources\Metric
-     *
-     * @apiResourceModel \Cachet\Models\Metric
-     *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, order, id. Example: name
-     * @queryParam include Include related resources. Enum: points. Example: points
-     * @queryParam filters[name] string Filter by name. Example: metric name
-     * @queryParam filters[calc_type] Enum:Cachet\Enums\MetricTypeEnum Filter by calculation type. Example: sum,avg
+     * @response AnonymousResourceCollection<Paginator<MetricResource>>
      */
+    #[QueryParameter('filter[name]', 'Filter by name.', example: 'metric name')]
+    #[QueryParameter('filter[calc_type]', 'Filter by calculation type.', type: MetricTypeEnum::class)]
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $query = Metric::query()
@@ -51,15 +52,11 @@ class MetricController extends Controller
 
     /**
      * Create Metric
-     *
-     * @apiResource \Cachet\Http\Resources\Metric
-     *
-     * @apiResourceModel \Cachet\Models\Metric
-     *
-     * @authenticated
      */
-    public function store(CreateMetricData $data, CreateMetric $createMetricAction)
+    public function store(CreateMetricRequestData $data, CreateMetric $createMetricAction)
     {
+        $this->guard('metrics.manage');
+
         $metric = $createMetricAction->handle($data);
 
         return MetricResource::make($metric);
@@ -67,12 +64,6 @@ class MetricController extends Controller
 
     /**
      * Get Metric
-     *
-     * @apiResource \Cachet\Http\Resources\Metric
-     *
-     * @apiResourceModel \Cachet\Models\Metric
-     *
-     * @queryParam include Include related resources. Enum: points. Example: points
      */
     public function show(Metric $metric)
     {
@@ -87,15 +78,11 @@ class MetricController extends Controller
 
     /**
      * Update Metric
-     *
-     * @apiResource \Cachet\Http\Resources\Metric
-     *
-     * @apiResourceModel \Cachet\Models\Metric
-     *
-     * @authenticated
      */
-    public function update(UpdateMetricData $data, Metric $metric, UpdateMetric $updateMetricAction)
+    public function update(UpdateMetricRequestData $data, Metric $metric, UpdateMetric $updateMetricAction)
     {
+        $this->guard('metrics.manage');
+
         $updateMetricAction->handle($metric, $data);
 
         return MetricResource::make($metric->fresh());
@@ -103,13 +90,11 @@ class MetricController extends Controller
 
     /**
      * Delete Metric
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Metric $metric, DeleteMetric $deleteMetricAction)
     {
+        $this->guard('metrics.delete');
+
         $deleteMetricAction->handle($metric);
 
         return response()->noContent();

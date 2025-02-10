@@ -26,7 +26,7 @@ class ComponentsRelationManager extends RelationManager
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->label(__('Name')),
-                Forms\Components\ToggleButtons::make('status')
+                Forms\Components\ToggleButtons::make('component_status')
                     ->label(__('Status'))
                     ->inline()
                     ->options(ComponentStatusEnum::class)
@@ -43,7 +43,7 @@ class ComponentsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name')),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('component_status')
                     ->label(__('Status'))
                     ->badge()
                     ->sortable(),
@@ -55,7 +55,7 @@ class ComponentsRelationManager extends RelationManager
                 Tables\Actions\AttachAction::make()
                     ->form(fn (Tables\Actions\AttachAction $action): array => [
                         $action->getRecordSelect(),
-                        Forms\Components\ToggleButtons::make('status')
+                        Forms\Components\ToggleButtons::make('component_status')
                             ->label(__('Status'))
                             ->inline()
                             ->columnSpanFull()

@@ -23,8 +23,8 @@ enum IncidentTemplateEngineEnum: string implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::blade => __('Laravel Blade'),
-            self::twig => __('Twig'),
+            self::blade => __('cachet::incident_template.engine.laravel_blade'),
+            self::twig => __('cachet::incident_template.engine.twig'),
         };
     }
 

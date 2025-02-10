@@ -5,34 +5,34 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
-use Cachet\Data\ScheduleUpdate\CreateScheduleUpdateData;
-use Cachet\Data\ScheduleUpdate\EditScheduleUpdateData;
+use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
+use Cachet\Data\Requests\ScheduleUpdate\EditScheduleUpdateRequestData;
 use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Schedule Updates
- */
+#[Group('Schedule Updates', weight: 9)]
 class ScheduleUpdateController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Schedule Updates
      *
-     * @apiResourceCollection \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
-     *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, created_at. Example: name
-     * @queryParam include Include related resources. Enum: schedule. Example: schedule
+     * @response AnonymousResourceCollection<Paginator<UpdateResource>>
      */
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Schedule $schedule)
     {
         $query = Update::query()
@@ -49,15 +49,11 @@ class ScheduleUpdateController extends Controller
 
     /**
      * Create Schedule Update
-     *
-     * @apiResource \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
-     *
-     * @authenticated
      */
-    public function store(CreateScheduleUpdateData $data, Schedule $schedule, CreateUpdate $createUpdateAction)
+    public function store(CreateScheduleUpdateRequestData $data, Schedule $schedule, CreateUpdate $createUpdateAction)
     {
+        $this->guard('schedule-updates.manage');
+
         $update = $createUpdateAction->handle($schedule, $data);
 
         return UpdateResource::make($update);
@@ -65,12 +61,6 @@ class ScheduleUpdateController extends Controller
 
     /**
      * Get Schedule Update
-     *
-     * @apiResource \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
-     *
-     * @queryParam include Include related resources. Enum: schedule. Example: schedule
      */
     public function show(Schedule $schedule, Update $update)
     {
@@ -87,15 +77,11 @@ class ScheduleUpdateController extends Controller
 
     /**
      * Update Schedule Update
-     *
-     * @apiResource \Cachet\Http\Resources\Update
-     *
-     * @apiResourceModel \Cachet\Models\Update
-     *
-     * @authenticated
      */
-    public function update(EditScheduleUpdateData $data, Schedule $schedule, Update $update, EditUpdate $editUpdateAction)
+    public function update(EditScheduleUpdateRequestData $data, Schedule $schedule, Update $update, EditUpdate $editUpdateAction)
     {
+        $this->guard('schedule-updates.manage');
+
         $editUpdateAction->handle($update, $data);
 
         return UpdateResource::make($update->fresh());
@@ -103,13 +89,11 @@ class ScheduleUpdateController extends Controller
 
     /**
      * Delete Schedule Update
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Schedule $schedule, Update $update, DeleteUpdate $deleteUpdateAction)
     {
+        $this->guard('schedule-updates.delete');
+
         $deleteUpdateAction->handle($update);
 
         return response()->noContent();

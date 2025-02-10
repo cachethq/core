@@ -4,31 +4,31 @@ namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Actions\Metric\CreateMetricPoint;
 use Cachet\Actions\Metric\DeleteMetricPoint;
-use Cachet\Data\Metric\CreateMetricPointData;
+use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Data\Requests\Metric\CreateMetricPointRequestData;
 use Cachet\Http\Resources\MetricPoint as MetricPointResource;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Metric Points
- */
+#[Group('Metric Points', weight: 7)]
 class MetricPointController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Metric Points
      *
-     * @apiResourceCollection \Cachet\Http\Resources\MetricPoint
-     *
-     * @apiResourceModel \Cachet\Models\MetricPoint
-     *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, order, id. Example: name
-     * @queryParam include Include related resources. Enum: metric. Example: metric
+     * @response AnonymousResourceCollection<Paginator<MetricPointResource>>
      */
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Metric $metric)
     {
         $query = MetricPoint::query()
@@ -44,15 +44,11 @@ class MetricPointController extends Controller
 
     /**
      * Create Metric Point
-     *
-     * @apiResource \Cachet\Http\Resources\MetricPoint
-     *
-     * @apiResourceModel \Cachet\Models\MetricPoint
-     *
-     * @authenticated
      */
-    public function store(CreateMetricPointData $data, Metric $metric, CreateMetricPoint $createMetricPointAction)
+    public function store(CreateMetricPointRequestData $data, Metric $metric, CreateMetricPoint $createMetricPointAction)
     {
+        $this->guard('metric-points.manage');
+
         $metricPoint = $createMetricPointAction->handle($metric, $data);
 
         return MetricPointResource::make($metricPoint)
@@ -62,12 +58,6 @@ class MetricPointController extends Controller
 
     /**
      * Get Metric Point
-     *
-     * @apiResource \Cachet\Http\Resources\MetricPoint
-     *
-     * @apiResourceModel \Cachet\Models\MetricPoint
-     *
-     * @queryParam include Include related resources. Enum: metric. Example: metric
      */
     public function show(Metric $metric, MetricPoint $metricPoint)
     {
@@ -82,13 +72,11 @@ class MetricPointController extends Controller
 
     /**
      * Delete Metric Point
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(Metric $metric, MetricPoint $metricPoint, DeleteMetricPoint $deleteMetricPointAction)
     {
+        $this->guard('metric-points.delete');
+
         $deleteMetricPointAction->handle($metricPoint);
 
         return response()->noContent();

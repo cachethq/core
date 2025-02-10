@@ -5,33 +5,33 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\IncidentTemplate\CreateIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\DeleteIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\UpdateIncidentTemplate;
-use Cachet\Data\IncidentTemplate\CreateIncidentTemplateData;
-use Cachet\Data\IncidentTemplate\UpdateIncidentTemplateData;
+use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Data\Requests\IncidentTemplate\CreateIncidentTemplateRequestData;
+use Cachet\Data\Requests\IncidentTemplate\UpdateIncidentTemplateRequestData;
 use Cachet\Http\Resources\IncidentTemplate as IncidentTemplateResource;
 use Cachet\Models\IncidentTemplate;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
-/**
- * @group Incident Templates
- */
+#[Group('Incident Templates', weight: 5)]
 class IncidentTemplateController extends Controller
 {
+    use GuardsApiAbilities;
+
     /**
      * List Incident Templates
      *
-     * @apiResourceCollection \Cachet\Http\Resources\IncidentTemplate
-     *
-     * @apiResourceModel \Cachet\Models\IncidentTemplate
-     *
-     * @queryParam per_page int How many items to show per page. Example: 20
-     * @queryParam page int Which page to show. Example: 2
-     * @queryParam sort Field to sort by. Enum: name, slug, id. Example: name
-     * @queryParam filters[name] string Filter by name. Example: My Template
-     * @queryParam filters[slug] string Filter by slug. Example: my-template
-     * @queryParam filters[id] int Filter by id. Example: 1
+     * @response AnonymousResourceCollection<Paginator<IncidentTemplateResource>>
      */
+    #[QueryParameter('filter[name]', 'Filter by name', example: 'My Template')]
+    #[QueryParameter('filter[slug]', 'Filter by slug', example: 'my-template')]
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $templates = QueryBuilder::for(IncidentTemplate::class)
@@ -44,15 +44,11 @@ class IncidentTemplateController extends Controller
 
     /**
      * Create Incident Template
-     *
-     * @apiResource \Cachet\Http\Resources\IncidentTemplate
-     *
-     * @apiResourceModel \Cachet\Models\IncidentTemplate
-     *
-     * @authenticated
      */
-    public function store(CreateIncidentTemplateData $data, CreateIncidentTemplate $createIncidentTemplateAction)
+    public function store(CreateIncidentTemplateRequestData $data, CreateIncidentTemplate $createIncidentTemplateAction)
     {
+        $this->guard('incident-templates.manage');
+
         $template = $createIncidentTemplateAction->handle($data);
 
         return IncidentTemplateResource::make($template);
@@ -60,10 +56,6 @@ class IncidentTemplateController extends Controller
 
     /**
      * Get Incident Template
-     *
-     * @apiResource \Cachet\Http\Resources\IncidentTemplate
-     *
-     * @apiResourceModel \Cachet\Models\IncidentTemplate
      */
     public function show(IncidentTemplate $incidentTemplate)
     {
@@ -74,15 +66,11 @@ class IncidentTemplateController extends Controller
 
     /**
      * Update Incident Template
-     *
-     * @apiResource \Cachet\Http\Resources\IncidentTemplate
-     *
-     * @apiResourceModel \Cachet\Models\IncidentTemplate
-     *
-     * @authenticated
      */
-    public function update(UpdateIncidentTemplateData $data, IncidentTemplate $incidentTemplate, UpdateIncidentTemplate $updateIncidentTemplateAction)
+    public function update(UpdateIncidentTemplateRequestData $data, IncidentTemplate $incidentTemplate, UpdateIncidentTemplate $updateIncidentTemplateAction)
     {
+        $this->guard('incident-templates.manage');
+
         $template = $updateIncidentTemplateAction->handle($incidentTemplate, $data);
 
         return IncidentTemplateResource::make($template);
@@ -90,13 +78,11 @@ class IncidentTemplateController extends Controller
 
     /**
      * Delete Incident Template
-     *
-     * @response 204
-     *
-     * @authenticated
      */
     public function destroy(IncidentTemplate $incidentTemplate)
     {
+        $this->guard('incident-templates.delete');
+
         app(DeleteIncidentTemplate::class)->handle($incidentTemplate);
 
         return response()->noContent();
