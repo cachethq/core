@@ -112,36 +112,14 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerRoutes(): void
     {
         $this->callAfterResolving('router', function (Router $router, Application $application) {
-            $apiEnabled = true;
-            $apiProtected = false;
-            try {
-                $settings = app(AppSettings::class);
-                $apiEnabled = $settings->api_enabled;
-                $apiProtected = $settings->api_protected;
-
-            } catch (MissingSettings $exception) {
-                if(! $application->runningInConsole()) {
-                    throw new \Exception("Please run `php artisan migrate` to load missing settings.");
-                }
-            } catch (\Exception $exception) {
-                // do nothing
-            }
-
-            if ($apiEnabled) {
-                $middleware = ['cachet:api', 'throttle:cachet-api'];
-                if ($apiProtected) {
-                    $middleware[] = 'auth:sanctum';
-                }
-
-                $router->group([
-                    'domain' => config('cachet.domain'),
-                    'as' => 'cachet.api.',
-                    'prefix' => Cachet::path().'/api',
-                    'middleware' => $middleware,
-                ], function (Router $router) {
-                    $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
-                });
-            }
+            $router->group([
+                'domain' => config('cachet.domain'),
+                'as' => 'cachet.api.',
+                'prefix' => Cachet::path().'/api',
+                'middleware' => ['cachet:api', 'throttle:cachet-api'],
+            ], function (Router $router) {
+                $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+            });
 
             Cachet::routes()
                 ->register();
