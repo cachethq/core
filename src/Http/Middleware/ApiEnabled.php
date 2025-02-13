@@ -5,6 +5,7 @@ namespace Cachet\Http\Middleware;
 use Cachet\Settings\AppSettings;
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ApiEnabled
 {
@@ -18,9 +19,8 @@ class ApiEnabled
      */
     public function handle($request, Closure $next)
     {
-        if (!AppSettings::getOrDefault('api_enabled', true)) {
-            abort(404);
-        }
+        throw_unless(AppSettings::getOrDefault('api_enabled', true), NotFoundHttpException::class);
+
         return $next($request);
     }
 }
