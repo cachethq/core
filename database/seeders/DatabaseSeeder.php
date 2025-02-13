@@ -19,6 +19,7 @@ use Cachet\Models\Update;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
 use Cachet\Settings\ThemeSettings;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -60,11 +61,13 @@ class DatabaseSeeder extends Seeder
             'completed_at' => now()->subHours(12),
         ]);
 
+        /** @phpstan-ignore-next-line  argument.type */
         tap(Schedule::create([
             'name' => 'Documentation Maintenance',
             'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
             'scheduled_at' => now()->addHours(24),
             'completed_at' => null,
+            /** @phpstan-ignore-next-line argument.type */
         ]), function (Schedule $schedule) use ($user) {
             $update = new Update([
                 'message' => <<<'EOF'

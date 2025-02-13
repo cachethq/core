@@ -4,6 +4,7 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
+use Cachet\QueryBuilders\ScheduleBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -29,11 +30,10 @@ use Illuminate\Support\Str;
  * @property Collection<int, Update> $updates
  *
  * @method static ScheduleFactory factory($count = null, $state = [])
- * @method static Builder<static>|static query()
- * @method static Builder<static>|static incomplete()
- * @method static Builder<static>|static inProgress()
- * @method static Builder<static>|static inTheFuture()
- * @method static Builder<static>|static inThePast()
+ * @method static \Cachet\QueryBuilders\ScheduleBuilder incomplete()
+ * @method static \Cachet\QueryBuilders\ScheduleBuilder inProgress()
+ * @method static \Cachet\QueryBuilders\ScheduleBuilder inTheFuture()
+ * @method static \Cachet\QueryBuilders\ScheduleBuilder inThePast()
  */
 class Schedule extends Model
 {
@@ -69,7 +69,8 @@ class Schedule extends Model
 
                 return match (true) {
                     $this->scheduled_at->gte($now) => ScheduleStatusEnum::upcoming,
-                    $this->completed_at === null => ScheduleStatusEnum::in_progress,
+                    $this->completed_at === null,
+                    $this->completed_at->gte($now) => ScheduleStatusEnum::in_progress,
                     default => ScheduleStatusEnum::complete,
                 };
             }
@@ -108,48 +109,16 @@ class Schedule extends Model
     }
 
     /**
-     * Scope schedules that are incomplete.
+     * Create a new Eloquent query builder for the model.
      *
-     * @param  Builder<$this>  $query
+     * @param \Illuminate\Database\Query\Builder $query
+     * @return \Cachet\QueryBuilders\ScheduleBuilder
      */
-    public function scopeIncomplete(Builder $query): void
+    public function newEloquentBuilder($query)
     {
-        $query->whereNull('completed_at');
+        return new ScheduleBuilder($query);
     }
 
-    /**
-     * Scope schedules that are in progress.
-     *
-     * @param  Builder<$this>  $query
-     */
-    public function scopeInProgress(Builder $query): void
-    {
-        $query->whereDate('scheduled_at', '<=', Carbon::now())
-            ->where(function (Builder $query) {
-                $query->whereDate('completed_at', '>=', Carbon::now())
-                    ->orWhereNull('completed_at');
-            });
-    }
-
-    /**
-     * Scopes schedules to those in the future.
-     *
-     * @param  Builder<$this>  $query
-     */
-    public function scopeInTheFuture(Builder $query): void
-    {
-        $query->whereDate('scheduled_at', '>=', Carbon::now());
-    }
-
-    /**
-     * Scopes schedules to those scheduled in the past.
-     *
-     * @param  Builder<$this>  $query
-     */
-    public function scopeInThePast(Builder $query): void
-    {
-        $query->where('completed_at', '<=', Carbon::now());
-    }
 
     /**
      * Create a new factory instance for the model.

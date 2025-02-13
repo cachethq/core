@@ -48,6 +48,7 @@ it('sorts component groups by id by default', function () {
 });
 
 it('can get a component group', function () {
+    ComponentGroup::factory(5)->create();
     $componentGroup = ComponentGroup::factory()->create();
 
     $response = getJson('/status/api/component-groups/'.$componentGroup->id);
@@ -59,6 +60,7 @@ it('can get a component group', function () {
 });
 
 it('can get a component group with components', function () {
+    ComponentGroup::factory(5)->hasComponents(1)->create();
     $componentGroup = ComponentGroup::factory()->hasComponents(2)->create();
 
     $response = getJson('/status/api/component-groups/'.$componentGroup->id.'?include=components');

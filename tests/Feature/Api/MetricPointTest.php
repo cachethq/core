@@ -37,18 +37,20 @@ it('can list more than 15 metric points', function () {
 });
 
 it('sorts metric points by id by default', function () {
+    Metric::factory(5)->hasMetricPoints(20)->create();
     $metric = Metric::factory()->hasMetricPoints(20)->create();
 
     $response = getJson("/status/api/metrics/{$metric->id}/points");
 
-    $response->assertJsonPath('data.0.attributes.id', 1);
-    $response->assertJsonPath('data.1.attributes.id', 2);
-    $response->assertJsonPath('data.2.attributes.id', 3);
-    $response->assertJsonPath('data.3.attributes.id', 4);
-    $response->assertJsonPath('data.4.attributes.id', 5);
+    $response->assertJsonPath('data.0.attributes.id', 101);
+    $response->assertJsonPath('data.1.attributes.id', 102);
+    $response->assertJsonPath('data.2.attributes.id', 103);
+    $response->assertJsonPath('data.3.attributes.id', 104);
+    $response->assertJsonPath('data.4.attributes.id', 105);
 });
 
 it('can get a metric point', function () {
+    MetricPoint::factory(5)->forMetric()->create();
     $metricPoint = MetricPoint::factory()->forMetric()->create();
 
     $response = getJson('/status/api/metrics/'.$metricPoint->metric_id.'/points/'.$metricPoint->id.'?per_page=18');

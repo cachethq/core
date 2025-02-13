@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('incidents', function (Blueprint $table) {
+        Schema::table('schedules', function (Blueprint $table) {
             $table->unsignedInteger('status')->unsigned()->default(0);
         });
     }
