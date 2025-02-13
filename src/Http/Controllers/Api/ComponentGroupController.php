@@ -8,6 +8,7 @@ use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\ComponentGroup\CreateComponentGroupRequestData;
 use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
+use Cachet\Http\Resources\Component;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
 use Dedoc\Scramble\Attributes\Group;
@@ -57,9 +58,9 @@ class ComponentGroupController extends Controller
      */
     public function show(ComponentGroup $componentGroup)
     {
-        $componentQuery = QueryBuilder::for($componentGroup)
+        $componentQuery = QueryBuilder::for(ComponentGroup::class)
             ->allowedIncludes(['components'])
-            ->first();
+            ->find($componentGroup->id);
 
         return ComponentGroupResource::make($componentQuery)
             ->response()
