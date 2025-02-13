@@ -11,6 +11,7 @@ use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
+use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -77,9 +78,9 @@ class ComponentController extends Controller
      */
     public function show(Component $component)
     {
-        $componentQuery = QueryBuilder::for($component)
+        $componentQuery = QueryBuilder::for(Component::class)
             ->allowedIncludes(self::ALLOWED_INCLUDES)
-            ->first();
+            ->find($component->id);
 
         return ComponentResource::make($componentQuery)
             ->response()
