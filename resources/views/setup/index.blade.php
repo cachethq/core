@@ -51,7 +51,7 @@
                     </div>
                     <div class="lg:col-span-3">
                         <label for="show-support" class="flex items-start gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                            <input id="show-support" type="checkbox" class="block h-5 w-5 rounded border border-zinc-400 text-primary-500 dark:border-zinc-600 dark:bg-white/5" />
+                            <input id="show-support" type="checkbox" class="block h-5 w-5 rounded-sm border border-zinc-400 text-primary-500 dark:border-zinc-600 dark:bg-white/5" />
                             <span>Show support for Cachet</span>
                         </label>
                     </div>

@@ -10,7 +10,7 @@
                         <button x-ref="anchor" x-popover:button>
                             <x-heroicon-o-question-mark-circle class="size-4 text-zinc-500 dark:text-zinc-300" />
                         </button>
-                        <div x-popover:panel x-cloak x-transition.opacity x-anchor.right.offset.8="$refs.anchor" class="rounded bg-zinc-900 dark:bg-zinc-200 px-2 py-1 text-xs font-medium text-zinc-100 drop-shadow dark:text-zinc-800">
+                        <div x-popover:panel x-cloak x-transition.opacity x-anchor.right.offset.8="$refs.anchor" class="rounded-sm bg-zinc-900 dark:bg-zinc-200 px-2 py-1 text-xs font-medium text-zinc-100 drop-shadow-sm dark:text-zinc-800">
                             <span class="pointer-events-none absolute -left-1.5 size-4 rotate-45 bg-zinc-900 dark:bg-zinc-200"></span>
                             <p class="relative">{{ __('cachet::component.last_updated', ['timestamp' => $component->updated_at]) }}</p>
                         </div>
