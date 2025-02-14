@@ -65,11 +65,11 @@ class IncidentUpdateController extends Controller
      */
     public function show(Incident $incident, Update $update)
     {
-        $updateQuery = QueryBuilder::for($update)
+        $updateQuery = QueryBuilder::for(Update::class)
             ->allowedIncludes([
                 AllowedInclude::relationship('incident', 'updateable'),
             ])
-            ->first();
+            ->find($update->id);
 
         return UpdateResource::make($updateQuery)
             ->response()

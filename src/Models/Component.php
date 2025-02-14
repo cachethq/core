@@ -135,7 +135,7 @@ class Component extends Model
      */
     public function latestStatus(): Attribute
     {
-        return Attribute::get(fn () => $this->incidents()->latest()->first()?->pivot->component_status ?? $this->status);
+        return Attribute::get(fn () => $this->incidents()->unresolved()->latest()->first()?->pivot->component_status ?? $this->status);
     }
 
     /**
