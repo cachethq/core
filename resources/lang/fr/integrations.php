@@ -15,4 +15,3 @@ return [
         'imported_successfully' => 'Flux Oh Dear importé avec succès.',
     ],
 ];
-

@@ -7,4 +7,3 @@ return [
         'hidden' => 'Toujours caché',
     ],
 ];
-

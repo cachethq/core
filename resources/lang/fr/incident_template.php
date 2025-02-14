@@ -29,4 +29,3 @@ return [
         'twig_docs' => 'Documentation Twig',
     ],
 ];
-

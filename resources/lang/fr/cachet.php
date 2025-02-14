@@ -12,4 +12,3 @@ return [
     'all_times_shown_in' => 'Toutes les heures sont affichées en *:timezone*.',
     'rss_feed' => 'Flux RSS de :name',
 ];
-

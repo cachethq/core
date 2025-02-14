@@ -32,4 +32,3 @@ return [
         'total_subscribers_description' => 'Nombre total d’abonnés.',
     ],
 ];
-

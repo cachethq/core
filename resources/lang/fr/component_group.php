@@ -27,4 +27,3 @@ return [
         'collapsed_label' => 'Réduit',
     ],
 ];
-

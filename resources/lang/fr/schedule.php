@@ -42,4 +42,3 @@ return [
     ],
     'planned_maintenance_header' => 'Maintenance planifiée',
 ];
-

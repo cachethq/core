@@ -78,4 +78,3 @@ return [
         'total_incidents_description' => 'Nombre total d’incidents signalés.',
     ],
 ];
-

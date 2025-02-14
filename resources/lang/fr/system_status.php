@@ -5,4 +5,3 @@ return [
     'partial_outage' => 'Certains systèmes rencontrent des problèmes.',
     'major_outage' => 'Certains systèmes rencontrent des problèmes majeurs.',
 ];
-

@@ -49,4 +49,3 @@ return [
         'month' => 'Mois',
     ],
 ];
-
