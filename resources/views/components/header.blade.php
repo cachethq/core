@@ -13,7 +13,7 @@
 
     @if ($dashboardLoginLink)
     <div class="flex items-center gap-2.5 sm:gap-5">
-        <a href="{{ Cachet\Cachet::dashboardPath() }}" class="rounded bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground">
+        <a href="{{ Cachet\Cachet::dashboardPath() }}" class="rounded-sm bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground">
             {{ __('filament-panels::pages/dashboard.title') }}
         </a>
         @auth
