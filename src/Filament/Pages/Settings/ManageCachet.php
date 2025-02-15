@@ -36,15 +36,15 @@ class ManageCachet extends SettingsPage
 
                     Forms\Components\Select::make('timezone')
                         ->label(__('cachet::settings.manage_cachet.timezone_label'))
-                        ->options(fn () => collect(timezone_identifiers_list())
-                            ->mapToGroups(
-                                fn ($timezone) => [
-                                    Str::of($timezone)
-                                        ->before('/')
-                                        ->toString() => [$timezone => $timezone],
-                                ]
-                            )
-                            ->map(fn ($group) => $group->collapse()))
+                        ->options(fn () => [__('cachet::settings.manage_cachet.timezone_other') => ['-' => __('cachet::settings.manage_cachet.browser_default')], ...collect(timezone_identifiers_list())
+                                ->mapToGroups(
+                                    fn($timezone) => [
+                                        Str::of($timezone)
+                                            ->before('/')
+                                            ->toString() => [$timezone => $timezone],
+                                    ]
+                                )
+                                ->map(fn($group) => $group->collapse())->toArray()])
                         ->searchable()
                         ->suffixIcon('heroicon-o-globe-alt'),
 
