@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Resources;
 
+use Cachet\Models\Incident;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;

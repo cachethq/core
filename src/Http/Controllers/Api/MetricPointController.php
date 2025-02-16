@@ -61,9 +61,10 @@ class MetricPointController extends Controller
      */
     public function show(Metric $metric, MetricPoint $metricPoint)
     {
-        $metricPointQuery = QueryBuilder::for(MetricPoint::query()->where($metricPoint->getRouteKeyName(), $metricPoint->getRouteKey()))
+
+        $metricPointQuery = QueryBuilder::for(MetricPoint::class)
             ->allowedIncludes(['metric'])
-            ->first();
+            ->find($metricPoint->id);
 
         return MetricPointResource::make($metricPointQuery)
             ->response()
