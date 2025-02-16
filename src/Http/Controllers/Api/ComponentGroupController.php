@@ -58,6 +58,7 @@ class ComponentGroupController extends Controller
      */
     public function show(ComponentGroup $componentGroup)
     {
+
         $componentQuery = QueryBuilder::for(ComponentGroup::class)
             ->allowedIncludes(['components'])
             ->find($componentGroup->id);

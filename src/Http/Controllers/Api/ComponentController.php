@@ -77,6 +77,7 @@ class ComponentController extends Controller
      */
     public function show(Component $component)
     {
+
         $componentQuery = QueryBuilder::for(Component::class)
             ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->find($component->id);

@@ -153,6 +153,7 @@ it('can filter components by disabled', function () {
 });
 
 it('can get a component', function () {
+    Component::factory(5)->create();
     $component = Component::factory()->create();
 
     $response = getJson('/status/api/components/'.$component->id);
@@ -164,6 +165,7 @@ it('can get a component', function () {
 });
 
 it('can get a component with group', function () {
+    Component::factory(5)->forGroup()->create();
     $component = Component::factory()->forGroup()->create();
 
     $response = getJson('/status/api/components/'.$component->id.'?include=group');

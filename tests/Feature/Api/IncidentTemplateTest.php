@@ -37,6 +37,7 @@ it('can list more than 15 incident templates', function () {
 });
 
 it('can get an incident template', function () {
+    IncidentTemplate::factory(5)->create();
     $incidentTemplate = IncidentTemplate::factory()->create();
 
     $response = getJson('/status/api/incident-templates/'.$incidentTemplate->id);

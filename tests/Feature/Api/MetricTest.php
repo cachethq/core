@@ -142,6 +142,7 @@ it('can filter metrics by calculation type', function () {
 });
 
 it('can get a metric', function () {
+    Metric::factory(5)->create();
     $metric = Metric::factory()->create();
 
     $response = getJson('/status/api/metrics/'.$metric->id);
