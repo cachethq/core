@@ -30,7 +30,7 @@
         "illuminate/queue": "^11.23.0|^12.0",
         "illuminate/support": "^11.23.0|^12.0",
         "laravel/sanctum": "^4.0",
-        "nesbot/carbon": "^2.70",
+        "nesbot/carbon": "^2.70|^3.0",
         "spatie/laravel-data": "^4.11",
         "spatie/laravel-query-builder": "^5.5",
         "spatie/laravel-settings": "^3.2",
