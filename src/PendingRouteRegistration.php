@@ -2,6 +2,8 @@
 
 namespace Cachet;
 
+use Cachet\Http\Controllers\Auth\EmailVerificationPromptController;
+use Cachet\Http\Controllers\Auth\VerifyEmailController;
 use Cachet\Http\Controllers\HealthController;
 use Cachet\Http\Controllers\RssController;
 use Cachet\Http\Controllers\Setup\SetupController;
@@ -40,8 +42,21 @@ class PendingRouteRegistration
                 $router->get('/health', HealthController::class)->name('health');
 
                 $router->get('/rss', RssController::class)->name('rss');
+
             });
+
+        $this->registerEmailVerificationRoutes();
     }
+
+    private function registerEmailVerificationRoutes(): void
+    {
+        Route::middleware('auth')->group(function () {
+            Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+                ->middleware(['signed', 'throttle:6,1'])
+                ->name('verification.verify');
+        });
+    }
+
 
     /**
      * Handle the object's destruction.
