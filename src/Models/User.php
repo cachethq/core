@@ -24,7 +24,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements CachetUser, HasLocalePreference, MustVerifyEmail
 {
     /** @use HasFactory<\Cachet\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, MustVerifyEmailTrait;
+    use HasApiTokens, HasFactory, MustVerifyEmailTrait, Notifiable;
 
     /**
      * The attributes that are mass assignable.

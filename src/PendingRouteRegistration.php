@@ -2,7 +2,6 @@
 
 namespace Cachet;
 
-use Cachet\Http\Controllers\Auth\EmailVerificationPromptController;
 use Cachet\Http\Controllers\Auth\VerifyEmailController;
 use Cachet\Http\Controllers\HealthController;
 use Cachet\Http\Controllers\RssController;
@@ -56,7 +55,6 @@ class PendingRouteRegistration
                 ->name('verification.verify');
         });
     }
-
 
     /**
      * Handle the object's destruction.
