@@ -14,6 +14,24 @@
         ])
     }}
 
+    function getCssVar(name) {
+        return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+    }
+
+    function getThemeColors() {
+        const accent = `rgba(${getCssVar('--accent')}, 1)` // Full opacity
+        const accentContent = `rgba(${getCssVar('--accent-content')}, 1)`
+        const accentBackground = `rgba(${getCssVar('--accent-background')}, 0.2)`
+
+        return {
+            fontColor: accentContent,
+            backgroundColors: [accent, accentBackground], // Use accent colors dynamically
+            borderColor: accent,
+        }
+    }
+
+    let themeColors = getThemeColors()
+
     function init() {
         // Parse metric points
         const metricPoints = this.metric.metric_points.map((point) => {
@@ -38,7 +56,8 @@
                         label: this.metric.suffix,
                         data: this.points[this.period],
                         fill: false,
-                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: themeColors.backgroundColors,
+                        borderColor: themeColors.borderColor,
                         tension: 0.1,
                     },
                 ],
@@ -46,7 +65,15 @@
             options: {
                 scales: {
                     x: {
+                        ticks: {
+                            color: themeColors.fontColor,
+                        },
                         type: 'timeseries',
+                    },
+                    y: {
+                        ticks: {
+                            color: themeColors.fontColor,
+                        },
                     },
                 },
             },
@@ -67,6 +94,20 @@
             return 'day'
         }
     }
+
+    const observer = new MutationObserver(() => {
+        themeColors = getThemeColors()
+
+        myChart.data.datasets[0].backgroundColor = themeColors.backgroundColors
+        myChart.data.datasets[0].borderColor = themeColors.borderColor
+        myChart.options.plugins.legend.labels.color = themeColors.fontColor
+        myChart.options.plugins.tooltip.bodyColor = themeColors.fontColor
+        myChart.options.plugins.tooltip.titleColor = themeColors.fontColor
+        myChart.options.scales.x.ticks.color = themeColors.fontColor
+        myChart.options.scales.y.ticks.color = themeColors.fontColor
+
+        myChart.update()
+    })
 </script>
 
 <div class="flex flex-col gap-8">

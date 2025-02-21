@@ -26,7 +26,7 @@
                 @endforeach
             </select>
         </div>
-        <canvas x-ref="canvas" height="300" class="rounded-md bg-white text-white shadow-sm ring-1 ring-gray-900/5 dark:bg-zinc-800 dark:ring-gray-100/10"></canvas>
+        <canvas x-ref="canvas" height="380" class="text-gray rounded-md bg-white p-3 shadow-sm ring-1 ring-gray-900/5 dark:bg-zinc-800 dark:text-white dark:ring-gray-100/10"></canvas>
     </div>
 </div>
 
