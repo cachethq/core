@@ -5,6 +5,15 @@
     const previous7Days = new Date(now - 7 * 24 * 60 * 60 * 1000)
     const previous30Days = new Date(now - 30 * 24 * 60 * 60 * 1000)
 
+    const MetricView = {{
+        Js::from([
+            'last_hour' => \Cachet\Enums\MetricViewEnum::last_hour->value,
+            'today' => \Cachet\Enums\MetricViewEnum::today->value,
+            'week' => \Cachet\Enums\MetricViewEnum::week->value,
+            'month' => \Cachet\Enums\MetricViewEnum::month->value,
+        ])
+    }}
+
     function init() {
         // Parse metric points
         const metricPoints = this.metric.metric_points.map((point) => {
@@ -45,8 +54,18 @@
 
         this.$watch('period', () => {
             chart.data.datasets[0].data = this.points[this.period]
+            chart.options.scales.x.time.unit = getTimeUnit(this.period)
+
             chart.update()
         })
+
+        function getTimeUnit(period) {
+            if (period == MetricView.last_hour) return 'minute'
+            if (period == MetricView.today) return 'hour'
+            if (period == MetricView.week) return 'week'
+            if (period == MetricView.month) return 'month'
+            return 'day'
+        }
     }
 </script>
 

@@ -26,7 +26,7 @@ class Metrics extends Component
         // Convert each metric point to Chart.js format (x, y)
         $metrics->each(function ($metric) {
             $metric->metricPoints->transform(fn ($point) => [
-                'x' => $point->created_at->toIso8601String(),
+                'x' => $point->created_at->utc(),
                 'y' => $point->value,
             ]);
         });
@@ -45,6 +45,8 @@ class Metrics extends Component
             ->with([
                 'metricPoints' => fn ($query) => $query->orderBy('created_at'),
             ])
+            ->where('display_chart', '=', 1)
+            ->where('visible', '=', 1)
             ->where('visible', '>=', !auth()->check())
             ->whereHas('metricPoints', fn (Builder $query) => $query->where('created_at', '>=', $startDate))
             ->orderBy('places', 'asc')
