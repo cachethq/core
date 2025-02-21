@@ -18,14 +18,22 @@
         return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
     }
 
+    function getFontColor() {
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches === true) {
+            return `rgba(${getCssVar('--gray-100')}, 1)`
+        }
+
+        return `rgba(${getCssVar('--gray-800')}, 1)`
+    }
+
     function getThemeColors() {
-        const accent = `rgba(${getCssVar('--accent')}, 1)` // Full opacity
-        const accentContent = `rgba(${getCssVar('--accent-content')}, 1)`
+        const fontColor = getFontColor()
+        const accent = `rgba(${getCssVar('--accent')}, 1)`
         const accentBackground = `rgba(${getCssVar('--accent-background')}, 0.2)`
 
         return {
-            fontColor: accentContent,
-            backgroundColors: [accent, accentBackground], // Use accent colors dynamically
+            fontColor: fontColor,
+            backgroundColors: [accent, accentBackground],
             borderColor: accent,
         }
     }
@@ -93,21 +101,23 @@
             if (period == MetricView.month) return 'month'
             return 'day'
         }
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+            themeColors = getThemeColors()
+
+            console.log(themeColors)
+
+            chart.data.datasets[0].backgroundColor = themeColors.backgroundColors
+            chart.data.datasets[0].borderColor = themeColors.borderColor
+            chart.options.plugins.legend.labels.color = themeColors.fontColor
+            chart.options.plugins.tooltip.bodyColor = themeColors.fontColor
+            chart.options.plugins.tooltip.titleColor = themeColors.fontColor
+            chart.options.scales.x.ticks.color = themeColors.fontColor
+            chart.options.scales.y.ticks.color = themeColors.fontColor
+
+            chart.update()
+        })
     }
-
-    const observer = new MutationObserver(() => {
-        themeColors = getThemeColors()
-
-        myChart.data.datasets[0].backgroundColor = themeColors.backgroundColors
-        myChart.data.datasets[0].borderColor = themeColors.borderColor
-        myChart.options.plugins.legend.labels.color = themeColors.fontColor
-        myChart.options.plugins.tooltip.bodyColor = themeColors.fontColor
-        myChart.options.plugins.tooltip.titleColor = themeColors.fontColor
-        myChart.options.scales.x.ticks.color = themeColors.fontColor
-        myChart.options.scales.y.ticks.color = themeColors.fontColor
-
-        myChart.update()
-    })
 </script>
 
 <div class="flex flex-col gap-8">
