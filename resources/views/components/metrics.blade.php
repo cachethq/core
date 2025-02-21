@@ -105,8 +105,6 @@
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
             themeColors = getThemeColors()
 
-            console.log(themeColors)
-
             chart.data.datasets[0].backgroundColor = themeColors.backgroundColors
             chart.data.datasets[0].borderColor = themeColors.borderColor
             chart.options.plugins.legend.labels.color = themeColors.fontColor
