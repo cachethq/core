@@ -33,9 +33,7 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [x] Scheduled Maintenance
 - [x] Scheduled Maintenance Updates
 - [x] Components
-- [ ] Metrics
-  - API and dashboard are working.
-  - Frontend is in progress.
+- [x] Metrics
 - [ ] Subscribers
 - [x] API
   - Complete but may need some tweaks as we progress.
