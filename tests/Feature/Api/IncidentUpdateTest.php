@@ -72,6 +72,7 @@ it('can sort incident updates by status', function () {
 });
 
 it('can sort incident updates by created date', function () {
+    Incident::factory(5)->create();
     $incident = Incident::factory()->create();
     Update::factory()->count(4)->sequence(
         ['created_at' => '2022-01-01'],
@@ -115,6 +116,7 @@ it('can filter incident updates by status', function () {
 });
 
 it('can get an incident update', function () {
+    Update::factory(5)->forIncident()->create();
     $incidentUpdate = Update::factory()->forIncident()->create();
 
     $response = getJson("/status/api/incidents/{$incidentUpdate->updateable_id}/updates/{$incidentUpdate->id}");
@@ -126,6 +128,7 @@ it('can get an incident update', function () {
 });
 
 it('can get an incident update with incident', function () {
+    Update::factory(5)->forIncident()->create();
     $incidentUpdate = Update::factory()->forIncident()->create();
 
     $response = getJson("/status/api/incidents/{$incidentUpdate->updateable_id}/updates/{$incidentUpdate->id}?include=incident");

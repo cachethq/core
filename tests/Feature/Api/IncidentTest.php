@@ -163,6 +163,7 @@ it('can filter incidents by occurred at date', function () {
 });
 
 it('can get an incident', function () {
+    Incident::factory(5)->create();
     $incident = Incident::factory()->create();
 
     $response = getJson('/status/api/incidents/'.$incident->id);
@@ -174,6 +175,7 @@ it('can get an incident', function () {
 });
 
 it('can get an incident with updates', function () {
+    Incident::factory(5)->hasUpdates(2)->create();
     $incident = Incident::factory()->hasUpdates(2)->create();
 
     $response = getJson('/status/api/incidents/'.$incident->id.'?include=updates');
