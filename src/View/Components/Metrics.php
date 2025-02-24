@@ -42,14 +42,13 @@ class Metrics extends Component
     private function metrics(Carbon $startDate): Collection
     {
         return Metric::query()
+            ->visible(auth()->check())
             ->with([
                 'metricPoints' => fn ($query) => $query->orderBy('created_at'),
             ])
-            ->where('display_chart', '=', 1)
-            ->where('visible', '=', 1)
-            ->where('visible', '>=', !auth()->check())
+            ->where('display_chart', true)
             ->whereHas('metricPoints', fn (Builder $query) => $query->where('created_at', '>=', $startDate))
-            ->orderBy('places', 'asc')
+            ->orderBy('places')
             ->get();
     }
 }
