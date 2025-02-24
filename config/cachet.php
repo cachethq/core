@@ -160,4 +160,9 @@ return [
      */
     'demo_mode' => env('CACHET_DEMO_MODE', false),
 
+    'feed' => [
+        'uri' => env('CACHET_FEED_URI', 'https://blog.cachethq.io/rss'),
+        'cache' => env('CACHET_FEED_CACHE', 3600),
+    ],
+
 ];
