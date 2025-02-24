@@ -10,7 +10,7 @@ return [
     'feed' => [
         'section_heading' => 'Latest Blog Posts',
         'empty' => 'No blog posts were found. Check *the blog* for further information.',
-        'posted_at' => 'Posted :date'
+        'posted_at' => 'Posted :date',
     ],
     'powered_by' => 'Powered by',
     'open_source_status_page' => 'The open-source status page.',
