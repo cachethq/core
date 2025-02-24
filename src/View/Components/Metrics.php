@@ -12,7 +12,7 @@ use Illuminate\View\Component;
 
 class Metrics extends Component
 {
-    public function __construct(private AppSettings $appSettings)
+    public function __construct(protected AppSettings $appSettings)
     {
         //
     }
