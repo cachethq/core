@@ -5,7 +5,6 @@ namespace Cachet\Actions\Schedule;
 use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\ScheduleComponentRequestData;
 use Cachet\Models\Schedule;
-use Illuminate\Database\Eloquent\Model;
 
 class CreateSchedule
 {

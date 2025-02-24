@@ -111,14 +111,13 @@ class Schedule extends Model
     /**
      * Create a new Eloquent query builder for the model.
      *
-     * @param \Illuminate\Database\Query\Builder $query
+     * @param  \Illuminate\Database\Query\Builder  $query
      * @return \Cachet\QueryBuilders\ScheduleBuilder
      */
     public function newEloquentBuilder($query)
     {
         return new ScheduleBuilder($query);
     }
-
 
     /**
      * Create a new factory instance for the model.

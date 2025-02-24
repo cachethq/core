@@ -168,10 +168,10 @@ it('can filter schedules by multiple statuses', function () {
 
     $query = http_build_query([
         'filter' => [
-            'status' => implode(",", [
+            'status' => implode(',', [
                 \Cachet\Enums\ScheduleStatusEnum::in_progress->value,
                 \Cachet\Enums\ScheduleStatusEnum::complete->value,
-                ]
+            ]
             ),
         ],
     ]);

@@ -11,19 +11,18 @@ class ScheduleStatusFilter implements Filter
 {
     /**
      * @param  ScheduleBuilder  $query
-     * @param  $value
-     * @param  string  $property
      * @return void
      */
     public function __invoke(Builder $query, $value, string $property)
     {
         if (is_array($value)) {
             $this->multiValueFilter($value, $query);
-            return ;
+
+            return;
         }
         $enum = $this->toEnum($value);
         if (! $enum instanceof ScheduleStatusEnum) {
-            return ;
+            return;
         }
         $this->toQuery($enum, $query);
     }
@@ -31,7 +30,7 @@ class ScheduleStatusFilter implements Filter
     public function multiValueFilter(array $value, ScheduleBuilder $query)
     {
         $query->where(function (ScheduleBuilder $query) use ($value) {
-            foreach($value as $status) {
+            foreach ($value as $status) {
                 $status = $this->toEnum($status);
                 if (! $status instanceof ScheduleStatusEnum) {
                     continue;
@@ -44,10 +43,9 @@ class ScheduleStatusFilter implements Filter
         });
     }
 
-
     protected function toQuery(ScheduleStatusEnum $value, ScheduleBuilder $query)
     {
-        match($value) {
+        match ($value) {
             ScheduleStatusEnum::complete => $query->inThePast(),
             ScheduleStatusEnum::in_progress => $query->inProgress(),
             ScheduleStatusEnum::upcoming => $query->inTheFuture(),
@@ -56,10 +54,10 @@ class ScheduleStatusFilter implements Filter
 
     protected function toEnum($value)
     {
-        if( ! $value instanceof ScheduleStatusEnum && is_numeric($value)) {
+        if (! $value instanceof ScheduleStatusEnum && is_numeric($value)) {
             return ScheduleStatusEnum::tryFrom($value);
         }
+
         return $value;
     }
-
 }
