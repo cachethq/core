@@ -4,6 +4,7 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
@@ -136,6 +137,20 @@ class Component extends Model
     public function latestStatus(): Attribute
     {
         return Attribute::get(fn () => $this->incidents()->unresolved()->latest()->first()?->pivot->component_status ?? $this->status);
+    }
+
+    /**
+     * Determine how to order the component.
+     */
+    public function orderableBy(ComponentGroup $group): mixed
+    {
+        return match ($group->order_column) {
+            ResourceOrderColumnEnum::Id => $this->id,
+            ResourceOrderColumnEnum::LastUpdated => $this->updated_at,
+            ResourceOrderColumnEnum::Name => $this->name,
+            ResourceOrderColumnEnum::Manual => $this->order,
+            default => $this->status->value,
+        };
     }
 
     /**
