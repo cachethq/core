@@ -75,7 +75,9 @@ class Feed extends Widget
                 $posts[] = [
                     'title' => (string) ($item->title ?? ''),
                     'link' => Uri::of((string) ($item->link ?? ''))->withQuery([
-                        'ref' => 'cachet-dashboard',
+                        'utm_source' => 'cachet',
+                        'utm_medium' => 'installation',
+                        'utm_campaign' => 'dashboard',
                     ]),
                     'description' => Str::of($item->description ?? $item->summary ?? '')->limit(preserveWords: true),
                     'date' => Carbon::parse((string) ($item->pubDate ?? $item->updated ?? '')),
