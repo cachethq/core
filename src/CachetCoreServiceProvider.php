@@ -194,8 +194,14 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->app->booted(function () {
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
+            $demoMode = fn () => Cachet::demoMode();
 
             $schedule->command('cachet:beacon')->daily();
+
+            $schedule->command('db:seed', [
+                '--class' => \Cachet\Database\Seeders\DatabaseSeeder::class,
+                '--force',
+            ])->everyThirtyMinutes()->when($demoMode);
         });
     }
 

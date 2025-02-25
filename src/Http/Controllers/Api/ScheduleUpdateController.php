@@ -64,11 +64,11 @@ class ScheduleUpdateController extends Controller
      */
     public function show(Schedule $schedule, Update $update)
     {
-        $updateQuery = QueryBuilder::for($update)
+        $updateQuery = QueryBuilder::for(Update::class)
             ->allowedIncludes([
                 AllowedInclude::relationship('schedule', 'updateable'),
             ])
-            ->first();
+            ->find($update->id);
 
         return UpdateResource::make($updateQuery)
             ->response()

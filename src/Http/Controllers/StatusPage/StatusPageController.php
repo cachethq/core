@@ -30,7 +30,10 @@ class StatusPageController
     public function show(Incident $incident): View
     {
         return view('cachet::status-page.incident', [
-            'incident' => $incident,
+            'incident' => $incident->loadMissing([
+                'components',
+                'updates' => fn ($query) => $query->orderByDesc('created_at'),
+            ]),
         ]);
     }
 }

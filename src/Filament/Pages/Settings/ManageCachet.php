@@ -6,7 +6,6 @@ use Cachet\Settings\AppSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
-use Filament\Pages\SettingsPage;
 use Illuminate\Support\Str;
 
 class ManageCachet extends SettingsPage
@@ -53,7 +52,7 @@ class ManageCachet extends SettingsPage
                         ->numeric()
                         ->label(__('cachet::settings.manage_cachet.incident_days_label'))
                         ->minValue(1)
-                        ->maxValue(365)
+                        ->maxValue(3650)
                         ->step(1),
 
                     Forms\Components\TextInput::make('major_outage_threshold')

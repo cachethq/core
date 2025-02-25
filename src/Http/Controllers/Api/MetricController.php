@@ -67,9 +67,9 @@ class MetricController extends Controller
      */
     public function show(Metric $metric)
     {
-        $metricQuery = QueryBuilder::for($metric)
+        $metricQuery = QueryBuilder::for(Metric::class)
             ->allowedIncludes(['points'])
-            ->first();
+            ->find($metric->id);
 
         return MetricResource::make($metricQuery)
             ->response()

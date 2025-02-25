@@ -70,6 +70,7 @@ return [
      */
     'middleware' => [
         'web',
+        //        \Cachet\Http\Middleware\AuthenticateRemoteUser::class,
     ],
 
     'api_middleware' => [
@@ -136,14 +137,32 @@ return [
      |
      */
     'supported_locales' => [
+        'de' => 'Deutsch (DE)',
         'de_AT' => 'Deutsch (AT)',
         'de_CH' => 'Deutsch (CH)',
-        'de_DE' => 'Deutsch (DE)',
         'en' => 'English',
         'en_GB' => 'English (UK)',
-        'nl_NL' => 'Nederlands',
+        'nl' => 'Nederlands',
         'pt_BR' => 'Português (BR)',
         'zh_CN' => '简体中文',
         'zh_TW' => '繁體中文',
+        'ph' => 'Filipino',
     ],
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Demo Mode
+     |--------------------------------------------------------------------------
+     |
+     | Whether to run Cachet in demo mode. This will adjust some of the default
+     | settings to allow Cachet to run in a demo environment.
+     |
+     */
+    'demo_mode' => env('CACHET_DEMO_MODE', false),
+
+    'feed' => [
+        'uri' => env('CACHET_FEED_URI', 'https://blog.cachethq.io/rss'),
+        'cache' => env('CACHET_FEED_CACHE', 3600),
+    ],
+
 ];

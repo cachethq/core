@@ -16,7 +16,7 @@ class MakeUserCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'cachet:make:user {email?} {--password= : The user\'s password} {--admin : Whether the user is an admin}';
+    protected $signature = 'cachet:make:user {email?} {--password= : The user\'s password} {--admin : Whether the user is an admin} {--name= : The name of the user }';
 
     /**
      * The console command description.
@@ -53,8 +53,11 @@ class MakeUserCommand extends Command
         $this->email = $this->argument('email');
         $this->isAdmin = $this->option('admin');
         $this->password = $this->option('password');
+        $this->data['name'] = $this->option('name');
 
-        $this->promptName();
+        if (! $this->data['name']) {
+            $this->promptName();
+        }
 
         if (! $this->email) {
             $this->promptEmail();
