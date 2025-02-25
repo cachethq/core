@@ -80,8 +80,8 @@ class Status
         return $this->incidents ??= Incident::query()
             ->toBase()
             ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when ? in (incidents.status, coalesce(latest_update.status, ?)) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed->value, ''])
-            ->selectRaw('sum(case when ? not in (incidents.status, coalesce(latest_update.status, ?)) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed->value, ''])
+            ->selectRaw('sum(case when ? in (incidents.status, coalesce(latest_update.status, ?)) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed->value, 0])
+            ->selectRaw('sum(case when ? not in (incidents.status, coalesce(latest_update.status, ?)) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed->value, 0])
             ->joinSub(function (Builder $query) {
                 $query
                     ->select('iu1.updateable_id', 'iu1.status')
