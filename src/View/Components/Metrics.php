@@ -32,7 +32,7 @@ class Metrics extends Component
         });
 
         return view('cachet::components.metrics', [
-            'metrics' => $metrics
+            'metrics' => $metrics,
         ]);
     }
 
