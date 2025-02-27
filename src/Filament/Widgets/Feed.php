@@ -7,6 +7,7 @@ use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\Support\Uri;
 use Throwable;
@@ -60,7 +61,9 @@ class Feed extends Widget
     protected function fetchFeed(string $uri, int $maxPosts = 5): array
     {
         try {
-            $xml = simplexml_load_string(file_get_contents($uri));
+            $response = Http::get($uri);
+
+            $xml = simplexml_load_string($response->getBody());
 
             $posts = [];
 
