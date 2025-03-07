@@ -43,15 +43,7 @@ class AppSettings extends Settings
     }
 
 
-    /**
-     * Retrieve settings without triggering an exception
-     * unless a migration has to be run
-     * @param $name
-     * @param $default
-     * @return mixed
-     * @throws \Exception
-     */
-    public static function getOrDefault($name, $default = null): mixed
+    public static function getOrDefault(string $name, mixed $default = null): mixed
     {
         try {
             return app(self::class)->$name;
