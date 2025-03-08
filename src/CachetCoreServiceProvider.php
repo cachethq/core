@@ -200,7 +200,7 @@ class CachetCoreServiceProvider extends ServiceProvider
 
             $schedule->command('db:seed', [
                 '--class' => \Cachet\Database\Seeders\DatabaseSeeder::class,
-                '--force' => true,
+                '--force',
             ])->everyThirtyMinutes()->when($demoMode);
         });
     }
