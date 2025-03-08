@@ -2,9 +2,16 @@
 
 namespace Cachet\Filament\Resources\UpdateResource\RelationManagers;
 
+use Cachet\Actions\Incident\SetLatestStatusIncident;
+use Cachet\Actions\Update\CreateUpdate as CreateUpdateAction;
+use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
+use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -84,16 +91,64 @@ class UpdatesRelationManager extends RelationManager
                     ->options(IncidentStatusEnum::class),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                Tables\Actions\CreateAction::make()
+                    ->action(function (CreateUpdateAction $createUpdate, array $data) {
+                        /** @var Schedule|Incident $resource */
+                        $resource = $this->getOwnerRecord();
+                        $requestData = match (get_class($resource)) {
+                            Schedule::class => CreateScheduleUpdateRequestData::from($data),
+                            Incident::class => CreateIncidentUpdateRequestData::from($data),
+                        };
+
+                        $createUpdate->handle($resource, $requestData);
+
+                        if($resource instanceof Incident) {
+                            Notification::make()
+                                ->title(__('cachet::incident.record_update.success_title', ['name' => $resource->name]))
+                                ->body(__('cachet::incident.record_update.success_body'))
+                                ->success()
+                                ->send();
+
+                            // Somehow the events aren't working to update the parent
+                            // So then let's just refresh the page
+                            redirect(request()->header('Referer'));
+                        }
+                    }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->after(function(SetLatestStatusIncident $latestStatusIncident) {
+                        $this->afterChanged($latestStatusIncident);
+                    }),
+                Tables\Actions\DeleteAction::make()
+                    ->after(function(SetLatestStatusIncident $latestStatusIncident) {
+                        $this->afterChanged($latestStatusIncident);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->after(function(SetLatestStatusIncident $latestStatusIncident) {
+                        $this->afterChanged($latestStatusIncident);
+                    }),
                 ]),
             ]);
+    }
+
+    protected function afterChanged(?SetLatestStatusIncident $latestStatusIncident = null): void
+    {
+        /** @var Schedule|Incident $resource */
+        $resource = $this->getOwnerRecord();
+        if(is_null($latestStatusIncident)) {
+            $latestStatusIncident = app()->make(SetLatestStatusIncident::class);
+        }
+
+        if ($resource instanceof Incident) {
+            $latestStatusIncident->handle($resource);
+
+            // Somehow the events aren't working to update the parent
+            // So then let's just refresh the page
+            redirect(request()->header('Referer'));
+        }
+
     }
 }
