@@ -15,6 +15,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use PHPUnit\Runner\ErrorException;
 
 class UpdatesRelationManager extends RelationManager
 {
@@ -98,6 +99,7 @@ class UpdatesRelationManager extends RelationManager
                         $requestData = match (get_class($resource)) {
                             Schedule::class => CreateScheduleUpdateRequestData::from($data),
                             Incident::class => CreateIncidentUpdateRequestData::from($data),
+                            default => throw new ErrorException('Request data resource mismatch')
                         };
 
                         $createUpdate->handle($resource, $requestData);

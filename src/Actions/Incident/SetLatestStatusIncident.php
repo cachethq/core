@@ -14,7 +14,7 @@ class SetLatestStatusIncident
      */
     public function handle(Incident $incident): Incident
     {
-        /** @var Update $update */
+        /** @var Update|null $update */
         $update = $incident->updates()->latest()->limit(1)->first();
 
         if(is_null($update) && $incident->status === IncidentStatusEnum::unknown) {
