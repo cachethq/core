@@ -13,7 +13,9 @@
             <x-cachet::component-ungrouped :component="$component" />
         @endforeach
 
+        @if ($display_graphs)
         <x-cachet::metrics />
+        @endif
 
         @if ($schedules->isNotEmpty())
             <x-cachet::schedules :schedules="$schedules" />

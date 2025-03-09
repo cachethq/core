@@ -32,6 +32,8 @@ class AppSettings extends Settings
 
     public int $recent_incidents_days = 7;
 
+    public bool $display_graphs = true;
+
     public static function group(): string
     {
         return 'app';
