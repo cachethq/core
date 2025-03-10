@@ -10,7 +10,7 @@ it('registers a scheduled job', function () {
     $events = collect($schedule->events())->keyBy('command')->keys()->all();
 
     // Build the expected scheduled command
-    $scheduledCommand = sprintf("'%s' 'artisan' db:seed --class='%s' --force='1'",
+    $scheduledCommand = sprintf("'%s' 'artisan' db:seed --class='%s' --force",
         PHP_BINARY,
         DatabaseSeeder::class,
     );

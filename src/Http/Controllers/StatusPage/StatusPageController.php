@@ -6,11 +6,20 @@ use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
+use Cachet\Settings\AppSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
 class StatusPageController
 {
+    /**
+     * Create a new controller instance.
+     */
+    public function __construct(protected AppSettings $appSettings)
+    {
+        //
+    }
+
     /**
      * Show the status page.
      */
@@ -31,6 +40,8 @@ class StatusPageController
                 ->get(),
 
             'schedules' => Schedule::query()->with('updates')->incomplete()->orderBy('scheduled_at')->get(),
+
+            'display_graphs' => $this->appSettings->display_graphs,
         ]);
     }
 
@@ -40,7 +51,10 @@ class StatusPageController
     public function show(Incident $incident): View
     {
         return view('cachet::status-page.incident', [
-            'incident' => $incident,
+            'incident' => $incident->loadMissing([
+                'components',
+                'updates' => fn ($query) => $query->orderByDesc('created_at'),
+            ]),
         ]);
     }
 }

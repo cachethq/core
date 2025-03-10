@@ -60,11 +60,13 @@ class DatabaseSeeder extends Seeder
             'completed_at' => now()->subHours(12),
         ]);
 
+        /** @phpstan-ignore-next-line  argument.type */
         tap(Schedule::create([
             'name' => 'Documentation Maintenance',
             'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
             'scheduled_at' => now()->addHours(24),
             'completed_at' => null,
+        /** @phpstan-ignore-next-line argument.type */
         ]), function (Schedule $schedule) use ($user) {
             $update = new Update([
                 'message' => <<<'EOF'

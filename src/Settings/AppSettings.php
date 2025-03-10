@@ -37,6 +37,8 @@ class AppSettings extends Settings
 
     public bool $api_protected = false;
 
+    public bool $display_graphs = true;
+
     public static function group(): string
     {
         return 'app';

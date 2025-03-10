@@ -23,5 +23,9 @@
         "prettier-plugin-tailwindcss": "^0.5.11",
         "tailwindcss": "^3.4.13",
         "vite": "^5.4"
+    },
+    "dependencies": {
+        "chart.js": "^4.4.7",
+        "chartjs-adapter-moment": "^1.0.1"
     }
 }
