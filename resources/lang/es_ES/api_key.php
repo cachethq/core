@@ -1,31 +1,30 @@
 <?php
 
 return [
-    'resource_label' => 'API Key|API Keys',
+    'resource_label' => 'Clave API|Claves API',
     'show_token' => [
-        'heading' => 'Your API Token has been generated',
-        'description' => 'Please copy your new API token. For your security, it won\'t be shown again.',
-        'copy_tooltip' => 'Token copied!',
+        'heading' => 'Tu token de API ha sido generado',
+        'description' => 'Por favor, copia tu nuevo token de API. Por seguridad, no se mostrará nuevamente.',
+        'copy_tooltip' => '¡Token copiado!',
     ],
     'abilities_label' => ':ability :resource',
     'form' => [
-        'name_label' => 'Token Name',
-        'expires_at_label' => 'Expires At',
-        'expires_at_helper' => 'Expires at midnight. Leave empty for no expiry',
-        'expires_at_validation' => 'The expiry date must be in the future',
-        'abilities_label' => 'Permissions',
-        'abilities_hint' => 'Leaving this empty will give the token full permissions',
+        'name_label' => 'Nombre del Token',
+        'expires_at_label' => 'Expira el',
+        'expires_at_helper' => 'Expira a medianoche. Déjalo vacío si no quieres que expire',
+        'expires_at_validation' => 'La fecha de expiración debe estar en el futuro',
+        'abilities_label' => 'Permisos',
+        'abilities_hint' => 'Si dejas esto vacío, el token tendrá permisos completos',
     ],
     'list' => [
         'actions' => [
-            'revoke' => 'Revoke',
+            'revoke' => 'Revocar',
         ],
         'headers' => [
-            'name' => 'Token Name',
-            'abilities' => 'Permissions',
-            'created_at' => 'Created At',
-            'expires_at' => 'Expires At',
-            'updated_at' => 'Updated At',
+            'name' => 'Nombre del Token',
+            'abilities' => 'Permisos',
+            'created_at' => 'Creado el',
+            'expires_at' => 'Expira el',
             'updated_at' => 'Actualizado el',
         ],
     ],
