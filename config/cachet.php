@@ -142,6 +142,7 @@ return [
         'de_CH' => 'Deutsch (CH)',
         'en' => 'English',
         'en_GB' => 'English (UK)',
+        'es_ES' => 'Spanish (ES)',
         'nl' => 'Nederlands',
         'pt_BR' => 'Português (BR)',
         'zh_CN' => '简体中文',
