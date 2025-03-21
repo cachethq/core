@@ -51,7 +51,7 @@ class MakeUserCommand extends Command
     public function handle(): int
     {
         $this->email = $this->argument('email');
-        $this->isAdmin = $this->option('admin');
+        $this->isAdmin = $this->option('admin') !== null ? (bool) $this->option('admin') : null;
         $this->password = $this->option('password');
         $this->data['name'] = $this->option('name');
 
