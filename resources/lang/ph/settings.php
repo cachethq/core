@@ -18,6 +18,8 @@ return [
             'only_show_disrupted_days' => 'Ipakita lamang ang Mga Araw ng Pagka-aberya',
             'recent_incidents_only' => 'Ipakita lamang ang Mga Kamakailang Insidente',
             'recent_incidents_days' => 'Bilang ng Araw para Ipakita ang Mga Kamakailang Insidente',
+            'api_enabled' => 'Api Pinagana',
+            'api_protected' => 'Ang Api ay nangangailangan ng pagpapatunay',
         ],
     ],
     'manage_customization' => [

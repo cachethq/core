@@ -18,6 +18,11 @@ return [
             'only_show_disrupted_days' => '仅显示受干扰天数',
             'recent_incidents_only' => '仅显示最近事件',
             'recent_incidents_days' => '显示最近事件的天数',
+            'manage_customization' => [
+                'header_label' => '自定义 Header HTML',
+                'footer_label' => '自定义 Footer HTML',
+                'stylesheet_label' => '自定义 CSS',
+            ],
         ],
     ],
     'manage_customization' => [
