@@ -109,8 +109,8 @@ class Incident extends Model
     /**
      * Get the components impacted by this incident.
      *
-     * @return BelongsToMany<Component, $this>
-     */
+     * @return BelongsToMany<Component, $this, IncidentComponent>
+ */
     public function components(): BelongsToMany
     {
         return $this->belongsToMany(Component::class, 'incident_components')
