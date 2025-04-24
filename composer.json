@@ -42,7 +42,7 @@
     },
     "require-dev": {
         "dedoc/scramble": "^0.12.11",
-        "larastan/larastan": "^3.0",
+        "larastan/larastan": "^3.4",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.21",
         "orchestra/testbench": "^9.5.1",
