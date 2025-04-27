@@ -166,7 +166,9 @@ it('cannot create an incident update without the token ability', function () {
 it('can create an incident update', function () {
     Sanctum::actingAs(User::factory()->create(), ['incident-updates.manage']);
 
-    $incident = Incident::factory()->create();
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::unknown->value,
+    ]);
 
     $response = postJson("/status/api/incidents/{$incident->id}/updates", [
         'status' => IncidentStatusEnum::identified->value,
@@ -177,6 +179,9 @@ it('can create an incident update', function () {
     $this->assertDatabaseHas('updates', [
         'status' => IncidentStatusEnum::identified->value,
         'message' => 'This is a test message.',
+    ]);
+    $this->assertDatabaseHas('incidents', [
+        'status' => IncidentStatusEnum::identified->value,
     ]);
 });
 
@@ -208,6 +213,7 @@ it('can update an incident update', function () {
     $incidentUpdate = Update::factory()->forIncident()->create();
 
     $data = [
+        'status' => IncidentStatusEnum::fixed->value,
         'message' => 'This is an updated message.',
     ];
 
@@ -216,8 +222,11 @@ it('can update an incident update', function () {
     $response->assertOk();
     $this->assertDatabaseHas('updates', [
         'id' => $incidentUpdate->id,
-        'status' => $incidentUpdate->status,
         ...$data,
+    ]);
+    $this->assertDatabaseHas('incidents', [
+        'id' => $incidentUpdate->updateable->getKey(),
+        'status' => $data['status'],
     ]);
 });
 
@@ -242,13 +251,46 @@ it('cannot delete an incident update without the token ability', function () {
 it('can delete an incident update', function () {
     Sanctum::actingAs(User::factory()->create(), ['incident-updates.delete']);
 
-    $incidentUpdate = Update::factory()->forIncident()->create();
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::watching->value]);
+    $incidentUpdateFirst = Update::factory()->forIncident($incident)->create([
+        'status' => IncidentStatusEnum::investigating
+    ]);
+    $incidentUpdate = Update::factory()->forIncident($incident)->create([
+        'status' => IncidentStatusEnum::watching,
+    ]);
+
+    $response = deleteJson("/status/api/incidents/{$incidentUpdate->updateable_id}/updates/{$incidentUpdate->id}");
+    $response->assertNoContent();
+    $this->assertDatabaseMissing('updates', [
+        'id' => $incidentUpdate->id,
+        'updateable_type' => Relation::getMorphAlias(Incident::class),
+        'updateable_id' => $incidentUpdate->updateable_id,
+    ]);
+
+    $this->assertDatabaseHas('incidents', [
+        'id' => $incidentUpdateFirst->updateable_id,
+        'status' => $incidentUpdateFirst->status->value,
+    ]);
+});
+
+it('can delete an incident first update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incident-updates.delete']);
+
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::watching->value]);
+    $incidentUpdate = Update::factory()->forIncident($incident)->create([
+        'status' => IncidentStatusEnum::watching,
+    ]);
 
     $response = deleteJson("/status/api/incidents/{$incidentUpdate->updateable_id}/updates/{$incidentUpdate->id}");
     $response->assertNoContent();
     $this->assertDatabaseMissing('updates', [
         'updateable_type' => Relation::getMorphAlias(Incident::class),
         'updateable_id' => $incidentUpdate->updateable_id,
+    ]);
+
+    $this->assertDatabaseHas('incidents', [
+        'id' => $incidentUpdate->updateable_id,
+        'status' => IncidentStatusEnum::unknown->value,
     ]);
 });
 
