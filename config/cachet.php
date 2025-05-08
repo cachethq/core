@@ -75,6 +75,8 @@ return [
 
     'api_middleware' => [
         'api',
+        \Cachet\Http\Middleware\ApiEnabled::class,
+        \Cachet\Http\Middleware\ApiPublicOrProtected::class,
     ],
 
     /*
