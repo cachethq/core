@@ -77,6 +77,8 @@ return [
         'api',
     ],
 
+    'trusted_proxies' => env('CACHET_TRUSTED_PROXIES', ''),
+
     /*
      |--------------------------------------------------------------------------
      | Cachet API Rate Limit (attempts per minute)
