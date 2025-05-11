@@ -32,7 +32,6 @@ return [
         'calc_type_label' => 'Type de métrique',
         'places_label' => 'Décimales',
         'threshold_label' => 'Seuil',
-
         'visible_label' => 'Visible',
         'display_chart_label' => 'Afficher le graphique',
     ],

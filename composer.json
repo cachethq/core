@@ -25,12 +25,12 @@
         "filament/filament": "^3.2.57",
         "filament/spatie-laravel-settings-plugin": "^3.2",
         "guzzlehttp/guzzle": "^7.8",
-        "illuminate/cache": "^11.23.0|^12.0",
-        "illuminate/console": "^11.23.0|^12.0",
-        "illuminate/database": "^11.23.0|^12.0",
-        "illuminate/events": "^11.23.0|^12.0",
-        "illuminate/queue": "^11.23.0|^12.0",
-        "illuminate/support": "^11.23.0|^12.0",
+        "illuminate/cache": "^11.35.0|^12.0",
+        "illuminate/console": "^11.35.0|^12.0",
+        "illuminate/database": "^11.35.0|^12.0",
+        "illuminate/events": "^11.35.0|^12.0",
+        "illuminate/queue": "^11.35.0|^12.0",
+        "illuminate/support": "^11.35.0|^12.0",
         "laravel/sanctum": "^4.0",
         "nesbot/carbon": "^2.70|^3.0",
         "spatie/laravel-data": "^4.11",
@@ -41,13 +41,15 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "dedoc/scramble": "0.12.0-alpha.1",
-        "larastan/larastan": "^3.0",
+        "dedoc/scramble": "^0.12.11",
+        "larastan/larastan": "^3.4",
         "laravel/pail": "^1.1",
+        "laravel/pint": "^1.21",
         "orchestra/testbench": "^9.5.1|^10.0",
         "pestphp/pest": "^3.2",
         "pestphp/pest-plugin-laravel": "^3.0",
-        "pestphp/pest-plugin-livewire": "*"
+        "pestphp/pest-plugin-livewire": "*",
+        "pestphp/pest-plugin-type-coverage": "^3.3"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -102,6 +104,13 @@
         "start": [
             "@dev"
         ],
-        "test": "vendor/bin/pest"
+        "test:lint": [
+            "pint --test"
+        ],
+        "test:unit": "pest --parallel --processes=10 --ci --coverage --compact",
+        "test": [
+            "@test:lint",
+            "@test:unit"
+        ]
     }
 }

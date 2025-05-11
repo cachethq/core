@@ -2,6 +2,7 @@
 
 namespace Cachet;
 
+use Cachet\Filament\Pages\EditProfile;
 use Cachet\Http\Middleware\SetAppLocale;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,6 +31,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->default()
             ->login()
             ->passwordReset()
+            ->profile(EditProfile::class)
             ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->brandLogoHeight('2rem')
             ->colors([

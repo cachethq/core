@@ -78,6 +78,7 @@ class IncidentController extends Controller
      */
     public function show(Incident $incident)
     {
+
         $incidentQuery = QueryBuilder::for(Incident::class)
             ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->find($incident->id);

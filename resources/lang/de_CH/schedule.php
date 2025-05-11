@@ -24,8 +24,8 @@ return [
     'form' => [
         'name_label' => 'Name',
         'message_label' => 'Nachricht',
-        'scheduled_at_label' => 'Terminiert für',
-        'completed_at_label' => 'Abgeschlossen am',
+        'scheduled_at_label' => 'Beginn',
+        'completed_at_label' => 'Ende',
     ],
     'add_update' => [
         'success_title' => 'Zeitplan aktualisiert - :name',

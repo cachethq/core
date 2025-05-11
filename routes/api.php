@@ -59,7 +59,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         ->scoped(['updateable_id']);
 
     Route::apiResource('metrics.points', MetricPointController::class, [
-        'except' => ['index', 'show'],
+        'except' => ['index', 'show', 'update'],
     ])
         ->parameter('points', 'metricPoint')
         ->scoped();
