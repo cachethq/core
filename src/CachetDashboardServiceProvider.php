@@ -32,7 +32,7 @@ class CachetDashboardServiceProvider extends PanelProvider
         return $panel
             ->id('cachet')
             ->when(
-                $appSettings->enable_external_dependencies,
+                ! app()->runningInConsole() && $appSettings->enable_external_dependencies,
                 fn ($panel) => $panel->font('switzer', 'https://fonts.cdnfonts.com/css/switzer'),
                 fn ($panel) => $panel->font('ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" ', provider: LocalFontProvider::class),
             )
