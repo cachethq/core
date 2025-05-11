@@ -4,6 +4,8 @@ namespace Cachet;
 
 use Cachet\Filament\Pages\EditProfile;
 use Cachet\Http\Middleware\SetAppLocale;
+use Cachet\Settings\AppSettings;
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -25,9 +27,15 @@ class CachetDashboardServiceProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $appSettings = app(AppSettings::class);
+
         return $panel
             ->id('cachet')
-            ->font('switzer', 'https://fonts.cdnfonts.com/css/switzer')
+            ->when(
+                $appSettings->enable_external_dependencies,
+                fn ($panel) => $panel->font('switzer', 'https://fonts.cdnfonts.com/css/switzer'),
+                fn ($panel) => $panel->font('ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" ', provider: LocalFontProvider::class),
+            )
             ->default()
             ->login()
             ->passwordReset()

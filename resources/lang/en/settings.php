@@ -15,10 +15,12 @@ return [
             'show_timezone' => 'Show Timezone',
             'show_dashboard_link' => 'Show Dashboard Link',
             'display_graphs' => 'Display Graphs',
+            'enable_external_dependencies' => 'Enable External Dependencies',
             'only_show_disrupted_days' => 'Only Show Disrupted Days',
             'recent_incidents_only' => 'Show Recent Incidents Only',
             'recent_incidents_days' => 'Number of Days to Show Recent Incidents',
         ],
+        'display_settings_title' => 'Display Settings',
     ],
     'manage_customization' => [
         'header_label' => 'Custom Header HTML',
