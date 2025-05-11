@@ -8,6 +8,16 @@
         <div class="flex
                 items-center justify-center gap-2 text-sm text-zinc-500 dark:text-zinc-400"
             x-data="{ from: new Date(@js($from)), to: new Date(@js($to)) }">
+
+            <x-filament::input.wrapper disabled>
+                <x-filament::input
+                    type="date"
+                    wire:model="date"
+                    value="{{ $to }}"
+                    disabled
+                />
+            </x-filament::input.wrapper>
+            &mdash;
             <x-filament::input.wrapper :disabled="$recentIncidentsOnly">
                 <x-filament::input
                     type="date"
@@ -18,15 +28,6 @@
                     x-init="$watch('date', value => window.location = '?from=' + date)"
                     max="{{ now()->toDateString() }}"
                     :disabled="$recentIncidentsOnly"
-                />
-            </x-filament::input.wrapper>
-            &mdash;
-            <x-filament::input.wrapper disabled>
-                <x-filament::input
-                    type="date"
-                    wire:model="date"
-                    value="{{ $to }}"
-                    disabled
                 />
             </x-filament::input.wrapper>
         </div>
