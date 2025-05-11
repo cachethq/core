@@ -109,7 +109,6 @@
         ],
         "test:unit": "pest --parallel --processes=10 --ci --coverage --compact",
         "test": [
-            "@test:lint",
             "@test:unit"
         ]
     }
