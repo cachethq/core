@@ -2,6 +2,7 @@
 
 namespace Cachet;
 
+use Cachet\Filament\Pages\EditProfile;
 use Cachet\Http\Middleware\SetAppLocale;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,6 +31,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->default()
             ->login()
             ->passwordReset()
+            ->profile(EditProfile::class)
             ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->brandLogoHeight('2rem')
             ->colors([
@@ -76,6 +78,12 @@ class CachetDashboardServiceProvider extends PanelProvider
                     ->group(fn (): string => __('cachet::navigation.resources.label'))
                     ->icon('heroicon-o-heart'),
             ])
+//            ->userMenuItems([
+//                MenuItem::make()
+//                    ->label(fn (): string => __('cachet::navigation.user.items.edit_profile'))
+//                    ->url(fn (): string => EditProfile::getUrl())
+//                    ->icon('heroicon-o-user'),
+//            ])
             ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('cachet::filament.widgets.add-incident-button'))
             ->middleware([
                 EncryptCookies::class,
