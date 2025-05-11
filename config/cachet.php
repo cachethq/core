@@ -77,6 +77,8 @@ return [
         'api',
     ],
 
+    'trusted_proxies' => env('CACHET_TRUSTED_PROXIES', ''),
+
     /*
      |--------------------------------------------------------------------------
      | Cachet API Rate Limit (attempts per minute)
@@ -142,6 +144,7 @@ return [
         'de_CH' => 'Deutsch (CH)',
         'en' => 'English',
         'en_GB' => 'English (UK)',
+        'es_ES' => 'Spanish (ES)',
         'nl' => 'Nederlands',
         'pt_BR' => 'Português (BR)',
         'zh_CN' => '简体中文',
@@ -160,6 +163,16 @@ return [
      */
     'demo_mode' => env('CACHET_DEMO_MODE', false),
 
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Blog Feed
+     |--------------------------------------------------------------------------
+     |
+     | This is the URI to the Cachet blog feed. This is used to display
+     | the latest blog posts on the status page. By default, this is
+     | set to the public Cachet blog feed.
+     |
+     */
     'feed' => [
         'uri' => env('CACHET_FEED_URI', 'https://blog.cachethq.io/rss'),
         'cache' => env('CACHET_FEED_CACHE', 3600),
