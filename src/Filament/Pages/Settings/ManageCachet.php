@@ -7,6 +7,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Illuminate\Support\Str;
+use function __;
 
 class ManageCachet extends SettingsPage
 {
@@ -71,13 +72,6 @@ class ManageCachet extends SettingsPage
                         ->step(1)
                         ->suffix(__('cachet::settings.manage_cachet.refresh_rate_label_input_suffix_seconds')),
 
-                    Forms\Components\Grid::make(2)
-                        ->schema([
-                            Forms\Components\Toggle::make('show_support')
-                                ->label(__('cachet::settings.manage_cachet.toggles.support_cachet')),
-                            Forms\Components\Toggle::make('display_graphs')
-                                ->label(__('cachet::settings.manage_cachet.toggles.display_graphs')),
-                        ]),
                     Forms\Components\Toggle::make('show_timezone')
                         ->label(__('cachet::settings.manage_cachet.toggles.show_timezone')),
                     Forms\Components\Toggle::make('only_disrupted_days')
@@ -99,6 +93,15 @@ class ManageCachet extends SettingsPage
                                 ->hidden(fn (Get $get) => $get('recent_incidents_only') !== true),
                         ]),
                 ]),
+                Forms\Components\Section::make(__('cachet::settings.manage_cachet.display_settings_title'))
+                    ->schema([
+                        Forms\Components\Toggle::make('show_support')
+                            ->label(__('cachet::settings.manage_cachet.toggles.support_cachet')),
+                        Forms\Components\Toggle::make('display_graphs')
+                            ->label(__('cachet::settings.manage_cachet.toggles.display_graphs')),
+                        Forms\Components\Toggle::make('enable_external_dependencies')
+                            ->label(__('cachet::settings.manage_cachet.toggles.enable_external_dependencies')),
+                    ]),
             ]);
     }
 }
