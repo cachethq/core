@@ -34,7 +34,7 @@
         "laravel/sanctum": "^4.0",
         "nesbot/carbon": "^2.70|^3.0",
         "spatie/laravel-data": "^4.11",
-        "spatie/laravel-query-builder": "^6.3.1",
+        "spatie/laravel-query-builder": "^6.3",
         "spatie/laravel-settings": "^3.2",
         "spatie/laravel-webhook-server": "^3.8",
         "timacdonald/json-api": "^1.0.0-beta.4",
@@ -46,10 +46,10 @@
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.21",
         "orchestra/testbench": "^9.5.1|^10.0",
-        "pestphp/pest": "^3.2",
-        "pestphp/pest-plugin-laravel": "^3.0",
-        "pestphp/pest-plugin-livewire": "*",
-        "pestphp/pest-plugin-type-coverage": "^3.3"
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-laravel": "^3.7",
+        "pestphp/pest-plugin-livewire": "^v3.0",
+        "pestphp/pest-plugin-type-coverage": "^3.5"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
