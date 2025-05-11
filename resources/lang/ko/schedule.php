@@ -41,4 +41,4 @@ return [
         'complete' => '완료됨',
     ],
     'planned_maintenance_header' => '예정된 유지보수',
-]; 
+];

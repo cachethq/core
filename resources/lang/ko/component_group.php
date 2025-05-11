@@ -26,4 +26,4 @@ return [
         'visible_label' => '표시 여부',
         'collapsed_label' => '축소 여부',
     ],
-]; 
+];

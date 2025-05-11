@@ -16,4 +16,4 @@ return [
     'open_source_status_page' => '오픈 소스 상태 페이지.',
     'all_times_shown_in' => '모든 시간은 *:timezone* 기준입니다.',
     'rss_feed' => ':name RSS 피드',
-]; 
+];

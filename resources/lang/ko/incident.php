@@ -77,4 +77,4 @@ return [
         'total_incidents_label' => '총 사고 수',
         'total_incidents_description' => '총 사고 수입니다.',
     ],
-]; 
+];

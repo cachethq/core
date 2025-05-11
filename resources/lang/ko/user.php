@@ -26,4 +26,4 @@ return [
         'preferred_locale_system_default' => '시스템 기본값',
         'is_admin_label' => '관리자',
     ],
-]; 
+];

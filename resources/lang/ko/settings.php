@@ -35,4 +35,4 @@ return [
             'accent_pairing_label' => '강조색 페어링',
         ],
     ],
-]; 
+];

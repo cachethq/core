@@ -35,4 +35,4 @@ return [
         'major_outage' => '주요 장애',
         'unknown' => '알 수 없음',
     ],
-]; 
+];

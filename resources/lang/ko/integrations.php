@@ -14,4 +14,4 @@ return [
         'provided_url_invalid' => '제공된 URL은 유효한 Oh Dear 상태 페이지 엔드포인트가 아닙니다.',
         'imported_successfully' => 'Oh Dear 피드를 성공적으로 가져왔습니다.',
     ],
-]; 
+];

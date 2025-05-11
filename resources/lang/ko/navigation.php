@@ -27,4 +27,4 @@ return [
             'sponsor' => 'Cachet 후원',
         ],
     ],
-]; 
+];
