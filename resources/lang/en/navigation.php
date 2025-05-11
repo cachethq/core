@@ -27,4 +27,9 @@ return [
             'sponsor' => 'Sponsor Cachet',
         ],
     ],
+    'user' => [
+        'items' => [
+            'edit_profile' => 'Edit Profile',
+        ],
+    ],
 ];
