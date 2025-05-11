@@ -7,6 +7,7 @@ use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
+use Cachet\Settings\AppSettings;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -15,12 +16,22 @@ use Illuminate\View\View;
 class StatusPageController
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct(protected AppSettings $appSettings)
+    {
+        //
+    }
+
+    /**
      * Show the status page.
      */
     public function index(): View
     {
         return view('cachet::status-page.index', [
             'schedules' => Schedule::query()->with('updates')->incomplete()->orderBy('scheduled_at')->get(),
+
+            'display_graphs' => $this->appSettings->display_graphs,
         ]);
     }
 

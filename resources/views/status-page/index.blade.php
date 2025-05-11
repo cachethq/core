@@ -8,7 +8,9 @@
 
         <x-cachet::component-groups />
         
+        @if ($display_graphs)
         <x-cachet::metrics />
+        @endif
 
         @if ($schedules->isNotEmpty())
             <x-cachet::schedules :schedules="$schedules" />

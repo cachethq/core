@@ -41,13 +41,15 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "dedoc/scramble": "0.12.0-alpha.1",
-        "larastan/larastan": "^3.0",
+        "dedoc/scramble": "^0.12.11",
+        "larastan/larastan": "^3.4",
         "laravel/pail": "^1.1",
+        "laravel/pint": "^1.21",
         "orchestra/testbench": "^9.5.1",
         "pestphp/pest": "^3.2",
         "pestphp/pest-plugin-laravel": "^3.0",
-        "pestphp/pest-plugin-livewire": "*"
+        "pestphp/pest-plugin-livewire": "*",
+        "pestphp/pest-plugin-type-coverage": "^3.3"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -102,6 +104,13 @@
         "start": [
             "@dev"
         ],
-        "test": "vendor/bin/pest"
+        "test:lint": [
+            "pint --test"
+        ],
+        "test:unit": "pest --parallel --processes=10 --ci --coverage --compact",
+        "test": [
+            "@test:lint",
+            "@test:unit"
+        ]
     }
 }
