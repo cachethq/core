@@ -78,12 +78,6 @@ class CachetDashboardServiceProvider extends PanelProvider
                     ->group(fn (): string => __('cachet::navigation.resources.label'))
                     ->icon('heroicon-o-heart'),
             ])
-//            ->userMenuItems([
-//                MenuItem::make()
-//                    ->label(fn (): string => __('cachet::navigation.user.items.edit_profile'))
-//                    ->url(fn (): string => EditProfile::getUrl())
-//                    ->icon('heroicon-o-user'),
-//            ])
             ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('cachet::filament.widgets.add-incident-button'))
             ->middleware([
                 EncryptCookies::class,
