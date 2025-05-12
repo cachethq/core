@@ -4,6 +4,7 @@ namespace Cachet\Actions\Update;
 
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
+use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
@@ -19,7 +20,10 @@ class CreateUpdate
 
         $resource->updates()->save($update);
 
-        // @todo Dispatch notification that incident was updated.
+        if($resource instanceof Incident) {
+            $resource->update(['status' => $update->status]);
+            IncidentUpdated::dispatch($resource);
+        }
 
         return $update;
     }
