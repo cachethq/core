@@ -10,6 +10,7 @@ use function Pest\Laravel\deleteJson;
 use function Pest\Laravel\getJson;
 use function Pest\Laravel\postJson;
 use function Pest\Laravel\putJson;
+use function Pest\Laravel\withoutExceptionHandling;
 
 it('can list incidents', function () {
     Incident::factory(2)->create();
@@ -144,19 +145,26 @@ it('can filter incidents by status', function () {
 
 it('can filter incidents by occurred at date', function () {
     Incident::factory(20)->create([
-        'occurred_at' => '2019-01-01',
+        'occurred_at' => '2019-01-01 00:00:00',
     ]);
     $incident = Incident::factory()->create([
-        'occurred_at' => '2023-01-01',
+        'occurred_at' => '2025-01-01 00:00:00',
     ]);
 
-    $query = http_build_query([
+    withoutExceptionHandling();
+
+    dd(route('cachet.api.incidents.index', [
         'filter' => [
-            'occurred_at' => '2023-01-01',
+            'occurs_after' => '2024-12-31',
         ],
-    ]);
+    ]));
 
-    $response = getJson('/status/api/incidents?'.$query);
+    $response = getJson(route('cachet.api.incidents.index', [
+        'filter' => [
+            'occurs_after' => '2024-12-31',
+        ],
+    ]))
+        ->assertOk();
 
     $response->assertJsonCount(1, 'data');
     $response->assertJsonPath('data.0.attributes.id', $incident->id);
