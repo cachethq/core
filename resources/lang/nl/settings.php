@@ -5,6 +5,8 @@ return [
         'site_name_label' => 'Pagina naam',
         'about_this_site_label' => 'Over deze site',
         'timezone_label' => 'Tijdzone',
+        'timezone_other' => 'Overig',
+        'browser_default' => 'Gebruik browserstandaard',
         'incident_days_label' => 'Incidentendagen',
         'major_outage_threshold_label' => 'Drempel voor ernstige storingen',
         'refresh_rate_label' => 'Pagina automatisch opnieuw laden',

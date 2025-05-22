@@ -154,6 +154,7 @@ class CachetCoreServiceProvider extends ServiceProvider
      */
     private function registerBladeComponents(): void
     {
+        view()->share('appSettings', app(AppSettings::class));
         Blade::componentNamespace('Cachet\\View\\Components', 'cachet');
 
         $this->callAfterResolving(Factory::class, function (Factory $factory) {
