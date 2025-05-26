@@ -29,7 +29,7 @@ return [
     ],
     'user' => [
         'items' => [
-            'edit_profile' => 'Profile bearbeiten',
+            'edit_profile' => 'Profil bearbeiten',
         ],
     ],
 ];
