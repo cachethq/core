@@ -69,7 +69,12 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->registerPublishing();
         $this->registerBladeComponents();
 
-        Event::listen('Cachet\Events\Incidents\*', SendWebhookListener::class);
+        Event::listen([
+            'Cachet\Events\Incidents\*',
+            'Cachet\Events\Components\*',
+            'Cachet\Events\Subscribers\*',
+            'Cachet\Events\Metrics\*',
+        ], SendWebhookListener::class);
         Event::listen([WebhookCallSucceededEvent::class, WebhookCallFailedEvent::class], WebhookCallEventListener::class);
 
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
