@@ -41,7 +41,7 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "dedoc/scramble": "^0.12.11",
+        "dedoc/scramble": "^0.12.21",
         "larastan/larastan": "^3.4",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.21",

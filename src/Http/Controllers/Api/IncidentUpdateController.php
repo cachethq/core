@@ -13,9 +13,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Update;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedInclude;
@@ -28,8 +26,6 @@ class IncidentUpdateController extends Controller
 
     /**
      * List Incident Updates
-     *
-     * @response AnonymousResourceCollection<Paginator<UpdateResource>>
      */
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]

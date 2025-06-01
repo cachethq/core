@@ -14,9 +14,7 @@ use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Schedule;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -28,8 +26,6 @@ class ScheduleController extends Controller
 
     /**
      * List Schedules
-     *
-     * @response AnonymousResourceCollection<Paginator<ScheduleResource>>
      */
     #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
     #[QueryParameter('filter[status]', 'Filter the resources by status.', type: ScheduleStatusEnum::class)]
