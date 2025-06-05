@@ -5,14 +5,9 @@
         <x-cachet::status-bar />
 
         <x-cachet::about />
-        @foreach ($componentGroups as $componentGroup)
-            <x-cachet::component-group :component-group="$componentGroup" />
-        @endforeach
 
-        @foreach ($ungroupedComponents as $component)
-            <x-cachet::component-ungrouped :component="$component" />
-        @endforeach
-
+        <x-cachet::component-groups />
+        
         @if ($display_graphs)
         <x-cachet::metrics />
         @endif
