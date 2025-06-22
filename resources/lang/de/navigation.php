@@ -27,4 +27,9 @@ return [
             'sponsor' => 'Cachet unterstützen',
         ],
     ],
+    'user' => [
+        'items' => [
+            'edit_profile' => 'Profil bearbeiten',
+        ],
+    ],
 ];
