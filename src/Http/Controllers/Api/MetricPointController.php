@@ -11,9 +11,7 @@ use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -24,8 +22,6 @@ class MetricPointController extends Controller
 
     /**
      * List Metric Points
-     *
-     * @response AnonymousResourceCollection<Paginator<MetricPointResource>>
      */
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]

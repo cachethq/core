@@ -13,6 +13,7 @@ use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\Operation;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
+use Dedoc\Scramble\Support\Generator\Server;
 use Dedoc\Scramble\Support\RouteInfo;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
@@ -69,7 +70,12 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->registerPublishing();
         $this->registerBladeComponents();
 
-        Event::listen('Cachet\Events\Incidents\*', SendWebhookListener::class);
+        Event::listen([
+            'Cachet\Events\Incidents\*',
+            'Cachet\Events\Components\*',
+            'Cachet\Events\Subscribers\*',
+            'Cachet\Events\Metrics\*',
+        ], SendWebhookListener::class);
         Event::listen([WebhookCallSucceededEvent::class, WebhookCallFailedEvent::class], WebhookCallEventListener::class);
 
         Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
@@ -220,6 +226,7 @@ class CachetCoreServiceProvider extends ServiceProvider
             ->withDocumentTransformers(function (OpenApi $openApi) {
                 $openApi->info->description = 'API documentation for Cachet, the open-source, self-hosted status page system.';
 
+                $openApi->addServer(Server::make('https://v3.cachethq.io')->setDescription('The Cachet v3 demo server.'));
                 $openApi->secure(SecurityScheme::http('bearer'));
             })
             ->withOperationTransformers(function (Operation $operation, RouteInfo $routeInfo) {
