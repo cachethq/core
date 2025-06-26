@@ -14,6 +14,8 @@ class AppSettings extends Settings
 
     public bool $show_support = true;
 
+    public string $locale = 'en';
+
     public string $timezone = 'UTC';
 
     public bool $show_timezone = false;

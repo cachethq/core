@@ -6,6 +6,7 @@ return [
         'items' => [
             'manage_cachet' => 'Manage Cachet',
             'manage_customization' => 'Manage Customization',
+            'manage_localization' => 'Manage Localization',
             'manage_theme' => 'Manage Theme',
             'manage_api_keys' => 'Manage API Keys',
             'manage_webhooks' => 'Manage Webhooks',
