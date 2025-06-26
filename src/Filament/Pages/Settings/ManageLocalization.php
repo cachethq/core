@@ -3,7 +3,6 @@
 namespace Cachet\Filament\Pages\Settings;
 
 use Cachet\Settings\AppSettings;
-use Cachet\Settings\CustomizationSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Illuminate\Support\Str;
