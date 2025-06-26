@@ -28,10 +28,11 @@ class ManageLocalization extends SettingsPage
                 Forms\Components\Section::make()->columns(2)->schema([
                     Forms\Components\Select::make('locale')
                         ->label(__('cachet::settings.manage_localization.locale_label'))
-                        ->options([
-                            'es' => 'Spanish',
-                            'en' => 'English',
-                        ])->searchable()
+                        ->options(
+                            config('cachet.supported_locales', [
+                                'en' => 'English',
+                            ])
+                        )->searchable()
                         ->suffixIcon('heroicon-o-language'),
 
                     Forms\Components\Select::make('timezone')
