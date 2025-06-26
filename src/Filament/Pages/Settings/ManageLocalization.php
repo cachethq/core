@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Pages\Settings;
 
+use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -9,7 +10,7 @@ use Illuminate\Support\Str;
 
 class ManageLocalization extends SettingsPage
 {
-    protected static string $settings = CustomizationSettings::class;
+    protected static string $settings = AppSettings::class;
 
     public static function getNavigationGroup(): ?string
     {
@@ -29,6 +30,7 @@ class ManageLocalization extends SettingsPage
                     Forms\Components\Select::make('locale')
                         ->label(__('cachet::settings.manage_localization.locale_label'))
                         ->options([
+                            'es' => 'Spanish',
                             'en' => 'English',
                         ])->searchable()
                         ->suffixIcon('heroicon-o-language'),
