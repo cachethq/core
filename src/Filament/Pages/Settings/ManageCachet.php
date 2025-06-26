@@ -36,20 +36,6 @@ class ManageCachet extends SettingsPage
                         ->label(__('cachet::settings.manage_cachet.about_this_site_label'))
                         ->columnSpanFull(),
 
-                    Forms\Components\Select::make('timezone')
-                        ->label(__('cachet::settings.manage_cachet.timezone_label'))
-                        ->options(fn () => collect(timezone_identifiers_list())
-                            ->mapToGroups(
-                                fn ($timezone) => [
-                                    Str::of($timezone)
-                                        ->before('/')
-                                        ->toString() => [$timezone => $timezone],
-                                ]
-                            )
-                            ->map(fn ($group) => $group->collapse()))
-                        ->searchable()
-                        ->suffixIcon('heroicon-o-globe-alt'),
-
                     Forms\Components\TextInput::make('incident_days')
                         ->numeric()
                         ->label(__('cachet::settings.manage_cachet.incident_days_label'))
@@ -73,8 +59,6 @@ class ManageCachet extends SettingsPage
                         ->step(1)
                         ->suffix(__('cachet::settings.manage_cachet.refresh_rate_label_input_suffix_seconds')),
 
-                    Forms\Components\Toggle::make('show_timezone')
-                        ->label(__('cachet::settings.manage_cachet.toggles.show_timezone')),
                     Forms\Components\Toggle::make('only_disrupted_days')
                         ->label(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days')),
                     Forms\Components\Toggle::make('dashboard_login_link')
