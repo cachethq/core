@@ -24,6 +24,10 @@ class Status
     {
         $components = $this->components();
 
+        if ($this->underMaintenance()) {
+            return SystemStatusEnum::under_maintenance;
+        }
+
         if ($this->majorOutage()) {
             return SystemStatusEnum::major_outage;
         }
@@ -37,6 +41,18 @@ class Status
         }
 
         return SystemStatusEnum::partial_outage;
+    }
+
+    /**
+     * Determine if the system is under maintenance.
+     */
+    public function underMaintenance(): bool
+    {
+        if ((int) $this->components()->total === 0) {
+            return false;
+        }
+
+        return (int) $this->components()->under_maintenance >= 1;
     }
 
     /**
@@ -67,6 +83,7 @@ class Status
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as performance_issues', [ComponentStatusEnum::performance_issues])
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as partial_outage', [ComponentStatusEnum::partial_outage])
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as major_outage', [ComponentStatusEnum::major_outage])
+            ->selectRaw('sum(case when status = ? then 1 else 0 end) as under_maintenance', [ComponentStatusEnum::under_maintenance])
             ->first();
     }
 
