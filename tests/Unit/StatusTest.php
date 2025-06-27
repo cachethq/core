@@ -46,7 +46,7 @@ it('can get the current system status', function () {
     $this->assertEquals((new Status)->current(), SystemStatusEnum::operational);
 });
 
-it('can get the current system status', function () {
+it('can get the current system status as under maintenance', function () {
     Component::factory()->create([
         'status' => ComponentStatusEnum::under_maintenance->value,
     ]);
