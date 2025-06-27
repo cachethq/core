@@ -24,6 +24,10 @@ class Status
     {
         $components = $this->components();
 
+        if ($this->underMaintenance()) {
+            return SystemStatusEnum::under_maintenance;
+        }
+
         if ($this->majorOutage()) {
             return SystemStatusEnum::major_outage;
         }
