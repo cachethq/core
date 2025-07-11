@@ -41,10 +41,10 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "dedoc/scramble": "^0.12.21",
+        "dedoc/scramble": "^0.12",
         "larastan/larastan": "^3.4",
         "laravel/pail": "^1.1",
-        "laravel/pint": "^1.21",
+        "laravel/pint": "^1.24",
         "orchestra/testbench": "^9.5.1",
         "pestphp/pest": "^3.2",
         "pestphp/pest-plugin-laravel": "^3.0",
