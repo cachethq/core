@@ -2,6 +2,7 @@
 
 namespace Cachet\Settings;
 
+use Spatie\LaravelSettings\Exceptions\MissingSettings;
 use Spatie\LaravelSettings\Settings;
 
 class AppSettings extends Settings
@@ -32,6 +33,10 @@ class AppSettings extends Settings
 
     public int $recent_incidents_days = 7;
 
+    public bool $api_enabled = true;
+
+    public bool $api_protected = false;
+
     public bool $display_graphs = true;
 
     public bool $enable_external_dependencies = true;
@@ -39,5 +44,18 @@ class AppSettings extends Settings
     public static function group(): string
     {
         return 'app';
+    }
+
+
+    public static function getOrDefault(string $name, mixed $default = null): mixed
+    {
+        try {
+            return app(self::class)->$name;
+        } catch (MissingSettings $exception) {
+            if(! app()->runningInConsole()) {
+                throw new \Exception("Please run `php artisan migrate` to load missing settings.");
+            }
+        }
+        return $default;
     }
 }

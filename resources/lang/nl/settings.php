@@ -19,6 +19,8 @@ return [
             'only_show_disrupted_days' => 'Alleen dagen met incidenten weergeven',
             'recent_incidents_only' => 'Toon alleen actuele incidenten',
             'recent_incidents_days' => 'Aantal dagen waarop actuele incidenten moeten worden weergegeven',
+            'api_enabled' => 'API geactiveerd',
+            'api_protected' => 'API authenticatie vereist',
         ],
         'display_settings_title' => 'Weergave-instellingen',
     ],

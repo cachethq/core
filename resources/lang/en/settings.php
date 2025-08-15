@@ -19,6 +19,8 @@ return [
             'only_show_disrupted_days' => 'Only Show Disrupted Days',
             'recent_incidents_only' => 'Show Recent Incidents Only',
             'recent_incidents_days' => 'Number of Days to Show Recent Incidents',
+            'api_enabled' => 'API Enabled',
+            'api_protected' => 'API requires authentication',
         ],
         'display_settings_title' => 'Display Settings',
     ],

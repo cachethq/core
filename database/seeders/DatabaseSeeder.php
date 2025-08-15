@@ -224,6 +224,8 @@ ABOUT;
         $appSettings->major_outage_threshold = 25;
         $appSettings->recent_incidents_only = false;
         $appSettings->recent_incidents_days = 7;
+        $appSettings->api_enabled = true;
+        $appSettings->api_protected = false;
         $appSettings->save();
 
         $customizationSettings = app(CustomizationSettings::class);
