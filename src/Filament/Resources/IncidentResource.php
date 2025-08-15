@@ -169,8 +169,8 @@ class IncidentResource extends Resource
                         Forms\Components\MarkdownEditor::make('message')
                             ->label(__('cachet::incident.record_update.form.message_label'))
                             ->required()
-                            ->minHeight(200)
-                            ->maxHeight(400)
+                            ->minHeight('200px')
+                            ->maxHeight('300px')
                             ->columnSpanFull(),
                         Forms\Components\ToggleButtons::make('status')
                             ->label(__('cachet::incident.record_update.form.status_label'))
