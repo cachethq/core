@@ -11,7 +11,7 @@
                             </h3>
                         </div>
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                            {{ $schedule->scheduled_at->diffForHumans() }} — <time datetime="{{ $schedule->scheduled_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
+                            {{ $schedule->scheduled_at->diffForHumans() }} — <time datetime="{{ $schedule->scheduled_at->toW3cString()}}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
                         </span>
                     </div>
 
@@ -30,7 +30,7 @@
             @foreach ($schedule->updates as $update)
             <div class="relative py-4" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
-                    {{ $update->created_at->diffForHumans() }} — <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString()"></time>
+                    {{ $update->created_at->diffForHumans() }} — <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
                 </span>
                 <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">{!! $update->formattedMessage() !!}</div>
             </div>
