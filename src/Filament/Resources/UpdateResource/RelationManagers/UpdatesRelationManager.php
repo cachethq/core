@@ -20,6 +20,8 @@ class UpdatesRelationManager extends RelationManager
                 Forms\Components\MarkdownEditor::make('message')
                     ->label(__('Message'))
                     ->required()
+                    ->minHeight(200)
+                    ->maxHeight(400)
                     ->columnSpanFull(),
                 Forms\Components\Select::make('user_id')
                     ->label(__('User'))
