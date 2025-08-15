@@ -10,6 +10,7 @@ return [
             'group' => 'Group',
             'enabled' => 'Enabled',
             'created_at' => 'Created at',
+            'checked_at' => 'Checked at',
             'updated_at' => 'Updated at',
             'deleted_at' => 'Deleted at',
         ],
@@ -27,6 +28,7 @@ return [
         'component_group_label' => 'Component Group',
         'link_label' => 'Link',
         'link_helper' => 'An optional link to the component.',
+        'checked_label' => 'Whether to periodically check the component.',
     ],
     'status' => [
         'operational' => 'Operational',
