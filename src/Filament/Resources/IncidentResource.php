@@ -25,7 +25,6 @@ class IncidentResource extends Resource
     protected static ?string $model = Incident::class;
 
     protected static ?string $navigationIcon = 'cachet-incident';
-
     public static function form(Form $form): Form
     {
         return $form

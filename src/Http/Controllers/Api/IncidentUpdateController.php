@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\Incident\SetLatestStatusIncident;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
@@ -75,11 +76,19 @@ class IncidentUpdateController extends Controller
     /**
      * Update Incident Update
      */
-    public function update(EditIncidentUpdateRequestData $data, Incident $incident, Update $update, EditUpdate $editUpdateAction)
+    public function update(
+        EditIncidentUpdateRequestData $data,
+        Incident $incident,
+        Update $update,
+        EditUpdate $editUpdateAction,
+        SetLatestStatusIncident $latestStatusIncident,
+    )
     {
         $this->guard('incident-updates.manage');
 
         $editUpdateAction->handle($update, $data);
+        $latestStatusIncident->handle($incident);
+
 
         return UpdateResource::make($update->fresh());
     }
@@ -87,11 +96,17 @@ class IncidentUpdateController extends Controller
     /**
      * Delete Incident Update
      */
-    public function destroy(Incident $incident, Update $update, DeleteUpdate $deleteUpdateAction)
+    public function destroy(
+        Incident $incident,
+        Update $update,
+        DeleteUpdate $deleteUpdateAction,
+        SetLatestStatusIncident $latestStatusIncident,
+    )
     {
         $this->guard('incident-updates.delete');
 
         $deleteUpdateAction->handle($update);
+        $latestStatusIncident->handle($incident);
 
         return response()->noContent();
     }
