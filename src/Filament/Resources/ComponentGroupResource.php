@@ -3,6 +3,8 @@
 namespace Cachet\Filament\Resources;
 
 use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Cachet\Enums\ResourceOrderColumnEnum;
+use Cachet\Enums\ResourceOrderDirectionEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\ComponentGroupResource\Pages;
 use Cachet\Filament\Resources\ComponentResource\RelationManagers\ComponentsRelationManager;
@@ -42,9 +44,21 @@ class ComponentGroupResource extends Resource
                         ->required()
                         ->inline()
                         ->options(ComponentGroupVisibilityEnum::class)
-                        ->default(ComponentGroupVisibilityEnum::expanded)
+                        ->default(ComponentGroupVisibilityEnum::expanded->value)
                         ->columnSpanFull(),
                 ]),
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\Select::make('order_column')
+                        ->label(__('cachet::component_group.form.order_column_label'))
+                        ->options(ResourceOrderColumnEnum::class)
+                        ->required()
+                        ->reactive(),
+                    Forms\Components\Select::make('order_direction')
+                        ->label(__('cachet::component_group.form.order_direction'))
+                        ->options(ResourceOrderDirectionEnum::class)
+                        ->required(fn (Forms\Get $get) => $get('order_column') !== ResourceOrderColumnEnum::Manual->value)
+                        ->visible(fn (Forms\Get $get) => $get('order_column') !== ResourceOrderColumnEnum::Manual->value),
+                ])
             ]);
     }
 
@@ -62,6 +76,15 @@ class ComponentGroupResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('collapsed')
                     ->label(__('cachet::component_group.list.headers.collapsed'))
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('order_column')
+                    ->icon(fn ($record) => match (true) {
+                        $record->order_column === ResourceOrderColumnEnum::Manual => 'heroicon-o-chevron-up-down',
+                        $record->order_direction === ResourceOrderDirectionEnum::Asc => 'heroicon-o-arrow-up',
+                        $record->order_direction === ResourceOrderDirectionEnum::Desc => 'heroicon-o-arrow-down',
+                        default => null,
+                    })
+                    ->label(__('cachet::component_group.list.headers.order_column'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('cachet::component_group.list.headers.created_at'))
