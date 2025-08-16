@@ -93,7 +93,7 @@ class ApiKeyResource extends Resource
                     ->sortable()
                     ->color(fn (PersonalAccessToken $record) => $record->expires_at ? null : 'gray')
                     ->badge(fn (PersonalAccessToken $record) => ! $record->expires_at)
-                    ->getStateUsing(fn (PersonalAccessToken $record) => $record->expires_at?->format(Table::$defaultDateDisplayFormat) ?? 'N/A'),
+                    ->getStateUsing(fn (PersonalAccessToken $record) => $record->expires_at?->format($table->getDefaultDateDisplayFormat()) ?? 'N/A'),
                 TextColumn::make('updated_at')
                     ->label(__('cachet::api_key.list.headers.updated_at'))
                     ->dateTime()
