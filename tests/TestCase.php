@@ -7,6 +7,7 @@ use BladeUI\Icons\BladeIconsServiceProvider;
 use Dedoc\Scramble\ScrambleServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
+use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -30,16 +31,22 @@ abstract class TestCase extends Orchestra
 
     protected function getPackageProviders($app)
     {
-        return array_merge(parent::getPackageProviders($app), [
+        $providers = array_merge(parent::getPackageProviders($app), [
             LivewireServiceProvider::class,
             FilamentServiceProvider::class,
             FormsServiceProvider::class,
+            SchemasServiceProvider::class,
             SupportServiceProvider::class,
             BladeIconsServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             WidgetsServiceProvider::class,
             ScrambleServiceProvider::class,
         ]);
+
+        // Laravel apps register providers in alphabetical order, so we do the same here for consistency.
+        asort($providers);
+
+        return $providers;
     }
 
     /**

@@ -15,7 +15,7 @@ enum IncidentTemplateEngineEnum: string implements HasColor, HasIcon, HasLabel
     public function getColor(): array
     {
         return match ($this) {
-            self::blade => Color::rgb('rgb(249, 50, 44)'),
+            self::blade => Color::generateV3Palette('rgb(249, 50, 44)'),
             self::twig => Color::Zinc,
         };
     }
