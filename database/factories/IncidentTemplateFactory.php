@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\IncidentTemplate>
+ * @extends Factory<IncidentTemplate>
  */
 class IncidentTemplateFactory extends Factory
 {

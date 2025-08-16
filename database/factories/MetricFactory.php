@@ -8,7 +8,7 @@ use Cachet\Models\Metric;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\Metric>
+ * @extends Factory<Metric>
  */
 class MetricFactory extends Factory
 {

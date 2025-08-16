@@ -4,8 +4,13 @@ namespace Cachet\Filament\Pages\Settings;
 
 use Cachet\Data\Cachet\ThemeData;
 use Cachet\Settings\ThemeSettings;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
 
@@ -23,12 +28,12 @@ class ManageTheme extends SettingsPage
         return __('cachet::navigation.settings.items.manage_theme');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make()->columns(2)->schema([
-                    Forms\Components\FileUpload::make('app_banner')
+        return $schema
+            ->components([
+                Section::make()->columns(2)->schema([
+                    FileUpload::make('app_banner')
                         ->image()
                         ->imageEditor()
                         ->label(__('cachet::settings.manage_theme.app_banner_label'))
@@ -36,11 +41,11 @@ class ManageTheme extends SettingsPage
                         ->columnSpanFull(),
                 ]),
 
-                Forms\Components\Section::make()->columns(2)
+                Section::make()->columns(2)
                     ->heading(__('cachet::settings.manage_theme.status_page_accent.heading'))
                     ->description(__('cachet::settings.manage_theme.status_page_accent.description'))
                     ->schema([
-                        Forms\Components\Select::make('accent')
+                        Select::make('accent')
                             ->label(__('cachet::settings.manage_theme.status_page_accent.accent_color_label'))
                             ->options([
                                 ...collect(Color::all())
@@ -55,7 +60,7 @@ class ManageTheme extends SettingsPage
                             ->native(false)
                             ->allowHtml()
                             ->reactive()
-                            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, ?string $old, ?string $state) {
+                            ->afterStateUpdated(function (Get $get, Set $set, ?string $old, ?string $state) {
                                 $accentPairing = $get('accent_pairing');
 
                                 if ($accentPairing) {
@@ -63,7 +68,7 @@ class ManageTheme extends SettingsPage
                                 }
                             }),
 
-                        Forms\Components\Select::make('accent_content')
+                        Select::make('accent_content')
                             ->label(__('cachet::settings.manage_theme.status_page_accent.accent_content_label'))
                             ->options(function () {
                                 return [
@@ -75,13 +80,13 @@ class ManageTheme extends SettingsPage
                                 ];
                             })
                             ->native(false)
-                            ->disabled(fn (Forms\Get $get) => $get('accent_pairing') === true)
+                            ->disabled(fn (Get $get) => $get('accent_pairing') === true)
                             ->allowHtml(),
 
-                        Forms\Components\Toggle::make('accent_pairing')
+                        Toggle::make('accent_pairing')
                             ->label(__('cachet::settings.manage_theme.status_page_accent.accent_pairing_label'))
                             ->reactive()
-                            ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set, ?bool $old, ?bool $state) {
+                            ->afterStateUpdated(function (Get $get, Set $set, ?bool $old, ?bool $state) {
                                 $accent = $get('accent');
 
                                 if ($state) {

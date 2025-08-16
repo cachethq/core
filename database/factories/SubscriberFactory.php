@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\Subscriber>
+ * @extends Factory<Subscriber>
  */
 class SubscriberFactory extends Factory
 {

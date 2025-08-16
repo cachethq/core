@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Middleware;
 
+use Cachet\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -9,7 +10,7 @@ class SetAppLocale
 {
     public function handle(Request $request, Closure $next)
     {
-        /** @var ?\Cachet\Models\User */
+        /** @var ?User */
         $user = $request->user();
 
         if ($user) {

@@ -1,16 +1,16 @@
 {
   "resources/css/cachet.css": {
-    "file": "assets/cachet-DErgJvX2.css",
+    "file": "assets/cachet-CU3ZmJ9k.css",
     "src": "resources/css/cachet.css",
     "isEntry": true
   },
   "resources/css/dashboard/theme.css": {
-    "file": "assets/theme-B79VLdQr.css",
+    "file": "assets/theme-B6XOHtqS.css",
     "src": "resources/css/dashboard/theme.css",
     "isEntry": true
   },
   "resources/js/cachet.js": {
-    "file": "assets/cachet-D0qURpuI.js",
+    "file": "assets/cachet-DCHo8qoD.js",
     "name": "cachet",
     "src": "resources/js/cachet.js",
     "isEntry": true

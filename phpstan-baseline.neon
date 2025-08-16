@@ -4,4 +4,4 @@ parameters:
 			message: '#^Access to an undefined property Laravel\\Sanctum\\PersonalAccessToken\:\:\$expires_at\.$#'
 			identifier: property.notFound
 			count: 3
-			path: src/Filament/Resources/ApiKeyResource.php
+			path: src/Filament/Resources/ApiKeys/ApiKeyResource.php

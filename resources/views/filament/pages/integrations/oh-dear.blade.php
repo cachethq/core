@@ -1,5 +1,5 @@
 <x-filament::page>
-    <x-filament-panels::form wire:submit.prevent="importFeed">
+    <form class="grid gap-6" wire:submit.prevent="importFeed">
         {{ $this->form }}
 
         <div>
@@ -7,5 +7,5 @@
                 {{ __('cachet::integrations.oh_dear.import_feed_button') }}
             </x-filament::button>
         </div>
-    </x-filament-panels::form>
+    </form>
 </x-filament::page>

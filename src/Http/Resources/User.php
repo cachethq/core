@@ -2,11 +2,12 @@
 
 namespace Cachet\Http\Resources;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
 /**
- * @mixin \Illuminate\Contracts\Auth\Authenticatable
+ * @mixin Authenticatable
  */
 class User extends JsonApiResource
 {

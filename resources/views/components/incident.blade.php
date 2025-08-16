@@ -44,8 +44,8 @@
         <div class="relative">
             <div class="absolute inset-y-0 -left-9">
                 <div class="ml-3.5 h-full border-l-2 border-dashed dark:border-zinc-700"></div>
-                <div class="absolute inset-x-0 top-0 w-full h-24 bg-gradient-to-t from-transparent to-[rgb(var(--accent-background))]"></div>
-                <div class="absolute inset-x-0 bottom-0 w-full h-24 bg-gradient-to-b from-transparent to-[rgb(var(--accent-background))]"></div>
+                <div class="absolute inset-x-0 top-0 w-full h-24 bg-linear-to-t from-transparent to-[rgb(var(--accent-background))]"></div>
+                <div class="absolute inset-x-0 bottom-0 w-full h-24 bg-linear-to-b from-transparent to-[rgb(var(--accent-background))]"></div>
             </div>
             <div class="flex flex-col px-4 divide-y dark:divide-zinc-700">
                 @foreach ($incident->updates as $update)

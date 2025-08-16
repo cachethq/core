@@ -6,7 +6,7 @@ use Cachet\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\Schedule>
+ * @extends Factory<Schedule>
  */
 class ScheduleFactory extends Factory
 {
