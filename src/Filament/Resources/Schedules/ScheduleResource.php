@@ -160,7 +160,7 @@ class ScheduleResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::inTheFuture()->count();
+        return (string) Schedule::inTheFuture()->count();
     }
 
     public static function getNavigationBadgeColor(): string

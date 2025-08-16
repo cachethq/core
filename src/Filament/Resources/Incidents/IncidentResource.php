@@ -245,7 +245,7 @@ class IncidentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::unresolved()
+        return (string) Incident::unresolved()
             ->get()
             ->filter(fn (Incident $incident) => in_array($incident->latest_status, IncidentStatusEnum::unresolved()))->count();
     }

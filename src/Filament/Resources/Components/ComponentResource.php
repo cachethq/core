@@ -154,7 +154,7 @@ class ComponentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::outage()->count();
+        return (string) Component::outage()->count();
     }
 
     public static function getNavigationBadgeColor(): string
