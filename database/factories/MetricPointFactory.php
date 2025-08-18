@@ -7,7 +7,7 @@ use Cachet\Models\MetricPoint;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\MetricPoint>
+ * @extends Factory<MetricPoint>
  */
 class MetricPointFactory extends Factory
 {

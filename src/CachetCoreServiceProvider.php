@@ -3,6 +3,10 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Commands\MakeUserCommand;
+use Cachet\Commands\SendBeaconCommand;
+use Cachet\Commands\VersionCommand;
+use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\Incident;
@@ -83,7 +87,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         ));
 
         FilamentColor::register([
-            'cachet' => Color::rgb('rgb(4, 193, 71)'),
+            'cachet' => Color::generateV3Palette('rgb(4, 193, 71)'),
         ]);
 
         $this->configureScramble();
@@ -177,9 +181,9 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                Commands\MakeUserCommand::class,
-                Commands\SendBeaconCommand::class,
-                Commands\VersionCommand::class,
+                MakeUserCommand::class,
+                SendBeaconCommand::class,
+                VersionCommand::class,
             ]);
 
             AboutCommand::add('Cachet', fn () => [
@@ -207,7 +211,7 @@ class CachetCoreServiceProvider extends ServiceProvider
             $schedule->command('cachet:beacon')->daily();
 
             $schedule->command('db:seed', [
-                '--class' => \Cachet\Database\Seeders\DatabaseSeeder::class,
+                '--class' => DatabaseSeeder::class,
                 '--force',
             ])->everyThirtyMinutes()->when($demoMode);
         });

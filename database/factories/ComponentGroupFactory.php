@@ -7,7 +7,7 @@ use Cachet\Models\ComponentGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\ComponentGroup>
+ * @extends Factory<ComponentGroup>
  */
 class ComponentGroupFactory extends Factory
 {

@@ -1,10 +1,8 @@
 import { defineConfig } from 'vite'
 import laravel from 'laravel-vite-plugin'
+import tailwindcss from "@tailwindcss/vite"
 
 export default defineConfig({
-  build: {
-    cssMinify: 'lightningcss'
-  },
   plugins: [
     laravel({
       input: [
@@ -15,5 +13,6 @@ export default defineConfig({
       // publicDirectory: 'vendor/orchestra/testbench-core/laravel/public/vendor/cachethq',
       // buildDirectory: 'cachet',
     }),
+    tailwindcss(),
   ],
 })

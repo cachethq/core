@@ -19,7 +19,7 @@
         </button>
 
         @if (($incidentCount = $componentGroup->components->sum('incidents_count')) > 0)
-            <span class="rounded border border-zinc-800 px-2 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-600 dark:text-zinc-400">
+            <span class="rounded-sm border border-zinc-800 px-2 py-1 text-xs font-semibold text-zinc-800 dark:border-zinc-600 dark:text-zinc-400">
                 {{ trans_choice('cachet::component_group.incident_count', $incidentCount) }}
             </span>
         @endif

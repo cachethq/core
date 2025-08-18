@@ -18,7 +18,7 @@ class Feed extends Widget
 
     protected int|string|array $columnSpan = 'full';
 
-    protected static string $view = 'cachet::filament.widgets.feed';
+    protected string $view = 'cachet::filament.widgets.feed';
 
     protected static ?int $sort = 10;
 
