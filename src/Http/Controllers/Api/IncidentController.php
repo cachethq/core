@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -37,17 +36,15 @@ class IncidentController extends Controller
 
     /**
      * List Incidents
-     *
-     * @return AnonymousResourceCollection<Paginator<IncidentResource>>
      */
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-//        $query = Incident::query()
-//            ->when(!$request->has('sort'), function (Builder $builder) {
-//                $builder->orderByDesc('created_at');
-//            });
+        $query = Incident::query()
+            ->when(!$request->has('sort'), function (Builder $builder) {
+                $builder->orderByDesc('created_at');
+            });
 
         $incidents = QueryBuilder::for(Incident::query())
             ->allowedIncludes(self::ALLOWED_INCLUDES)

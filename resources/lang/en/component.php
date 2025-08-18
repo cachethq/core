@@ -33,6 +33,7 @@ return [
         'performance_issues' => 'Performance Issues',
         'partial_outage' => 'Partial Outage',
         'major_outage' => 'Major Outage',
+        'under_maintenance' => 'Under maintenance',
         'unknown' => 'Unknown',
     ],
 

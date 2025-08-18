@@ -1,0 +1,20 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "php",
+            "args": [
+                "/Users/james/Code/cachet-core/vendor/orchestra/testbench-core/laravel/artisan",
+                "boost:mcp"
+            ]
+        },
+        "herd": {
+            "command": "php",
+            "args": [
+                "/Applications/Herd.app/Contents/Resources/herd-mcp.phar"
+            ],
+            "env": {
+                "SITE_PATH": "/Users/james/Code/cachet-core/vendor/orchestra/testbench-core/laravel"
+            }
+        }
+    }
+}

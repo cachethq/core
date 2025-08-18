@@ -34,6 +34,8 @@ class AppSettings extends Settings
 
     public bool $display_graphs = true;
 
+    public bool $enable_external_dependencies = true;
+
     public static function group(): string
     {
         return 'app';
