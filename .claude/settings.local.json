@@ -1,0 +1,11 @@
+{
+  "enabledMcpjsonServers": [
+    "laravel-boost",
+    "herd"
+  ],
+  "permissions": {
+    "allow": [
+      "Bash(vendor/bin/testbench tinker:*)"
+    ]
+  }
+}
