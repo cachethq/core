@@ -55,7 +55,7 @@ class CreateIncident
                 'notify' => $data->notifications ?? false,
                 'stickied' => $data->stickied ?? false,
                 'occurred_at' => $data->occurredAt ?? Carbon::now(),
-                'component' => $firstComponent ? Component::find($data->componentId) : null,
+                'component' => $firstComponent ? Component::find($firstComponent['component_id']) : null,
                 'component_status' => $firstComponent ? ComponentStatusEnum::from($firstComponent['component_status']) : null,
                 'components' => collect($data->components)->map(function ($comp) {
                     return [
