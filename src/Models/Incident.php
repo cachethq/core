@@ -104,6 +104,10 @@ class Incident extends Model
         self::creating(function (Incident $model) {
             $model->guid = Str::uuid();
         });
+
+        static::deleting(function ($incident) {
+            $incident->components()->detach();
+        });
     }
 
     /**
