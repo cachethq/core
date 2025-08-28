@@ -29,10 +29,7 @@ final class CreateIncidentRequestData extends BaseData
         public readonly bool $notifications = false,
         public readonly ?string $occurredAt = null,
         public readonly array $templateVars = [],
-        #[Exists(Component::class, 'id')]
-        public readonly ?int $componentId = null,
-        #[Enum(ComponentStatusEnum::class)]
-        public readonly ?ComponentStatusEnum $componentStatus = null,
+        public readonly array $components = [],
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -47,8 +44,9 @@ final class CreateIncidentRequestData extends BaseData
             'notifications' => ['boolean'],
             'occurred_at' => ['nullable', 'string'],
             'template_vars' => ['array'],
-            'component_id' => [Rule::exists('components', 'id')],
-            'component_status' => ['nullable', Rule::enum(ComponentStatusEnum::class), 'required_with:component_id'],
+            'components' => ['array'],
+            'components.*.component_id' => [Rule::exists('components', 'id')],
+            'components.*.component_status' => ['nullable', Rule::enum(ComponentStatusEnum::class), 'required_with:component_id'],
         ];
     }
 
@@ -64,8 +62,7 @@ final class CreateIncidentRequestData extends BaseData
             notifications: $this->notifications,
             occurredAt: $this->occurredAt,
             templateVars: $this->templateVars,
-            componentId: $this->componentId,
-            componentStatus: $this->componentStatus,
+            components: $this->components,
         );
     }
 }
