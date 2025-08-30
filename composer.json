@@ -22,8 +22,8 @@
         "php": "^8.2",
         "ext-simplexml": "*",
         "doctrine/dbal": "^3.6",
-        "filament/filament": "^3.2.57",
-        "filament/spatie-laravel-settings-plugin": "^3.2",
+        "filament/filament": "^4.0",
+        "filament/spatie-laravel-settings-plugin": "^4.0",
         "guzzlehttp/guzzle": "^7.8",
         "illuminate/cache": "^11.35.0",
         "illuminate/console": "^11.35.0",
@@ -41,10 +41,10 @@
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "dedoc/scramble": "^0.12.21",
+        "dedoc/scramble": "^0.12",
         "larastan/larastan": "^3.4",
         "laravel/pail": "^1.1",
-        "laravel/pint": "^1.21",
+        "laravel/pint": "^1.24",
         "orchestra/testbench": "^9.5.1",
         "pestphp/pest": "^3.2",
         "pestphp/pest-plugin-laravel": "^3.0",

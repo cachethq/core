@@ -13,6 +13,7 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -43,7 +44,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->brandLogoHeight('2rem')
             ->colors([
-                'primary' => Color::rgb('rgb(4, 193, 71)'),
+                'primary' => Color::generateV3Palette('rgb(4, 193, 71)'),
                 'purple' => Color::Purple,
                 'gray' => Color::Zinc,
             ])
@@ -102,6 +103,9 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->path(Cachet::dashboardPath());
+            ->path(Cachet::dashboardPath())
+            ->bootUsing(function (): void {
+                Section::configureUsing(fn (Section $section) => $section->columnSpanFull());
+            });
     }
 }
