@@ -3,8 +3,10 @@
 namespace Cachet\Filament\Pages\Settings;
 
 use Cachet\Settings\AppSettings;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
 class ManageLocalization extends SettingsPage
@@ -21,12 +23,12 @@ class ManageLocalization extends SettingsPage
         return __('cachet::navigation.settings.items.manage_localization');
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make()->columns(2)->schema([
-                    Forms\Components\Select::make('locale')
+        return $schema
+            ->components([
+                Section::make()->columns(2)->schema([
+                    Select::make('locale')
                         ->label(__('cachet::settings.manage_localization.locale_label'))
                         ->options(
                             config('cachet.supported_locales', [
@@ -35,7 +37,7 @@ class ManageLocalization extends SettingsPage
                         )->searchable()
                         ->suffixIcon('heroicon-o-language'),
 
-                    Forms\Components\Select::make('timezone')
+                    Select::make('timezone')
                         ->label(__('cachet::settings.manage_localization.timezone_label'))
                         ->options(fn () => collect(timezone_identifiers_list())
                             ->mapToGroups(
@@ -49,7 +51,7 @@ class ManageLocalization extends SettingsPage
                         ->searchable()
                         ->suffixIcon('heroicon-o-globe-alt'),
 
-                    Forms\Components\Toggle::make('show_timezone')
+                    Toggle::make('show_timezone')
                         ->label(__('cachet::settings.manage_localization.toggles.show_timezone')),
                 ]),
             ]);
