@@ -17,7 +17,6 @@ class Incident extends JsonApiResource
             'guid' => $this->guid,
             'name' => $this->name,
             'message' => $this->message,
-            'component_id' => $this->component_id,
             'visible' => $this->visible,
             'stickied' => $this->stickied,
             'notifications' => $this->notifications,
