@@ -171,6 +171,21 @@ class Incident extends Model
         $query->where('stickied', true);
     }
 
+    public function scopeOccursAfter(Builder $query, $date): void
+    {
+        $query->where('occurred_at', '>=', $date);
+    }
+
+    public function scopeOccursBefore(Builder $query, $date): void
+    {
+        $query->where('occurred_at', '<=', $date);
+    }
+
+    public function scopeOccursOn(Builder $query, $date): void
+    {
+        $query->whereDate('occurred_at', $date);
+    }
+
     /**
      * @return Attribute<Carbon, never>
      */
