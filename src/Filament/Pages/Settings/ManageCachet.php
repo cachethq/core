@@ -53,6 +53,7 @@ class ManageCachet extends SettingsPage
                                 )
                                 ->map(fn($group) => $group->collapse())->toArray()])
                         ->searchable()
+                        ->required()
                         ->suffixIcon('heroicon-o-globe-alt'),
 
                     TextInput::make('incident_days')
