@@ -46,8 +46,8 @@
         "laravel/boost": "^1.0",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.24",
-        "orchestra/testbench": "^9.5.1",
-        "pestphp/pest": "^3.2",
+        "orchestra/testbench": "^9.15.1",
+        "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-laravel": "^3.0",
         "pestphp/pest-plugin-livewire": "*",
         "pestphp/pest-plugin-type-coverage": "^3.3"
