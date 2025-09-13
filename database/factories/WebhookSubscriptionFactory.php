@@ -6,7 +6,7 @@ use Cachet\Models\WebhookSubscription;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\WebhookSubscription>
+ * @extends Factory<WebhookSubscription>
  */
 class WebhookSubscriptionFactory extends Factory
 {

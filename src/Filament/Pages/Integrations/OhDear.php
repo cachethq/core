@@ -3,32 +3,28 @@
 namespace Cachet\Filament\Pages\Integrations;
 
 use Cachet\Actions\Integrations\ImportOhDearFeed;
-use Cachet\Filament\Resources\ComponentGroupResource;
+use Cachet\Filament\Resources\ComponentGroups\ComponentGroupResource;
 use Cachet\Models\Component;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Forms\Get;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Schema;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 
 /**
- * @property Form $form
+ * @property \Filament\Schemas\Schema $form
  */
-class OhDear extends Page implements HasForms
+class OhDear extends Page
 {
-    use InteractsWithForms;
+    protected static string|\BackedEnum|null $navigationIcon = 'cachet-oh-dear';
 
-    protected static ?string $navigationIcon = 'cachet-oh-dear';
-
-    protected static string $view = 'cachet::filament.pages.integrations.oh-dear';
+    protected string $view = 'cachet::filament.pages.integrations.oh-dear';
 
     public string $url;
 
@@ -61,43 +57,41 @@ class OhDear extends Page implements HasForms
         ]);
     }
 
-    /**
-     * Get the form schema definition.
-     */
-    protected function getFormSchema(): array
+    public function form(Schema $schema): Schema
     {
-        return [
-            Section::make()->schema([
-                TextInput::make('url')
-                    ->label(__('cachet::integrations.oh_dear.status_page_url_label'))
-                    ->placeholder('https://status.example.com')
-                    ->url()
-                    ->required()
-                    ->suffix('/json')
-                    ->helperText(__('cachet::integrations.oh_dear.status_page_url_helper')),
+        return $schema
+            ->components([
+                Section::make()->schema([
+                    TextInput::make('url')
+                        ->label(__('cachet::integrations.oh_dear.status_page_url_label'))
+                        ->placeholder('https://status.example.com')
+                        ->url()
+                        ->required()
+                        ->suffix('/json')
+                        ->helperText(__('cachet::integrations.oh_dear.status_page_url_helper')),
 
-                Toggle::make('import_sites')
-                    ->label(__('cachet::integrations.oh_dear.import_sites_as_components_label'))
-                    ->helperText(__('cachet::integrations.oh_dear.import_sites_as_components_helper'))
-                    ->default(true)
-                    ->reactive(),
+                    Toggle::make('import_sites')
+                        ->label(__('cachet::integrations.oh_dear.import_sites_as_components_label'))
+                        ->helperText(__('cachet::integrations.oh_dear.import_sites_as_components_helper'))
+                        ->default(true)
+                        ->reactive(),
 
-                Select::make('component_group_id')
-                    ->searchable()
-                    ->visible(fn (Get $get) => $get('import_sites') === true)
-                    ->relationship('group', 'name')
-                    ->model(Component::class)
-                    ->label(__('cachet::integrations.oh_dear.component_group_label'))
-                    ->helperText(__('cachet::integrations.oh_dear.component_group_helper'))
-                    ->createOptionForm(fn (Form $form) => ComponentGroupResource::form($form))
-                    ->preload(),
+                    Select::make('component_group_id')
+                        ->searchable()
+                        ->visible(fn (Get $get) => $get('import_sites') === true)
+                        ->relationship('group', 'name')
+                        ->model(Component::class)
+                        ->label(__('cachet::integrations.oh_dear.component_group_label'))
+                        ->helperText(__('cachet::integrations.oh_dear.component_group_helper'))
+                        ->createOptionForm(fn (Schema $schema) => ComponentGroupResource::form($schema))
+                        ->preload(),
 
-                Toggle::make('import_incidents')
-                    ->label(__('cachet::integrations.oh_dear.import_incidents_label'))
-                    ->helperText(__('cachet::integrations.oh_dear.import_incidents_helper'))
-                    ->default(false),
-            ]),
-        ];
+                    Toggle::make('import_incidents')
+                        ->label(__('cachet::integrations.oh_dear.import_incidents_label'))
+                        ->helperText(__('cachet::integrations.oh_dear.import_incidents_helper'))
+                        ->default(false),
+                ]),
+            ]);
     }
 
     /**

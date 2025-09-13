@@ -2,11 +2,10 @@
 
 namespace Cachet\Filament\Pages;
 
-use Filament\Forms\Form;
-use Filament\Pages\Auth\EditProfile as BaseEditProfile;
+use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 
-class EditProfile extends BaseEditProfile
+class EditProfile extends \Filament\Auth\Pages\EditProfile
 {
     public function getTitle(): string|Htmlable
     {
@@ -18,10 +17,10 @@ class EditProfile extends BaseEditProfile
         return false;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 $this->getNameFormComponent(),
                 $this->getEmailFormComponent(),
                 $this->getPasswordFormComponent(),
