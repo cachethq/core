@@ -40,21 +40,9 @@ class ManageCachet extends SettingsPage
                     MarkdownEditor::make('about')
                         ->label(__('cachet::settings.manage_cachet.about_this_site_label'))
                         ->columnSpanFull(),
+                ]),
 
-                    Select::make('timezone')
-                        ->label(__('cachet::settings.manage_cachet.timezone_label'))
-                        ->options(fn () => collect(timezone_identifiers_list())
-                            ->mapToGroups(
-                                fn ($timezone) => [
-                                    Str::of($timezone)
-                                        ->before('/')
-                                        ->toString() => [$timezone => $timezone],
-                                ]
-                            )
-                            ->map(fn ($group) => $group->collapse()))
-                        ->searchable()
-                        ->suffixIcon('heroicon-o-globe-alt'),
-
+                Section::make()->columns(3)->schema([
                     TextInput::make('incident_days')
                         ->numeric()
                         ->label(__('cachet::settings.manage_cachet.incident_days_label'))
@@ -78,13 +66,7 @@ class ManageCachet extends SettingsPage
                         ->step(1)
                         ->suffix(__('cachet::settings.manage_cachet.refresh_rate_label_input_suffix_seconds')),
 
-                    Toggle::make('show_timezone')
-                        ->label(__('cachet::settings.manage_cachet.toggles.show_timezone')),
-                    Toggle::make('only_disrupted_days')
-                        ->label(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days')),
-                    Toggle::make('dashboard_login_link')
-                        ->label(__('cachet::settings.manage_cachet.toggles.show_dashboard_link')),
-                    Grid::make(2)
+                    Grid::make(1)
                         ->schema([
                             Toggle::make('recent_incidents_only')
                                 ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_only'))
@@ -99,14 +81,19 @@ class ManageCachet extends SettingsPage
                                 ->hidden(fn (Get $get) => $get('recent_incidents_only') !== true),
                         ]),
                 ]),
+
                 Section::make(__('cachet::settings.manage_cachet.display_settings_title'))
                     ->schema([
+                        Toggle::make('dashboard_login_link')
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_dashboard_link')),
                         Toggle::make('show_support')
                             ->label(__('cachet::settings.manage_cachet.toggles.support_cachet')),
                         Toggle::make('display_graphs')
                             ->label(__('cachet::settings.manage_cachet.toggles.display_graphs')),
                         Toggle::make('enable_external_dependencies')
                             ->label(__('cachet::settings.manage_cachet.toggles.enable_external_dependencies')),
+                        Toggle::make('only_disrupted_days')
+                            ->label(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days')),
                     ]),
             ]);
     }

@@ -48,6 +48,7 @@ class ManageLocalization extends SettingsPage
                                 ]
                             )
                             ->map(fn ($group) => $group->collapse()))
+                        ->required()
                         ->searchable()
                         ->suffixIcon('heroicon-o-globe-alt'),
 

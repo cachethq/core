@@ -4,6 +4,9 @@ return [
     'manage_cachet' => [
         'site_name_label' => 'Site Name',
         'about_this_site_label' => 'About This Site',
+        'timezone_label' => 'Timezone',
+        'timezone_other' => 'Other',
+        'browser_default' => 'Browser Default',
         'incident_days_label' => 'Incident Days',
         'major_outage_threshold_label' => 'Major Outage Threshold',
         'refresh_rate_label' => 'Automatically Refresh Page',
@@ -29,7 +32,7 @@ return [
         'locale_label' => 'Locale',
         'timezone_label' => 'Timezone',
         'toggles' => [
-            'show_timezone' => 'Show Timezone',
+            'show_timezone' => 'Show timezone on status page',
         ],
     ],
     'manage_theme' => [
