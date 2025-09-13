@@ -2,7 +2,10 @@
 
 namespace Cachet;
 
+use Cachet\Filament\Pages\EditProfile;
 use Cachet\Http\Middleware\SetAppLocale;
+use Cachet\Settings\AppSettings;
+use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -10,6 +13,7 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -24,16 +28,23 @@ class CachetDashboardServiceProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $appSettings = app(AppSettings::class);
+
         return $panel
             ->id('cachet')
-            ->font('switzer', 'https://fonts.cdnfonts.com/css/switzer')
+            ->when(
+                ! $this->app->runningInConsole() && $appSettings->enable_external_dependencies,
+                fn ($panel) => $panel->font('switzer', 'https://fonts.cdnfonts.com/css/switzer'),
+                fn ($panel) => $panel->font('ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" ', provider: LocalFontProvider::class),
+            )
             ->default()
             ->login()
             ->passwordReset()
+            ->profile(EditProfile::class)
             ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->brandLogoHeight('2rem')
             ->colors([
-                'primary' => Color::rgb('rgb(4, 193, 71)'),
+                'primary' => Color::generateV3Palette('rgb(4, 193, 71)'),
                 'purple' => Color::Purple,
                 'gray' => Color::Zinc,
             ])
@@ -92,6 +103,9 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->path(Cachet::dashboardPath());
+            ->path(Cachet::dashboardPath())
+            ->bootUsing(function (): void {
+                Section::configureUsing(fn (Section $section) => $section->columnSpanFull());
+            });
     }
 }

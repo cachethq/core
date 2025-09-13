@@ -17,10 +17,12 @@ return [
             'show_timezone' => 'Tijdzone weergeven',
             'show_dashboard_link' => 'Dashboardlink weergeven',
             'display_graphs' => 'Diagrammen weergeven',
+            'enable_external_dependencies' => 'Enable External Dependencies',
             'only_show_disrupted_days' => 'Alleen dagen met incidenten weergeven',
             'recent_incidents_only' => 'Toon alleen actuele incidenten',
             'recent_incidents_days' => 'Aantal dagen waarop actuele incidenten moeten worden weergegeven',
         ],
+        'display_settings_title' => 'Weergave-instellingen',
     ],
     'manage_customization' => [
         'header_label' => 'Aangepaste HTML-Header',

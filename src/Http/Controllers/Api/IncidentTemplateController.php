@@ -12,9 +12,7 @@ use Cachet\Http\Resources\IncidentTemplate as IncidentTemplateResource;
 use Cachet\Models\IncidentTemplate;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -25,8 +23,6 @@ class IncidentTemplateController extends Controller
 
     /**
      * List Incident Templates
-     *
-     * @response AnonymousResourceCollection<Paginator<IncidentTemplateResource>>
      */
     #[QueryParameter('filter[name]', 'Filter by name', example: 'My Template')]
     #[QueryParameter('filter[slug]', 'Filter by slug', example: 'my-template')]

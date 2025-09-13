@@ -14,18 +14,26 @@ return [
         'recent_incidents_days_suffix_days' => 'days',
         'toggles' => [
             'support_cachet' => 'Support Cachet',
-            'show_timezone' => 'Show Timezone',
             'show_dashboard_link' => 'Show Dashboard Link',
             'display_graphs' => 'Display Graphs',
+            'enable_external_dependencies' => 'Enable External Dependencies',
             'only_show_disrupted_days' => 'Only Show Disrupted Days',
             'recent_incidents_only' => 'Show Recent Incidents Only',
             'recent_incidents_days' => 'Number of Days to Show Recent Incidents',
         ],
+        'display_settings_title' => 'Display Settings',
     ],
     'manage_customization' => [
         'header_label' => 'Custom Header HTML',
         'footer_label' => 'Custom Footer HTML',
         'stylesheet_label' => 'Custom CSS',
+    ],
+    'manage_localization' => [
+        'locale_label' => 'Locale',
+        'timezone_label' => 'Timezone',
+        'toggles' => [
+            'show_timezone' => 'Show Timezone',
+        ],
     ],
     'manage_theme' => [
         'app_banner_label' => 'Banner Image',

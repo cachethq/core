@@ -4,11 +4,11 @@ return [
     'settings' => [
         'label' => 'Einstellungen',
         'items' => [
-            'manage_cachet' => 'Cachet verwalten',
-            'manage_customization' => 'Anpassung verwalten',
-            'manage_theme' => 'Darstellung verwalten',
-            'manage_api_keys' => 'API Schlüssel verwalten',
-            'manage_webhooks' => 'Webhooks verwalten',
+            'manage_cachet' => 'Cachet',
+            'manage_customization' => 'Anpassung',
+            'manage_theme' => 'Darstellung',
+            'manage_api_keys' => 'API Schlüssel',
+            'manage_webhooks' => 'Webhooks',
         ],
     ],
 
@@ -25,6 +25,11 @@ return [
             'documentation' => 'Dokumentation',
             'discord' => 'Discord beitreten',
             'sponsor' => 'Cachet unterstützen',
+        ],
+    ],
+    'user' => [
+        'items' => [
+            'edit_profile' => 'Profil bearbeiten',
         ],
     ],
 ];

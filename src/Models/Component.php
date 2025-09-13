@@ -83,7 +83,7 @@ class Component extends Model
     /**
      * Get the incidents for the component.
      *
-     * @return BelongsToMany<Incident, $this>
+     * @return BelongsToMany<Incident, $this, IncidentComponent>
      */
     public function incidents(): BelongsToMany
     {

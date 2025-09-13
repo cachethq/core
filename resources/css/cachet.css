@@ -1,23 +1,73 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import '../../vendor/filament/support/resources/css/index.css';
 
-@layer components {
-    .button {
-        @apply flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;
-    }
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
 
-    .button--primary {
-        @apply bg-primary-600 hover:bg-primary-600 focus-visible:outline-primary-600;
-    }
+@theme {
+  --color-primary-50: #e6f7ed;
+  --color-primary-100: #c1edce;
+  --color-primary-200: #9be3b1;
+  --color-primary-300: #74d994;
+  --color-primary-400: #4dce76;
+  --color-primary-500: #04c147;
+  --color-primary-600: #03ad40;
+  --color-primary-700: #038f34;
+  --color-primary-800: #027227;
+  --color-primary-900: #01561a;
+}
 
-    .button--danger {
-        @apply bg-red-600 text-red-100 hover:bg-red-700 focus-visible:outline-red-300 focus-visible:outline-red-800 dark:bg-red-800 dark:text-red-400 dark:hover:bg-red-700;
-    }
+@theme inline {
+  --color-accent: var(--accent);
+  --color-accent-content: var(--accent-content);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-background: var(--accent-background);
 
-    .button--secondary {
-        @apply bg-zinc-300 text-zinc-800 hover:bg-zinc-400 focus-visible:outline-zinc-300 focus-visible:outline-zinc-800 dark:bg-white/5 dark:text-zinc-400 dark:hover:bg-zinc-700;
-    }
+  --color-custom-50: var(--color-50);
+  --color-custom-100: var(--color-100);
+  --color-custom-200: var(--color-200);
+  --color-custom-300: var(--color-300);
+  --color-custom-400: var(--color-400);
+  --color-custom-500: var(--color-500);
+  --color-custom-600: var(--color-600);
+  --color-custom-700: var(--color-700);
+  --color-custom-800: var(--color-800);
+  --color-custom-900: var(--color-900);
+  --color-custom-950: var(--color-950);
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
+
+@utility button {
+  @apply flex w-full justify-center rounded-md px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-xs focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-offset-2;
+}
+
+@utility button--primary {
+  @apply bg-primary-600 hover:bg-primary-600 focus-visible:outline-primary-600;
+}
+
+@utility button--danger {
+  @apply bg-red-600 text-red-100 hover:bg-red-700 focus-visible:outline-red-300 focus-visible:outline-red-800 dark:bg-red-800 dark:text-red-400 dark:hover:bg-red-700;
+}
+
+@utility button--secondary {
+  @apply bg-zinc-300 text-zinc-800 hover:bg-zinc-400 focus-visible:outline-zinc-300 focus-visible:outline-zinc-800 dark:bg-white/5 dark:text-zinc-400 dark:hover:bg-zinc-700;
 }
 
 @layer utilities {

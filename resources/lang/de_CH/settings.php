@@ -16,10 +16,12 @@ return [
             'show_timezone' => 'Zeitzone anzeigen',
             'show_dashboard_link' => 'Dashboard-Link anzeigen',
             'display_graphs' => 'Diagramme anzeigen',
+            'enable_external_dependencies' => 'Enable External Dependencies',
             'only_show_disrupted_days' => 'Nur Tage mit Vorfällen anzeigen',
             'recent_incidents_only' => 'Nur aktuelle Vorfälle anzeigen',
             'recent_incidents_days' => 'Anzahl der Tage, an denen aktuelle Vorfälle angezeigt werden sollen',
         ],
+        'display_settings_title' => 'Anzeigeeinstellungen',
     ],
     'manage_customization' => [
         'header_label' => 'Benutzerdefinierter HTML-Header',

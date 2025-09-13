@@ -9,7 +9,7 @@ use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
-use Cachet\Filament\Resources\IncidentResource;
+use Cachet\Filament\Resources\Incidents\IncidentResource;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
@@ -109,7 +109,7 @@ class Incident extends Model
     /**
      * Get the components impacted by this incident.
      *
-     * @return BelongsToMany<Component, $this>
+     * @return BelongsToMany<Component, $this, IncidentComponent>
      */
     public function components(): BelongsToMany
     {
