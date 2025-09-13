@@ -6,7 +6,7 @@
 
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_BEFORE) }}
 <div class="relative flex flex-col gap-5" x-data="{ forDate: new Date(@js($date)) }">
-    <h3 class="text-xl font-semibold"><time datetime="{{ $date }}" x-text="forDate.toLocaleDateString()"></time></h3>
+    <h3 class="text-xl font-semibold"><time datetime="{{ $date }}" x-text="forDate.toLocaleDateString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time></h3>
     @forelse($incidents as $incident)
         @if($incident instanceof \Cachet\Models\Incident)
             <x-cachet::incident-item :incident="$incident" />

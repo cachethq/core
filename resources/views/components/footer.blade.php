@@ -11,13 +11,21 @@
     </div>
     @endif
     @if($showTimezone)
-    <div>
-        {!! preg_replace(
+    <div id="cachet-footer-timezone" data-timezone="{{ $timezone }}" data-label=""></div>
+    <script defer async>
+        document.addEventListener('DOMContentLoaded', function () {
+            const timeZoneLabel = '{!! preg_replace(
             '/\*(.*?)\*/',
             '<span class="font-semibold">$1</span>',
-            __('cachet::cachet.all_times_shown_in', ['timezone' => $timezone])
-        ) !!}
-    </div>
+            __('cachet::cachet.all_times_shown_in', ['timezone' => ':timezone:'])
+        ) !!}'
+            let footerTimeZone = document.getElementById('cachet-footer-timezone').dataset.timezone;
+            if (footerTimeZone === '-') {
+                footerTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            }
+            document.getElementById('cachet-footer-timezone').innerHTML = timeZoneLabel.replace(':timezone:', footerTimeZone);
+        });
+    </script>
     @endif
 </footer>
 @endif

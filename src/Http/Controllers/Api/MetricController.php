@@ -14,9 +14,7 @@ use Cachet\Models\Metric;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -27,8 +25,6 @@ class MetricController extends Controller
 
     /**
      * List Metrics
-     *
-     * @response AnonymousResourceCollection<Paginator<MetricResource>>
      */
     #[QueryParameter('filter[name]', 'Filter by name.', example: 'metric name')]
     #[QueryParameter('filter[calc_type]', 'Filter by calculation type.', type: MetricTypeEnum::class)]

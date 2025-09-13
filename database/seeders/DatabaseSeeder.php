@@ -20,6 +20,7 @@ use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
 use Cachet\Settings\ThemeSettings;
 use Illuminate\Database\Seeder;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -42,7 +43,7 @@ class DatabaseSeeder extends Seeder
         DB::table('webhook_attempts')->truncate();
         DB::table('webhook_subscriptions')->truncate();
 
-        /** @var \Illuminate\Foundation\Auth\User $userModel */
+        /** @var User $userModel */
         $userModel = config('cachet.user_model');
 
         $user = $userModel::create([

@@ -46,6 +46,14 @@ it('can get the current system status', function () {
     $this->assertEquals((new Status)->current(), SystemStatusEnum::operational);
 });
 
+it('can get the current system status as under maintenance', function () {
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::under_maintenance->value,
+    ]);
+
+    $this->assertEquals((new Status)->current(), SystemStatusEnum::under_maintenance);
+});
+
 it('can get the current system status as partial outage', function () {
     Component::factory()->create([
         'status' => ComponentStatusEnum::operational->value,
@@ -73,16 +81,18 @@ it('can fetch component overview', function () {
             ['status' => ComponentStatusEnum::operational->value],
             ['status' => ComponentStatusEnum::partial_outage->value],
             ['status' => ComponentStatusEnum::major_outage->value],
+            ['status' => ComponentStatusEnum::under_maintenance->value],
         )
-        ->count(4)
+        ->count(5)
         ->create();
 
     $components = (new Status)->components();
 
     expect($components)
-        ->total->toBe(4)
+        ->total->toBe(5)
         ->operational->toBe(1)
         ->performance_issues->toBe(0)
         ->partial_outage->toBe(1)
-        ->major_outage->toBe(1);
+        ->major_outage->toBe(1)
+        ->under_maintenance->toBe(1);
 });

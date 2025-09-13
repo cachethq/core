@@ -26,8 +26,6 @@ class ScheduleController extends Controller
 
     /**
      * List Schedules
-     *
-     * @response AnonymousResourceCollection<Paginator<ScheduleResource>>
      */
     #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
     #[QueryParameter('filter[status]', 'Filter the resources by status.', type: ScheduleStatusEnum::class)]

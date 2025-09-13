@@ -2,6 +2,8 @@
 
 namespace Cachet\Settings;
 
+use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\MetricTypeEnum;
 use Spatie\LaravelSettings\Settings;
 
 class AppSettings extends Settings
@@ -13,6 +15,8 @@ class AppSettings extends Settings
     public ?string $about;
 
     public bool $show_support = true;
+
+    public string $locale = 'en';
 
     public string $timezone = 'UTC';
 
@@ -31,6 +35,10 @@ class AppSettings extends Settings
     public bool $recent_incidents_only = false;
 
     public int $recent_incidents_days = 7;
+
+    public bool $display_graphs = true;
+
+    public bool $enable_external_dependencies = true;
 
     public static function group(): string
     {
