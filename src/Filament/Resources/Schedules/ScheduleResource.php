@@ -45,9 +45,11 @@ class ScheduleResource extends Resource
                 Section::make()->schema([
                     DateTimePicker::make('scheduled_at')
                         ->label(__('cachet::schedule.form.scheduled_at_label'))
+                        ->native(false) // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
                         ->required(),
                     DateTimePicker::make('completed_at')
-                        ->label(__('cachet::schedule.form.completed_at_label')),
+                        ->label(__('cachet::schedule.form.completed_at_label'))
+                        ->native(false), // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
                 ])->columnSpan(1),
             ])->columns(4);
     }
