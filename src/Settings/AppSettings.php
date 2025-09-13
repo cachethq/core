@@ -2,8 +2,6 @@
 
 namespace Cachet\Settings;
 
-use Cachet\Enums\IncidentStatusEnum;
-use Cachet\Enums\MetricTypeEnum;
 use Spatie\LaravelSettings\Settings;
 
 class AppSettings extends Settings
