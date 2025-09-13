@@ -48,6 +48,7 @@ class Metric extends Model
     protected $casts = [
         'calc_type' => MetricTypeEnum::class,
         'display_chart' => 'bool',
+        'show_when_empty' => 'bool',
         'places' => 'int',
         'default_view' => MetricViewEnum::class,
         'visible' => ResourceVisibilityEnum::class,
@@ -68,6 +69,7 @@ class Metric extends Model
         'description',
         'calc_type',
         'display_chart',
+        'show_when_empty',
         'places',
         'default_value',
         'default_view',

@@ -91,6 +91,10 @@ class MetricResource extends Resource
                         ->label(__('cachet::metric.form.display_chart_label'))
                         ->default(true)
                         ->required(),
+                    Toggle::make('show_when_empty')
+                        ->label(__('cachet::metric.form.show_when_empty_label'))
+                        ->default(true)
+                        ->required(),
 
                 ])->columnSpan(1),
             ])->columns(4);
