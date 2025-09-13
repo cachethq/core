@@ -32,7 +32,7 @@ return [
         'locale_label' => 'Locale',
         'timezone_label' => 'Timezone',
         'toggles' => [
-            'show_timezone' => 'Show Timezone',
+            'show_timezone' => 'Show timezone on status page',
         ],
     ],
     'manage_theme' => [
