@@ -3,6 +3,7 @@
 namespace Cachet\Actions\Incident;
 
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
@@ -26,10 +27,16 @@ class CreateIncident
 
         // @todo Dispatch notification that incident was created.
 
-        return Incident::create(array_merge(
+        $incident = Incident::create(array_merge(
             ['guid' => Str::uuid()],
             $data->toArray()
         ));
+
+        if (!empty($data->components)) {
+            $this->associateComponents($incident, $data->components);
+        }
+
+        return $incident;
     }
 
     /**
@@ -37,6 +44,8 @@ class CreateIncident
      */
     private function parseTemplate(IncidentTemplate $template, CreateIncidentRequestData $data): string
     {
+        $firstComponent = !empty($data->components) ? $data->components[0] : null;
+
         $vars = array_merge($data->templateVars, [
             'incident' => [
                 'name' => $data->name,
@@ -46,11 +55,32 @@ class CreateIncident
                 'notify' => $data->notifications ?? false,
                 'stickied' => $data->stickied ?? false,
                 'occurred_at' => $data->occurredAt ?? Carbon::now(),
-                'component' => $data->componentId ? Component::find($data->componentId) : null,
-                'component_status' => $data->componentStatus ?? null,
+                'component' => $firstComponent ? Component::find($firstComponent['component_id']) : null,
+                'component_status' => $firstComponent ? ComponentStatusEnum::from($firstComponent['component_status']) : null,
+                'components' => collect($data->components)->map(function ($comp) {
+                    return [
+                        'component' => Component::find($comp['component_id']),
+                        'status' => ComponentStatusEnum::from($comp['component_status']),
+                    ];
+                })->toArray(),
             ],
         ]);
 
         return $template->render($vars);
+    }
+
+    /**
+     * Associate components with the incident.
+     */
+    private function associateComponents(Incident $incident, array $components): void
+    {
+        foreach ($components as $componentData) {
+            $componentId = $componentData['component_id'];
+            $componentStatus = ComponentStatusEnum::from($componentData['component_status']);
+
+            $incident->components()->attach($componentId, ['component_status' => $componentStatus->value]);
+
+            Component::query()->find($componentId)?->update(['status' => $componentStatus->value]);
+        }
     }
 }

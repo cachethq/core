@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Laravel\Sanctum\Sanctum;
@@ -251,6 +252,37 @@ it('can create an incident with a template', function () {
                 'status' => [
                     'value' => 2,
                 ],
+            ],
+        ],
+    ]);
+});
+
+it('can create an incident with attached components', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $component1 = Component::factory()->create();
+    $component2 = Component::factory()->create();
+
+    $response = postJson('/status/api/incidents?include=components', [
+        'name' => 'New Incident Occurred',
+        'message' => 'Something went wrong.',
+        'status' => 2,
+        'components' => [
+            ['component_id' => $component1->id, 'component_status' => 2],
+            ['component_id' => $component2->id, 'component_status' => 3],
+        ],
+    ]);
+
+    $response->assertCreated();
+    $response->assertJson([
+        'data' => [
+            'relationships' => [
+                'components' => [
+                    'data' => [
+                        ['type' => 'components', 'id' => $component1->id],
+                        ['type' => 'components', 'id' => $component2->id],
+                    ]
+                ]
             ],
         ],
     ]);
