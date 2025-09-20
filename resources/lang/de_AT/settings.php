@@ -5,6 +5,7 @@ return [
         'site_name_label' => 'Seitenname',
         'about_this_site_label' => 'Über diese Seite',
         'timezone_label' => 'Zeitzone',
+        'timezone_other' => 'Andere',
         'incident_days_label' => 'Vorfalltage',
         'major_outage_threshold_label' => 'Schwellenwert für schwere Ausfälle',
         'refresh_rate_label' => 'Automatisch Seite neuladen',

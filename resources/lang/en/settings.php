@@ -5,6 +5,8 @@ return [
         'site_name_label' => 'Site Name',
         'about_this_site_label' => 'About This Site',
         'timezone_label' => 'Timezone',
+        'timezone_other' => 'Other',
+        'browser_default' => 'Browser Default',
         'incident_days_label' => 'Incident Days',
         'major_outage_threshold_label' => 'Major Outage Threshold',
         'refresh_rate_label' => 'Automatically Refresh Page',
@@ -12,7 +14,6 @@ return [
         'recent_incidents_days_suffix_days' => 'days',
         'toggles' => [
             'support_cachet' => 'Support Cachet',
-            'show_timezone' => 'Show Timezone',
             'show_dashboard_link' => 'Show Dashboard Link',
             'display_graphs' => 'Display Graphs',
             'enable_external_dependencies' => 'Enable External Dependencies',
@@ -26,6 +27,13 @@ return [
         'header_label' => 'Custom Header HTML',
         'footer_label' => 'Custom Footer HTML',
         'stylesheet_label' => 'Custom CSS',
+    ],
+    'manage_localization' => [
+        'locale_label' => 'Locale',
+        'timezone_label' => 'Timezone',
+        'toggles' => [
+            'show_timezone' => 'Show timezone on status page',
+        ],
     ],
     'manage_theme' => [
         'app_banner_label' => 'Banner Image',

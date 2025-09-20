@@ -12,7 +12,7 @@ class ServingCachet
     /**
      * The request instance.
      *
-     * @var \Illuminate\Http\Request
+     * @var Request
      */
     public $request;
 

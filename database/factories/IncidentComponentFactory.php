@@ -9,7 +9,7 @@ use Cachet\Models\IncidentComponent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Cachet\Models\IncidentComponent>
+ * @extends Factory<IncidentComponent>
  */
 class IncidentComponentFactory extends Factory
 {

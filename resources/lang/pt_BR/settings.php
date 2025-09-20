@@ -5,6 +5,7 @@ return [
         'site_name_label' => 'Nome do Site',
         'about_this_site_label' => 'Sobre Este Site',
         'timezone_label' => 'Fuso Horário',
+        'timezone_other' => 'Outro',
         'incident_days_label' => 'Dias de Incidentes',
         'major_outage_threshold_label' => 'Limite de Indisponibilidade Total',
         'refresh_rate_label' => 'Atualizar Página Automaticamente',
