@@ -9,6 +9,7 @@ use Laravel\Sanctum\Exceptions\MissingAbilityException;
 
 trait GuardsApiAbilities
 {
+    /** @throws MissingAbilityException */
     public function guard(string $ability): void
     {
         /** @var User $user */
