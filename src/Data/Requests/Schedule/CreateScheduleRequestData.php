@@ -20,7 +20,7 @@ final class CreateScheduleRequestData extends BaseData
         #[WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d H:i:s')]
         public readonly Carbon $scheduledAt,
         #[WithCast(DateTimeInterfaceCast::class, format: 'Y-m-d H:i:s')]
-        public readonly Carbon $completedAt,
+        public readonly ?Carbon $completedAt = null,
         public readonly ?ScheduleStatusEnum $status = null,
         #[DataCollectionOf(ScheduleComponentRequestData::class)]
         public readonly ?array $components = null,
@@ -32,6 +32,7 @@ final class CreateScheduleRequestData extends BaseData
             'name' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string'],
             'scheduled_at' => ['required', 'date'],
+            'completed_at' => ['nullable', 'date'],
             'components' => ['array'],
             'components.*.id' => ['required_with:components', 'int', 'exists:components,id'],
             'components.*.status' => ['required_with:components', 'int', Rule::enum(ComponentStatusEnum::class)],
