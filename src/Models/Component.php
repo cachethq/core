@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $enabled
  * @property array<string, mixed> $meta
  * @property ?ComponentGroup $componentGroup
+ * @property-read IncidentComponent|null $pivot
  *
  * @method static Builder<static>|static disabled()
  * @method static Builder<static>|static enabled()
