@@ -13,6 +13,11 @@
                         <span class="text-xs text-zinc-500 dark:text-zinc-400">
                             {{ $schedule->scheduled_at->diffForHumans() }} — <time datetime="{{ $schedule->scheduled_at->toW3cString()}}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
                         </span>
+                        @if ($schedule->components->isNotEmpty())
+                        <div class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 mt-1">
+                            {{ __('Affected Components') }}: {{ $schedule->components->pluck('name')->join(', ', ' and ') }}
+                        </div>
+                        @endif
                     </div>
 
                     <div class="flex justify-start sm:justify-end">
