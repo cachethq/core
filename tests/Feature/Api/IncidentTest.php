@@ -1,8 +1,10 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
+use Cachet\Models\Component;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 
@@ -229,6 +231,53 @@ it('can create an incident', function () {
             ],
         ],
     ]);
+});
+
+it('can create an incident with components', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    [$componentA, $componentB] = Component::factory(2)->create();
+
+    $response = postJson('/status/api/incidents?include=components', [
+        'name' => 'Incident With Components',
+        'message' => 'Something went wrong.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'components' => [
+            ['id' => $componentA->id, 'status' => ComponentStatusEnum::partial_outage->value],
+            ['id' => $componentB->id, 'status' => ComponentStatusEnum::major_outage->value],
+        ],
+    ]);
+
+    $response->assertCreated();
+
+    $incident = Incident::where('name', 'Incident With Components')->first();
+
+    expect($incident)->not->toBeNull();
+
+    $this->assertDatabaseHas('incident_components', [
+        'incident_id' => $incident->id,
+        'component_id' => $componentA->id,
+        'component_status' => ComponentStatusEnum::partial_outage->value,
+    ]);
+
+    $this->assertDatabaseHas('incident_components', [
+        'incident_id' => $incident->id,
+        'component_id' => $componentB->id,
+        'component_status' => ComponentStatusEnum::major_outage->value,
+    ]);
+
+    $included = collect($response->json('included'));
+
+    expect($included)->toHaveCount(2);
+
+    $componentAResource = $included->firstWhere('id', (string) $componentA->id);
+    $componentBResource = $included->firstWhere('id', (string) $componentB->id);
+
+    expect($componentAResource['attributes']['pivot']['component_status']['value'])
+        ->toBe(ComponentStatusEnum::partial_outage->value);
+
+    expect($componentBResource['attributes']['pivot']['component_status']['value'])
+        ->toBe(ComponentStatusEnum::major_outage->value);
 });
 
 it('can create an incident with a template', function () {

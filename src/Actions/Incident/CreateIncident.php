@@ -3,6 +3,7 @@
 namespace Cachet\Actions\Incident;
 
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
+use Cachet\Data\Requests\Incident\IncidentComponentRequestData;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
@@ -26,10 +27,21 @@ class CreateIncident
 
         // @todo Dispatch notification that incident was created.
 
-        return Incident::create(array_merge(
+        return tap(Incident::create(array_merge(
             ['guid' => Str::uuid()],
-            $data->toArray()
-        ));
+            $data->except('components')->toArray()
+        )), function (Incident $incident) use ($data) {
+            if (! $data->components) {
+                return;
+            }
+
+            $components = collect($data->components)->map(fn (IncidentComponentRequestData $component) => [
+                'component_id' => $component->id,
+                'component_status' => $component->status,
+            ])->all();
+
+            $incident->components()->sync($components);
+        });
     }
 
     /**
