@@ -2,9 +2,9 @@
 
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
-use Cachet\Models\Component;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 
