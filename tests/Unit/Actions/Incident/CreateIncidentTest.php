@@ -2,8 +2,10 @@
 
 use Cachet\Actions\Incident\CreateIncident;
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Events\Incidents\IncidentCreated;
+use Cachet\Models\Component;
 use Cachet\Models\IncidentTemplate;
 use Illuminate\Support\Facades\Event;
 
@@ -89,4 +91,24 @@ it('can create an incident with a blade template', function () {
         ->message->toBe('This is a template: My Incident foo: bar');
 
     Event::assertDispatched(IncidentCreated::class, fn ($event) => $event->incident->is($incident));
+});
+
+it('attaches provided components to the incident', function () {
+    [$componentA, $componentB] = Component::factory(2)->create();
+
+    $data = CreateIncidentRequestData::from([
+        'name' => 'My Incident',
+        'message' => 'This is an incident message.',
+        'components' => [
+            ['id' => $componentA->id, 'status' => ComponentStatusEnum::performance_issues->value],
+            ['id' => $componentB->id, 'status' => ComponentStatusEnum::partial_outage->value],
+        ],
+    ]);
+
+    $incident = app(CreateIncident::class)->handle($data);
+
+    expect($incident->components)->toHaveCount(2)
+        ->and($incident->components->pluck('pivot.component_status')->all())
+        ->toContain(ComponentStatusEnum::performance_issues)
+        ->toContain(ComponentStatusEnum::partial_outage);
 });
