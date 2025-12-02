@@ -54,6 +54,7 @@ class ComponentsRelationManager extends RelationManager
                     ->mutateFormDataUsing(function (array $data): array {
                         // Set a default component_status value (Operational)
                         $data['component_status'] = ComponentStatusEnum::operational->value;
+
                         return $data;
                     }),
             ])
