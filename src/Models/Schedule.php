@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -87,7 +88,18 @@ class Schedule extends Model
         return $this->belongsToMany(
             Component::class,
             'schedule_components',
-        );
+        )->withPivot(['component_status'])
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the schedule components pivot entries.
+     *
+     * @return HasMany<ScheduleComponent, $this>
+     */
+    public function scheduleComponents(): HasMany
+    {
+        return $this->hasMany(ScheduleComponent::class);
     }
 
     /**

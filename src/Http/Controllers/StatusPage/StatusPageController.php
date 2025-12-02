@@ -39,7 +39,7 @@ class StatusPageController
                 ->withCount('incidents')
                 ->get(),
 
-            'schedules' => Schedule::query()->with('updates')->incomplete()->orderBy('scheduled_at')->get(),
+            'schedules' => Schedule::query()->with(['updates', 'components'])->incomplete()->orderBy('scheduled_at')->get(),
 
             'display_graphs' => $this->appSettings->display_graphs,
         ]);

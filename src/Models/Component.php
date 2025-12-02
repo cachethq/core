@@ -95,6 +95,18 @@ class Component extends Model
     }
 
     /**
+     * Get the schedules for the component.
+     *
+     * @return BelongsToMany<Schedule, $this>
+     */
+    public function schedules(): BelongsToMany
+    {
+        return $this->belongsToMany(Schedule::class, 'schedule_components')
+            ->withTimestamps()
+            ->withPivot('component_status');
+    }
+
+    /**
      * Get the subscribers for this component.
      */
     public function subscribers(): BelongsToMany

@@ -4,10 +4,12 @@ namespace Cachet\Filament\Resources\Schedules;
 
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Filament\Resources\Schedules\Pages\CreateSchedule;
 use Cachet\Filament\Resources\Schedules\Pages\EditSchedule;
 use Cachet\Filament\Resources\Schedules\Pages\ListSchedules;
+use Cachet\Filament\Resources\Schedules\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Schedule;
 use Filament\Actions\Action;
@@ -15,7 +17,10 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -40,6 +45,23 @@ class ScheduleResource extends Resource
                         ->required(),
                     MarkdownEditor::make('message')
                         ->label(__('cachet::schedule.form.message_label'))
+                        ->columnSpanFull(),
+                    Repeater::make('scheduleComponents')
+                        ->visibleOn('create')
+                        ->relationship()
+                        ->defaultItems(0)
+                        ->addActionLabel(__('Add Component'))
+                        ->schema([
+                            Select::make('component_id')
+                                ->preload()
+                                ->required()
+                                ->relationship('component', 'name')
+                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                ->label(__('Component')),
+                            Hidden::make('component_status')
+                                ->default(ComponentStatusEnum::operational->value),
+                        ])
+                        ->label(__('Affected Components'))
                         ->columnSpanFull(),
                 ])->columnSpan(3),
                 Section::make()->schema([
@@ -146,6 +168,7 @@ class ScheduleResource extends Resource
     public static function getRelations(): array
     {
         return [
+            ComponentsRelationManager::class,
             UpdatesRelationManager::class,
         ];
     }
