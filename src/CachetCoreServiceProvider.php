@@ -231,7 +231,7 @@ class CachetCoreServiceProvider extends ServiceProvider
             ->withDocumentTransformers(function (OpenApi $openApi) {
                 $openApi->info->description = 'API documentation for Cachet, the open-source, self-hosted status page system.';
 
-                $openApi->addServer(Server::make('https://v3.cachethq.io')->setDescription('The Cachet v3 demo server.'));
+                $openApi->addServer(Server::make('https://v3.cachethq.io/api')->setDescription('The Cachet v3 demo server.'));
                 $openApi->secure(SecurityScheme::http('bearer'));
             })
             ->withOperationTransformers(function (Operation $operation, RouteInfo $routeInfo) {
