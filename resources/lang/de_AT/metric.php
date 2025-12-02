@@ -35,6 +35,7 @@ return [
 
         'visible_label' => 'Sichtbar',
         'display_chart_label' => 'Diagramm anzeigen',
+        'show_when_empty_label' => 'Anzeigen, wenn leer',
     ],
     'overview' => [
         'metric_points_label' => 'Metrische Punkte',
