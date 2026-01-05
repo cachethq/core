@@ -36,7 +36,7 @@ class Subscriber extends Model
         'verified_at' => 'datetime',
     ];
 
-    /** @var array<string, string> */
+    /** @var array<string, class-string> */
     protected $dispatchesEvents = [
         'created' => SubscriberCreated::class,
         'deleted' => SubscriberUnsubscribed::class,

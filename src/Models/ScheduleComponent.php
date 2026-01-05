@@ -3,17 +3,18 @@
 namespace Cachet\Models;
 
 use Cachet\Database\Factories\ScheduleComponentFactory;
+use Cachet\Enums\ComponentStatusEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * @property int $id
  * @property int $schedule_id
  * @property int $component_id
- * @property int $component_status
+ * @property ?ComponentStatusEnum $component_status
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property Schedule $schedule
@@ -21,16 +22,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @method static ScheduleComponentFactory factory($count = null, $state = [])
  */
-class ScheduleComponent extends Model
+class ScheduleComponent extends Pivot
 {
+    protected $table = 'schedule_components';
+
     /** @use HasFactory<ScheduleComponentFactory> */
     use HasFactory;
 
-    /** @var list<string> */
-    protected $fillable = [
-        'schedule_id',
-        'component_id',
-        'component_status',
+    /** @var array<string, string> */
+    protected $casts = [
+        'component_status' => ComponentStatusEnum::class,
     ];
 
     /**

@@ -63,7 +63,7 @@ class Feed extends Widget
         try {
             $response = Http::get($uri);
 
-            $xml = simplexml_load_string($response->getBody());
+            $xml = simplexml_load_string($response->body());
 
             $posts = [];
 

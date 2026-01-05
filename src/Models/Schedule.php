@@ -81,14 +81,15 @@ class Schedule extends Model
     /**
      * Get the components affected by this schedule.
      *
-     * @return BelongsToMany<Component, $this>
+     * @return BelongsToMany<Component, $this, ScheduleComponent>
      */
     public function components(): BelongsToMany
     {
         return $this->belongsToMany(
             Component::class,
             'schedule_components',
-        )->withPivot(['component_status'])
+        )->using(ScheduleComponent::class)
+            ->withPivot(['component_status'])
             ->withTimestamps();
     }
 
