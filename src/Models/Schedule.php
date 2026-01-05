@@ -88,7 +88,8 @@ class Schedule extends Model
         return $this->belongsToMany(
             Component::class,
             'schedule_components',
-        )->withPivot(['component_status'])
+        )->using(ScheduleComponent::class)
+            ->withPivot(['component_status'])
             ->withTimestamps();
     }
 

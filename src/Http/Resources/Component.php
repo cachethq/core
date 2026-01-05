@@ -2,7 +2,6 @@
 
 namespace Cachet\Http\Resources;
 
-use Cachet\Enums\ComponentStatusEnum;
 use Illuminate\Http\Request;
 use TiMacDonald\JsonApi\JsonApiResource;
 
@@ -34,8 +33,8 @@ class Component extends JsonApiResource
             'pivot' => $this->when($this->pivot?->component_status, function () {
                 return [
                     'component_status' => [
-                        'human' => ComponentStatusEnum::from($this->pivot->component_status)?->getLabel(),
-                        'value' => $this->pivot->component_status,
+                        'human' => $this->pivot->component_status?->getLabel(),
+                        'value' => $this->pivot->component_status?->value,
                     ],
                 ];
             }),
