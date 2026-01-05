@@ -81,7 +81,7 @@ class Schedule extends Model
     /**
      * Get the components affected by this schedule.
      *
-     * @return BelongsToMany<Component, $this>
+     * @return BelongsToMany<Component, $this, ScheduleComponent>
      */
     public function components(): BelongsToMany
     {

@@ -30,7 +30,7 @@ class Component extends JsonApiResource
                 'human' => $this->updated_at?->diffForHumans(),
                 'string' => $this->updated_at?->toDateTimeString(),
             ],
-            'pivot' => $this->when($this->pivot?->component_status, function () {
+            'pivot' => $this->when($this->pivot?->component_status !== null, function () {
                 return [
                     'component_status' => [
                         'human' => $this->pivot->component_status?->getLabel(),
