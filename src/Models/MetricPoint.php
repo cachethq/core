@@ -35,7 +35,7 @@ class MetricPoint extends Model
         'value' => 'float',
     ];
 
-    /** @var array<string, string> */
+    /** @var array<string, class-string> */
     protected $dispatchesEvents = [
         'created' => MetricPointCreated::class,
         'deleted' => MetricPointDeleted::class,

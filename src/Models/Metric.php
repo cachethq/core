@@ -55,7 +55,7 @@ class Metric extends Model
         'order' => 'int',
     ];
 
-    /** @var array<string, string> */
+    /** @var array<string, class-string> */
     protected $dispatchesEvents = [
         'created' => MetricCreated::class,
         'deleted' => MetricDeleted::class,
