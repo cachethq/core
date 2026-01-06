@@ -78,7 +78,8 @@ class ComponentGroup extends Model
     public function hasActiveIncident(): bool
     {
         return Incident::query()
-            ->whereIn('component_id', $this->components->pluck('id'))
+            ->unresolved()
+            ->whereHas('components', fn ($query) => $query->whereIn('components.id', $this->components->pluck('id')))
             ->exists();
     }
 
