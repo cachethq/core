@@ -20,6 +20,9 @@ class Incident extends JsonApiResource
             'visible' => $this->visible,
             'stickied' => $this->stickied,
             'notifications' => $this->notifications,
+            'components_count' => $this->whenCounted('components', function () {
+                return $this->components_count;
+            }),
             'status' => [
                 'human' => $this->latestStatus?->getLabel(),
                 'value' => $this->latestStatus?->value,
