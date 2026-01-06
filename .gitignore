@@ -13,3 +13,14 @@
 /.phpunit.xml
 /.phpunit.result.cache
 Thumbs.db
+
+/.mcp.json
+.vscode/mcp.json
+
+.claude/**
+.cursor/**
+.junie/**
+.gemini/**
+
+!.claude/README.md
+!.cursor/rules.md
