@@ -17,10 +17,12 @@ class Incident extends JsonApiResource
             'guid' => $this->guid,
             'name' => $this->name,
             'message' => $this->message,
-            'component_id' => $this->component_id,
             'visible' => $this->visible,
             'stickied' => $this->stickied,
             'notifications' => $this->notifications,
+            'components_count' => $this->whenCounted('components', function () {
+                return $this->components_count;
+            }),
             'status' => [
                 'human' => $this->latestStatus?->getLabel(),
                 'value' => $this->latestStatus?->value,

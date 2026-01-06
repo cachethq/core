@@ -278,6 +278,10 @@ it('can create an incident with components', function () {
 
     expect($componentBResource['attributes']['pivot']['component_status']['value'])
         ->toBe(ComponentStatusEnum::major_outage->value);
+
+    // Verify the components relationship is properly returned (no component_id attribute)
+    expect($response->json('data.attributes'))->not->toHaveKey('component_id');
+    expect($response->json('data.relationships.components.data'))->toHaveCount(2);
 });
 
 it('can create an incident with a template', function () {
