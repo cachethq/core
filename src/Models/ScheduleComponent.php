@@ -37,7 +37,7 @@ class ScheduleComponent extends Pivot
     /**
      * Get the affected component.
      *
-     * @retun BelongsTo<Component, $this>
+     * @return BelongsTo<Component, $this>
      */
     public function component(): BelongsTo
     {

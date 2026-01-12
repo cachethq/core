@@ -43,7 +43,7 @@ class IncidentComponent extends Pivot
     }
 
     /**
-     * Get the incident the component is attached to.
+     * Get the incident this component belongs to.
      */
     public function incident(): BelongsTo
     {
