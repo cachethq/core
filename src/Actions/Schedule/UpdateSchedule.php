@@ -5,6 +5,9 @@ namespace Cachet\Actions\Schedule;
 use Cachet\Data\Requests\Schedule\ScheduleComponentRequestData;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Models\Schedule;
+use Cachet\Verbs\Events\Schedules\ComponentAttachedToSchedule;
+use Cachet\Verbs\Events\Schedules\ComponentDetachedFromSchedule;
+use Cachet\Verbs\Events\Schedules\ScheduleUpdated;
 
 class UpdateSchedule
 {
@@ -13,19 +16,41 @@ class UpdateSchedule
      */
     public function handle(Schedule $schedule, UpdateScheduleRequestData $data): Schedule
     {
-        $schedule->update($data->except('components')->toArray());
+        $result = ScheduleUpdated::commit(
+            schedule_id: $schedule->id,
+            name: $data->name,
+            message: $data->message,
+            scheduled_at: $data->scheduledAt,
+        );
 
         if ($data->components) {
-            $components = collect($data->components)->map(fn (ScheduleComponentRequestData $component) => [
-                'component_id' => $component->id,
-                'component_status' => $component->status,
-            ])->all();
+            $currentComponentIds = $schedule->components()->pluck('components.id')->all();
+            $newComponentIds = collect($data->components)->pluck('id')->all();
 
-            $schedule->components()->sync($components);
+            // Detach removed components
+            foreach (array_diff($currentComponentIds, $newComponentIds) as $componentId) {
+                ComponentDetachedFromSchedule::commit(
+                    schedule_id: $schedule->id,
+                    component_id: $componentId,
+                );
+            }
+
+            // Attach new components
+            foreach ($data->components as $component) {
+                /** @var ScheduleComponentRequestData $component */
+                if (! in_array($component->id, $currentComponentIds)) {
+                    ComponentAttachedToSchedule::commit(
+                        schedule_id: $schedule->id,
+                        component_id: $component->id,
+                        component_status: $component->status,
+                    );
+                }
+            }
         }
 
-        // @todo Dispatch notification that maintenance was updated.
+        // Refresh the original model with updated data
+        $schedule->refresh();
 
-        return $schedule->fresh();
+        return $schedule;
     }
 }

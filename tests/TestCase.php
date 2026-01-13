@@ -6,6 +6,8 @@ use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Dedoc\Scramble\ScrambleServiceProvider;
 use Filament\FilamentServiceProvider;
+use Glhd\Bits\Support\BitsServiceProvider;
+use Thunk\Verbs\VerbsServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
@@ -41,6 +43,8 @@ abstract class TestCase extends Orchestra
             BladeHeroiconsServiceProvider::class,
             WidgetsServiceProvider::class,
             ScrambleServiceProvider::class,
+            BitsServiceProvider::class,
+            VerbsServiceProvider::class,
         ]);
 
         // Laravel apps register providers in alphabetical order, so we do the same here for consistency.

@@ -7,6 +7,8 @@ use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
+use Cachet\Verbs\Events\Incidents\IncidentUpdateRecorded;
+use Cachet\Verbs\Events\Schedules\ScheduleUpdateRecorded;
 
 class CreateUpdate
 {
@@ -15,12 +17,22 @@ class CreateUpdate
      */
     public function handle(Incident|Schedule $resource, CreateIncidentUpdateRequestData|CreateScheduleUpdateRequestData $data): Update
     {
-        $update = new Update(array_merge(['user_id' => auth()->id()], $data->toArray()));
+        if ($resource instanceof Incident) {
+            /** @var CreateIncidentUpdateRequestData $data */
+            return IncidentUpdateRecorded::commit(
+                incident_id: $resource->id,
+                status: $data->status,
+                message: $data->message,
+                user_id: $data->userId ?? auth()->id(),
+            );
+        }
 
-        $resource->updates()->save($update);
-
-        // @todo Dispatch notification that incident was updated.
-
-        return $update;
+        /** @var CreateScheduleUpdateRequestData $data */
+        return ScheduleUpdateRecorded::commit(
+            schedule_id: $resource->id,
+            message: $data->message,
+            status: $data->status ?? null,
+            user_id: auth()->id(),
+        );
     }
 }

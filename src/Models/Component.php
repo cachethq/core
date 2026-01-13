@@ -4,9 +4,6 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
-use Cachet\Events\Components\ComponentCreated;
-use Cachet\Events\Components\ComponentDeleted;
-use Cachet\Events\Components\ComponentUpdated;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -65,12 +62,6 @@ class Component extends Model
         'component_group_id',
         'enabled',
         'meta',
-    ];
-
-    protected $dispatchesEvents = [
-        'created' => ComponentCreated::class,
-        'deleted' => ComponentDeleted::class,
-        'updated' => ComponentUpdated::class,
     ];
 
     /**

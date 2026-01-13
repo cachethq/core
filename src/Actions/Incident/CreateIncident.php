@@ -4,11 +4,13 @@ namespace Cachet\Actions\Incident;
 
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Data\Requests\Incident\IncidentComponentRequestData;
+use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
+use Cachet\Verbs\Events\Incidents\IncidentCreated;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 
 class CreateIncident
 {
@@ -25,23 +27,25 @@ class CreateIncident
             $data = $data->withMessage($this->parseTemplate($template, $data));
         }
 
-        // @todo Dispatch notification that incident was created.
-
-        return tap(Incident::create(array_merge(
-            ['guid' => Str::uuid()],
-            $data->except('components')->toArray()
-        )), function (Incident $incident) use ($data) {
-            if (! $data->components) {
-                return;
-            }
-
+        $components = [];
+        if ($data->components) {
             $components = collect($data->components)->map(fn (IncidentComponentRequestData $component) => [
-                'component_id' => $component->id,
-                'component_status' => $component->status,
+                'id' => $component->id,
+                'status' => $component->status,
             ])->all();
+        }
 
-            $incident->components()->sync($components);
-        });
+        return IncidentCreated::commit(
+            name: $data->name,
+            status: $data->status ?? IncidentStatusEnum::investigating,
+            message: $data->message ?? '',
+            visible: $data->visible ? ResourceVisibilityEnum::guest : ResourceVisibilityEnum::authenticated,
+            stickied: $data->stickied,
+            notifications: $data->notifications,
+            occurred_at: $data->occurredAt,
+            user_id: auth()->id(),
+            components: $components,
+        );
     }
 
     /**
