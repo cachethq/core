@@ -6,6 +6,7 @@ use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ScheduleStatusEnum;
+use Cachet\Verbs\Events\Schedules\ScheduleCompleted;
 use Cachet\Filament\Resources\Schedules\Pages\CreateSchedule;
 use Cachet\Filament\Resources\Schedules\Pages\EditSchedule;
 use Cachet\Filament\Resources\Schedules\Pages\ListSchedules;
@@ -144,7 +145,10 @@ class ScheduleResource extends Resource
                             ->required(),
                     ])
                     ->color('success')
-                    ->action(fn (Schedule $record, array $data) => $record->update(['completed_at' => $data['completed_at']])),
+                    ->action(fn (Schedule $record, array $data) => ScheduleCompleted::commit(
+                        schedule_id: $record->id,
+                        completed_at: $data['completed_at'],
+                    )),
                 EditAction::make(),
             ])
             ->toolbarActions([

@@ -3,6 +3,8 @@
 namespace Cachet\Actions\ComponentGroup;
 
 use Cachet\Models\ComponentGroup;
+use Cachet\Verbs\Events\ComponentGroups\ComponentGroupDeleted;
+use Cachet\Verbs\Events\Components\ComponentUpdated;
 
 class DeleteComponentGroup
 {
@@ -11,8 +13,14 @@ class DeleteComponentGroup
      */
     public function handle(ComponentGroup $componentGroup): void
     {
-        $componentGroup->components()->update(['component_group_id' => null]);
+        // First, unassign all components from this group
+        foreach ($componentGroup->components as $component) {
+            ComponentUpdated::commit(
+                component_id: $component->id,
+                clear_component_group: true,
+            );
+        }
 
-        $componentGroup->delete();
+        ComponentGroupDeleted::commit(component_group_id: $componentGroup->id);
     }
 }
