@@ -35,8 +35,17 @@ jobs:
       - name: Compile assets
         run: npm run build
 
+      - name: Wait for checks to pass
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.sha }}
+          running-workflow-name: Compile Assets
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+          allowed-conclusions: success,skipped
+
       - name: Commit compiled files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Compile Assets
-          file_pattern: "public/build"
+          file_pattern: 'public/build'
