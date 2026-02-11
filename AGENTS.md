@@ -1,3 +1,152 @@
+# Cachet Core - Agent Instructions
+
+This document provides comprehensive guidelines for AI agents and developers working on the Cachet Core repository.
+Adhere to these rules to maintain code quality, consistency, and stability.
+
+## 1. Project Context
+
+Cachet Core is a Laravel package that provides the core functionality for Cachet (Status Page system).
+It leverages the Laravel ecosystem extensively, including Filament for the admin panel.
+
+- **Framework:** Laravel (Package development via Orchestra Testbench)
+- **Language:** PHP 8.2+
+- **Admin UI:** Filament v4
+- **Frontend:** Blade, Alpine.js, Tailwind CSS
+- **Testing:** Pest PHP
+- **Static Analysis:** Larastan (Level 5), Pint
+
+## 2. Development Workflow
+
+### Dependency Management
+
+- **PHP:** `composer install`
+- **JS:** `npm install`
+- **Do not** add new dependencies without explicit approval.
+
+### Build Commands
+
+- **Frontend Build:** `npm run build` (Required for CSS/JS changes)
+- **Frontend Dev:** `npm run dev` (Watch mode)
+- **Package Discovery:** `composer prepare` (Runs `package:discover`)
+
+### Local Development (Workbench)
+
+- The project uses `orchestra/testbench` with a `workbench` directory.
+- **Serve App:** `composer start` or `composer dev`
+- **Clear Cache:** `composer clear`
+
+## 3. Testing & Verification
+
+**Always** run tests before and after changes.
+
+### Running Tests (Pest)
+
+- **Run All Units:** `composer test:unit` (or `composer test`)
+- **Run Single Test (Filter):**
+    ```bash
+    vendor/bin/pest --filter 'UserCanLoginTest'
+    ```
+- **Run Single File:**
+    ```bash
+    vendor/bin/pest tests/Feature/AuthenticationTest.php
+    ```
+- **Parallel Testing:** `composer test:unit` is configured for parallel execution.
+
+### Linting & Static Analysis
+
+- **Check PHP Style:** `composer test:lint` (Runs Pint)
+- **Fix PHP Style:** `vendor/bin/pint`
+- **Static Analysis:** `vendor/bin/phpstan analyse` (Configured in `phpstan.neon.dist`)
+- **JS/Blade Formatting:** `npm run fix:prettier`
+
+**Note:** Do not create ad-hoc verification scripts. Use existing tests or write new Pest tests.
+
+## 4. Code Style & Conventions
+
+### PHP (Laravel/Pint)
+
+- **Strict Types:** Use `declare(strict_types=1);` where appropriate, though check sibling files for consistency.
+- **Naming:**
+    - Use **descriptive** names.
+    - Boolean methods: `isRegistered()`, `hasPermission()`, not `registered()` or `check()`.
+    - Variables: `$user`, `$statusPage`, not `$u`, `$sp`.
+- **Controllers:** Keep thin. Push logic to Actions, Services, or Models.
+- **Models:** Use `Fillable` or `Guarded` explicitly.
+- **Imports:** Sort alphabetically. Remove unused imports.
+
+### Filament (Admin)
+
+- Follow Filament v4 conventions for Resources, Pages, and Widgets.
+- Use Filament's form components and table columns.
+
+### Frontend (Alpine/Tailwind)
+
+- **Blade:** Use components (`<x-cachet::...>`) where available.
+- **Alpine.js:** Use `x-data` for component state. Avoid inline scripts where possible.
+- **Tailwind:** Use utility classes. Avoid custom CSS unless necessary.
+
+## 5. Directory Structure & Architecture
+
+Stick to the existing structure. Do not invent new top-level directories.
+
+- `src/`: Core package code (Models, Http, ServiceProviders).
+- `tests/`: Pest tests (Feature, Unit).
+- `resources/views/`: Blade templates.
+- `database/`: Migrations, Factories, Seeders.
+- `workbench/`: Testbench application skeleton.
+
+## 6. Specific Rules (from CLAUDE.md)
+
+- **Laravel Boost Guidelines:**
+    - This project uses "Laravel Boost" rules.
+    - Focus on existing code conventions.
+    - **No Verification Scripts:** Trust unit/feature tests.
+    - **Conciseness:** Be concise in explanations.
+    - **Documentation:** Do not create `.md` files unless requested.
+
+- **Debugging:**
+    - Use `vendor/bin/testbench tinker` for interactive debugging.
+    - Use `browser-logs` tool if available for frontend issues.
+
+## 7. Example: Adding a New Feature
+
+1. **Plan:** Identify necessary Models, Controllers, and Filament resources.
+2. **Test:** Create a Pest test in `tests/Feature`.
+    ```php
+    it('can create a status', function () {
+        $user = User::factory()->create();
+        // ...
+    });
+    ```
+3. **Implement:** Write code in `src/`.
+4. **Verify:** Run `vendor/bin/pint` and `composer test:unit`.
+
+## 8. Common Issues & Troubleshooting
+
+- **"Class not found":** Run `composer dump-autoload`.
+- **Frontend not updating:** Run `npm run build`.
+- **Database issues:** Check `workbench/database` or run migrations in the test environment.
+
+## 9. Error Handling
+
+- Use Laravel's exception handling.
+- Throw specific exceptions (e.g., `ModelNotFoundException`) rather than generic ones.
+- Log errors using `Log::error()` with context.
+
+## 10. Type Hinting & Docblocks
+
+- Type hint all method arguments and return types.
+- Use Docblocks (`/** ... */`) for:
+    - Complex logic explanations.
+    - `phpstan` type definitions (e.g., `/** @var array<string, int> $items */`).
+    - Deprecation notices.
+
+---
+
+_Generated for AI Agents interacting with Cachet Core._
+
+===
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

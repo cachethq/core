@@ -43,8 +43,8 @@
     "require-dev": {
         "dedoc/scramble": "^0.12",
         "larastan/larastan": "^3.4",
-        "laravel/boost": "^1.0",
-        "laravel/mcp": "^0.4.1",
+        "laravel/boost": "^2.0",
+        "laravel/mcp": "^0.5",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.24",
         "orchestra/testbench": "^9.15.1",
