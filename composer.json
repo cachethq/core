@@ -92,19 +92,30 @@
         "post-autoload-dump": "@prepare",
         "build": [
             "@prepare",
-            "@clear",
             "@php vendor/bin/testbench workbench:build"
         ],
         "canvas": "@php vendor/bin/canvas",
         "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
         "dev": [
-            "@build",
             "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php vendor/bin/testbench serve\" \"php vendor/bin/testbench queue:listen --tries=1\" \"php vendor/bin/testbench pail\" \"npm run dev\" --names=server,queue,logs,vite"
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#86efac\" \"php vendor/bin/testbench serve\" \"php vendor/bin/testbench queue:listen --tries=1\" \"npm run dev\" \"node scheduler.cjs\" --names=server,queue,vite,scheduler"
         ],
         "prepare": "@php vendor/bin/testbench package:discover --ansi",
         "start": [
             "@dev"
+        ],
+        "fresh": [
+            "@php vendor/bin/testbench migrate:fresh --seed --seeder=Cachet\\Database\\Seeders\\DatabaseSeeder",
+            "@serve"
+        ],
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "php vendor/bin/testbench serve --host=0.0.0.0 --port=8000"
+        ],
+        "setup": [
+            "@prepare",
+            "@php vendor/bin/testbench workbench:build",
+            "npm run build"
         ],
         "test:lint": [
             "pint --test"

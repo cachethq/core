@@ -1,18 +1,20 @@
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_NAVIGATION_BEFORE) }}
 <div class="flex items-center justify-between border-b border-zinc-200 px-4 sm:px-6 lg:px-8 py-4 dark:border-zinc-700">
     <div>
-        <a href="{{ route('cachet.status-page') }}" class="transition hover:opacity-80">
+        <a href="{{ route('cachet.status-page') }}" class="flex items-center gap-2 transition hover:opacity-80">
             @if($appBanner)
             <img src="{{ Storage::url($appBanner) }}" alt="{{ $siteName }}" class="h-8 w-auto" />
             @else
-            <x-cachet::logo class="hidden h-8 w-auto sm:block" />
-            <x-cachet::logomark class="h-8 w-auto sm:hidden" />
+            <span class="text-xl font-bold text-zinc-800 dark:text-white">{{ $siteName }}</span>
             @endif
         </a>
     </div>
 
-    @if ($dashboardLoginLink)
     <div class="flex items-center gap-2.5 sm:gap-5">
+        {{-- Subscribe Button --}}
+        <x-cachet::subscribe-button />
+
+        @if ($dashboardLoginLink)
         <a href="{{ Cachet\Cachet::dashboardPath() }}" class="rounded-sm bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground">
             {{ __('filament-panels::pages/dashboard.title') }}
         </a>
@@ -25,7 +27,7 @@
             </button>
         </form>
         @endauth
+        @endif
     </div>
-    @endif
 </div>
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_NAVIGATION_AFTER) }}

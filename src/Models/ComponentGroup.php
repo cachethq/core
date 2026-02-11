@@ -21,6 +21,7 @@ use Illuminate\Support\Collection;
  * @property int $order
  * @property ComponentGroupVisibilityEnum $collapsed
  * @property ResourceVisibilityEnum $visible
+ * @property ?array<string, mixed> $meta
  * @property Collection<int, Component> $components
  *
  * @method static ComponentGroupFactory factory($count = null, $state = [])
@@ -37,6 +38,7 @@ class ComponentGroup extends Model
         'order' => 'int',
         'collapsed' => ComponentGroupVisibilityEnum::class,
         'visible' => ResourceVisibilityEnum::class,
+        'meta' => 'json',
     ];
 
     /** @var list<string> */
@@ -45,6 +47,7 @@ class ComponentGroup extends Model
         'order',
         'collapsed',
         'visible',
+        'meta',
     ];
 
     /**

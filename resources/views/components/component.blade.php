@@ -27,10 +27,25 @@
                 </div>
             </div>
 
+            {{-- Heartbeat bar visualization --}}
+            @php
+                $meta = $component->meta ?? [];
+                $heartbeats = $meta['heartbeats'] ?? [];
+                $uptime = $meta['uptime_kuma_uptime_24h'] ?? null;
+                $sslDays = $meta['ssl_expiry_days'] ?? null;
+            @endphp
+            @if(!empty($heartbeats) || $uptime !== null || $sslDays !== null)
+                <x-cachet::heartbeat-bar
+                    :heartbeats="$heartbeats"
+                    :uptime="$uptime"
+                    :sslDays="$sslDays"
+                />
+            @endif
+
             <div class="flex flex-col gap-y-1 text-xs text-zinc-500 dark:text-zinc-300">
-                @if($component->description)
+                  <!-- @if($component->description)
                 <p class="">{!! $component->description !!}</p>
-                @endif
+                @endif -->
                 @if($component->link)
                 <a href="{{ $component->link }}" class="text-zinc-700 underline dark:text-zinc-300" target="_blank" rel="nofollow noopener">{{ __('cachet::component.view_details') }}</a>
                 @endif

@@ -179,4 +179,17 @@ return [
         'cache' => env('CACHET_FEED_CACHE', 3600),
     ],
 
+    /*
+     Uptime Kuma Integration .env variables
+     */
+    'uptime_kuma' => [
+        'enabled' => env('CACHET_UPTIME_KUMA_ENABLED', true),
+        'url' => env('CACHET_UPTIME_KUMA_URL', 'http://localhost:3001'),
+        'status_page_slug' => env('CACHET_UPTIME_KUMA_STATUS_PAGE_SLUG', 'united-codes'),
+        'webhook_secret' => env('CACHET_UPTIME_KUMA_WEBHOOK_SECRET', null),
+        'send_notifications' => env('CACHET_UPTIME_KUMA_NOTIFICATIONS', true),
+        'auto_resolve' => env('CACHET_UPTIME_KUMA_AUTO_RESOLVE', true),
+        'sync_interval' => env('CACHET_UPTIME_KUMA_SYNC_INTERVAL', 5),
+    ],
+
 ];

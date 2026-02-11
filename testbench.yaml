@@ -2,6 +2,7 @@ providers:
   - Workbench\App\Providers\WorkbenchServiceProvider
   - Cachet\CachetCoreServiceProvider
   - Cachet\CachetDashboardServiceProvider
+  - Cachet\Providers\CustomBrandingServiceProvider
   - Spatie\LaravelSettings\LaravelSettingsServiceProvider
   - Spatie\LaravelData\LaravelDataServiceProvider
   - Laravel\Sanctum\SanctumServiceProvider
@@ -23,26 +24,24 @@ migrations:
 
 workbench:
   start: '/'
-  install: true
+  install: false
   discovers:
     config: true
     web: true
-  sync:
-    - from: public
-      to: public/vendor/cachethq/cachet
+
+  # sync:
+  #   - from: public
+  #     to: public/vendor/cachethq/cachet
   build:
-    - asset-publish
     - filament:assets
-    - create-sqlite-db
     - storage-link
-    - db:wipe
-    - migrate:refresh:
-        --seed: true
-        --seeder: Cachet\Database\Seeders\DatabaseSeeder
+    # - create-sqlite-db
+    # - migrate
+    # - asset-publish 
   assets:
     - query-builder-config
-    - cachet-assets
+    # - cachet-assets
 
-purge:
-  directories:
-    - public/vendor
+# purge:
+#   directories:
+#     - public/vendor

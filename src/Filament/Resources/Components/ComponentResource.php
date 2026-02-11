@@ -66,6 +66,24 @@ class ComponentResource extends Resource
                     Toggle::make('enabled')
                         ->required(),
                 ]),
+
+                // Uptime Kuma Integration Section 
+                Section::make('Uptime Kuma Integration')
+                    ->description('Link this component to an Uptime Kuma monitor for automatic incident creation.')
+                    ->collapsible()
+                    ->collapsed()
+                    ->schema([
+                        TextInput::make('uptime_kuma_monitor_id')
+                            ->label('Uptime Kuma Monitor ID')
+                            ->helperText('Enter the monitor ID from Uptime Kuma. Find it in the monitor\'s URL (e.g., /dashboard/1 → ID is 1).')
+                            ->numeric()
+                            ->minValue(1)
+                            ->afterStateHydrated(function (TextInput $component, ?Component $record) {
+                                if ($record) {
+                                    $component->state($record->meta['uptime_kuma_monitor_id'] ?? null);
+                                }
+                            }),
+                    ]),
             ]);
     }
 

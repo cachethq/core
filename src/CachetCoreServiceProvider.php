@@ -5,7 +5,9 @@ namespace Cachet;
 use BladeUI\Icons\Factory;
 use Cachet\Commands\MakeUserCommand;
 use Cachet\Commands\SendBeaconCommand;
+use Cachet\Commands\SyncUptimeKumaCommand;
 use Cachet\Commands\VersionCommand;
+use Cachet\Services\UptimeKuma\UptimeKumaClient;
 use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
@@ -49,6 +51,7 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(Cachet::class);
         $this->app->singleton(ViewManager::class);
+        $this->app->singleton(UptimeKumaClient::class);
     }
 
     /**
@@ -184,6 +187,7 @@ class CachetCoreServiceProvider extends ServiceProvider
             $this->commands([
                 MakeUserCommand::class,
                 SendBeaconCommand::class,
+                SyncUptimeKumaCommand::class,
                 VersionCommand::class,
             ]);
 
@@ -207,14 +211,17 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->app->booted(function () {
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
-            $demoMode = fn () => Cachet::demoMode();
+            // $demoMode = fn () => Cachet::demoMode();
 
             $schedule->command('cachet:beacon')->daily();
 
-            $schedule->command('db:seed', [
-                '--class' => DatabaseSeeder::class,
-                '--force',
-            ])->everyThirtyMinutes()->when($demoMode);
+            //sync Uptime Kuma monitors
+            if (config('cachet.uptime_kuma.enabled', true) && config('cachet.uptime_kuma.sync_interval', 1) > 0) {
+                $schedule->command('cachet:sync-uptime-kuma', ['--status-only'])
+                    ->everyMinute()
+                    ->withoutOverlapping()
+                    ->runInBackground();
+            }
         });
     }
 

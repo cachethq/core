@@ -32,16 +32,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('users')->truncate();
-        DB::table('incidents')->truncate();
-        DB::table('components')->truncate();
-        DB::table('component_groups')->truncate();
-        DB::table('schedules')->truncate();
-        DB::table('metrics')->truncate();
-        DB::table('metric_points')->truncate();
-        DB::table('updates')->truncate();
-        DB::table('webhook_attempts')->truncate();
-        DB::table('webhook_subscriptions')->truncate();
+        // DB::table('users')->truncate();
+        // DB::table('incidents')->truncate();
+        // DB::table('components')->truncate();
+        // DB::table('component_groups')->truncate();
+        // DB::table('schedules')->truncate();
+        // DB::table('metrics')->truncate();
+        // DB::table('metric_points')->truncate();
+        // DB::table('updates')->truncate();
+        // DB::table('webhook_attempts')->truncate();
+        // DB::table('webhook_subscriptions')->truncate();
 
         /** @var User $userModel */
         $userModel = config('cachet.user_model');
