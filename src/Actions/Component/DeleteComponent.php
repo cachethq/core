@@ -3,6 +3,7 @@
 namespace Cachet\Actions\Component;
 
 use Cachet\Models\Component;
+use Cachet\Verbs\Events\Components\ComponentDeleted;
 
 class DeleteComponent
 {
@@ -11,8 +12,6 @@ class DeleteComponent
      */
     public function handle(Component $component): void
     {
-        $component->subscribers()->detach();
-
-        $component->delete();
+        ComponentDeleted::commit(component_id: $component->id);
     }
 }
