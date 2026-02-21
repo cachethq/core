@@ -4,7 +4,7 @@
 
 @use('\Cachet\Enums\MetricViewEnum')
 
-<div x-data="chart">
+<div x-data="chart_{{ $metric->id }}">
     <div class="flex flex-col gap-2">
         <div class="flex items-center gap-1.5">
             <div class="font-semibold leading-6">{{ $metric->name }}</div>
@@ -32,7 +32,7 @@
 
 <script>
     document.addEventListener('alpine:init', () => {
-        Alpine.data('chart', () => ({
+        Alpine.data('chart_{{ $metric->id }}', () => ({
             metric: {{ Js::from($metric) }},
             period: {{ Js::from($metric->default_view) }},
             points: [[], [], [], []],
