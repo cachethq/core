@@ -96,3 +96,66 @@ it('can fetch component overview', function () {
         ->major_outage->toBe(1)
         ->under_maintenance->toBe(1);
 });
+
+it('excludes disabled components from component overview', function () {
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::operational->value,
+        'enabled' => true,
+    ]);
+
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::major_outage->value,
+        'enabled' => false,
+    ]);
+
+    $components = (new Status)->components();
+
+    expect($components)
+        ->total->toBe(1)
+        ->operational->toBe(1)
+        ->major_outage->toBe(0);
+});
+
+it('excludes disabled components from system status calculation', function () {
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::operational->value,
+        'enabled' => true,
+    ]);
+
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::partial_outage->value,
+        'enabled' => false,
+    ]);
+
+    $this->assertEquals((new Status)->current(), SystemStatusEnum::operational);
+});
+
+it('excludes disabled components from major outage calculation', function () {
+    $status = new Status;
+
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::major_outage->value,
+        'enabled' => false,
+    ]);
+
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::operational->value,
+        'enabled' => true,
+    ]);
+
+    assertFalse($status->majorOutage());
+});
+
+it('excludes disabled components from under maintenance status', function () {
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::under_maintenance->value,
+        'enabled' => false,
+    ]);
+
+    Component::factory()->create([
+        'status' => ComponentStatusEnum::operational->value,
+        'enabled' => true,
+    ]);
+
+    $this->assertEquals((new Status)->current(), SystemStatusEnum::operational);
+});

@@ -78,6 +78,7 @@ class Status
     {
         return $this->components ??= Component::query()
             ->toBase()
+            ->where('enabled', true)
             ->selectRaw('count(*) as total')
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as operational', [ComponentStatusEnum::operational])
             ->selectRaw('sum(case when status = ? then 1 else 0 end) as performance_issues', [ComponentStatusEnum::performance_issues])
