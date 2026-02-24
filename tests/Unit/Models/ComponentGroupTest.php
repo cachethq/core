@@ -157,3 +157,28 @@ it('expands when any component in the group has an active incident', function ()
     // Should be expanded
     expect($group->fresh()->isExpanded())->toBeTrue();
 });
+
+it('resets component_group_id on components when the group is deleted', function () {
+    $group = ComponentGroup::factory()->hasComponents(2)->create();
+    $componentIds = $group->components->pluck('id');
+
+    $group->delete();
+
+    foreach ($componentIds as $id) {
+        $this->assertDatabaseHas('components', [
+            'id' => $id,
+            'component_group_id' => null,
+        ]);
+    }
+});
+
+it('does not delete components when the group is deleted', function () {
+    $group = ComponentGroup::factory()->hasComponents(2)->create();
+    $componentIds = $group->components->pluck('id');
+
+    $group->delete();
+
+    foreach ($componentIds as $id) {
+        $this->assertDatabaseHas('components', ['id' => $id]);
+    }
+});
