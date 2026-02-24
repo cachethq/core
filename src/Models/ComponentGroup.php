@@ -47,6 +47,13 @@ class ComponentGroup extends Model
         'visible',
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (ComponentGroup $componentGroup): void {
+            $componentGroup->components()->update(['component_group_id' => null]);
+        });
+    }
+
     /**
      * Get the components in the group.
      *
