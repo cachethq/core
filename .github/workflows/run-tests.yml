@@ -18,6 +18,16 @@ jobs:
         php: [8.4, 8.3, 8.2]
         laravel: [11.x]
         stability: [prefer-lowest, prefer-stable]
+        include:
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-lowest
+            allow-failure: true
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-stable
+            allow-failure: true
+    continue-on-error: ${{ matrix.allow-failure || false }}
 
     name: Static Analysis - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
 
@@ -61,6 +71,16 @@ jobs:
         php: [8.4, 8.3, 8.2]
         laravel: [11.x]
         stability: [prefer-lowest, prefer-stable]
+        include:
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-lowest
+            allow-failure: true
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-stable
+            allow-failure: true
+    continue-on-error: ${{ matrix.allow-failure || false }}
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - MySQL 8.0
 
@@ -118,6 +138,16 @@ jobs:
         php: [8.4, 8.3, 8.2]
         laravel: [11.x]
         stability: [prefer-lowest, prefer-stable]
+        include:
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-lowest
+            allow-failure: true
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-stable
+            allow-failure: true
+    continue-on-error: ${{ matrix.allow-failure || false }}
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 13
 
@@ -175,6 +205,16 @@ jobs:
         php: [ 8.3, 8.2 ]
         laravel: [ 11.x ]
         stability: [ prefer-lowest, prefer-stable ]
+        include:
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-lowest
+            allow-failure: true
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-stable
+            allow-failure: true
+    continue-on-error: ${{ matrix.allow-failure || false }}
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 14
 
@@ -232,6 +272,16 @@ jobs:
         php: [ 8.3, 8.2 ]
         laravel: [ 11.x ]
         stability: [ prefer-lowest, prefer-stable ]
+        include:
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-lowest
+            allow-failure: true
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-stable
+            allow-failure: true
+    continue-on-error: ${{ matrix.allow-failure || false }}
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 15
 
@@ -277,6 +327,16 @@ jobs:
         php: [ 8.3, 8.2 ]
         laravel: [ 11.x ]
         stability: [ prefer-lowest, prefer-stable ]
+        include:
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-lowest
+            allow-failure: true
+          - php: '8.5'
+            laravel: 11.x
+            stability: prefer-stable
+            allow-failure: true
+    continue-on-error: ${{ matrix.allow-failure || false }}
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - SQLite
 
