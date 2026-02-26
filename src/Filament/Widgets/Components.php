@@ -5,6 +5,7 @@ namespace Cachet\Filament\Widgets;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
+use Cachet\Verbs\Events\Components\ComponentStatusChanged;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
@@ -80,7 +81,15 @@ class Components extends Widget implements HasSchemas
             ->inline()
             ->live()
             ->options(ComponentStatusEnum::class)
-            ->afterStateUpdated(fn (ComponentStatusEnum $state) => $component->update(['status' => $state]));
+            ->afterStateUpdated(function (ComponentStatusEnum $state) use ($component) {
+                if ($component->status !== $state) {
+                    ComponentStatusChanged::commit(
+                        component_id: $component->id,
+                        old_status: $component->status,
+                        new_status: $state,
+                    );
+                }
+            });
     }
 
     protected function loadVisibleComponentGroups(): Collection

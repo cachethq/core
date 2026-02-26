@@ -3,29 +3,36 @@
 namespace Cachet\Actions\ComponentGroup;
 
 use Cachet\Data\Requests\ComponentGroup\CreateComponentGroupRequestData;
-use Cachet\Models\Component;
+use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\ComponentGroup;
+use Cachet\Verbs\Events\ComponentGroups\ComponentGroupCreated;
+use Cachet\Verbs\Events\Components\ComponentUpdated;
 
 class CreateComponentGroup
 {
     /**
      * Handle the action.
      */
-    /**
-     * Handle the action.
-     */
     public function handle(CreateComponentGroupRequestData $data): ComponentGroup
     {
-        return tap(ComponentGroup::create(
-            $data->except('components')->toArray(),
-        ), function (ComponentGroup $componentGroup) use ($data) {
-            if (! $data->components) {
-                return;
-            }
+        $componentGroup = ComponentGroupCreated::commit(
+            name: $data->name,
+            order: $data->order ?? 0,
+            collapsed: ComponentGroupVisibilityEnum::expanded,
+            visible: $data->visible ?? ResourceVisibilityEnum::guest,
+        );
 
-            Component::query()->whereIn('id', $data->components)->update([
-                'component_group_id' => $componentGroup->id,
-            ]);
-        });
+        // Assign components to the group via update events
+        if ($data->components) {
+            foreach ($data->components as $componentId) {
+                ComponentUpdated::commit(
+                    component_id: $componentId,
+                    component_group_id: $componentGroup->id,
+                );
+            }
+        }
+
+        return $componentGroup;
     }
 }

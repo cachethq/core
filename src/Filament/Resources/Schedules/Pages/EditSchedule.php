@@ -2,9 +2,13 @@
 
 namespace Cachet\Filament\Resources\Schedules\Pages;
 
+use Cachet\Actions\Schedule\UpdateSchedule;
+use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Filament\Resources\Schedules\ScheduleResource;
+use Cachet\Models\Schedule;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Database\Eloquent\Model;
 
 class EditSchedule extends EditRecord
 {
@@ -17,10 +21,13 @@ class EditSchedule extends EditRecord
         ];
     }
 
-    protected function mutateFormDataBeforeSave(array $data): array
+    protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $data['completed_at'] = $data['completed_at'] ?? null;
+        /** @var Schedule $record */
+        $requestData = UpdateScheduleRequestData::from($data);
 
-        return $data;
+        app(UpdateSchedule::class)->handle($record, $requestData);
+
+        return $record;
     }
 }

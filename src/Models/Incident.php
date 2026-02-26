@@ -6,9 +6,6 @@ use Cachet\Concerns\HasVisibility;
 use Cachet\Database\Factories\IncidentFactory;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
-use Cachet\Events\Incidents\IncidentCreated;
-use Cachet\Events\Incidents\IncidentDeleted;
-use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Filament\Resources\Incidents\IncidentResource;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -73,12 +70,8 @@ class Incident extends Model
         'occurred_at' => 'datetime',
     ];
 
-    /** @var array<string, class-string> */
-    protected $dispatchesEvents = [
-        'created' => IncidentCreated::class,
-        'deleted' => IncidentDeleted::class,
-        'updated' => IncidentUpdated::class,
-    ];
+    // Webhook events are now dispatched from Verbs event handlers
+    // See: src/Verbs/Events/Incidents/
 
     /** @var list<string> */
     protected $fillable = [

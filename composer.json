@@ -25,6 +25,7 @@
         "filament/filament": "^4.0",
         "filament/spatie-laravel-settings-plugin": "^4.0",
         "guzzlehttp/guzzle": "^7.8",
+        "hirethunk/verbs": "^0.7.0",
         "illuminate/cache": "^11.35.0",
         "illuminate/console": "^11.35.0",
         "illuminate/database": "^11.35.0",

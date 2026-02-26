@@ -5,6 +5,7 @@ namespace Cachet\Actions\Schedule;
 use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\ScheduleComponentRequestData;
 use Cachet\Models\Schedule;
+use Cachet\Verbs\Events\Schedules\ScheduleCreated;
 
 class CreateSchedule
 {
@@ -13,21 +14,20 @@ class CreateSchedule
      */
     public function handle(CreateScheduleRequestData $data): Schedule
     {
-
-        /** @phpstan-ignore-next-line argument.type */
-        return tap(Schedule::create($data->except('components')->toArray()), function (Schedule $schedule) use ($data) {
-            if (! $data->components) {
-                return;
-            }
-
+        $components = [];
+        if ($data->components) {
             $components = collect($data->components)->map(fn (ScheduleComponentRequestData $component) => [
-                'component_id' => $component->id,
-                'component_status' => $component->status,
+                'id' => $component->id,
+                'status' => $component->status,
             ])->all();
+        }
 
-            $schedule->components()->sync($components);
-
-            // @todo Dispatch notification that maintenance was scheduled.
-        });
+        return ScheduleCreated::commit(
+            name: $data->name,
+            message: $data->message,
+            scheduled_at: $data->scheduledAt->toIso8601String(),
+            completed_at: $data->completedAt?->toIso8601String(),
+            components: $components,
+        );
     }
 }
