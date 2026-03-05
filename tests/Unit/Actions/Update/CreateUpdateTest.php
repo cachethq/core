@@ -39,6 +39,30 @@ it('an incident\'s computed latest status equals the new status', function () {
         ->latestStatus->toEqual(IncidentStatusEnum::identified);
 });
 
+it('sets linked component status to operational when incident update status is fixed', function () {
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+    ]);
+
+    $component = \Cachet\Models\Component::factory()->create([
+        'status' => \Cachet\Enums\ComponentStatusEnum::operational,
+    ]);
+
+    $incident->components()->attach($component->id, [
+        'component_status' => \Cachet\Enums\ComponentStatusEnum::major_outage,
+    ]);
+
+    $data = CreateIncidentUpdateRequestData::from([
+        'message' => 'This issue has been fixed.',
+        'status' => IncidentStatusEnum::fixed,
+    ]);
+
+    app(CreateUpdate::class)->handle($incident, $data);
+
+    expect($incident->components()->first()->pivot->component_status)
+        ->toEqual(\Cachet\Enums\ComponentStatusEnum::operational);
+});
+
 it('can create a schedule update', function () {
     $schedule = Schedule::factory()->create();
 
