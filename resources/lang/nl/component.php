@@ -33,6 +33,7 @@ return [
         'performance_issues' => 'Prestatieproblemen',
         'partial_outage' => 'Gedeeltelijke storing',
         'major_outage' => 'Ernstige storing',
+        'under_maintenance' => 'In onderhoud',
         'unknown' => 'Onbekend',
     ],
 

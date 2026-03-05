@@ -34,6 +34,7 @@ return [
         'threshold_label' => 'Limite',
         'visible_label' => 'Visível',
         'display_chart_label' => 'Exibir Gráfico',
+        'show_when_empty_label' => 'Exibir quando vazio',
     ],
     'overview' => [
         'metric_points_label' => 'Pontos de Métrica',

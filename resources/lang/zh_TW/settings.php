@@ -5,6 +5,8 @@ return [
         'site_name_label' => '網站名稱',
         'about_this_site_label' => '關於此網站',
         'timezone_label' => '時區',
+        'timezone_other' => '其他',
+        'browser_default' => '瀏覽器預設',
         'incident_days_label' => '事件天數',
         'major_outage_threshold_label' => '重大故障閾值',
         'refresh_rate_label' => '自動刷新頁面',
@@ -17,13 +19,22 @@ return [
             'display_graphs' => '顯示圖表',
             'only_show_disrupted_days' => '僅顯示受干擾天數',
             'recent_incidents_only' => '僅顯示最近事件',
+            'enable_external_dependencies' => '啟用外部依賴',
             'recent_incidents_days' => '顯示最近事件的天數',
         ],
+        'display_settings_title' => '顯示設定',
     ],
     'manage_customization' => [
         'header_label' => '自定義 Header HTML',
         'footer_label' => '自定義 Footer HTML',
         'stylesheet_label' => '自定義 CSS',
+    ],
+    'manage_localization' => [
+        'locale_label' => '語言',
+        'timezone_label' => '時區',
+        'toggles' => [
+            'show_timezone' => '在狀態頁面顯示時區',
+        ],
     ],
     'manage_theme' => [
         'app_banner_label' => '橫幅圖像',

@@ -8,6 +8,7 @@ return [
             'manage_customization' => 'Gérer la personnalisation',
             'manage_theme' => 'Gérer le thème',
             'manage_api_keys' => 'Gérer les clés API',
+            'manage_localization' => 'Gérer la localisation',
             'manage_webhooks' => 'Gérer les webhooks',
         ],
     ],
@@ -25,6 +26,11 @@ return [
             'documentation' => 'Documentation',
             'discord' => 'Rejoindre Discord',
             'sponsor' => 'Soutenir Cachet',
+        ],
+    ],
+    'user' => [
+        'items' => [
+            'edit_profile' => 'Modifier le profil',
         ],
     ],
 ];

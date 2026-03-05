@@ -5,6 +5,8 @@ return [
         'site_name_label' => '사이트 이름',
         'about_this_site_label' => '이 사이트 소개',
         'timezone_label' => '시간대',
+        'timezone_other' => '기타',
+        'browser_default' => '브라우저 기본값',
         'incident_days_label' => '사고 일수',
         'major_outage_threshold_label' => '주요 장애 임계값',
         'refresh_rate_label' => '페이지 자동 새로고침',
@@ -17,13 +19,22 @@ return [
             'display_graphs' => '그래프 표시',
             'only_show_disrupted_days' => '중단된 날만 표시',
             'recent_incidents_only' => '최근 사고만 표시',
+            'enable_external_dependencies' => '외부 의존성 활성화',
             'recent_incidents_days' => '최근 사고를 표시할 일수',
         ],
+        'display_settings_title' => '표시 설정',
     ],
     'manage_customization' => [
         'header_label' => '사용자 정의 헤더 HTML',
         'footer_label' => '사용자 정의 푸터 HTML',
         'stylesheet_label' => '사용자 정의 CSS',
+    ],
+    'manage_localization' => [
+        'locale_label' => '언어',
+        'timezone_label' => '시간대',
+        'toggles' => [
+            'show_timezone' => '상태 페이지에 시간대 표시',
+        ],
     ],
     'manage_theme' => [
         'app_banner_label' => '배너 이미지',

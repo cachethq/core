@@ -34,6 +34,7 @@ return [
         'threshold_label' => '閾值',
         'visible_label' => '可見',
         'display_chart_label' => '顯示圖表',
+        'show_when_empty_label' => '為空時顯示',
     ],
     'overview' => [
         'metric_points_label' => '指標點數',

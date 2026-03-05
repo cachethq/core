@@ -35,6 +35,7 @@ return [
 
         'visible_label' => 'Zichtbaar',
         'display_chart_label' => 'Diagram weergeven',
+        'show_when_empty_label' => 'Tonen wanneer leeg',
     ],
     'overview' => [
         'metric_points_label' => 'Metrische punten',

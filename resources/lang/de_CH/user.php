@@ -23,6 +23,7 @@ return [
         'password_label' => 'Passwort',
         'password_confirmation_label' => 'Passwort bestätigen',
         'preferred_locale' => 'Bevorzugte Sprache',
+        'preferred_locale_system_default' => 'Systemstandard',
         'is_admin_label' => 'Administrator',
     ],
 ];

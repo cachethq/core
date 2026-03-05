@@ -4,7 +4,9 @@ return [
     'manage_cachet' => [
         'site_name_label' => 'Seitenname',
         'about_this_site_label' => 'Über diese Seite',
+        'timezone_label' => 'Zeitzone',
         'timezone_other' => 'Andere',
+        'browser_default' => 'Browser-Standard',
         'incident_days_label' => 'Vorfalltage',
         'major_outage_threshold_label' => 'Schwellenwert für schwere Ausfälle',
         'refresh_rate_label' => 'Automatisch Seite neuladen',
@@ -14,7 +16,7 @@ return [
             'support_cachet' => 'Cachet unterstützen',
             'show_dashboard_link' => 'Dashboard-Link anzeigen',
             'display_graphs' => 'Diagramme anzeigen',
-            'enable_external_dependencies' => 'Enable External Dependencies',
+            'enable_external_dependencies' => 'Externe Abhängigkeiten aktivieren',
             'only_show_disrupted_days' => 'Nur Tage mit Vorfällen anzeigen',
             'recent_incidents_only' => 'Nur aktuelle Vorfälle anzeigen',
             'recent_incidents_days' => 'Anzahl der Tage, an denen aktuelle Vorfälle angezeigt werden sollen',

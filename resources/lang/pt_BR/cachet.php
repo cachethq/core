@@ -10,5 +10,10 @@ return [
     'powered_by' => 'Powered by',
     'open_source_status_page' => 'The open-source status page.',
     'all_times_shown_in' => 'Todos os horários são exibidos em *:timezone*.',
+    'feed' => [
+        'section_heading' => 'Últimas Postagens do Blog',
+        'empty' => 'Nenhuma postagem encontrada. Consulte *o blog* para mais informações.',
+        'posted_at' => 'Publicado :date',
+    ],
     'rss_feed' => 'RSS Feed :name',
 ];

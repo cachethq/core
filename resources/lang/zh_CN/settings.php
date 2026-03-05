@@ -5,6 +5,8 @@ return [
         'site_name_label' => '网站名称',
         'about_this_site_label' => '关于此网站',
         'timezone_label' => '时区',
+        'timezone_other' => '其他',
+        'browser_default' => '浏览器默认',
         'incident_days_label' => '事件天数',
         'major_outage_threshold_label' => '重大故障阈值',
         'refresh_rate_label' => '自动刷新页面',
@@ -17,13 +19,22 @@ return [
             'display_graphs' => '显示图表',
             'only_show_disrupted_days' => '仅显示受干扰天数',
             'recent_incidents_only' => '仅显示最近事件',
+            'enable_external_dependencies' => '启用外部依赖',
             'recent_incidents_days' => '显示最近事件的天数',
         ],
+        'display_settings_title' => '显示设置',
     ],
     'manage_customization' => [
         'header_label' => '自定义 Header HTML',
         'footer_label' => '自定义 Footer HTML',
         'stylesheet_label' => '自定义 CSS',
+    ],
+    'manage_localization' => [
+        'locale_label' => '语言',
+        'timezone_label' => '时区',
+        'toggles' => [
+            'show_timezone' => '在状态页面显示时区',
+        ],
     ],
     'manage_theme' => [
         'app_banner_label' => '横幅图像',

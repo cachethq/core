@@ -34,6 +34,7 @@ return [
         'threshold_label' => 'Umbral',
         'visible_label' => 'Visible',
         'display_chart_label' => 'Mostrar gráfico',
+        'show_when_empty_label' => 'Mostrar cuando esté vacío',
     ],
     'overview' => [
         'metric_points_label' => 'Puntos de la métrica',

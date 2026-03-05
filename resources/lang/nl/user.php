@@ -22,6 +22,8 @@ return [
         'email_label' => 'E-mailadres',
         'password_label' => 'Wachtwoord',
         'password_confirmation_label' => 'Bevestig wachtwoord',
+        'preferred_locale' => 'Voorkeurstaal',
+        'preferred_locale_system_default' => 'Systeemstandaard',
         'is_admin_label' => 'Beheerder',
     ],
 ];

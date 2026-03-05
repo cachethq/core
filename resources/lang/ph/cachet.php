@@ -10,5 +10,10 @@ return [
     'powered_by' => 'Pinatatakbo ng',
     'open_source_status_page' => 'Ang open-source status page.',
     'all_times_shown_in' => 'Ang lahat ng oras ay ipinapakita sa *:timezone*.',
+    'feed' => [
+        'section_heading' => 'Mga Pinakabagong Blog Post',
+        'empty' => 'Walang nahanap na blog post. Tingnan ang *blog* para sa karagdagang impormasyon.',
+        'posted_at' => 'Nai-post noong :date',
+    ],
     'rss_feed' => ':name RSS Feed',
 ];

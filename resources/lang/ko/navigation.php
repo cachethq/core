@@ -8,6 +8,7 @@ return [
             'manage_customization' => '커스터마이징 관리',
             'manage_theme' => '테마 관리',
             'manage_api_keys' => 'API 키 관리',
+            'manage_localization' => '지역화 관리',
             'manage_webhooks' => '웹훅 관리',
         ],
     ],
@@ -25,6 +26,11 @@ return [
             'documentation' => '문서',
             'discord' => 'Discord 참여',
             'sponsor' => 'Cachet 후원',
+        ],
+    ],
+    'user' => [
+        'items' => [
+            'edit_profile' => '프로필 편집',
         ],
     ],
 ];

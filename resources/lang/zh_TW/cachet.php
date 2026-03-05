@@ -10,5 +10,10 @@ return [
     'powered_by' => '技術支援',
     'open_source_status_page' => '開源的狀態頁面。',
     'all_times_shown_in' => '所有時間均顯示為 *:timezone*。',
+    'feed' => [
+        'section_heading' => '最新部落格文章',
+        'empty' => '未找到部落格文章。請查看*部落格*獲取更多資訊。',
+        'posted_at' => '發佈於 :date',
+    ],
     'rss_feed' => ':name RSS 訂閱源',
 ];

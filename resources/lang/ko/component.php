@@ -33,6 +33,7 @@ return [
         'performance_issues' => '성능 문제',
         'partial_outage' => '부분 장애',
         'major_outage' => '주요 장애',
+        'under_maintenance' => '유지보수 중',
         'unknown' => '알 수 없음',
     ],
 ];

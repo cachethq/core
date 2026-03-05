@@ -34,6 +34,7 @@ return [
         'threshold_label' => 'Threshold',
         'visible_label' => 'Nakikita',
         'display_chart_label' => 'Ipakita ang Tsart',
+        'show_when_empty_label' => 'Ipakita kapag walang laman',
     ],
     'overview' => [
         'metric_points_label' => 'Mga Puntos ng Sukat',

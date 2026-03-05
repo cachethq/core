@@ -8,6 +8,7 @@ return [
             'manage_customization' => 'Pamahalaan ang Pag-customize',
             'manage_theme' => 'Pamahalaan ang Tema',
             'manage_api_keys' => 'Pamahalaan ang Mga API Key',
+            'manage_localization' => 'Pamahalaan ang Lokalisasyon',
             'manage_webhooks' => 'Pamahalaan ang Mga Webhook',
         ],
     ],
@@ -25,6 +26,11 @@ return [
             'documentation' => 'Dokumentasyon',
             'discord' => 'Sumali sa Discord',
             'sponsor' => 'Sponsor ang Cachet',
+        ],
+    ],
+    'user' => [
+        'items' => [
+            'edit_profile' => 'I-edit ang Profile',
         ],
     ],
 ];

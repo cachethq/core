@@ -8,6 +8,7 @@ return [
             'manage_customization' => 'Beheer maatwerk',
             'manage_theme' => 'Weergave beheren',
             'manage_api_keys' => 'API-sleutels beheren',
+            'manage_localization' => 'Lokalisatie beheren',
             'manage_webhooks' => 'Webhooks beheren',
         ],
     ],

@@ -6,6 +6,7 @@ return [
         'about_this_site_label' => 'Tungkol sa Site na Ito',
         'timezone_label' => 'Oras na Rehiyon',
         'timezone_other' => 'Iba pang mga oras',
+        'browser_default' => 'Default ng Browser',
         'incident_days_label' => 'Mga Araw ng Insidente',
         'major_outage_threshold_label' => 'Limitasyon ng Malaking Pagka-aberya',
         'refresh_rate_label' => 'Awtomatikong I-refresh ang Pahina',
@@ -18,13 +19,22 @@ return [
             'display_graphs' => 'Ipakita ang Mga Graph',
             'only_show_disrupted_days' => 'Ipakita lamang ang Mga Araw ng Pagka-aberya',
             'recent_incidents_only' => 'Ipakita lamang ang Mga Kamakailang Insidente',
+            'enable_external_dependencies' => 'I-enable ang Mga External na Dependency',
             'recent_incidents_days' => 'Bilang ng Araw para Ipakita ang Mga Kamakailang Insidente',
         ],
+        'display_settings_title' => 'Mga Setting ng Display',
     ],
     'manage_customization' => [
         'header_label' => 'Custom na HTML para sa Header',
         'footer_label' => 'Custom na HTML para sa Footer',
         'stylesheet_label' => 'Custom na CSS',
+    ],
+    'manage_localization' => [
+        'locale_label' => 'Wika',
+        'timezone_label' => 'Oras na Rehiyon',
+        'toggles' => [
+            'show_timezone' => 'Ipakita ang oras na rehiyon sa status page',
+        ],
     ],
     'manage_theme' => [
         'app_banner_label' => 'Banner na Imahe',

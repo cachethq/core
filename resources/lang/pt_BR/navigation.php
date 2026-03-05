@@ -6,7 +6,10 @@ return [
         'items' => [
             'manage_cachet' => 'Gerenciar Cachet',
             'manage_customization' => 'Gerenciar Personalização',
+            'manage_localization' => 'Gerenciar Localização',
             'manage_theme' => 'Gerenciar Tema',
+            'manage_api_keys' => 'Gerenciar Chaves de API',
+            'manage_webhooks' => 'Gerenciar Webhooks',
         ],
     ],
 
@@ -23,6 +26,11 @@ return [
             'documentation' => 'Documentação',
             'discord' => 'Entrar no Discord',
             'sponsor' => 'Apoiar o Cachet',
+        ],
+    ],
+    'user' => [
+        'items' => [
+            'edit_profile' => 'Editar Perfil',
         ],
     ],
 ];

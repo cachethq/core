@@ -5,6 +5,8 @@ return [
         'site_name_label' => 'Nombre del Sitio',
         'about_this_site_label' => 'Acerca de este Sitio',
         'timezone_label' => 'Zona Horaria',
+        'timezone_other' => 'Otro',
+        'browser_default' => 'Predeterminado del navegador',
         'incident_days_label' => 'Días de Incidentes',
         'major_outage_threshold_label' => 'Umbral de Falla Mayor',
         'refresh_rate_label' => 'Actualizar Página Automáticamente',
@@ -17,13 +19,22 @@ return [
             'display_graphs' => 'Mostrar Gráficos',
             'only_show_disrupted_days' => 'Mostrar Solo Días con Problemas',
             'recent_incidents_only' => 'Mostrar Solo Incidentes Recientes',
+            'enable_external_dependencies' => 'Habilitar dependencias externas',
             'recent_incidents_days' => 'Número de Días para Mostrar Incidentes Recientes',
         ],
+        'display_settings_title' => 'Configuración de visualización',
     ],
     'manage_customization' => [
         'header_label' => 'Encabezado Personalizado HTML',
         'footer_label' => 'Pie de Página Personalizado HTML',
         'stylesheet_label' => 'CSS Personalizado',
+    ],
+    'manage_localization' => [
+        'locale_label' => 'Idioma',
+        'timezone_label' => 'Zona horaria',
+        'toggles' => [
+            'show_timezone' => 'Mostrar zona horaria en la página de estado',
+        ],
     ],
     'manage_theme' => [
         'app_banner_label' => 'Imagen de Banner',

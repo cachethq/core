@@ -8,6 +8,7 @@ return [
             'manage_customization' => '管理自定义',
             'manage_theme' => '管理主题',
             'manage_api_keys' => '管理 API 密钥',
+            'manage_localization' => '管理本地化',
             'manage_webhooks' => '管理 Webhooks',
         ],
     ],
@@ -25,6 +26,11 @@ return [
             'documentation' => '文档',
             'discord' => '加入 Discord',
             'sponsor' => '赞助 Cachet',
+        ],
+    ],
+    'user' => [
+        'items' => [
+            'edit_profile' => '编辑个人资料',
         ],
     ],
 ];

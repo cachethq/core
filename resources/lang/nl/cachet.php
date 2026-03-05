@@ -10,5 +10,10 @@ return [
     'powered_by' => 'Ondersteund door',
     'open_source_status_page' => 'De open source-statuspagina.',
     'all_times_shown_in' => 'Alle tijden worden weergegeven in *:timezone*.',
+    'feed' => [
+        'section_heading' => 'Laatste blogberichten',
+        'empty' => 'Er zijn geen blogberichten gevonden. Kijk op *de blog* voor meer informatie.',
+        'posted_at' => 'Geplaatst :date',
+    ],
     'rss_feed' => ':name RSS-feed',
 ];

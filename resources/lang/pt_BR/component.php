@@ -33,6 +33,7 @@ return [
         'performance_issues' => 'Problemas de Performance',
         'partial_outage' => 'Indisponibilidade Parcial',
         'major_outage' => 'Indisponibilidade Total',
+        'under_maintenance' => 'Em manutenção',
         'unknown' => 'Desconhecido',
     ],
 ];

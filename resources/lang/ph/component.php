@@ -33,6 +33,7 @@ return [
         'performance_issues' => 'Mga Isyu sa Pagganap',
         'partial_outage' => 'Bahagyang Pagkaantala',
         'major_outage' => 'Malaking Pagkaantala',
+        'under_maintenance' => 'Nasa ilalim ng maintenance',
         'unknown' => 'Hindi Alam',
     ],
 

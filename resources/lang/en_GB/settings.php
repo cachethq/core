@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'manage_localization' => [
+        'locale_label' => 'Locale',
+        'timezone_label' => 'Timezone',
+        'toggles' => [
+            'show_timezone' => 'Show timezone on status page',
+        ],
+    ],
     'manage_theme' => [
         'status_page_accent' => [
             'description' => 'Customise the accent colour of your status page. Cachet can automatically select a matching base colour.',

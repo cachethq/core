@@ -33,6 +33,7 @@ return [
         'performance_issues' => '性能问题',
         'partial_outage' => '部分故障',
         'major_outage' => '重大故障',
+        'under_maintenance' => '维护中',
         'unknown' => '未知',
     ],
 

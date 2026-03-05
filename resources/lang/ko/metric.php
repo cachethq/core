@@ -35,6 +35,7 @@ return [
 
         'visible_label' => '표시 여부',
         'display_chart_label' => '차트 표시',
+        'show_when_empty_label' => '비어 있을 때 표시',
     ],
     'overview' => [
         'metric_points_label' => '메트릭 포인트',

@@ -34,6 +34,7 @@ return [
         'threshold_label' => 'Seuil',
         'visible_label' => 'Visible',
         'display_chart_label' => 'Afficher le graphique',
+        'show_when_empty_label' => 'Afficher lorsque vide',
     ],
     'overview' => [
         'metric_points_label' => 'Points de métrique',

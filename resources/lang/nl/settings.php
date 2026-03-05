@@ -17,7 +17,7 @@ return [
             'show_timezone' => 'Tijdzone weergeven',
             'show_dashboard_link' => 'Dashboardlink weergeven',
             'display_graphs' => 'Diagrammen weergeven',
-            'enable_external_dependencies' => 'Enable External Dependencies',
+            'enable_external_dependencies' => 'Externe afhankelijkheden inschakelen',
             'only_show_disrupted_days' => 'Alleen dagen met incidenten weergeven',
             'recent_incidents_only' => 'Toon alleen actuele incidenten',
             'recent_incidents_days' => 'Aantal dagen waarop actuele incidenten moeten worden weergegeven',
@@ -28,6 +28,13 @@ return [
         'header_label' => 'Aangepaste HTML-Header',
         'footer_label' => 'Aangepaste HTML-Footer',
         'stylesheet_label' => 'Aangepaste CSS',
+    ],
+    'manage_localization' => [
+        'locale_label' => 'Taal',
+        'timezone_label' => 'Tijdzone',
+        'toggles' => [
+            'show_timezone' => 'Tijdzone tonen op statuspagina',
+        ],
     ],
     'manage_theme' => [
         'app_banner_label' => 'Bannerafbeelding',

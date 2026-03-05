@@ -6,6 +6,7 @@ return [
         'about_this_site_label' => 'Sobre Este Site',
         'timezone_label' => 'Fuso Horário',
         'timezone_other' => 'Outro',
+        'browser_default' => 'Padrão do navegador',
         'incident_days_label' => 'Dias de Incidentes',
         'major_outage_threshold_label' => 'Limite de Indisponibilidade Total',
         'refresh_rate_label' => 'Atualizar Página Automaticamente',
@@ -18,13 +19,22 @@ return [
             'display_graphs' => 'Exibir Gráficos',
             'only_show_disrupted_days' => 'Exibir Apenas Dias com Interrupções',
             'recent_incidents_only' => 'Exibir Apenas Incidentes Recentes',
+            'enable_external_dependencies' => 'Habilitar Dependências Externas',
             'recent_incidents_days' => 'Número de Dias para Exibir Incidentes Recentes',
         ],
+        'display_settings_title' => 'Configurações de Exibição',
     ],
     'manage_customization' => [
         'header_label' => 'HTML Personalizado do Cabeçalho',
         'footer_label' => 'HTML Personalizado do Rodapé',
         'stylesheet_label' => 'CSS Personalizado',
+    ],
+    'manage_localization' => [
+        'locale_label' => 'Idioma',
+        'timezone_label' => 'Fuso horário',
+        'toggles' => [
+            'show_timezone' => 'Exibir fuso horário na página de status',
+        ],
     ],
     'manage_theme' => [
         'app_banner_label' => 'Imagem do Banner',
