@@ -3,7 +3,9 @@
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 
@@ -44,12 +46,12 @@ it('sets linked component status to operational when incident update status is f
         'status' => IncidentStatusEnum::investigating,
     ]);
 
-    $component = \Cachet\Models\Component::factory()->create([
-        'status' => \Cachet\Enums\ComponentStatusEnum::operational,
+    $component = Component::factory()->create([
+        'status' => ComponentStatusEnum::operational,
     ]);
 
     $incident->components()->attach($component->id, [
-        'component_status' => \Cachet\Enums\ComponentStatusEnum::major_outage,
+        'component_status' => ComponentStatusEnum::major_outage,
     ]);
 
     $data = CreateIncidentUpdateRequestData::from([
@@ -60,7 +62,7 @@ it('sets linked component status to operational when incident update status is f
     app(CreateUpdate::class)->handle($incident, $data);
 
     expect($incident->components()->first()->pivot->component_status)
-        ->toEqual(\Cachet\Enums\ComponentStatusEnum::operational);
+        ->toEqual(ComponentStatusEnum::operational);
 });
 
 it('can create a schedule update', function () {

@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
 use Laravel\Sanctum\Sanctum;
@@ -122,7 +123,7 @@ it('can filter schedules by status upcoming', function () {
 
     $query = http_build_query([
         'filter' => [
-            'status' => \Cachet\Enums\ScheduleStatusEnum::upcoming,
+            'status' => ScheduleStatusEnum::upcoming,
         ],
     ]);
 
@@ -137,7 +138,7 @@ it('can filter schedules by status complete', function () {
 
     $query = http_build_query([
         'filter' => [
-            'status' => \Cachet\Enums\ScheduleStatusEnum::complete,
+            'status' => ScheduleStatusEnum::complete,
         ],
     ]);
 
@@ -152,7 +153,7 @@ it('can filter schedules by status in progress', function () {
 
     $query = http_build_query([
         'filter' => [
-            'status' => \Cachet\Enums\ScheduleStatusEnum::in_progress,
+            'status' => ScheduleStatusEnum::in_progress,
         ],
     ]);
 
@@ -169,8 +170,8 @@ it('can filter schedules by multiple statuses', function () {
     $query = http_build_query([
         'filter' => [
             'status' => implode(',', [
-                \Cachet\Enums\ScheduleStatusEnum::in_progress->value,
-                \Cachet\Enums\ScheduleStatusEnum::complete->value,
+                ScheduleStatusEnum::in_progress->value,
+                ScheduleStatusEnum::complete->value,
             ]
             ),
         ],

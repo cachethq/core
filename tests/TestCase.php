@@ -11,6 +11,7 @@ use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
@@ -50,7 +51,7 @@ abstract class TestCase extends Orchestra
     }
 
     /**
-     * @param  \Illuminate\Foundation\Application  $app
+     * @param  Application  $app
      */
     protected function defineEnvironment($app)
     {

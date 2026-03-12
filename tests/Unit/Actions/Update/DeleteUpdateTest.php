@@ -2,6 +2,7 @@
 
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
@@ -22,7 +23,7 @@ it('can delete a schedule update', function () {
     app(DeleteUpdate::class)->handle($update);
 
     $this->assertDatabaseMissing('updates', [
-        'updateable_type' => Relation::getMorphAlias(\Cachet\Models\Schedule::class),
+        'updateable_type' => Relation::getMorphAlias(Schedule::class),
         'updateable_id' => $update->updateable_id,
     ]);
 });

@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Jobs\SendBeaconJob;
 use Illuminate\Support\Facades\Bus;
 
 it('will not send the beacon if it is disabled', function () {
@@ -17,5 +18,5 @@ it('will dispatch the send beacon job', function () {
     $this->artisan('cachet:beacon')
         ->assertExitCode(0);
 
-    Bus::assertDispatched(\Cachet\Jobs\SendBeaconJob::class);
+    Bus::assertDispatched(SendBeaconJob::class);
 });

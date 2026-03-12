@@ -18,7 +18,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 
 /**
- * @property \Filament\Schemas\Schema $form
+ * @property Schema $form
  */
 class OhDear extends Page
 {
