@@ -5,6 +5,8 @@ namespace Cachet;
 use Cachet\Filament\Pages\EditProfile;
 use Cachet\Http\Middleware\SetAppLocale;
 use Cachet\Settings\AppSettings;
+use DutchCodingCompany\FilamentSocialite\FilamentSocialitePlugin;
+use DutchCodingCompany\FilamentSocialite\Provider;
 use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -106,6 +108,17 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->path(Cachet::dashboardPath())
             ->bootUsing(function (): void {
                 Section::configureUsing(fn (Section $section) => $section->columnSpanFull());
-            });
+            })
+            ->plugin(FilamentSocialitePlugin::make()->providers(
+                collect([
+                    config('services.github.client_id') ? Provider::make('github') : null,
+                    config('services.keycloak.client_id') ? Provider::make('keycloak') : null,
+                ])->filter()->values()->all()
+            )
+                ->rememberLogin(config('services.oauth.rememberLogin', false))
+                ->registration(config('services.oauth.registration', false))
+                ->domainAllowList(config('services.oauth.domainAllowlist', []))
+                ->userModelClass(config('cachet.user_model'))
+            );
     }
 }
