@@ -41,6 +41,38 @@ it('an incident\'s computed latest status equals the new status', function () {
         ->latestStatus->toEqual(IncidentStatusEnum::identified);
 });
 
+it('transitions parent incident status to fixed when incident update status is fixed', function () {
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+    ]);
+
+    $data = CreateIncidentUpdateRequestData::from([
+        'message' => 'This issue has been fixed.',
+        'status' => IncidentStatusEnum::fixed,
+    ]);
+
+    app(CreateUpdate::class)->handle($incident, $data);
+
+    expect($incident->fresh())
+        ->status->toEqual(IncidentStatusEnum::fixed);
+});
+
+it('does not change parent incident status when incident update status is not fixed', function () {
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+    ]);
+
+    $data = CreateIncidentUpdateRequestData::from([
+        'message' => 'Still looking into this.',
+        'status' => IncidentStatusEnum::identified,
+    ]);
+
+    app(CreateUpdate::class)->handle($incident, $data);
+
+    expect($incident->fresh())
+        ->status->toEqual(IncidentStatusEnum::investigating);
+});
+
 it('sets linked component status to operational when incident update status is fixed', function () {
     $incident = Incident::factory()->create([
         'status' => IncidentStatusEnum::investigating,
