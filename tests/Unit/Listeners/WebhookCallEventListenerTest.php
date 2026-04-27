@@ -4,6 +4,7 @@ use Cachet\Enums\WebhookEventEnum;
 use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\WebhookAttempt;
 use Cachet\Models\WebhookSubscription;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\TransferStats;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
@@ -38,7 +39,7 @@ it('records a successful webhook attempt', function () {
         $subscription,
         response: new Response(200),
         stats: new TransferStats(
-            new GuzzleHttp\Psr7\Request('POST', $subscription->url),
+            new Request('POST', $subscription->url),
             new Response(200),
             0.42,
         ),
