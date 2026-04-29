@@ -52,7 +52,7 @@ class IncidentResource extends Resource
                         ->maxLength(255)
                         ->autocomplete(false),
                     ToggleButtons::make('status')
-                        ->label(__('cachet::incident.form.name_label'))
+                        ->label(__('cachet::incident.form.status_label'))
                         ->inline()
                         ->columnSpanFull()
                         ->options(IncidentStatusEnum::class)
