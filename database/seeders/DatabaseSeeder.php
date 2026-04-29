@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        DB::table('api_keys')->truncate();
         DB::table('users')->truncate();
         DB::table('incidents')->truncate();
         DB::table('components')->truncate();
