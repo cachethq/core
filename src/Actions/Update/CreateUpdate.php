@@ -22,6 +22,7 @@ class CreateUpdate
         $resource->updates()->save($update);
 
         if ($resource instanceof Incident && $data->status === IncidentStatusEnum::fixed) {
+            $resource->update(['status' => IncidentStatusEnum::fixed]);
             $this->updateComponentsToOperational($resource);
         }
 
