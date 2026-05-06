@@ -1,13 +1,13 @@
-<div class="overflow-hidden rounded-lg border dark:border-zinc-700">
-    <div class="flex items-center justify-between border-b bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-white/5">
-        <h3 class="font-semibold">{{ __('cachet::schedule.planned_maintenance_header') }}</h3>
+<div class="group relative overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
+
+    <div class="flex items-center justify-between gap-3 border-b border-zinc-900/10 px-4 py-3 dark:border-white/15 sm:px-6 sm:py-4">
+        <h3 class="text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{{ __('cachet::schedule.planned_maintenance_header') }}</h3>
     </div>
 
-    <div class="flex flex-col divide-y bg-white dark:bg-white/5">
-        <ul class="divide-y">
-            @foreach($schedules as $schedule)
+    <ul class="divide-y divide-zinc-900/10 dark:divide-white/15">
+        @foreach($schedules as $schedule)
             <x-cachet::schedule :schedule="$schedule" />
-            @endforeach
-        </ul>
-    </div>
+        @endforeach
+    </ul>
 </div>
