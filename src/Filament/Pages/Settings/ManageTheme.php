@@ -37,6 +37,7 @@ class ManageTheme extends SettingsPage
                         ->image()
                         ->imageEditor()
                         ->label(__('cachet::settings.manage_theme.app_banner_label'))
+                        ->helperText(__('cachet::settings.manage_theme.app_banner_helper'))
                         ->disk('public')
                         ->columnSpanFull(),
                 ]),
@@ -47,6 +48,7 @@ class ManageTheme extends SettingsPage
                     ->schema([
                         Select::make('accent')
                             ->label(__('cachet::settings.manage_theme.status_page_accent.accent_color_label'))
+                            ->helperText(__('cachet::settings.manage_theme.status_page_accent.accent_color_helper'))
                             ->options([
                                 ...collect(Color::all())
                                     ->except(ThemeData::GRAYS)
@@ -70,6 +72,7 @@ class ManageTheme extends SettingsPage
 
                         Select::make('accent_content')
                             ->label(__('cachet::settings.manage_theme.status_page_accent.accent_content_label'))
+                            ->helperText(__('cachet::settings.manage_theme.status_page_accent.accent_content_helper'))
                             ->options(function () {
                                 return [
                                     ...collect(Color::all())->only(ThemeData::GRAYS)->map(function (array $shades, string $color) {
@@ -85,6 +88,7 @@ class ManageTheme extends SettingsPage
 
                         Toggle::make('accent_pairing')
                             ->label(__('cachet::settings.manage_theme.status_page_accent.accent_pairing_label'))
+                            ->helperText(__('cachet::settings.manage_theme.status_page_accent.accent_pairing_helper'))
                             ->reactive()
                             ->afterStateUpdated(function (Get $get, Set $set, ?bool $old, ?bool $state) {
                                 $accent = $get('accent');
