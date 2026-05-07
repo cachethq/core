@@ -26,14 +26,23 @@
         return `rgba(${getCssVar('--gray-800')}, 1)`
     }
 
+    function withAlpha(color, alpha) {
+        // Inject `/ alpha` into a CSS color function (oklch/rgb/hsl/...) so it works regardless of the theme's color space.
+        return color.replace(/\)\s*$/, ` / ${alpha})`)
+    }
+
     function getThemeColors() {
         const fontColor = getFontColor()
-        const accent = `rgba(${getCssVar('--accent')}, 1)`
-        const accentBackground = `rgba(${getCssVar('--accent-background')}, 0.2)`
+        const accent = getCssVar('--accent')
+        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)'
+        const mutedColor = isDark ? 'rgba(161, 161, 170, 1)' : 'rgba(113, 113, 122, 1)'
 
         return {
             fontColor: fontColor,
-            backgroundColors: [accent, accentBackground],
+            mutedColor: mutedColor,
+            gridColor: gridColor,
+            fillColor: withAlpha(accent, 0.12),
             borderColor: accent,
         }
     }
@@ -63,24 +72,64 @@
                     {
                         label: this.metric.suffix,
                         data: this.points[this.period],
-                        fill: false,
-                        backgroundColor: themeColors.backgroundColors,
+                        fill: true,
+                        backgroundColor: themeColors.fillColor,
                         borderColor: themeColors.borderColor,
-                        tension: 0.1,
+                        borderWidth: 2,
+                        tension: 0.35,
+                        pointRadius: 0,
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: themeColors.borderColor,
+                        pointHoverBorderColor: '#fff',
+                        pointHoverBorderWidth: 2,
                     },
                 ],
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(24, 24, 27, 0.95)',
+                        titleColor: '#fafafa',
+                        bodyColor: '#fafafa',
+                        borderColor: 'rgba(255, 255, 255, 0.08)',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 6,
+                        displayColors: false,
+                        titleFont: { weight: '500', size: 11 },
+                        bodyFont: { weight: '600', size: 12 },
+                    },
+                },
                 scales: {
                     x: {
-                        ticks: {
-                            color: themeColors.fontColor,
-                        },
                         type: 'timeseries',
+                        border: { display: false },
+                        grid: { display: false },
+                        ticks: {
+                            color: themeColors.mutedColor,
+                            font: { size: 11 },
+                            maxRotation: 0,
+                            autoSkipPadding: 16,
+                        },
                     },
                     y: {
+                        border: { display: false },
+                        grid: {
+                            color: themeColors.gridColor,
+                            drawTicks: false,
+                        },
                         ticks: {
-                            color: themeColors.fontColor,
+                            color: themeColors.mutedColor,
+                            font: { size: 11 },
+                            padding: 8,
+                            maxTicksLimit: 5,
                         },
                     },
                 },
@@ -105,13 +154,12 @@
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
             themeColors = getThemeColors()
 
-            chart.data.datasets[0].backgroundColor = themeColors.backgroundColors
+            chart.data.datasets[0].backgroundColor = themeColors.fillColor
             chart.data.datasets[0].borderColor = themeColors.borderColor
-            chart.options.plugins.legend.labels.color = themeColors.fontColor
-            chart.options.plugins.tooltip.bodyColor = themeColors.fontColor
-            chart.options.plugins.tooltip.titleColor = themeColors.fontColor
-            chart.options.scales.x.ticks.color = themeColors.fontColor
-            chart.options.scales.y.ticks.color = themeColors.fontColor
+            chart.data.datasets[0].pointHoverBackgroundColor = themeColors.borderColor
+            chart.options.scales.x.ticks.color = themeColors.mutedColor
+            chart.options.scales.y.ticks.color = themeColors.mutedColor
+            chart.options.scales.y.grid.color = themeColors.gridColor
 
             chart.update()
         })
