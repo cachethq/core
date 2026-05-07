@@ -122,7 +122,7 @@ EOF
             'name' => 'Cachet API Requests',
             'suffix' => 'req/s',
             'description' => 'The number of requests to the Cachet API.',
-            'default_view' => MetricViewEnum::last_hour,
+            'default_view' => MetricViewEnum::today,
             'calc_type' => MetricTypeEnum::average,
             'display_chart' => true,
             'places' => 2,
