@@ -81,6 +81,7 @@ class ManageCachet extends SettingsPage
                 ]),
 
                 Section::make(__('cachet::settings.manage_cachet.display_settings_title'))
+                    ->columns(2)
                     ->schema([
                         Toggle::make('dashboard_login_link')
                             ->label(__('cachet::settings.manage_cachet.toggles.show_dashboard_link')),
