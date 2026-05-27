@@ -27,7 +27,7 @@ class StatusPageController
     {
         return view('cachet::status-page.index', [
             'componentGroups' => ComponentGroup::query()
-                ->with(['components' => fn ($query) => $query->enabled()->orderBy('order')->withCount('incidents')])
+                ->with(['components' => fn ($query) => $query->enabled()->orderBy('order')->withCount(['incidents' => fn ($q) => $q->unresolved()])])
                 ->visible(auth()->check())
                 ->orderBy('order')
                 ->when(auth()->check(), fn (Builder $query) => $query->users(), fn ($query) => $query->guests())
@@ -36,7 +36,7 @@ class StatusPageController
                 ->enabled()
                 ->whereNull('component_group_id')
                 ->orderBy('order')
-                ->withCount('incidents')
+                ->withCount(['incidents' => fn ($query) => $query->unresolved()])
                 ->get(),
 
             'schedules' => Schedule::query()->with(['updates', 'components'])->incomplete()->orderBy('scheduled_at')->get(),
