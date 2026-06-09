@@ -2,6 +2,7 @@
 
 use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
 use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
+use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 
@@ -33,6 +34,21 @@ it('can update a component group without touching components', function () {
     $this->assertDatabaseMissing('components', [
         'component_group_id' => $componentGroup->id,
     ]);
+});
+
+it('can update a component group collapsed state', function () {
+    $componentGroup = ComponentGroup::factory()->create([
+        'collapsed' => ComponentGroupVisibilityEnum::expanded->value,
+    ]);
+
+    $data = UpdateComponentGroupRequestData::from([
+        'collapsed' => ComponentGroupVisibilityEnum::collapsed_unless_incident->value,
+    ]);
+
+    $componentGroup = app(UpdateComponentGroup::class)->handle($componentGroup, $data);
+
+    expect($componentGroup)
+        ->collapsed->toBe(ComponentGroupVisibilityEnum::collapsed_unless_incident);
 });
 
 it('can update a component group with components', function () {
