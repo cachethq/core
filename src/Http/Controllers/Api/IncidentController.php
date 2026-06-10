@@ -28,6 +28,7 @@ class IncidentController extends Controller
      */
     public const ALLOWED_INCLUDES = [
         'components',
+        'components.group',
         'updates',
         'user',
     ];
