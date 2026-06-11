@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Laravel\Sanctum\Sanctum;
@@ -103,6 +104,33 @@ it('can create a component group without components', function () {
     ]);
 });
 
+it('can create a component group with a collapsed state', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'collapsed' => ComponentGroupVisibilityEnum::collapsed_unless_incident->value,
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('component_groups', [
+        'name' => 'New Group',
+        'collapsed' => ComponentGroupVisibilityEnum::collapsed_unless_incident->value,
+    ]);
+});
+
+it('cannot create a component group with an invalid collapsed state', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'collapsed' => 99,
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('collapsed');
+});
+
 it('can create a component group and attach existing components', function () {
     Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
 
@@ -163,6 +191,37 @@ it('can update a component group', function () {
     $this->assertDatabaseHas('component_groups', [
         'name' => 'Updated Component Group Name',
     ]);
+});
+
+it('can update a component group collapsed state', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $componentGroup = ComponentGroup::factory()->create([
+        'collapsed' => ComponentGroupVisibilityEnum::expanded->value,
+    ]);
+
+    $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
+        'collapsed' => ComponentGroupVisibilityEnum::collapsed_unless_incident->value,
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('component_groups', [
+        'id' => $componentGroup->id,
+        'collapsed' => ComponentGroupVisibilityEnum::collapsed_unless_incident->value,
+    ]);
+});
+
+it('cannot update a component group with an invalid collapsed state', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $componentGroup = ComponentGroup::factory()->create();
+
+    $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
+        'collapsed' => 99,
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('collapsed');
 });
 
 it('can update a component group with components', function () {
