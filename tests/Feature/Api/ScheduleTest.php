@@ -336,6 +336,20 @@ it('can update a schedule', function () {
     ]);
 });
 
+it('can update a schedule completed_at', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $schedule = Schedule::factory()->create(['completed_at' => null]);
+
+    $response = putJson('/status/api/schedules/'.$schedule->id, [
+        'completed_at' => '2026-06-11 10:00:00',
+    ]);
+
+    $response->assertOk();
+
+    expect($schedule->fresh()->completed_at->toDateTimeString())->toBe('2026-06-11 10:00:00');
+});
+
 it('can update a schedule with components', function () {
     Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
 
