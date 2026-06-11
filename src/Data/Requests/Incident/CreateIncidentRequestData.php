@@ -44,7 +44,7 @@ final class CreateIncidentRequestData extends BaseData
             'name' => ['required', 'string', 'max:255'],
             'message' => ['required_without:template', 'string'],
             'template' => ['required_without:message', 'string'],
-            'status' => ['required', Rule::enum(IncidentStatusEnum::class)],
+            'status' => ['nullable', Rule::enum(IncidentStatusEnum::class)],
             'visible' => ['boolean'],
             'stickied' => ['boolean'],
             'notifications' => ['boolean'],
