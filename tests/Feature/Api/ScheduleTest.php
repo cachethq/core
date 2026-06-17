@@ -1,7 +1,9 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Schedule;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
@@ -193,6 +195,22 @@ it('can get a schedule', function () {
     $response->assertJsonFragment([
         'id' => $schedule->id,
     ]);
+});
+
+it('can get a schedule with components and their groups', function () {
+    $group = ComponentGroup::factory()->create();
+    $component = Component::factory()->for($group, 'group')->create();
+    $schedule = Schedule::factory()->create();
+    $schedule->components()->attach($component, ['component_status' => ComponentStatusEnum::partial_outage->value]);
+
+    $response = getJson('/status/api/schedules/'.$schedule->id.'?include=components.group');
+
+    $response->assertOk();
+
+    $included = collect($response->json('included'));
+
+    expect($included->firstWhere('id', (string) $component->id))->not->toBeNull()
+        ->and($included->firstWhere('attributes.name', $group->name))->not->toBeNull();
 });
 
 it('cannot create a schedule if not authenticated', function () {

@@ -3,6 +3,7 @@
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Laravel\Sanctum\Sanctum;
@@ -186,6 +187,22 @@ it('can get an incident with updates', function () {
     $response->assertJsonFragment([
         'id' => $incident->id,
     ]);
+});
+
+it('can get an incident with components and their groups', function () {
+    $group = ComponentGroup::factory()->create();
+    $component = Component::factory()->for($group, 'group')->create();
+    $incident = Incident::factory()->create();
+    $incident->components()->attach($component, ['component_status' => ComponentStatusEnum::partial_outage->value]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id.'?include=components.group');
+
+    $response->assertOk();
+
+    $included = collect($response->json('included'));
+
+    expect($included->firstWhere('id', (string) $component->id))->not->toBeNull()
+        ->and($included->firstWhere('attributes.name', $group->name))->not->toBeNull();
 });
 
 it('cannot create an incident if not authenticated', function () {
