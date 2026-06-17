@@ -28,7 +28,7 @@ final class UpdateComponentGroupRequestData extends BaseData
             'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
         ];
     }
-    
+
     public function bodyParameters(): array
     {
         return [
