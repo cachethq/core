@@ -13,14 +13,14 @@
         "@alpinejs/ui": "^3.13.3-beta.4",
         "@tailwindcss/forms": "^0.5.4",
         "@tailwindcss/typography": "^0.5.9",
-        "@tailwindcss/vite": "^4.1.12",
+        "@tailwindcss/vite": "^4.3.1",
         "alpinejs": "^3.13.3",
-        "laravel-vite-plugin": "^1.0",
+        "laravel-vite-plugin": "^3.1",
         "prettier": "^3.0.1",
         "prettier-plugin-blade": "^2.0.0",
         "prettier-plugin-tailwindcss": "^0.6.14",
         "tailwindcss": "^4.1.12",
-        "vite": "^5.4"
+        "vite": "^8.0"
     },
     "dependencies": {
         "chart.js": "^4.4.7",
