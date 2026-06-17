@@ -109,7 +109,7 @@
         "test:lint": [
             "pint --test"
         ],
-        "test:unit": "pest --parallel --processes=10 --ci --coverage --compact",
+        "test:unit": "pest --parallel --processes=10 --ci --compact",
         "test": [
             "@test:unit"
         ]
