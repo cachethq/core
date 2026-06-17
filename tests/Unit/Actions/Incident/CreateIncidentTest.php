@@ -17,6 +17,7 @@ it('can create an incident', function () {
     $data = CreateIncidentRequestData::from([
         'name' => 'My Incident',
         'message' => 'This is an incident message.',
+        'status' => IncidentStatusEnum::investigating,
     ]);
 
     $incident = app(CreateIncident::class)->handle($data);
@@ -99,6 +100,7 @@ it('attaches provided components to the incident', function () {
     $data = CreateIncidentRequestData::from([
         'name' => 'My Incident',
         'message' => 'This is an incident message.',
+        'status' => IncidentStatusEnum::investigating,
         'components' => [
             ['id' => $componentA->id, 'status' => ComponentStatusEnum::performance_issues->value],
             ['id' => $componentB->id, 'status' => ComponentStatusEnum::partial_outage->value],
