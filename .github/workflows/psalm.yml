@@ -1,0 +1,73 @@
+# Psalm taint (security) analysis. Type analysis is left to Larastan; this adds only taint/dataflow
+# scanning (SQLi, XSS, SSRF, shell injection, file traversal, open redirects), which PHPStan can't do.
+#
+# Findings upload to Code Scanning. continue-on-error keeps first-time findings from blocking PRs;
+# drop it (and add a baseline: ./vendor/bin/psalm --taint-analysis --set-baseline=psalm-baseline.xml) to gate.
+
+name: Psalm (security)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: psalm-security-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security:
+    name: Psalm taint analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+      - name: Harden the runner (block unexpected egress)
+        uses: step-security/harden-runner@9af89fc71515a100421586dfdb3dc9c984fbf411 # v2.19.4
+        with:
+          # Covers checkout, setup-php, Composer (public Packagist) and the SARIF upload endpoint.
+          # Extend it if the project reaches other hosts (private Composer registry, VCS/path repos).
+          # A blocked call shows in the step log; use egress-policy: audit to discover endpoints.
+          egress-policy: block
+          allowed-endpoints: >
+            api.github.com:443
+            codeload.github.com:443
+            github.com:443
+            packagist.org:443
+            release-assets.githubusercontent.com:443
+            repo.packagist.org:443
+            results-receiver.actions.githubusercontent.com:443
+
+      # No git operations run after checkout, so drop the persisted token. Defense in depth: a
+      # compromised later step (a malicious Composer dependency or Psalm plugin) cannot reuse the
+      # token to push. The SARIF upload uses the Actions token (security-events: write), not git.
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.4'
+          coverage: none
+
+      - uses: ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda # 4.0.0
+
+      # --taint-analysis switches Psalm to taint mode. continue-on-error keeps first-time findings
+      # from blocking PRs; they still upload to Code Scanning below.
+      - name: Run Psalm taint analysis
+        run: ./vendor/bin/psalm --taint-analysis --report=psalm-security.sarif
+        continue-on-error: true
+
+      # Guard with hashFiles so the step skips (rather than fails) if Psalm crashed before writing
+      # the report.
+      - name: Upload SARIF to GitHub Code Scanning
+        if: ${{ always() && hashFiles('psalm-security.sarif') != '' }}
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e # v4.36.2
+        with:
+          sarif_file: psalm-security.sarif
+          category: psalm-security
