@@ -24,3 +24,5 @@ Thumbs.db
 
 !.claude/README.md
 !.cursor/rules.md
+# Psalm taint analysis report (generated in CI)
+/psalm-security.sarif

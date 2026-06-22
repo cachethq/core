@@ -51,7 +51,8 @@
         "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-laravel": "^3.0",
         "pestphp/pest-plugin-livewire": "*",
-        "pestphp/pest-plugin-type-coverage": "^3.3"
+        "pestphp/pest-plugin-type-coverage": "^3.3",
+        "psalm/plugin-laravel": "^3.14"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
