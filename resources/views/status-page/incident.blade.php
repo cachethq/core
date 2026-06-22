@@ -14,7 +14,7 @@
 
                 <ul class="divide-y divide-zinc-900/10 border-t border-zinc-900/10 dark:divide-white/15 dark:border-white/15">
                     @foreach ($incident->components as $component)
-                        <x-cachet::component :component="$component" />
+                        <x-cachet::component :component="$component" :hide-status="true" />
                     @endforeach
                 </ul>
             </div>
