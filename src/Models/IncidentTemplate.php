@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $slug
  * @property string $template
  * @property ?Carbon $created_at
- * @property Carbon $update_at
+ * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  * @property IncidentTemplateEngineEnum $engine
  *
