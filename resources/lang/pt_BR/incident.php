@@ -13,6 +13,7 @@ return [
     'edit_button' => 'Editar Incidente',
     'new_button' => 'Novo Incidente',
     'no_incidents_reported' => 'Nenhum incidente reportado.',
+    'affected_components_header' => 'Componentes Afetados',
     'timeline' => [
         'past_incidents_header' => 'Incidentes Anteriores',
         'recent_incidents_header' => 'Incidentes Recentes',

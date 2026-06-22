@@ -13,6 +13,7 @@ return [
     'edit_button' => 'Incident bewerken',
     'new_button' => 'Incident toevoegen',
     'no_incidents_reported' => 'Er zijn geen incidenten gemeld.',
+    'affected_components_header' => 'Getroffen componenten',
     'timeline' => [
         'past_incidents_header' => 'Eerdere incidenten',
         'recent_incidents_header' => 'Recente incidenten',

@@ -13,6 +13,7 @@ return [
     'edit_button' => 'I-edit ang Insidente',
     'new_button' => 'Bagong Insidente',
     'no_incidents_reported' => 'Walang naiulat na insidente.',
+    'affected_components_header' => 'Mga Apektadong Komponente',
     'timeline' => [
         'past_incidents_header' => 'Mga Nakaraang Insidente',
         'recent_incidents_header' => 'Mga Kamakailang Insidente',
