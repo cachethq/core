@@ -13,6 +13,7 @@ return [
     'edit_button' => '사고 수정',
     'new_button' => '새 사고',
     'no_incidents_reported' => '보고된 사고가 없습니다.',
+    'affected_components_header' => '영향받는 구성 요소',
     'timeline' => [
         'past_incidents_header' => '과거 사고',
         'recent_incidents_header' => '최근 사고',

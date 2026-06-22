@@ -11,8 +11,10 @@ class Component extends ViewComponent
     /**
      * Create a new component instance.
      */
-    public function __construct(public \Cachet\Models\Component $component)
-    {
+    public function __construct(
+        public \Cachet\Models\Component $component,
+        public bool $hideStatus = false,
+    ) {
         //
     }
 

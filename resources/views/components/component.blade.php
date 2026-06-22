@@ -23,30 +23,32 @@
             @endif
         </div>
 
-        <div x-data="{ tooltipOpen: false }"
-             @mouseenter="tooltipOpen = true"
-             @mouseleave="tooltipOpen = false"
-             @focusin="tooltipOpen = true"
-             @focusout="tooltipOpen = false"
-             class="relative shrink-0">
-            <div x-ref="badgeAnchor">
-                @if ($component->incidents_count > 0)
-                    <a href="{{ route('cachet.status-page.incident', [$component->incidents->first()]) }}" class="inline-flex">
-                        <x-cachet::badge :status="$component->latest_status" />
-                    </a>
-                @else
-                    <x-cachet::badge :status="$status" />
-                @endif
-            </div>
+        @unless ($hideStatus ?? false)
+            <div x-data="{ tooltipOpen: false }"
+                 @mouseenter="tooltipOpen = true"
+                 @mouseleave="tooltipOpen = false"
+                 @focusin="tooltipOpen = true"
+                 @focusout="tooltipOpen = false"
+                 class="relative shrink-0">
+                <div x-ref="badgeAnchor">
+                    @if ($component->incidents_count > 0)
+                        <a href="{{ route('cachet.status-page.incident', [$component->incidents->first()]) }}" class="inline-flex">
+                            <x-cachet::badge :status="$component->latest_status" />
+                        </a>
+                    @else
+                        <x-cachet::badge :status="$status" />
+                    @endif
+                </div>
 
-            <div x-show="tooltipOpen"
-                 x-cloak
-                 x-transition.opacity
-                 x-anchor.left.offset.8="$refs.badgeAnchor"
-                 class="pointer-events-none z-10 w-max max-w-sm rounded-md bg-zinc-900 px-3 py-2 text-xs font-medium text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-900">
-                {{ __('cachet::component.last_updated', ['timestamp' => $component->updated_at]) }}
+                <div x-show="tooltipOpen"
+                     x-cloak
+                     x-transition.opacity
+                     x-anchor.left.offset.8="$refs.badgeAnchor"
+                     class="pointer-events-none z-10 w-max max-w-sm rounded-md bg-zinc-900 px-3 py-2 text-xs font-medium text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-900">
+                    {{ __('cachet::component.last_updated', ['timestamp' => $component->updated_at]) }}
+                </div>
             </div>
-        </div>
+        @endunless
     </div>
 </li>
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_AFTER) }}
