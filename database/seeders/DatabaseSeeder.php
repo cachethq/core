@@ -90,7 +90,7 @@ EOF
         ]);
 
         /** @phpstan-ignore-next-line argument.type Larastan bug */
-        $componentGroup->components()->createMany([
+        [$website, $documentation, $blog] = $componentGroup->components()->createMany([
             [
                 'name' => 'Cachet Website',
                 'description' => 'The Cachet website.',
@@ -181,6 +181,8 @@ EOF
             'updated_at' => $timestamp,
             'occurred_at' => $timestamp,
         ]);
+
+        $incident->components()->attach($documentation);
 
         $update = new Update([
             'status' => IncidentStatusEnum::identified,
