@@ -22,7 +22,11 @@ class IncidentTimeline extends Component
         $incidentDays = $this->appSettings->recent_incidents_only ?
             $this->appSettings->recent_incidents_days - 1 :
             $this->appSettings->incident_days - 1;
-        $startDate = Carbon::createFromFormat('Y-m-d', request('from', now()->toDateString()));
+        $startDate = rescue(
+            fn () => Carbon::createFromFormat('Y-m-d', request('from', now()->toDateString()))->startOfDay(),
+            fn () => now()->startOfDay(),
+            report: false
+        );
         $endDate = $startDate->clone()->subDays($incidentDays);
 
         return view('cachet::components.incident-timeline', [
