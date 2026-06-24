@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static \Cachet\QueryBuilders\ScheduleBuilder inTheFuture()
  * @method static \Cachet\QueryBuilders\ScheduleBuilder inThePast()
  *
+ * @extends Builder<Schedule>
+ *
  * @mixin Schedule
  */
 class ScheduleBuilder extends Builder

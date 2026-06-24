@@ -115,6 +115,7 @@ class IncidentTimeline extends Component
                 });
             })
             ->get()
+            ->toBase()
             ->sortByDesc(fn (Incident $incident) => $incident->timestamp)
             ->groupBy(fn (Incident $incident) => $incident->timestamp->toDateString());
     }
@@ -140,6 +141,7 @@ class IncidentTimeline extends Component
                 $startDate->endofDay()->toDateTimeString(),
             ]))
             ->get()
+            ->toBase()
             ->sortByDesc(fn (Schedule $schedule) => $schedule->completed_at)
             ->groupBy(fn (Schedule $schedule) => $schedule->completed_at->toDateString());
     }
