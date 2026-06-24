@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Commands\CheckComponentsCommand;
 use Cachet\Commands\MakeUserCommand;
 use Cachet\Commands\SendBeaconCommand;
 use Cachet\Commands\VersionCommand;
@@ -182,6 +183,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                CheckComponentsCommand::class,
                 MakeUserCommand::class,
                 SendBeaconCommand::class,
                 VersionCommand::class,
