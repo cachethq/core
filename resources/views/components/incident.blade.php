@@ -2,6 +2,7 @@
 @props([
     'date',
     'incidents',
+    'schedules' => [],
 ])
 
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_BEFORE) }}
@@ -15,7 +16,7 @@
         <div aria-hidden="true" class="h-px flex-1 bg-gradient-to-r from-zinc-900/15 via-zinc-900/5 to-transparent dark:from-white/15 dark:via-white/5"></div>
     </div>
 
-    @forelse($incidents as $incident)
+    @foreach($incidents as $incident)
         <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }"
              class="group relative rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
             <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
@@ -88,12 +89,63 @@
                 </div>
             @endif
         </div>
-    @empty
+    @endforeach
+
+    @foreach($schedules as $schedule)
+        <div x-data="{ timestamp: new Date(@js($schedule->completed_at)) }"
+             class="group relative rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
+            <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
+
+            <div @class([
+                'flex flex-col gap-2 p-4 sm:p-6',
+                'border-b border-zinc-900/10 dark:border-white/15' => $schedule->updates->isNotEmpty(),
+            ])>
+                @if ($schedule->components->isNotEmpty())
+                    <div class="text-[11px] font-medium uppercase tracking-[0.08em] text-zinc-500 dark:text-zinc-400">
+                        {{ $schedule->components->pluck('name')->join(', ', ' and ') }}
+                    </div>
+                @endif
+
+                <div class="flex flex-col-reverse items-start justify-between gap-3 sm:flex-row sm:items-center">
+                    <div class="flex flex-1 flex-col gap-1">
+                        <h3 class="max-w-full break-words text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">
+                            {{ $schedule->name }}
+                        </h3>
+                        <span class="text-xs text-zinc-500 dark:text-zinc-400">
+                            {{ $schedule->completed_at->diffForHumans() }} <span class="text-zinc-300 dark:text-zinc-600">·</span> <time datetime="{{ $schedule->completed_at->toW3cString() }}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
+                        </span>
+                    </div>
+                    <div class="flex justify-start sm:justify-end">
+                        <x-cachet::badge :status="$schedule->status" />
+                    </div>
+                </div>
+
+                @if ($schedule->updates->isEmpty() && $schedule->formattedMessage())
+                    <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $schedule->formattedMessage() !!}</div>
+                @endif
+            </div>
+
+            @if ($schedule->updates->isNotEmpty())
+                <div class="flex flex-col divide-y divide-zinc-900/10 px-4 dark:divide-white/15 sm:px-6">
+                    @foreach ($schedule->updates as $update)
+                        <div class="relative py-5" x-data="{ timestamp: new Date(@js($update->created_at)) }">
+                            <span class="text-xs text-zinc-500 dark:text-zinc-400">
+                                {{ $update->created_at->diffForHumans() }} <span class="text-zinc-300 dark:text-zinc-600">·</span> <time datetime="{{ $update->created_at->toW3cString() }}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>
+                            </span>
+                            <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $update->formattedMessage() !!}</div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+    @endforeach
+
+    @if (count($incidents) === 0 && count($schedules) === 0)
         <div class="rounded-lg bg-white p-5 shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15 sm:p-6">
             <div class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal">
                 {{ __('cachet::incident.no_incidents_reported') }}
             </div>
         </div>
-    @endforelse
+    @endif
 </div>
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_AFTER) }}
