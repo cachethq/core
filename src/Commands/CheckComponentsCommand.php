@@ -2,13 +2,9 @@
 
 namespace Cachet\Commands;
 
-use Cachet\Cachet;
-use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Jobs\CheckComponent;
 use Cachet\Models\Component;
 use Illuminate\Console\Command;
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Client\RequestException;
-use Illuminate\Support\Facades\Http;
 
 class CheckComponentsCommand extends Command
 {
@@ -29,51 +25,15 @@ class CheckComponentsCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         Component::query()
             ->enabled()
             ->checked()
             ->whereNotNull('link')
             ->get()
-            ->each(function (Component $component) {
-                $attempts = 1;
+            ->each(fn (Component $component) => CheckComponent::dispatch($component));
 
-                try {
-                    $response = Http::withUserAgent(Cachet::USER_AGENT)
-                        ->retry(3, function (int $attempt) use (&$attempts): int {
-                            $attempts = $attempt;
-
-                            return $attempt * 100;
-                        })
-                        ->timeout(3)
-                        ->get($component->link);
-                } catch (RequestException|ConnectionException $e) {
-                    $status = match (true) {
-                        $e->getCode() >= 400 => ComponentStatusEnum::partial_outage,
-                        $e->getCode() >= 500 => ComponentStatusEnum::major_outage,
-                        default => ComponentStatusEnum::partial_outage,
-                    };
-
-                    $component->update([
-                        'status' => $status,
-                        'checked_at' => now(),
-                    ]);
-
-                    return;
-                }
-
-                $status = match (true) {
-                    $response->successful() && $attempts === 1 => ComponentStatusEnum::operational,
-                    $response->successful() && $attempts > 1 => ComponentStatusEnum::performance_issues,
-                    $response->status() >= 400 => ComponentStatusEnum::partial_outage,
-                    default => ComponentStatusEnum::operational,
-                };
-
-                $component->update([
-                    'status' => $status,
-                    'checked_at' => now(),
-                ]);
-            });
+        return self::SUCCESS;
     }
 }

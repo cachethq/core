@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -34,6 +35,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $enabled
  * @property array<string, mixed> $meta
  * @property ?ComponentGroup $componentGroup
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ComponentCheck> $checks
  * @property-read IncidentComponent|null $pivot
  *
  * @method static Builder<static>|static checked()
@@ -110,6 +112,16 @@ class Component extends Model
         return $this->belongsToMany(Schedule::class, 'schedule_components')
             ->withTimestamps()
             ->withPivot('component_status');
+    }
+
+    /**
+     * Get the recorded monitoring checks for the component.
+     *
+     * @return HasMany<ComponentCheck, $this>
+     */
+    public function checks(): HasMany
+    {
+        return $this->hasMany(ComponentCheck::class);
     }
 
     /**

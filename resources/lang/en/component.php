@@ -10,6 +10,7 @@ return [
             'group' => 'Group',
             'enabled' => 'Enabled',
             'created_at' => 'Created at',
+            'checked' => 'Monitored',
             'checked_at' => 'Checked at',
             'updated_at' => 'Updated at',
             'deleted_at' => 'Deleted at',
