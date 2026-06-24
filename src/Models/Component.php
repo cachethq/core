@@ -10,6 +10,7 @@ use Cachet\Events\Components\ComponentUpdated;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,7 +36,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property bool $enabled
  * @property array<string, mixed> $meta
  * @property ?ComponentGroup $componentGroup
- * @property-read \Illuminate\Database\Eloquent\Collection<int, ComponentCheck> $checks
+ * @property-read Collection<int, ComponentCheck> $checks
  * @property-read IncidentComponent|null $pivot
  *
  * @method static Builder<static>|static checked()
