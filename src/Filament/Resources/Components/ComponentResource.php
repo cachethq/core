@@ -6,6 +6,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Filament\Resources\Components\Pages\CreateComponent;
 use Cachet\Filament\Resources\Components\Pages\EditComponent;
 use Cachet\Filament\Resources\Components\Pages\ListComponents;
+use Cachet\Filament\Resources\Components\RelationManagers\ChecksRelationManager;
 use Cachet\Models\Component;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -140,7 +141,7 @@ class ComponentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ChecksRelationManager::class,
         ];
     }
 

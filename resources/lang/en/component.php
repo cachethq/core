@@ -39,5 +39,19 @@ return [
         'under_maintenance' => 'Under maintenance',
         'unknown' => 'Unknown',
     ],
+    'checks' => [
+        'title' => 'Recent checks',
+        'empty_state' => [
+            'heading' => 'No checks yet',
+            'description' => 'Checks will appear here once the component has been monitored.',
+        ],
+        'headers' => [
+            'status' => 'Status',
+            'successful' => 'Successful',
+            'response_code' => 'Response code',
+            'response_time' => 'Response time',
+            'checked_at' => 'Checked at',
+        ],
+    ],
 
 ];

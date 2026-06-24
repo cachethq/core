@@ -34,6 +34,8 @@ class CheckComponentsCommand extends Command
             ->get()
             ->each(fn (Component $component) => CheckComponent::dispatch($component));
 
+        $this->components->success('Component check dispatched.');
+
         return self::SUCCESS;
     }
 }
