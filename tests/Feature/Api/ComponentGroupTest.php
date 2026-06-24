@@ -1,6 +1,8 @@
 <?php
 
 use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Cachet\Enums\ResourceOrderColumnEnum;
+use Cachet\Enums\ResourceOrderDirectionEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Laravel\Sanctum\Sanctum;
@@ -296,5 +298,138 @@ it('updates components group id when a group is deleted', function () {
     $this->assertDatabaseHas('components', [
         'id' => 2,
         'component_group_id' => null,
+    ]);
+});
+
+it('exposes the order column and direction in the resource', function () {
+    $componentGroup = ComponentGroup::factory()
+        ->orderedBy(ResourceOrderColumnEnum::Name, ResourceOrderDirectionEnum::Desc)
+        ->create();
+
+    $response = getJson('/status/api/component-groups/'.$componentGroup->id);
+
+    $response->assertOk();
+    $response->assertJsonFragment([
+        'order_column' => ResourceOrderColumnEnum::Name->value,
+        'order_direction' => ResourceOrderDirectionEnum::Desc->value,
+    ]);
+});
+
+it('can create a component group with a manual order column', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'order_column' => ResourceOrderColumnEnum::Manual->value,
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('component_groups', [
+        'name' => 'New Group',
+        'order_column' => ResourceOrderColumnEnum::Manual->value,
+        'order_direction' => null,
+    ]);
+});
+
+it('can create a component group with an order column and direction', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'order_column' => ResourceOrderColumnEnum::Name->value,
+        'order_direction' => ResourceOrderDirectionEnum::Asc->value,
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('component_groups', [
+        'name' => 'New Group',
+        'order_column' => ResourceOrderColumnEnum::Name->value,
+        'order_direction' => ResourceOrderDirectionEnum::Asc->value,
+    ]);
+});
+
+it('requires an order direction when the order column is not manual', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'order_column' => ResourceOrderColumnEnum::Status->value,
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('order_direction');
+});
+
+it('does not require an order direction when the order column is manual', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'order_column' => ResourceOrderColumnEnum::Manual->value,
+    ]);
+
+    $response->assertCreated();
+});
+
+it('cannot create a component group with an invalid order column', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'order_column' => 'not-a-column',
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('order_column');
+});
+
+it('cannot create a component group with an invalid order direction', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'order_column' => ResourceOrderColumnEnum::Name->value,
+        'order_direction' => 'sideways',
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('order_direction');
+});
+
+it('can update a component group order column and direction', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $componentGroup = ComponentGroup::factory()->create([
+        'order_column' => ResourceOrderColumnEnum::Manual,
+    ]);
+
+    $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
+        'order_column' => ResourceOrderColumnEnum::LastUpdated->value,
+        'order_direction' => ResourceOrderDirectionEnum::Desc->value,
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('component_groups', [
+        'id' => $componentGroup->id,
+        'order_column' => ResourceOrderColumnEnum::LastUpdated->value,
+        'order_direction' => ResourceOrderDirectionEnum::Desc->value,
+    ]);
+});
+
+it('can update an unrelated attribute without supplying an order direction', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $componentGroup = ComponentGroup::factory()->create([
+        'order_column' => ResourceOrderColumnEnum::Manual,
+    ]);
+
+    $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
+        'name' => 'Renamed Group',
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('component_groups', [
+        'id' => $componentGroup->id,
+        'name' => 'Renamed Group',
     ]);
 });
