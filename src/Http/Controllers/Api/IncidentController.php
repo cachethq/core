@@ -12,9 +12,7 @@ use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -42,11 +40,6 @@ class IncidentController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-//        $query = Incident::query()
-//            ->when(!$request->has('sort'), function (Builder $builder) {
-//                $builder->orderByDesc('created_at');
-//            });
-
         $incidents = QueryBuilder::for(Incident::query())
             ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->allowedFilters([
@@ -56,7 +49,8 @@ class IncidentController extends Controller
                 AllowedFilter::scope('occurs_before'),
                 AllowedFilter::scope('occurs_on'),
             ])
-            ->allowedSorts(['name', 'status', 'id'])
+            ->allowedSorts(['name', 'status', 'id', 'created_at'])
+            ->defaultSort('-created_at')
             ->simplePaginate($request->input('per_page', 15));
 
         return IncidentResource::collection($incidents);

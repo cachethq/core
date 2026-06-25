@@ -45,6 +45,7 @@ class MetricPoint extends Model
     protected $fillable = [
         'value',
         'counter',
+        'created_at',
     ];
 
     public function calculatedValue(): Attribute
@@ -96,7 +97,7 @@ class MetricPoint extends Model
 
         $now ??= Carbon::parse($timestamp);
 
-        return $this->created_at->startOfMinute()->diffInMinutes($now->startOfMinute()) < $threshold;
+        return $this->created_at->startOfMinute()->diffInMinutes($now->startOfMinute(), true) < $threshold;
     }
 
     /**
