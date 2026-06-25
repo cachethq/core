@@ -37,7 +37,7 @@
         "spatie/laravel-query-builder": "^6.3",
         "spatie/laravel-settings": "^3.2",
         "spatie/laravel-webhook-server": "^3.8",
-        "timacdonald/json-api": "^1.0.0-beta.4",
+        "timacdonald/json-api": "^1.0.0-beta.10",
         "twig/twig": "^3.0"
     },
     "require-dev": {
