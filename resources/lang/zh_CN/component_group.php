@@ -13,6 +13,7 @@ return [
             'name' => '名称',
             'visible' => '可见',
             'collapsed' => '折叠',
+            'order_column' => '组件组排序',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
         ],
@@ -25,5 +26,7 @@ return [
         'name_label' => '名称',
         'visible_label' => '可见',
         'collapsed_label' => '折叠',
+        'order_column_label' => '组件组排序',
+        'order_direction' => '排序方向',
     ],
 ];

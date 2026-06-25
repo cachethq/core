@@ -3,6 +3,8 @@
 namespace Cachet\Filament\Resources\ComponentGroups;
 
 use Cachet\Enums\ComponentGroupVisibilityEnum;
+use Cachet\Enums\ResourceOrderColumnEnum;
+use Cachet\Enums\ResourceOrderDirectionEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\ComponentGroups\Pages\CreateComponentGroup;
 use Cachet\Filament\Resources\ComponentGroups\Pages\EditComponentGroup;
@@ -12,10 +14,12 @@ use Cachet\Models\ComponentGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -49,8 +53,21 @@ class ComponentGroupResource extends Resource
                         ->required()
                         ->inline()
                         ->options(ComponentGroupVisibilityEnum::class)
-                        ->default(ComponentGroupVisibilityEnum::expanded)
+                        ->default(ComponentGroupVisibilityEnum::expanded->value)
                         ->columnSpanFull(),
+                ]),
+                Section::make()->schema([
+                    Select::make('order_column')
+                        ->label(__('cachet::component_group.form.order_column_label'))
+                        ->options(ResourceOrderColumnEnum::class)
+                        ->default(ResourceOrderColumnEnum::Manual->value)
+                        ->required()
+                        ->live(),
+                    Select::make('order_direction')
+                        ->label(__('cachet::component_group.form.order_direction'))
+                        ->options(ResourceOrderDirectionEnum::class)
+                        ->required(fn (Get $get) => $get('order_column') !== ResourceOrderColumnEnum::Manual->value)
+                        ->visible(fn (Get $get) => $get('order_column') !== ResourceOrderColumnEnum::Manual->value),
                 ]),
             ]);
     }
@@ -69,6 +86,15 @@ class ComponentGroupResource extends Resource
                     ->sortable(),
                 TextColumn::make('collapsed')
                     ->label(__('cachet::component_group.list.headers.collapsed'))
+                    ->sortable(),
+                TextColumn::make('order_column')
+                    ->icon(fn ($record) => match (true) {
+                        $record->order_column === ResourceOrderColumnEnum::Manual => 'heroicon-o-chevron-up-down',
+                        $record->order_direction === ResourceOrderDirectionEnum::Asc => 'heroicon-o-arrow-up',
+                        $record->order_direction === ResourceOrderDirectionEnum::Desc => 'heroicon-o-arrow-down',
+                        default => null,
+                    })
+                    ->label(__('cachet::component_group.list.headers.order_column'))
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label(__('cachet::component_group.list.headers.created_at'))

@@ -14,6 +14,8 @@ class ComponentGroup extends JsonApiResource
             'id' => $this->id,
             'name' => $this->name,
             'order' => $this->order,
+            'order_column' => $this->order_column,
+            'order_direction' => $this->order_direction,
             'collapsed' => $this->collapsed,
             'visible' => $this->visible,
             'created' => [
