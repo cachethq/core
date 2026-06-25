@@ -106,7 +106,7 @@ it('creates a metric point for a given timestamp', function ($timestamp) {
 
     expect($point)
         ->toBeInstanceOf(MetricPoint::class)
-        ->created_at->isSameAs(Carbon::parse($timestamp));
+        ->created_at->toDateTimeString()->toBe(Carbon::parse($timestamp)->toDateTimeString());
 })->with([
     now()->addWeek()->startOfMinute()->unix(),
     now()->subHour()->startOfMinute()->toAtomString(),
