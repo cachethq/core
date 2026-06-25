@@ -13,6 +13,7 @@ return [
     'edit_button' => '编辑事件',
     'new_button' => '新建事件',
     'no_incidents_reported' => '没有事件被报告。',
+    'affected_components_header' => '受影响的组件',
     'timeline' => [
         'past_incidents_header' => '过去的事件',
         'recent_incidents_header' => '最近的事件',

@@ -30,6 +30,7 @@ class ManageLocalization extends SettingsPage
                 Section::make()->columns(2)->schema([
                     Select::make('locale')
                         ->label(__('cachet::settings.manage_localization.locale_label'))
+                        ->helperText(__('cachet::settings.manage_localization.locale_helper'))
                         ->options(
                             config('cachet.supported_locales', [
                                 'en' => 'English',
@@ -39,6 +40,7 @@ class ManageLocalization extends SettingsPage
 
                     Select::make('timezone')
                         ->label(__('cachet::settings.manage_localization.timezone_label'))
+                        ->helperText(__('cachet::settings.manage_localization.timezone_helper'))
                         ->options(fn () => collect(timezone_identifiers_list())
                             ->mapToGroups(
                                 fn ($timezone) => [
@@ -53,7 +55,8 @@ class ManageLocalization extends SettingsPage
                         ->suffixIcon('heroicon-o-globe-alt'),
 
                     Toggle::make('show_timezone')
-                        ->label(__('cachet::settings.manage_localization.toggles.show_timezone')),
+                        ->label(__('cachet::settings.manage_localization.toggles.show_timezone'))
+                        ->helperText(__('cachet::settings.manage_localization.toggles.show_timezone_helper')),
                 ]),
             ]);
     }

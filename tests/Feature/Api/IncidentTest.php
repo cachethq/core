@@ -3,6 +3,7 @@
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Laravel\Sanctum\Sanctum;
@@ -146,19 +147,18 @@ it('can filter incidents by status', function () {
 
 it('can filter incidents by occurred at date', function () {
     Incident::factory(20)->create([
-        'occurred_at' => '2019-01-01',
+        'occurred_at' => '2019-01-01 00:00:00',
     ]);
     $incident = Incident::factory()->create([
-        'occurred_at' => '2023-01-01',
+        'occurred_at' => '2025-01-01 00:00:00',
     ]);
 
-    $query = http_build_query([
+    $response = getJson(route('cachet.api.incidents.index', [
         'filter' => [
-            'occurred_at' => '2023-01-01',
+            'occurs_after' => '2024-12-31',
         ],
-    ]);
-
-    $response = getJson('/status/api/incidents?'.$query);
+    ]))
+        ->assertOk();
 
     $response->assertJsonCount(1, 'data');
     $response->assertJsonPath('data.0.attributes.id', $incident->id);
@@ -186,6 +186,22 @@ it('can get an incident with updates', function () {
     $response->assertJsonFragment([
         'id' => $incident->id,
     ]);
+});
+
+it('can get an incident with components and their groups', function () {
+    $group = ComponentGroup::factory()->create();
+    $component = Component::factory()->for($group, 'group')->create();
+    $incident = Incident::factory()->create();
+    $incident->components()->attach($component, ['component_status' => ComponentStatusEnum::partial_outage->value]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id.'?include=components.group');
+
+    $response->assertOk();
+
+    $included = collect($response->json('included'));
+
+    expect($included->firstWhere('id', (string) $component->id))->not->toBeNull()
+        ->and($included->firstWhere('attributes.name', $group->name))->not->toBeNull();
 });
 
 it('cannot create an incident if not authenticated', function () {

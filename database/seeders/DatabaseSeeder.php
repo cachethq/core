@@ -55,13 +55,6 @@ class DatabaseSeeder extends Seeder
             'is_admin' => true,
         ]);
 
-        Schedule::create([
-            'name' => 'Documentation Maintenance',
-            'message' => 'We will be conducting maintenance on our documentation servers. Documentation may not be available during this time.',
-            'scheduled_at' => now()->subHours(12)->subMinutes(45),
-            'completed_at' => now()->subHours(12),
-        ]);
-
         /** @phpstan-ignore-next-line  argument.type */
         tap(Schedule::create([
             'name' => 'Documentation Maintenance',
@@ -83,6 +76,27 @@ EOF
             $schedule->updates()->save($update);
         });
 
+        /** @phpstan-ignore-next-line  argument.type */
+        tap(Schedule::create([
+            'name' => 'Database Server Upgrade',
+            'message' => 'We upgraded our primary database servers to improve performance and reliability.',
+            'scheduled_at' => now()->subHours(26),
+            'completed_at' => now()->subHours(24),
+        /** @phpstan-ignore-next-line argument.type */
+        ]), function (Schedule $schedule) use ($user) {
+            $update = new Update([
+                'message' => <<<'EOF'
+Maintenance is underway. We are migrating data to the upgraded database servers.
+EOF
+                ,
+                'user_id' => $user->id,
+                'created_at' => $timestamp = $schedule->scheduled_at->addMinutes(30),
+                'updated_at' => $timestamp,
+            ]);
+
+            $schedule->updates()->save($update);
+        });
+
         $componentGroup = ComponentGroup::create([
             'name' => 'Cachet',
             'collapsed' => ComponentGroupVisibilityEnum::expanded,
@@ -90,7 +104,7 @@ EOF
         ]);
 
         /** @phpstan-ignore-next-line argument.type Larastan bug */
-        $componentGroup->components()->createMany([
+        [$website, $documentation, $blog] = $componentGroup->components()->createMany([
             [
                 'name' => 'Cachet Website',
                 'description' => 'The Cachet website.',
@@ -181,6 +195,8 @@ EOF
             'updated_at' => $timestamp,
             'occurred_at' => $timestamp,
         ]);
+
+        $incident->components()->attach($documentation);
 
         $update = new Update([
             'status' => IncidentStatusEnum::identified,

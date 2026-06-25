@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use Cachet\Filament\Pages\EditProfile;
+use Cachet\Http\Middleware\AuthenticateSession;
 use Cachet\Http\Middleware\SetAppLocale;
 use Cachet\Settings\AppSettings;
 use Filament\FontProviders\LocalFontProvider;
@@ -20,7 +21,6 @@ use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 

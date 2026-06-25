@@ -32,8 +32,8 @@
     </div>
 
     <div class="flex w-full flex-col gap-8">
-        @forelse ($incidents as $date => $incident)
-            <x-cachet::incident :date="$date" :incidents="$incident" />
+        @forelse ($timeline as $date => $day)
+            <x-cachet::incident :date="$date" :incidents="$day['incidents']" :schedules="$day['schedules']" />
         @empty
             <div class="rounded-lg bg-white px-5 py-10 text-center text-sm text-zinc-500 shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:text-zinc-400 dark:ring-white/15">
                 {{ __('cachet::incident.timeline.no_incidents_reported_between', ['from' => $from, 'to' => $to]) }}

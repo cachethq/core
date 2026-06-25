@@ -13,6 +13,7 @@ return [
             'name' => 'Nom',
             'visible' => 'Visible',
             'collapsed' => 'Réduit',
+            'order_column' => 'Ordre du groupe de composants',
             'created_at' => 'Créé le',
             'updated_at' => 'Mis à jour le',
         ],
@@ -25,5 +26,7 @@ return [
         'name_label' => 'Nom',
         'visible_label' => 'Visible',
         'collapsed_label' => 'Réduit',
+        'order_column_label' => 'Ordre du groupe de composants',
+        'order_direction' => 'Sens du tri',
     ],
 ];

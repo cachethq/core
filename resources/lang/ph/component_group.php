@@ -13,6 +13,7 @@ return [
             'name' => 'Pangalan',
             'visible' => 'Nakikita',
             'collapsed' => 'Nakasara',
+            'order_column' => 'Pagkakasunod-sunod ng Grupo ng Komponent',
             'created_at' => 'Ginawa Noong',
             'updated_at' => 'Na-update Noong',
         ],
@@ -25,5 +26,7 @@ return [
         'name_label' => 'Pangalan',
         'visible_label' => 'Nakikita',
         'collapsed_label' => 'Nakasara',
+        'order_column_label' => 'Pagkakasunod-sunod ng Grupo ng Komponent',
+        'order_direction' => 'Direksyon ng Pagkakasunod-sunod',
     ],
 ];

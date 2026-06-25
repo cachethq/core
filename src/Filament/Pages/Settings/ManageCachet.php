@@ -34,9 +34,11 @@ class ManageCachet extends SettingsPage
                 Section::make()->columns(2)->schema([
                     TextInput::make('name')
                         ->label(__('cachet::settings.manage_cachet.site_name_label'))
+                        ->helperText(__('cachet::settings.manage_cachet.site_name_helper'))
                         ->maxLength(255),
                     MarkdownEditor::make('about')
                         ->label(__('cachet::settings.manage_cachet.about_this_site_label'))
+                        ->helperText(__('cachet::settings.manage_cachet.about_this_site_helper'))
                         ->columnSpanFull(),
                 ]),
 
@@ -44,6 +46,7 @@ class ManageCachet extends SettingsPage
                     TextInput::make('incident_days')
                         ->numeric()
                         ->label(__('cachet::settings.manage_cachet.incident_days_label'))
+                        ->helperText(__('cachet::settings.manage_cachet.incident_days_helper'))
                         ->minValue(1)
                         ->maxValue(3650)
                         ->step(1),
@@ -51,6 +54,7 @@ class ManageCachet extends SettingsPage
                     TextInput::make('major_outage_threshold')
                         ->numeric()
                         ->label(__('cachet::settings.manage_cachet.major_outage_threshold_label'))
+                        ->helperText(__('cachet::settings.manage_cachet.major_outage_threshold_helper'))
                         ->minValue(1)
                         ->maxValue(100)
                         ->step(1)
@@ -59,6 +63,7 @@ class ManageCachet extends SettingsPage
                     TextInput::make('refresh_rate')
                         ->numeric()
                         ->label(__('cachet::settings.manage_cachet.refresh_rate_label'))
+                        ->helperText(__('cachet::settings.manage_cachet.refresh_rate_helper'))
                         ->minValue(0)
                         ->nullable()
                         ->step(1)
@@ -68,10 +73,12 @@ class ManageCachet extends SettingsPage
                         ->schema([
                             Toggle::make('recent_incidents_only')
                                 ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_only'))
+                                ->helperText(__('cachet::settings.manage_cachet.toggles.recent_incidents_only_helper'))
                                 ->reactive(),
                             TextInput::make('recent_incidents_days')
                                 ->numeric()
                                 ->label(__('cachet::settings.manage_cachet.toggles.recent_incidents_days'))
+                                ->helperText(__('cachet::settings.manage_cachet.toggles.recent_incidents_days_helper'))
                                 ->minValue(0)
                                 ->nullable()
                                 ->step(1)
@@ -84,15 +91,20 @@ class ManageCachet extends SettingsPage
                     ->columns(2)
                     ->schema([
                         Toggle::make('dashboard_login_link')
-                            ->label(__('cachet::settings.manage_cachet.toggles.show_dashboard_link')),
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_dashboard_link'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.show_dashboard_link_helper')),
                         Toggle::make('show_support')
-                            ->label(__('cachet::settings.manage_cachet.toggles.support_cachet')),
+                            ->label(__('cachet::settings.manage_cachet.toggles.support_cachet'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.support_cachet_helper')),
                         Toggle::make('display_graphs')
-                            ->label(__('cachet::settings.manage_cachet.toggles.display_graphs')),
+                            ->label(__('cachet::settings.manage_cachet.toggles.display_graphs'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.display_graphs_helper')),
                         Toggle::make('enable_external_dependencies')
-                            ->label(__('cachet::settings.manage_cachet.toggles.enable_external_dependencies')),
+                            ->label(__('cachet::settings.manage_cachet.toggles.enable_external_dependencies'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.enable_external_dependencies_helper')),
                         Toggle::make('only_disrupted_days')
-                            ->label(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days')),
+                            ->label(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days_helper')),
                     ]),
             ]);
     }

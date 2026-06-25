@@ -13,6 +13,7 @@ return [
             'name' => '이름',
             'visible' => '표시 여부',
             'collapsed' => '축소 여부',
+            'order_column' => '구성 요소 그룹 정렬',
             'created_at' => '생성 시간',
             'updated_at' => '업데이트 시간',
         ],
@@ -25,5 +26,7 @@ return [
         'name_label' => '이름',
         'visible_label' => '표시 여부',
         'collapsed_label' => '축소 여부',
+        'order_column_label' => '구성 요소 그룹 정렬',
+        'order_direction' => '정렬 방향',
     ],
 ];

@@ -13,6 +13,7 @@ return [
             'name' => 'Name',
             'visible' => 'Sichtbar',
             'collapsed' => 'Ausgeklappt',
+            'order_column' => 'Sortierung der Komponentengruppe',
             'created_at' => 'Erstellt am',
             'updated_at' => 'Aktualisiert am',
         ],
@@ -25,5 +26,7 @@ return [
         'name_label' => 'Name',
         'visible_label' => 'Sichtbar',
         'collapsed_label' => 'Ausgeklappt',
+        'order_column_label' => 'Sortierung der Komponentengruppe',
+        'order_direction' => 'Sortierrichtung',
     ],
 ];

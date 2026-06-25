@@ -10,13 +10,53 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
+  build-assets:
+    runs-on: ubuntu-latest
+
+    name: Build Assets
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          coverage: none
+
+      - name: Install PHP dependencies
+        run: |
+          composer require "laravel/framework:11.x" --no-interaction --no-update
+          composer update --prefer-dist --no-interaction
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Upload compiled assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-assets
+          path: public/build
+          retention-days: 1
+
   static-analysis:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         php: [8.4, 8.3, 8.2]
-        laravel: [11.x]
+        laravel: [12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
 
     name: Static Analysis - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
@@ -30,7 +70,19 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: xdebug
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ matrix.php }}-${{ matrix.stability }}-
 
       - name: Install dependencies
         run: |
@@ -42,6 +94,7 @@ jobs:
 
   mysql:
     runs-on: ubuntu-latest
+    needs: build-assets
 
     services:
       mysql:
@@ -59,7 +112,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4, 8.3, 8.2]
-        laravel: [11.x]
+        laravel: [12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - MySQL 8.0
@@ -73,18 +126,30 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: xdebug
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ matrix.php }}-${{ matrix.stability }}-
 
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Download compiled assets
+        uses: actions/download-artifact@v4
+        with:
+          name: build-assets
+          path: public/build
 
       - name: Build tests environment
         run: composer build
@@ -100,6 +165,7 @@ jobs:
 
   postgres13:
     runs-on: ubuntu-latest
+    needs: build-assets
 
     services:
       postgres:
@@ -116,7 +182,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4, 8.3, 8.2]
-        laravel: [11.x]
+        laravel: [12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 13
@@ -130,18 +196,30 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: xdebug
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ matrix.php }}-${{ matrix.stability }}-
 
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Download compiled assets
+        uses: actions/download-artifact@v4
+        with:
+          name: build-assets
+          path: public/build
 
       - name: Build tests environment
         run: composer build
@@ -157,6 +235,7 @@ jobs:
 
   postgres14:
     runs-on: ubuntu-latest
+    needs: build-assets
 
     services:
       postgres:
@@ -172,8 +251,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ 8.3, 8.2 ]
-        laravel: [ 11.x ]
+        php: [8.4, 8.3, 8.2]
+        laravel: [12.x, 11.x]
         stability: [ prefer-lowest, prefer-stable ]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 14
@@ -187,18 +266,30 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: xdebug
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ matrix.php }}-${{ matrix.stability }}-
 
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Download compiled assets
+        uses: actions/download-artifact@v4
+        with:
+          name: build-assets
+          path: public/build
 
       - name: Build tests environment
         run: composer build
@@ -214,6 +305,7 @@ jobs:
 
   postgres15:
     runs-on: ubuntu-latest
+    needs: build-assets
 
     services:
       postgres:
@@ -229,8 +321,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ 8.3, 8.2 ]
-        laravel: [ 11.x ]
+        php: [8.4, 8.3, 8.2]
+        laravel: [12.x, 11.x]
         stability: [ prefer-lowest, prefer-stable ]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 15
@@ -244,18 +336,30 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: xdebug
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ matrix.php }}-${{ matrix.stability }}-
 
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Download compiled assets
+        uses: actions/download-artifact@v4
+        with:
+          name: build-assets
+          path: public/build
 
       - name: Build tests environment
         run: composer build
@@ -271,11 +375,12 @@ jobs:
 
   sqlite:
     runs-on: ubuntu-latest
+    needs: build-assets
     strategy:
       fail-fast: false
       matrix:
-        php: [ 8.3, 8.2 ]
-        laravel: [ 11.x ]
+        php: [8.4, 8.3, 8.2]
+        laravel: [12.x, 11.x]
         stability: [ prefer-lowest, prefer-stable ]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - SQLite
@@ -289,18 +394,30 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: xdebug
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ matrix.php }}-${{ matrix.stability }}-
 
       - name: Install dependencies
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Install frontend dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      - name: Download compiled assets
+        uses: actions/download-artifact@v4
+        with:
+          name: build-assets
+          path: public/build
 
       - name: Build tests environment
         run: composer build
@@ -311,6 +428,7 @@ jobs:
   check:
     if: always()
     needs:
+      - build-assets
       - static-analysis
       - mysql
       - postgres13

@@ -4,17 +4,20 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -26,14 +29,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ComponentStatusEnum $latest_status
  * @property ?int $order
  * @property ?int $component_group_id
+ * @property ?bool $checked
+ * @property ?Carbon $checked_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  * @property bool $enabled
  * @property array<string, mixed> $meta
  * @property ?ComponentGroup $componentGroup
+ * @property-read Collection<int, ComponentCheck> $checks
  * @property-read IncidentComponent|null $pivot
  *
+ * @method static Builder<static>|static checked()
  * @method static Builder<static>|static disabled()
  * @method static Builder<static>|static enabled()
  * @method static Builder<static>|static outage()
@@ -49,6 +56,7 @@ class Component extends Model
 
     /** @var array<string, string> */
     protected $casts = [
+        'checked' => 'bool',
         'status' => ComponentStatusEnum::class,
         'order' => 'int',
         'enabled' => 'bool',
@@ -65,6 +73,8 @@ class Component extends Model
         'component_group_id',
         'enabled',
         'meta',
+        'checked',
+        'checked_at',
     ];
 
     protected $dispatchesEvents = [
@@ -107,11 +117,29 @@ class Component extends Model
     }
 
     /**
+     * Get the recorded monitoring checks for the component.
+     *
+     * @return HasMany<ComponentCheck, $this>
+     */
+    public function checks(): HasMany
+    {
+        return $this->hasMany(ComponentCheck::class);
+    }
+
+    /**
      * Get the subscribers for this component.
      */
     public function subscribers(): BelongsToMany
     {
         return $this->belongsToMany(Subscriber::class, 'subscriptions');
+    }
+
+    /**
+     * Scope to checked components only.
+     */
+    public function scopeChecked(Builder $query): void
+    {
+        $query->where('checked', true);
     }
 
     /**
@@ -149,6 +177,20 @@ class Component extends Model
     public function latestStatus(): Attribute
     {
         return Attribute::get(fn () => $this->incidents()->unresolved()->latest()->first()?->pivot->component_status ?? $this->status);
+    }
+
+    /**
+     * Determine how to order the component.
+     */
+    public function orderableBy(ComponentGroup $group): mixed
+    {
+        return match ($group->order_column) {
+            ResourceOrderColumnEnum::Id => $this->id,
+            ResourceOrderColumnEnum::LastUpdated => $this->updated_at,
+            ResourceOrderColumnEnum::Name => $this->name,
+            ResourceOrderColumnEnum::Manual => $this->order,
+            default => $this->status->value,
+        };
     }
 
     /**

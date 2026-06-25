@@ -13,6 +13,7 @@ return [
     'edit_button' => 'Vorfall bearbeiten',
     'new_button' => 'Vorfall hinzufügen',
     'no_incidents_reported' => 'Keine Vorfälle gemeldet.',
+    'affected_components_header' => 'Betroffene Komponenten',
     'timeline' => [
         'past_incidents_header' => 'Vergangene Vorfälle',
         'recent_incidents_header' => 'Jüngste Vorfälle',

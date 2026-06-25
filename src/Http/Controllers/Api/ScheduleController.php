@@ -34,7 +34,7 @@ class ScheduleController extends Controller
     public function index()
     {
         $schedules = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components', 'updates', 'user'])
+            ->allowedIncludes(['components', 'components.group', 'updates', 'user'])
             ->allowedFilters(['name', AllowedFilter::custom('status', new ScheduleStatusFilter)])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(request('per_page', 15));
@@ -60,7 +60,7 @@ class ScheduleController extends Controller
     public function show(Schedule $schedule)
     {
         $scheduleQuery = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components', 'updates', 'user'])
+            ->allowedIncludes(['components', 'components.group', 'updates', 'user'])
             ->find($schedule->id);
 
         return ScheduleResource::make($scheduleQuery)

@@ -6,6 +6,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Filament\Resources\Components\Pages\CreateComponent;
 use Cachet\Filament\Resources\Components\Pages\EditComponent;
 use Cachet\Filament\Resources\Components\Pages\ListComponents;
+use Cachet\Filament\Resources\Components\RelationManagers\ChecksRelationManager;
 use Cachet\Models\Component;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -58,6 +59,8 @@ class ComponentResource extends Resource
                         ->label(__('cachet::component.form.link_label'))
                         ->url()
                         ->label(__('cachet::component.form.link_helper')),
+                    Toggle::make('checked')
+                        ->label(__('cachet::component.form.checked_label')),
                 ]),
 
                 Section::make()->columns(2)->schema([
@@ -98,6 +101,15 @@ class ComponentResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                IconColumn::make('checked')
+                    ->label(__('cachet::component.list.headers.checked'))
+                    ->boolean()
+                    ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('checked_at')
+                    ->label(__('cachet::component.list.headers.checked_at'))
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 TextColumn::make('updated_at')
                     ->label(__('cachet::component.list.headers.updated_at'))
                     ->dateTime()
@@ -129,7 +141,7 @@ class ComponentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ChecksRelationManager::class,
         ];
     }
 

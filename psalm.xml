@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<psalm
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+    errorLevel="3"
+    findUnusedCode="false"
+    ensureOverrideAttribute="false"
+    runTaintAnalysis="true"
+>
+    <projectFiles>
+        <directory name="src"/>
+        <directory name="database/factories"/>
+        <directory name="database/seeders"/>
+        <directory name="config"/>
+        <!-- composer require psalm/plugin-phpunit psalm/plugin-mockery for the full tests support -->
+        <!-- <directory name="tests"/>-->
+
+        <ignoreFiles allowMissingFiles="true">
+            <directory name="vendor"/>
+        </ignoreFiles>
+    </projectFiles>
+
+    <plugins>
+        <!-- All Psalm Laravel options: https://github.com/psalm/psalm-plugin-laravel/blob/master/docs/config.md -->
+        <pluginClass class="Psalm\LaravelPlugin\Plugin">
+            <resolveDynamicWhereClauses value="true" />
+            <findMissingTranslations value="false" />
+            <findMissingViews value="false" />
+        </pluginClass>
+    </plugins>
+
+    <issueHandlers>
+        <ClassMustBeFinal errorLevel="info"/>
+        <ImplicitToStringCast errorLevel="info"/>
+        <MissingClosureReturnType errorLevel="info"/>
+        <MissingImmutableAnnotation errorLevel="info"/>
+        <MissingOverrideAttribute errorLevel="info"/>
+        <RedundantCast errorLevel="info"/>
+        <RedundantCondition errorLevel="info"/>
+        <UnnecessaryVarAnnotation errorLevel="suppress"/>
+    </issueHandlers>
+
+    <forbiddenFunctions>
+        <function name="var_dump" />
+        <function name="dd" />
+    </forbiddenFunctions>
+</psalm>

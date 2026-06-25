@@ -124,7 +124,7 @@ class Incident extends Model
      */
     public function incidentComponents(): HasMany
     {
-        return $this->hasMany(IncidentComponent::class);
+        return $this->hasMany(IncidentComponent::class)->chaperone();
     }
 
     /**
@@ -169,6 +169,21 @@ class Incident extends Model
     public function scopeStickied(Builder $query): void
     {
         $query->where('stickied', true);
+    }
+
+    public function scopeOccursAfter(Builder $query, $date): void
+    {
+        $query->where('occurred_at', '>=', $date);
+    }
+
+    public function scopeOccursBefore(Builder $query, $date): void
+    {
+        $query->where('occurred_at', '<=', $date);
+    }
+
+    public function scopeOccursOn(Builder $query, $date): void
+    {
+        $query->whereDate('occurred_at', $date);
     }
 
     /**

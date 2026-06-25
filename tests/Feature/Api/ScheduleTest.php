@@ -1,7 +1,9 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Schedule;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
@@ -195,6 +197,22 @@ it('can get a schedule', function () {
     ]);
 });
 
+it('can get a schedule with components and their groups', function () {
+    $group = ComponentGroup::factory()->create();
+    $component = Component::factory()->for($group, 'group')->create();
+    $schedule = Schedule::factory()->create();
+    $schedule->components()->attach($component, ['component_status' => ComponentStatusEnum::partial_outage->value]);
+
+    $response = getJson('/status/api/schedules/'.$schedule->id.'?include=components.group');
+
+    $response->assertOk();
+
+    $included = collect($response->json('included'));
+
+    expect($included->firstWhere('id', (string) $component->id))->not->toBeNull()
+        ->and($included->firstWhere('attributes.name', $group->name))->not->toBeNull();
+});
+
 it('cannot create a schedule if not authenticated', function () {
     $response = postJson('/status/api/schedules', [
         'name' => 'New Scheduled Maintenance',
@@ -334,6 +352,20 @@ it('can update a schedule', function () {
             ],
         ],
     ]);
+});
+
+it('can update a schedule completed_at', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $schedule = Schedule::factory()->create(['completed_at' => null]);
+
+    $response = putJson('/status/api/schedules/'.$schedule->id, [
+        'completed_at' => '2026-06-11 10:00:00',
+    ]);
+
+    $response->assertOk();
+
+    expect($schedule->fresh()->completed_at->toDateTimeString())->toBe('2026-06-11 10:00:00');
 });
 
 it('can update a schedule with components', function () {

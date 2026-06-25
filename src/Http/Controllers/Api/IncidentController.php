@@ -12,7 +12,7 @@ use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -28,6 +28,7 @@ class IncidentController extends Controller
      */
     public const ALLOWED_INCLUDES = [
         'components',
+        'components.group',
         'updates',
         'user',
     ];
@@ -37,22 +38,20 @@ class IncidentController extends Controller
      */
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
-    public function index()
+    public function index(Request $request)
     {
-        $query = Incident::query()
-            ->when(! request('sort'), function (Builder $builder) {
-                $builder->orderByDesc('created_at');
-            });
-
-        $incidents = QueryBuilder::for($query)
+        $incidents = QueryBuilder::for(Incident::query())
             ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->allowedFilters([
                 'name',
                 AllowedFilter::exact('status'),
-                'occurred_at',
+                AllowedFilter::scope('occurs_after'),
+                AllowedFilter::scope('occurs_before'),
+                AllowedFilter::scope('occurs_on'),
             ])
-            ->allowedSorts(['name', 'status', 'id'])
-            ->simplePaginate(request('per_page', 15));
+            ->allowedSorts(['name', 'status', 'id', 'created_at'])
+            ->defaultSort('-created_at')
+            ->simplePaginate($request->input('per_page', 15));
 
         return IncidentResource::collection($incidents);
     }

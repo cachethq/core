@@ -41,6 +41,17 @@ class ComponentFactory extends Factory
     }
 
     /**
+     * Create a component that is monitored via a link check.
+     */
+    public function checked(): self
+    {
+        return $this->state([
+            'checked' => true,
+            'link' => fake()->url(),
+        ]);
+    }
+
+    /**
      * Create a component that is disabled
      */
     public function disabled(): self

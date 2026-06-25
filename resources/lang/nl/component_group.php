@@ -13,6 +13,7 @@ return [
             'name' => 'Naam',
             'visible' => 'Zichtbaar',
             'collapsed' => 'Uitgevouwen',
+            'order_column' => 'Volgorde componentgroep',
             'created_at' => 'Gemaakt op',
             'updated_at' => 'Bijgewerkt op',
         ],
@@ -25,5 +26,7 @@ return [
         'name_label' => 'Naam',
         'visible_label' => 'Zichtbaar',
         'collapsed_label' => 'Uitgevouwen',
+        'order_column_label' => 'Volgorde componentgroep',
+        'order_direction' => 'Sorteerrichting',
     ],
 ];

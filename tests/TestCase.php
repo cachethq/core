@@ -16,6 +16,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Spatie\QueryBuilder\QueryBuilderServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -42,6 +43,7 @@ abstract class TestCase extends Orchestra
             BladeHeroiconsServiceProvider::class,
             WidgetsServiceProvider::class,
             ScrambleServiceProvider::class,
+            QueryBuilderServiceProvider::class,
         ]);
 
         // Laravel apps register providers in alphabetical order, so we do the same here for consistency.
