@@ -35,7 +35,9 @@ class DatabaseSeeder extends Seeder
         DB::table('api_keys')->truncate();
         DB::table('users')->truncate();
         DB::table('incidents')->truncate();
+        DB::table('incident_components')->truncate();
         DB::table('components')->truncate();
+        DB::table('component_checks')->truncate();
         DB::table('component_groups')->truncate();
         DB::table('schedules')->truncate();
         DB::table('metrics')->truncate();
