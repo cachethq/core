@@ -112,18 +112,21 @@ EOF
                 'description' => 'The Cachet website.',
                 'link' => 'https://cachethq.io',
                 'status' => ComponentStatusEnum::operational,
+                'checked' => true,
             ],
             [
                 'name' => 'Cachet Documentation',
                 'description' => 'The Cachet docs, powered by Mintlify.',
                 'link' => 'https://docs.cachethq.io',
                 'status' => ComponentStatusEnum::operational,
+                'checked' => true,
             ],
             [
                 'name' => 'Cachet Blog',
                 'description' => 'Learn more about Cachet.',
                 'link' => 'https://blog.cachethq.io',
                 'status' => ComponentStatusEnum::operational,
+                'checked' => true,
             ],
         ]);
 
@@ -132,6 +135,7 @@ EOF
             'description' => 'The Laravel Artisan Cheatsheet.',
             'link' => 'https://artisan.page',
             'status' => ComponentStatusEnum::operational,
+            'checked' => true,
         ]);
 
         $metric = Metric::create([
