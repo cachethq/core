@@ -55,7 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3, 8.2]
+        php: [8.4, 8.3]
         laravel: [12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
 
@@ -111,7 +111,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3, 8.2]
+        php: [8.4, 8.3]
         laravel: [12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
 
@@ -181,7 +181,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3, 8.2]
+        php: [8.4, 8.3]
         laravel: [12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
 
@@ -251,7 +251,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3, 8.2]
+        php: [8.4, 8.3]
         laravel: [12.x, 11.x]
         stability: [ prefer-lowest, prefer-stable ]
 
@@ -321,7 +321,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3, 8.2]
+        php: [8.4, 8.3]
         laravel: [12.x, 11.x]
         stability: [ prefer-lowest, prefer-stable ]
 
@@ -379,7 +379,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3, 8.2]
+        php: [8.4, 8.3]
         laravel: [12.x, 11.x]
         stability: [ prefer-lowest, prefer-stable ]
 
