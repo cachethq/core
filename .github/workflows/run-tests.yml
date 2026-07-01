@@ -56,7 +56,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4, 8.3]
-        laravel: [12.x, 11.x]
+        laravel: [13.x, 12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
 
     name: Static Analysis - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
@@ -112,7 +112,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4, 8.3]
-        laravel: [12.x, 11.x]
+        laravel: [13.x, 12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - MySQL 8.0
@@ -182,7 +182,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4, 8.3]
-        laravel: [12.x, 11.x]
+        laravel: [13.x, 12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 13
@@ -252,7 +252,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4, 8.3]
-        laravel: [12.x, 11.x]
+        laravel: [13.x, 12.x, 11.x]
         stability: [ prefer-lowest, prefer-stable ]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 14
@@ -322,7 +322,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4, 8.3]
-        laravel: [12.x, 11.x]
+        laravel: [13.x, 12.x, 11.x]
         stability: [ prefer-lowest, prefer-stable ]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 15
@@ -380,7 +380,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4, 8.3]
-        laravel: [12.x, 11.x]
+        laravel: [13.x, 12.x, 11.x]
         stability: [ prefer-lowest, prefer-stable ]
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - SQLite
