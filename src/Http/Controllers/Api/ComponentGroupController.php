@@ -28,7 +28,7 @@ class ComponentGroupController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
-        $componentGroups = QueryBuilder::for(ComponentGroup::class)
+        $componentGroups = QueryBuilder::for(ComponentGroup::query()->visible(auth()->check()))
             ->allowedIncludes(['components'])
             ->allowedSorts(['name', 'id'])
             ->simplePaginate(request('per_page', 15));
@@ -53,10 +53,9 @@ class ComponentGroupController extends Controller
      */
     public function show(ComponentGroup $componentGroup)
     {
-
-        $componentQuery = QueryBuilder::for(ComponentGroup::class)
+        $componentQuery = QueryBuilder::for(ComponentGroup::query()->visible(auth()->check()))
             ->allowedIncludes(['components'])
-            ->find($componentGroup->id);
+            ->findOrFail($componentGroup->id);
 
         return ComponentGroupResource::make($componentQuery)
             ->response()

@@ -2,6 +2,7 @@
 
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
@@ -439,4 +440,56 @@ it('can delete an incident', function () {
     $response = deleteJson('/status/api/incidents/'.$incident->id);
 
     $response->assertNoContent();
+});
+
+it('does not list incidents hidden from guests', function () {
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/incidents');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.visible', ResourceVisibilityEnum::guest->value);
+});
+
+it('lists authenticated incidents to authenticated users but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/incidents');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('does not show a hidden incident to guests', function () {
+    $incident = Incident::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertNotFound();
+});
+
+it('does not show an authenticated incident to guests', function () {
+    $incident = Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertNotFound();
+});
+
+it('shows an authenticated incident to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $incident = Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.id', $incident->id);
 });
