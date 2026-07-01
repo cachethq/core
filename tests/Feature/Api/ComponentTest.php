@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Laravel\Sanctum\Sanctum;
@@ -381,4 +382,73 @@ it('can delete a component', function () {
     $this->assertSoftDeleted('components', [
         'id' => $component->id,
     ]);
+});
+
+it('does not list components belonging to groups hidden from guests', function () {
+    $guestGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    $authGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    Component::factory()->create(['component_group_id' => $guestGroup->id]);
+    Component::factory()->create(['component_group_id' => $authGroup->id]);
+    Component::factory()->create(['component_group_id' => $hiddenGroup->id]);
+    Component::factory()->create(['component_group_id' => null]);
+
+    $response = getJson('/status/api/components?per_page=50');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('lists components in authenticated groups to authenticated users but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $authGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    Component::factory()->create(['component_group_id' => $authGroup->id]);
+    Component::factory()->create(['component_group_id' => $hiddenGroup->id]);
+    Component::factory()->create(['component_group_id' => null]);
+
+    $response = getJson('/status/api/components?per_page=50');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('does not show a component in a hidden group to guests', function () {
+    $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $component = Component::factory()->create(['component_group_id' => $hiddenGroup->id]);
+
+    $response = getJson('/status/api/components/'.$component->id);
+
+    $response->assertNotFound();
+});
+
+it('does not list disabled components by default', function () {
+    Component::factory(3)->enabled()->create();
+    Component::factory(2)->disabled()->create();
+
+    $response = getJson('/status/api/components?per_page=50');
+
+    $response->assertOk();
+    $response->assertJsonCount(3, 'data');
+});
+
+it('lists disabled components when explicitly filtered', function () {
+    Component::factory(3)->enabled()->create();
+    Component::factory(2)->disabled()->create();
+
+    $response = getJson('/status/api/components?per_page=50&filter[enabled]=false');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('does not show a disabled component by default', function () {
+    $component = Component::factory()->disabled()->create();
+
+    $response = getJson('/status/api/components/'.$component->id);
+
+    $response->assertNotFound();
 });

@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
 use Laravel\Sanctum\Sanctum;
@@ -129,4 +130,23 @@ it('can delete a metric point', function () {
     $this->assertDatabaseMissing('metric_points', [
         'metric_id' => $metricPoint->metric_id,
     ]);
+});
+
+it('does not list points of a metric hidden from guests', function () {
+    $metric = Metric::factory()->hasMetricPoints(2)->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/metrics/'.$metric->id.'/points');
+
+    $response->assertNotFound();
+});
+
+it('lists points of an authenticated metric to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $metric = Metric::factory()->hasMetricPoints(2)->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    $response = getJson('/status/api/metrics/'.$metric->id.'/points');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
 });

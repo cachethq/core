@@ -27,6 +27,8 @@ class MetricPointController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Metric $metric)
     {
+        $this->ensureMetricVisible($metric);
+
         $query = MetricPoint::query()
             ->where('metric_id', $metric->id);
 
@@ -57,6 +59,7 @@ class MetricPointController extends Controller
      */
     public function show(Metric $metric, MetricPoint $metricPoint)
     {
+        $this->ensureMetricVisible($metric);
 
         $metricPointQuery = QueryBuilder::for(MetricPoint::class)
             ->allowedIncludes(['metric'])
@@ -65,6 +68,17 @@ class MetricPointController extends Controller
         return MetricPointResource::make($metricPointQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
+    }
+
+    /**
+     * Abort with a 404 when the parent metric is not visible to the caller.
+     */
+    protected function ensureMetricVisible(Metric $metric): void
+    {
+        abort_unless(
+            Metric::query()->visible(auth()->check())->whereKey($metric->getKey())->exists(),
+            Response::HTTP_NOT_FOUND,
+        );
     }
 
     /**

@@ -33,6 +33,7 @@ class MetricController extends Controller
     public function index()
     {
         $query = Metric::query()
+            ->visible(auth()->check())
             ->when(! request('sort'), function (Builder $builder) {
                 $builder->orderByDesc('created_at');
             });
@@ -63,9 +64,9 @@ class MetricController extends Controller
      */
     public function show(Metric $metric)
     {
-        $metricQuery = QueryBuilder::for(Metric::class)
+        $metricQuery = QueryBuilder::for(Metric::query()->visible(auth()->check()))
             ->allowedIncludes(['points'])
-            ->find($metric->id);
+            ->findOrFail($metric->id);
 
         return MetricResource::make($metricQuery)
             ->response()
