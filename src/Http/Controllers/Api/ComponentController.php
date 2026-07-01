@@ -12,8 +12,10 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Filters\MetaFilter;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -47,18 +49,36 @@ class ComponentController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $components = QueryBuilder::for(Component::class)
+        $components = QueryBuilder::for($this->visibleComponents())
             ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->allowedFilters([
                 'name',
                 AllowedFilter::exact('status'),
-                AllowedFilter::exact('enabled'),
+                AllowedFilter::exact('enabled')->default(true),
                 AllowedFilter::custom('meta', new MetaFilter),
             ])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
         return ComponentResource::collection($components);
+    }
+
+    /**
+     * Base query scoping components to those visible to the current caller.
+     *
+     * Components have no visibility of their own; they inherit it from their
+     * group. Ungrouped components are always public, matching the status page.
+     *
+     * @return Builder<Component>
+     */
+    protected function visibleComponents(): Builder
+    {
+        $visibleGroups = ComponentGroup::query()->visible(auth()->check())->select('id');
+
+        return Component::query()->where(function ($query) use ($visibleGroups): void {
+            $query->whereNull('component_group_id')
+                ->orWhereIn('component_group_id', $visibleGroups);
+        });
     }
 
     /**
@@ -81,10 +101,9 @@ class ComponentController extends Controller
     #[QueryParameter('include', 'Include related data (group, incidents, meta).', example: 'meta')]
     public function show(Component $component)
     {
-
-        $componentQuery = QueryBuilder::for(Component::class)
+        $componentQuery = QueryBuilder::for($this->visibleComponents()->enabled())
             ->allowedIncludes(self::ALLOWED_INCLUDES)
-            ->find($component->id);
+            ->findOrFail($component->id);
 
         return ComponentResource::make($componentQuery)
             ->response()

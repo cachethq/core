@@ -34,7 +34,7 @@ class ComponentGroupController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $componentGroups = QueryBuilder::for(ComponentGroup::class)
+        $componentGroups = QueryBuilder::for(ComponentGroup::query()->visible(auth()->check()))
             ->allowedIncludes(['components', 'meta'])
             ->allowedFilters([
                 AllowedFilter::custom('meta', new MetaFilter),
@@ -63,10 +63,9 @@ class ComponentGroupController extends Controller
     #[QueryParameter('include', 'Include related data (components, meta).', example: 'meta')]
     public function show(ComponentGroup $componentGroup)
     {
-
-        $componentQuery = QueryBuilder::for(ComponentGroup::class)
+        $componentQuery = QueryBuilder::for(ComponentGroup::query()->visible(auth()->check()))
             ->allowedIncludes(['components', 'meta'])
-            ->find($componentGroup->id);
+            ->findOrFail($componentGroup->id);
 
         return ComponentGroupResource::make($componentQuery)
             ->response()

@@ -33,6 +33,8 @@ class IncidentUpdateController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request, Incident $incident)
     {
+        $this->ensureIncidentVisible($incident);
+
         $query = Update::query()
             ->where('updateable_id', $incident->id)
             ->where('updateable_type', 'incident');
@@ -65,6 +67,8 @@ class IncidentUpdateController extends Controller
      */
     public function show(Incident $incident, Update $update)
     {
+        $this->ensureIncidentVisible($incident);
+
         $updateQuery = QueryBuilder::for(Update::class)
             ->allowedIncludes([
                 AllowedInclude::relationship('incident', 'updateable'),
@@ -74,6 +78,17 @@ class IncidentUpdateController extends Controller
         return UpdateResource::make($updateQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
+    }
+
+    /**
+     * Abort with a 404 when the parent incident is not visible to the caller.
+     */
+    protected function ensureIncidentVisible(Incident $incident): void
+    {
+        abort_unless(
+            Incident::query()->visible(auth()->check())->whereKey($incident->getKey())->exists(),
+            Response::HTTP_NOT_FOUND,
+        );
     }
 
     /**

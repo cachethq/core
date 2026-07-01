@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\Update;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -273,4 +274,32 @@ it('cannot delete an incident update from another incident', function () {
         'updateable_type' => Relation::getMorphAlias(Incident::class),
         'updateable_id' => $incidentUpdate->updateable_id,
     ]);
+});
+
+it('does not list updates of an incident hidden from guests', function () {
+    $incident = Incident::factory()->hasUpdates(2)->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson("/status/api/incidents/{$incident->id}/updates");
+
+    $response->assertNotFound();
+});
+
+it('does not show an update of an incident hidden from guests', function () {
+    $incident = Incident::factory()->hasUpdates(1)->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $update = $incident->updates()->first();
+
+    $response = getJson("/status/api/incidents/{$incident->id}/updates/{$update->id}");
+
+    $response->assertNotFound();
+});
+
+it('lists updates of an authenticated incident to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $incident = Incident::factory()->hasUpdates(2)->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    $response = getJson("/status/api/incidents/{$incident->id}/updates");
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
 });
