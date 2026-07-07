@@ -57,6 +57,14 @@ return [
     ],
     'mail' => [
         'unsubscribe' => 'Unsubscribe',
+        'new_incident' => [
+            'subject' => 'New incident: :incident',
+            'button' => 'View incident',
+        ],
+        'incident_updated' => [
+            'subject' => 'Incident updated: :incident',
+            'button' => 'View incident',
+        ],
         'verify' => [
             'subject' => 'Confirm your subscription',
             'heading' => 'Confirm your subscription',

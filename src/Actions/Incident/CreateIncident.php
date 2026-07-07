@@ -12,6 +12,11 @@ use Illuminate\Support\Str;
 
 class CreateIncident
 {
+    public function __construct(private NotifyIncidentSubscribers $notifyIncidentSubscribers)
+    {
+        //
+    }
+
     /**
      * Handle the action.
      */
@@ -25,22 +30,20 @@ class CreateIncident
             $data = $data->withMessage($this->parseTemplate($template, $data));
         }
 
-        // @todo Dispatch notification that incident was created.
-
         return tap(Incident::create(array_merge(
             ['guid' => Str::uuid()],
             $data->except('components')->toArray()
         )), function (Incident $incident) use ($data) {
-            if (! $data->components) {
-                return;
+            if ($data->components) {
+                $components = collect($data->components)->map(fn (IncidentComponentRequestData $component) => [
+                    'component_id' => $component->id,
+                    'component_status' => $component->status,
+                ])->all();
+
+                $incident->components()->sync($components);
             }
 
-            $components = collect($data->components)->map(fn (IncidentComponentRequestData $component) => [
-                'component_id' => $component->id,
-                'component_status' => $component->status,
-            ])->all();
-
-            $incident->components()->sync($components);
+            $this->notifyIncidentSubscribers->handle($incident);
         });
     }
 

@@ -10,6 +10,7 @@ use Cachet\Notifications\VerifySubscriberEmail;
 use Carbon\Carbon;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -68,6 +69,33 @@ class Subscriber extends Model implements MustVerifyEmailContract
     public function sendEmailVerificationNotification(): void
     {
         $this->notify(new VerifySubscriberEmail);
+    }
+
+    /**
+     * Scope the query to verified subscribers.
+     *
+     * @param  Builder<$this>  $query
+     * @return Builder<$this>
+     */
+    public function scopeVerified(Builder $query): Builder
+    {
+        return $query->whereNotNull('email_verified_at');
+    }
+
+    /**
+     * Scope the query to subscribers who should hear about the given incident.
+     *
+     * @param  Builder<$this>  $query
+     * @return Builder<$this>
+     */
+    public function scopeSubscribedTo(Builder $query, Incident $incident): Builder
+    {
+        return $query->where(fn (Builder $query) => $query
+            ->where('global', true)
+            ->orWhereHas('components', fn (Builder $query) => $query->whereIn(
+                'components.id',
+                $incident->components()->pluck('components.id'),
+            )));
     }
 
     /**
