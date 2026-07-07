@@ -32,6 +32,7 @@ class VerifySubscriberEmail extends Notification implements ShouldQueue
             ->subject(__('cachet::subscriber.mail.verify.subject'))
             ->view('cachet::mail.subscribers.verify', [
                 'verificationUrl' => $this->verificationUrl($notifiable),
+                'unsubscribeUrl' => $notifiable->unsubscribeUrl(),
             ]);
     }
 

@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\URL;
 
 /**
  * @property int $id
@@ -67,6 +68,17 @@ class Subscriber extends Model implements MustVerifyEmailContract
     public function sendEmailVerificationNotification(): void
     {
         $this->notify(new VerifySubscriberEmail);
+    }
+
+    /**
+     * The signed URL for the subscriber to unsubscribe.
+     */
+    public function unsubscribeUrl(): string
+    {
+        return URL::signedRoute('cachet.subscribers.unsubscribe', [
+            'subscriber' => $this->getKey(),
+            'hash' => sha1($this->email),
+        ]);
     }
 
     /**

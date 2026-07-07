@@ -1,4 +1,4 @@
-@component('cachet::mail.layout', ['title' => __('cachet::subscriber.mail.verify.subject')])
+@component('cachet::mail.layout', ['title' => __('cachet::subscriber.mail.verify.subject'), 'unsubscribeUrl' => $unsubscribeUrl])
     <h1 style="margin: 0 0 12px; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 24px; font-weight: 700; color: #18181b;">
         {{ __('cachet::subscriber.mail.verify.heading') }}
     </h1>

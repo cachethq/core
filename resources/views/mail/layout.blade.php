@@ -23,9 +23,11 @@
                     </tr>
                     <tr>
                         <td align="center" style="padding-top: 24px; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 13px;">
-                            <a href="https://cachethq.io" rel="noopener" style="color: #a1a1aa; text-decoration: underline;">
-                                {{ __('cachet::cachet.mail.powered_by') }}
-                            </a>
+                            @isset($unsubscribeUrl)
+                                <a href="{{ $unsubscribeUrl }}" style="color: #a1a1aa; text-decoration: underline;">{{ __('cachet::subscriber.mail.unsubscribe') }}</a>
+                                <span style="color: #d4d4d8;">&middot;</span>
+                            @endisset
+                            <a href="https://cachethq.io" rel="noopener" style="color: #a1a1aa; text-decoration: underline;">{{ __('cachet::cachet.mail.powered_by') }}</a>
                         </td>
                     </tr>
                 </table>

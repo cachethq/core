@@ -41,12 +41,22 @@ return [
             'subscribed_body' => 'If this email address isn\'t already subscribed, you\'ll receive an email with a link to confirm your subscription.',
             'verified_heading' => 'Subscription confirmed',
             'verified_body' => 'You\'ll now receive status updates by email.',
+            'unsubscribed_heading' => 'You\'ve been unsubscribed',
+            'unsubscribed_body' => 'You\'ll no longer receive status updates by email. You can subscribe again at any time.',
+        ],
+        'unsubscribe' => [
+            'title' => 'Unsubscribe',
+            'heading' => 'Unsubscribe from updates?',
+            'body' => ':email will no longer receive status updates.',
+            'button' => 'Unsubscribe',
+            'cancel' => 'Keep my subscription',
         ],
         'email_label' => 'Email address',
         'email_placeholder' => 'you@example.com',
         'subscribe_button' => 'Subscribe',
     ],
     'mail' => [
+        'unsubscribe' => 'Unsubscribe',
         'verify' => [
             'subject' => 'Confirm your subscription',
             'heading' => 'Confirm your subscription',

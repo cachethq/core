@@ -21,6 +21,22 @@
                         </p>
                     </div>
                 </div>
+            @elseif (session('cachet_subscriber_status') === 'unsubscribed')
+                <div class="flex flex-col items-center gap-4 text-center">
+                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-zinc-500/10 text-zinc-500 ring-1 ring-inset ring-zinc-500/20 dark:text-zinc-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.143 17.082a24.248 24.248 0 0 0 3.844.148m-3.844-.148a23.856 23.856 0 0 1-5.455-1.31 8.964 8.964 0 0 0 2.3-5.542m3.155 6.852a3 3 0 0 0 5.667 1.97m1.965-2.277L21 21m-4.225-4.225a23.81 23.81 0 0 0 3.536-1.003A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6.53 6.53m10.245 10.245L6.53 6.53M3 3l3.53 3.53" />
+                        </svg>
+                    </span>
+                    <div class="flex flex-col gap-1.5">
+                        <h1 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+                            {{ __('cachet::subscriber.status_page.subscribe.unsubscribed_heading') }}
+                        </h1>
+                        <p class="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                            {{ __('cachet::subscriber.status_page.subscribe.unsubscribed_body') }}
+                        </p>
+                    </div>
+                </div>
             @elseif (session('cachet_subscriber_status') === 'verified')
                 <div class="flex flex-col items-center gap-4 text-center">
                     <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent-content ring-1 ring-inset ring-accent/20">

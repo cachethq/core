@@ -154,6 +154,63 @@ it('completes the full subscribe and verify round trip', function () {
     expect($subscriber->fresh()->hasVerifiedEmail())->toBeTrue();
 });
 
+it('asks for confirmation before unsubscribing', function () {
+    $subscriber = Subscriber::factory()->verified()->create();
+
+    get($subscriber->unsubscribeUrl())
+        ->assertOk()
+        ->assertSee(__('cachet::subscriber.status_page.unsubscribe.heading'))
+        ->assertSee($subscriber->email);
+
+    expect($subscriber->fresh())->not->toBeNull();
+});
+
+it('unsubscribes a subscriber once confirmed', function () {
+    $subscriber = Subscriber::factory()->verified()->create();
+
+    $this->followingRedirects()
+        ->post($subscriber->unsubscribeUrl())
+        ->assertOk()
+        ->assertSee(__('cachet::subscriber.status_page.subscribe.unsubscribed_heading'));
+
+    expect($subscriber->fresh())->toBeNull();
+});
+
+it('rejects an unsigned unsubscribe confirmation', function () {
+    $subscriber = Subscriber::factory()->verified()->create();
+
+    post(route('cachet.subscribers.unsubscribe.destroy', [
+        'subscriber' => $subscriber->getKey(),
+        'hash' => sha1($subscriber->email),
+    ]))->assertForbidden();
+
+    expect($subscriber->fresh())->not->toBeNull();
+});
+
+it('rejects an unsigned unsubscribe url', function () {
+    $subscriber = Subscriber::factory()->verified()->create();
+
+    get(route('cachet.subscribers.unsubscribe', [
+        'subscriber' => $subscriber->getKey(),
+        'hash' => sha1($subscriber->email),
+    ]))->assertForbidden();
+
+    expect($subscriber->fresh())->not->toBeNull();
+});
+
+it('rejects an unsubscribe url with a mismatched hash', function () {
+    $subscriber = Subscriber::factory()->verified()->create();
+
+    $url = URL::signedRoute('cachet.subscribers.unsubscribe', [
+        'subscriber' => $subscriber->getKey(),
+        'hash' => sha1('someone-else@example.com'),
+    ]);
+
+    get($url)->assertForbidden();
+
+    expect($subscriber->fresh())->not->toBeNull();
+});
+
 it('rejects an unsigned verification url', function () {
     $subscriber = Subscriber::factory()->create();
 

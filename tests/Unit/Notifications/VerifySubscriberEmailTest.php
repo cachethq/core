@@ -13,7 +13,8 @@ it('renders the themed verification email', function () {
     $html = view($mail->view, $mail->viewData)->render();
 
     expect($html)->toContain(__('cachet::subscriber.mail.verify.heading'))
-        ->toContain(e($mail->viewData['verificationUrl']));
+        ->toContain(e($mail->viewData['verificationUrl']))
+        ->toContain(e($subscriber->unsubscribeUrl()));
 });
 
 it('signs the verification url for the subscriber', function () {
