@@ -9,6 +9,7 @@ use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Metric\CreateMetricRequestData;
 use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
 use Cachet\Enums\MetricTypeEnum;
+use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
 use Dedoc\Scramble\Attributes\Group;
@@ -16,6 +17,7 @@ use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Metrics', weight: 6)]
@@ -28,6 +30,7 @@ class MetricController extends Controller
      */
     #[QueryParameter('filter[name]', 'Filter by name.', example: 'metric name')]
     #[QueryParameter('filter[calc_type]', 'Filter by calculation type.', type: MetricTypeEnum::class)]
+    #[QueryParameter('filter[tags]', 'Filter by one or more comma-separated tags.', example: 'api,database')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
@@ -38,8 +41,8 @@ class MetricController extends Controller
             });
 
         $metrics = QueryBuilder::for($query)
-            ->allowedIncludes(['points'])
-            ->allowedFilters(['name', 'calc_type'])
+            ->allowedIncludes(['points', 'tags'])
+            ->allowedFilters(['name', 'calc_type', AllowedFilter::custom('tags', new TagsFilter)])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(request('per_page', 15));
 
@@ -64,7 +67,7 @@ class MetricController extends Controller
     public function show(Metric $metric)
     {
         $metricQuery = QueryBuilder::for(Metric::class)
-            ->allowedIncludes(['points'])
+            ->allowedIncludes(['points', 'tags'])
             ->find($metric->id);
 
         return MetricResource::make($metricQuery)

@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\Tags\HasTags;
+use Spatie\Tags\Tag;
 
 /**
  * @property int $id
@@ -33,6 +35,7 @@ use Illuminate\Support\Str;
  * @property ?Carbon $deleted_at
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
+ * @property-read Collection<int, Tag> $tags
  *
  * @method static ScheduleFactory factory($count = null, $state = [])
  * @method static ScheduleBuilder incomplete()
@@ -45,6 +48,7 @@ class Schedule extends Model
     /** @use HasFactory<ScheduleFactory> */
     use HasFactory;
 
+    use HasTags;
     use SoftDeletes;
 
     /**

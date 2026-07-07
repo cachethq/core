@@ -424,3 +424,28 @@ it('can delete a schedule', function () {
         'id' => $schedule->id,
     ]);
 });
+
+it('can filter schedules by tag', function () {
+    Schedule::factory(5)->create();
+    $schedule = Schedule::factory()->create();
+    $schedule->attachTag('api');
+
+    $query = http_build_query([
+        'filter' => ['tags' => 'api'],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
+});
+
+it('can include a schedule\'s tags', function () {
+    $schedule = Schedule::factory()->create();
+    $schedule->attachTag('api');
+
+    $response = getJson('/status/api/schedules/'.$schedule->id.'?include=tags');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data.relationships.tags.data');
+});

@@ -23,6 +23,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
@@ -31,6 +32,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SpatieTagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
@@ -107,6 +109,9 @@ class IncidentResource extends Resource
                     Toggle::make('stickied')
                         ->label(__('cachet::incident.form.stickied_label'))
                         ->required(),
+                    SpatieTagsInput::make('tags')
+                        ->label(__('cachet::resource.tags.label'))
+                        ->placeholder(__('cachet::resource.tags.placeholder')),
                     TextInput::make('guid')
                         ->label(__('cachet::incident.form.guid_label'))
                         ->visibleOn(['edit'])
@@ -138,6 +143,9 @@ class IncidentResource extends Resource
                     ->label(__('cachet::incident.list.headers.stickied'))
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->boolean(),
+                SpatieTagsColumn::make('tags')
+                    ->label(__('cachet::resource.tags.label'))
+                    ->toggleable(),
                 TextColumn::make('occurred_at')
                     ->label(__('cachet::incident.list.headers.occurred_at'))
                     ->dateTime()

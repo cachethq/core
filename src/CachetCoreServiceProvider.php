@@ -12,7 +12,9 @@ use Cachet\Commands\VersionCommand;
 use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
+use Cachet\Models\Component;
 use Cachet\Models\Incident;
+use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\MailSettings;
@@ -69,7 +71,9 @@ class CachetCoreServiceProvider extends ServiceProvider
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
 
         Relation::morphMap([
+            'component' => Component::class,
             'incident' => Incident::class,
+            'metric' => Metric::class,
             'schedule' => Schedule::class,
         ]);
 

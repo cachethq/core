@@ -152,6 +152,47 @@ it('can filter components by disabled', function () {
     $response->assertJsonMissing(['id' => $component->id]);
 });
 
+it('can filter components by tag', function () {
+    Component::factory(5)->create();
+    $component = Component::factory()->create();
+    $component->attachTag('api');
+
+    $query = http_build_query([
+        'filter' => ['tags' => 'api'],
+    ]);
+
+    $response = getJson('/status/api/components?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $component->id);
+});
+
+it('can filter components by any of multiple tags', function () {
+    Component::factory(5)->create();
+    $api = Component::factory()->create();
+    $api->attachTag('api');
+    $database = Component::factory()->create();
+    $database->attachTag('database');
+
+    $query = http_build_query([
+        'filter' => ['tags' => 'api,database'],
+    ]);
+
+    $response = getJson('/status/api/components?'.$query);
+
+    $response->assertJsonCount(2, 'data');
+});
+
+it('can include a component\'s tags', function () {
+    $component = Component::factory()->create();
+    $component->attachTag('api');
+
+    $response = getJson('/status/api/components/'.$component->id.'?include=tags');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data.relationships.tags.data');
+});
+
 it('can get a component', function () {
     Component::factory(5)->create();
     $component = Component::factory()->create();

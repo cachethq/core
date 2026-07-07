@@ -14,6 +14,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
@@ -21,6 +22,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SpatieTagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -64,6 +66,10 @@ class ComponentResource extends Resource
                 ]),
 
                 Section::make()->columns(2)->schema([
+                    SpatieTagsInput::make('tags')
+                        ->label(__('cachet::resource.tags.label'))
+                        ->placeholder(__('cachet::resource.tags.placeholder'))
+                        ->columnSpanFull(),
                     KeyValue::make('meta')
                         ->columnSpanFull(),
                     Toggle::make('enabled')
@@ -92,6 +98,9 @@ class ComponentResource extends Resource
                 TextColumn::make('group.name')
                     ->label(__('cachet::component.list.headers.group'))
                     ->sortable(),
+                SpatieTagsColumn::make('tags')
+                    ->label(__('cachet::resource.tags.label'))
+                    ->toggleable(),
                 IconColumn::make('enabled')
                     ->label(__('cachet::component.list.headers.enabled'))
                     ->boolean()

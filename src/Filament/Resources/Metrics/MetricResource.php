@@ -14,6 +14,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
@@ -21,6 +22,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SpatieTagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -95,7 +97,9 @@ class MetricResource extends Resource
                         ->label(__('cachet::metric.form.show_when_empty_label'))
                         ->default(true)
                         ->required(),
-
+                    SpatieTagsInput::make('tags')
+                        ->label(__('cachet::resource.tags.label'))
+                        ->placeholder(__('cachet::resource.tags.placeholder')),
                 ])->columnSpan(1),
             ])->columns(4);
     }
@@ -121,6 +125,9 @@ class MetricResource extends Resource
                     ->label(__('cachet::metric.list.headers.calc_type'))
                     ->badge()
                     ->sortable(),
+                SpatieTagsColumn::make('tags')
+                    ->label(__('cachet::resource.tags.label'))
+                    ->toggleable(),
                 IconColumn::make('display_chart')
                     ->label(__('cachet::metric.list.headers.display_chart'))
                     ->boolean(),

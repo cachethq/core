@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Tags\HasTags;
+use Spatie\Tags\Tag;
 
 /**
  * @property int $id
@@ -39,6 +41,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property array<string, mixed> $meta
  * @property ?ComponentGroup $componentGroup
  * @property-read Collection<int, ComponentCheck> $checks
+ * @property-read Collection<int, Tag> $tags
  * @property-read IncidentComponent|null $pivot
  *
  * @method static Builder<static>|static checked()
@@ -53,6 +56,7 @@ class Component extends Model
     /** @use HasFactory<ComponentFactory> */
     use HasFactory;
 
+    use HasTags;
     use SoftDeletes;
 
     /** @var array<string, string> */

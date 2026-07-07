@@ -440,3 +440,28 @@ it('can delete an incident', function () {
 
     $response->assertNoContent();
 });
+
+it('can filter incidents by tag', function () {
+    Incident::factory(5)->create();
+    $incident = Incident::factory()->create();
+    $incident->attachTag('api');
+
+    $query = http_build_query([
+        'filter' => ['tags' => 'api'],
+    ]);
+
+    $response = getJson('/status/api/incidents?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incident->id);
+});
+
+it('can include an incident\'s tags', function () {
+    $incident = Incident::factory()->create();
+    $incident->attachTag('api');
+
+    $response = getJson('/status/api/incidents/'.$incident->id.'?include=tags');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data.relationships.tags.data');
+});

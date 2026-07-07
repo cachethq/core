@@ -17,4 +17,8 @@ return [
         'guest' => 'Guests',
         'hidden' => 'Always Hidden',
     ],
+    'tags' => [
+        'label' => 'Tags',
+        'placeholder' => 'Add a tag',
+    ],
 ];

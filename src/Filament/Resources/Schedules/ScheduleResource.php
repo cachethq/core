@@ -22,12 +22,14 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\SpatieTagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\SpatieTagsColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -64,6 +66,10 @@ class ScheduleResource extends Resource
                         ->label(__('cachet::schedule.form.notifications_label'))
                         ->helperText(__('cachet::schedule.form.notifications_helper'))
                         ->visible(fn (): bool => app(MailSettings::class)->allow_subscribers)
+                        ->columnSpanFull(),
+                    SpatieTagsInput::make('tags')
+                        ->label(__('cachet::resource.tags.label'))
+                        ->placeholder(__('cachet::resource.tags.placeholder'))
                         ->columnSpanFull(),
                     Repeater::make('scheduleComponents')
                         ->visibleOn('create')
@@ -105,6 +111,9 @@ class ScheduleResource extends Resource
                     ->label(__('cachet::schedule.list.headers.completed_at'))
                     ->dateTime()
                     ->sortable(),
+                SpatieTagsColumn::make('tags')
+                    ->label(__('cachet::resource.tags.label'))
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->label(__('cachet::schedule.list.headers.created_at'))
                     ->dateTime()

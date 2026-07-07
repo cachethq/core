@@ -9,6 +9,7 @@ use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
 use Dedoc\Scramble\Attributes\Group;
@@ -29,6 +30,7 @@ class ComponentController extends Controller
     public const ALLOWED_INCLUDES = [
         'group',
         'incidents',
+        'tags',
     ];
 
     /**
@@ -37,6 +39,7 @@ class ComponentController extends Controller
     #[QueryParameter('filter[status]', 'Filter by status', type: ComponentStatusEnum::class, example: 1)]
     #[QueryParameter('filter[name]', 'Filter by name.', example: 'My Component')]
     #[QueryParameter('filter[enabled]', 'Filter by enabled status.', type: 'bool', example: '1')]
+    #[QueryParameter('filter[tags]', 'Filter by one or more comma-separated tags.', example: 'api,database')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
@@ -47,6 +50,7 @@ class ComponentController extends Controller
                 'name',
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('enabled'),
+                AllowedFilter::custom('tags', new TagsFilter),
             ])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(request('per_page', 15));

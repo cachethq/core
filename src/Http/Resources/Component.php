@@ -46,6 +46,7 @@ class Component extends JsonApiResource
         return [
             'group' => fn () => ComponentGroup::make($this->group),
             'incidents' => fn () => Incident::collection($this->incidents),
+            'tags' => fn () => Tag::collection($this->tags),
         ];
     }
 }

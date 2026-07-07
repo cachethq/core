@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Spatie\Tags\HasTags;
+use Spatie\Tags\Tag;
 
 /**
  * @property int $id
@@ -34,6 +36,7 @@ use Illuminate\Support\Collection;
  * @property ResourceVisibilityEnum $visible
  * @property Collection<int, MetricPoint> $metricPoints
  * @property Collection<int, MetricPoint> $recentMetricPoints
+ * @property-read Collection<int, Tag> $tags
  *
  * @method static MetricFactory factory($count = null, $state = [])
  */
@@ -42,6 +45,7 @@ class Metric extends Model
     /** @use HasFactory<MetricFactory> */
     use HasFactory;
 
+    use HasTags;
     use HasVisibility;
 
     /** @var array<string, string> */

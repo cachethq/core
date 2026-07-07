@@ -278,3 +278,28 @@ it('can delete metric', function () {
         'metric_id' => $metric->id,
     ]);
 });
+
+it('can filter metrics by tag', function () {
+    Metric::factory(5)->create();
+    $metric = Metric::factory()->create();
+    $metric->attachTag('api');
+
+    $query = http_build_query([
+        'filter' => ['tags' => 'api'],
+    ]);
+
+    $response = getJson('/status/api/metrics?'.$query);
+
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $metric->id);
+});
+
+it('can include a metric\'s tags', function () {
+    $metric = Metric::factory()->create();
+    $metric->attachTag('api');
+
+    $response = getJson('/status/api/metrics/'.$metric->id.'?include=tags');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data.relationships.tags.data');
+});

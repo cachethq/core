@@ -24,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Spatie\Tags\HasTags;
+use Spatie\Tags\Tag;
 
 /**
  * @template TUser of Authenticatable
@@ -49,6 +51,7 @@ use Illuminate\Support\Str;
  * @property ?Component $component
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
+ * @property-read Collection<int, Tag> $tags
  * @property-read Carbon $timestamp
  * @property-read IncidentComponent $pivot
  *
@@ -62,6 +65,7 @@ class Incident extends Model
     /** @use HasFactory<IncidentFactory> */
     use HasFactory;
 
+    use HasTags;
     use HasVisibility;
     use SoftDeletes;
 

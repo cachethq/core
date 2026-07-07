@@ -10,6 +10,7 @@ use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Filters\ScheduleStatusFilter;
+use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Schedule;
 use Dedoc\Scramble\Attributes\Group;
@@ -29,13 +30,14 @@ class ScheduleController extends Controller
      */
     #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
     #[QueryParameter('filter[status]', 'Filter the resources by status.', type: ScheduleStatusEnum::class)]
+    #[QueryParameter('filter[tags]', 'Filter by one or more comma-separated tags.', example: 'api,database')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index()
     {
         $schedules = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components', 'components.group', 'updates', 'user'])
-            ->allowedFilters(['name', AllowedFilter::custom('status', new ScheduleStatusFilter)])
+            ->allowedIncludes(['components', 'components.group', 'updates', 'user', 'tags'])
+            ->allowedFilters(['name', AllowedFilter::custom('status', new ScheduleStatusFilter), AllowedFilter::custom('tags', new TagsFilter)])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(request('per_page', 15));
 
@@ -60,7 +62,7 @@ class ScheduleController extends Controller
     public function show(Schedule $schedule)
     {
         $scheduleQuery = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components', 'components.group', 'updates', 'user'])
+            ->allowedIncludes(['components', 'components.group', 'updates', 'user', 'tags'])
             ->find($schedule->id);
 
         return ScheduleResource::make($scheduleQuery)

@@ -8,6 +8,7 @@ use Cachet\Actions\Incident\UpdateIncident;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
+use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
@@ -31,11 +32,13 @@ class IncidentController extends Controller
         'components.group',
         'updates',
         'user',
+        'tags',
     ];
 
     /**
      * List Incidents
      */
+    #[QueryParameter('filter[tags]', 'Filter by one or more comma-separated tags.', example: 'api,database')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
@@ -48,6 +51,7 @@ class IncidentController extends Controller
                 AllowedFilter::scope('occurs_after'),
                 AllowedFilter::scope('occurs_before'),
                 AllowedFilter::scope('occurs_on'),
+                AllowedFilter::custom('tags', new TagsFilter),
             ])
             ->allowedSorts(['name', 'status', 'id', 'created_at'])
             ->defaultSort('-created_at')
