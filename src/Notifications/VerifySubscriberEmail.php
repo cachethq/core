@@ -15,6 +15,13 @@ class VerifySubscriberEmail extends Notification implements ShouldQueue
     use Queueable;
 
     /**
+     * Delete the queued notification when its models no longer exist.
+     *
+     * @var bool
+     */
+    public $deleteWhenMissingModels = true;
+
+    /**
      * Get the notification's delivery channels.
      *
      * @return list<string>

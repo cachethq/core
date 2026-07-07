@@ -16,6 +16,13 @@ class ScheduleUpdatedNotification extends Notification implements ShouldQueue
     use Queueable, SerializesModels;
 
     /**
+     * Delete the queued notification when its models no longer exist.
+     *
+     * @var bool
+     */
+    public $deleteWhenMissingModels = true;
+
+    /**
      * Create a new notification instance.
      */
     public function __construct(public Update $update)
