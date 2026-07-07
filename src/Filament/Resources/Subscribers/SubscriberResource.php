@@ -99,7 +99,8 @@ class SubscriberResource extends Resource
                     ->label(__('cachet::subscriber.list.actions.verify_label'))
                     ->color('warning')
                     ->action(fn (Subscriber $record) => $record->verify())
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->hidden(fn (Subscriber $record): bool => $record->hasVerifiedEmail()),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
