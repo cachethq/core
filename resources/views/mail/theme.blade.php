@@ -62,12 +62,13 @@ h3 {
 p {
     font-size: 16px;
     line-height: 1.5em;
-    margin-top: 0;
+    margin: 0 0 16px;
     text-align: left;
 }
 
 p.sub {
-    font-size: 12px;
+    color: #a1a1aa;
+    font-size: 13px;
 }
 
 img {

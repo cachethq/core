@@ -1,7 +1,7 @@
 @component('cachet::mail.message', ['unsubscribeUrl' => $unsubscribeUrl])
 # {{ $incident->name }}
 
-**{{ $update->status->getLabel() }}** &middot; {{ $update->created_at->toDayDateTimeString() }}
+<p class="sub"><strong>{{ $update->status->getLabel() }}</strong> &middot; {{ $update->created_at->toDayDateTimeString() }}</p>
 
 {{ $update->message }}
 

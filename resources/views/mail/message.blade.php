@@ -7,7 +7,7 @@
 @if ($appBanner)
 <img src="{{ \Illuminate\Support\Facades\Storage::url($appBanner) }}" class="logo-banner" alt="{{ $appName }}">
 @else
-<img src="{{ asset('vendor/cachethq/cachet/logo.svg') }}" class="logo" alt="{{ $appName }}">
+<img src="{{ asset('vendor/cachethq/cachet/logo.png') }}" class="logo" alt="{{ $appName }}">
 <span class="header-name">{{ $appName }}</span>
 @endif
 </a>

@@ -1,7 +1,7 @@
 @component('cachet::mail.message')
 # {{ __('cachet::incident.mail.long_running.heading') }}
 
-**{{ $incident->name }}** &middot; {{ $incident->status->getLabel() }}
+<p class="sub"><strong>{{ $incident->name }}</strong> &middot; {{ $incident->status->getLabel() }}</p>
 
 {{ __('cachet::incident.mail.long_running.body', [
     'since' => ($incident->updates->max('created_at') ?? $incident->created_at)->diffForHumans(),

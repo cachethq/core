@@ -199,8 +199,8 @@ class IncidentResource extends Resource
                 $createIncidentUpdate->handle($record, CreateIncidentUpdateRequestData::from($data));
 
                 Notification::make()
-                    ->title(__('cachet::incident.record_update.success_title', ['name' => $record->name]))
-                    ->body(__('cachet::incident.record_update.success_body'))
+                    ->title(__('cachet::incident.record_update.success_title'))
+                    ->body(__('cachet::incident.record_update.success_body', ['name' => $record->name]))
                     ->success()
                     ->send();
             })
