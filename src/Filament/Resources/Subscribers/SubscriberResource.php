@@ -14,11 +14,9 @@ use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -46,9 +44,6 @@ class SubscriberResource extends Resource
                         ->autocomplete(false),
                     DateTimePicker::make('email_verified_at')
                         ->label(__('cachet::subscriber.form.verified_at_label')),
-                    Toggle::make('global')
-                        ->label(__('cachet::subscriber.form.global_label'))
-                        ->required(),
                     //                Forms\Components\TextInput::make('phone_number')
                     //                    ->tel(),
                     //                Forms\Components\TextInput::make('slack_webhook_url'),
@@ -63,9 +58,6 @@ class SubscriberResource extends Resource
                 TextColumn::make('email')
                     ->label(__('cachet::subscriber.list.headers.email'))
                     ->searchable(),
-                IconColumn::make('global')
-                    ->label(__('cachet::subscriber.list.headers.global'))
-                    ->boolean(),
                 TextColumn::make('phone_number')
                     ->label(__('cachet::subscriber.list.headers.phone_number'))
                     ->searchable()

@@ -31,7 +31,7 @@ class SubscriberController
             'email' => ['required', 'email', 'max:255'],
         ]);
 
-        $subscriber = $createSubscriber->handle($validated['email'], global: true);
+        $subscriber = $createSubscriber->handle($validated['email']);
 
         if (! $subscriber->hasVerifiedEmail()) {
             $subscriber->sendEmailVerificationNotification();

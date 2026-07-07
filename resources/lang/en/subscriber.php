@@ -5,7 +5,6 @@ return [
     'list' => [
         'headers' => [
             'email' => 'Email',
-            'global' => 'Global',
             'phone_number' => 'Phone number',
             'slack_webhook_url' => 'Slack Webhook URL',
             'verified_at' => 'Verified at',
@@ -23,7 +22,6 @@ return [
     'form' => [
         'email_label' => 'Email',
         'verified_at_label' => 'Verified at',
-        'global_label' => 'Global',
     ],
     'overview' => [
         'total_subscribers_label' => 'Total Subscribers',
