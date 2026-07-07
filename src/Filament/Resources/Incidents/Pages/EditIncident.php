@@ -13,6 +13,9 @@ class EditIncident extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            IncidentResource::recordUpdateAction()
+                ->label(__('cachet::incident.record_update.new_update_label'))
+                ->icon('heroicon-o-plus'),
             DeleteAction::make(),
         ];
     }

@@ -169,39 +169,7 @@ class IncidentResource extends Resource
                     ->options(IncidentStatusEnum::class),
             ])
             ->recordActions([
-                Action::make('add-update')
-                    ->disabled(fn (Incident $record) => $record->status === IncidentStatusEnum::fixed)
-                    ->label(__('cachet::incident.list.actions.record_update'))
-                    ->color('info')
-                    ->action(function (CreateIncidentUpdateAction $createIncidentUpdate, Incident $record, array $data) {
-                        $createIncidentUpdate->handle($record, CreateIncidentUpdateRequestData::from($data));
-
-                        Notification::make()
-                            ->title(__('cachet::incident.record_update.success_title', ['name' => $record->name]))
-                            ->body(__('cachet::incident.record_update.success_body'))
-                            ->success()
-                            ->send();
-                    })
-                    ->schema([
-                        MarkdownEditor::make('message')
-                            ->label(__('cachet::incident.record_update.form.message_label'))
-                            ->required()
-                            ->minHeight('200px')
-                            ->maxHeight('300px')
-                            ->columnSpanFull(),
-                        ToggleButtons::make('status')
-                            ->label(__('cachet::incident.record_update.form.status_label'))
-                            ->options(IncidentStatusEnum::class)
-                            ->inline()
-                            ->required(),
-                        Select::make('user_id')
-                            ->label(__('cachet::incident.record_update.form.user_label'))
-                            ->hint(__('cachet::incident.record_update.form.user_helper'))
-                            ->relationship('user', 'name')
-                            ->default(auth()->id())
-                            ->searchable()
-                            ->preload(),
-                    ]),
+                static::recordUpdateAction(),
                 Action::make('view-incident')
                     ->icon('heroicon-o-eye')
                     ->url(fn (Incident $record): string => route('cachet.status-page.incident', $record))
@@ -216,6 +184,46 @@ class IncidentResource extends Resource
             ])
             ->emptyStateHeading(__('cachet::incident.list.empty_state.heading'))
             ->emptyStateDescription(__('cachet::incident.list.empty_state.description'));
+    }
+
+    /**
+     * The action for recording a new incident update, shared by the incidents table and edit page.
+     */
+    public static function recordUpdateAction(): Action
+    {
+        return Action::make('add-update')
+            ->disabled(fn (Incident $record) => $record->status === IncidentStatusEnum::fixed)
+            ->label(__('cachet::incident.list.actions.record_update'))
+            ->color('info')
+            ->action(function (CreateIncidentUpdateAction $createIncidentUpdate, Incident $record, array $data) {
+                $createIncidentUpdate->handle($record, CreateIncidentUpdateRequestData::from($data));
+
+                Notification::make()
+                    ->title(__('cachet::incident.record_update.success_title', ['name' => $record->name]))
+                    ->body(__('cachet::incident.record_update.success_body'))
+                    ->success()
+                    ->send();
+            })
+            ->schema([
+                MarkdownEditor::make('message')
+                    ->label(__('cachet::incident.record_update.form.message_label'))
+                    ->required()
+                    ->minHeight('200px')
+                    ->maxHeight('300px')
+                    ->columnSpanFull(),
+                ToggleButtons::make('status')
+                    ->label(__('cachet::incident.record_update.form.status_label'))
+                    ->options(IncidentStatusEnum::class)
+                    ->inline()
+                    ->required(),
+                Select::make('user_id')
+                    ->label(__('cachet::incident.record_update.form.user_label'))
+                    ->hint(__('cachet::incident.record_update.form.user_helper'))
+                    ->relationship('user', 'name')
+                    ->default(fn (Incident $record) => $record->user_id ?? auth()->id())
+                    ->searchable()
+                    ->preload(),
+            ]);
     }
 
     public static function getRelations(): array

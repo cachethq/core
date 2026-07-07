@@ -65,6 +65,7 @@ return [
         ],
     ],
     'record_update' => [
+        'new_update_label' => 'New Update',
         'success_title' => 'Incident :name Updated',
         'success_body' => 'A new incident update has been recorded.',
         'form' => [

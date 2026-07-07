@@ -12,6 +12,11 @@ use Cachet\Models\Update;
 
 class CreateUpdate
 {
+    public function __construct(private NotifyIncidentUpdateSubscribers $notifyIncidentUpdateSubscribers)
+    {
+        //
+    }
+
     /**
      * Handle the action.
      */
@@ -26,7 +31,7 @@ class CreateUpdate
             $this->updateComponentsToOperational($resource);
         }
 
-        // @todo Dispatch notification that incident was updated.
+        $this->notifyIncidentUpdateSubscribers->handle($update);
 
         return $update;
     }
