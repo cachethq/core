@@ -55,9 +55,21 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3]
-        laravel: [13.x, 12.x, 11.x]
-        stability: [prefer-lowest, prefer-stable]
+        include:
+          # Dependency ceiling
+          - php: 8.4
+            laravel: 13.x
+            stability: prefer-stable
+          - php: 8.4
+            laravel: 12.x
+            stability: prefer-stable
+          - php: 8.4
+            laravel: 11.x
+            stability: prefer-stable
+          # Dependency floor
+          - php: 8.3
+            laravel: 11.x
+            stability: prefer-lowest
 
     name: Static Analysis - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
 
@@ -92,6 +104,58 @@ jobs:
       - name: Run PHPStan
         run: vendor/bin/phpstan --error-format=github
 
+  sqlite:
+    runs-on: ubuntu-latest
+    needs: build-assets
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.4, 8.3]
+        laravel: [13.x, 12.x, 11.x]
+        stability: [prefer-lowest, prefer-stable]
+
+    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - SQLite
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
+          restore-keys: |
+            composer-${{ matrix.php }}-${{ matrix.stability }}-
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
+      - name: Download compiled assets
+        uses: actions/download-artifact@v4
+        with:
+          name: build-assets
+          path: public/build
+
+      - name: Build tests environment
+        run: composer build
+
+      - name: Execute tests
+        run: composer test
+
   mysql:
     runs-on: ubuntu-latest
     needs: build-assets
@@ -111,9 +175,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3]
-        laravel: [13.x, 12.x, 11.x]
-        stability: [prefer-lowest, prefer-stable]
+        include:
+          # Dependency ceiling
+          - php: 8.4
+            laravel: 13.x
+            stability: prefer-stable
+          # Dependency floor
+          - php: 8.3
+            laravel: 11.x
+            stability: prefer-lowest
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - MySQL 8.0
 
@@ -163,147 +233,7 @@ jobs:
           DB_USERNAME: cachet
           DB_PASSWORD: password
 
-  postgres13:
-    runs-on: ubuntu-latest
-    needs: build-assets
-
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_DB: cachet
-          POSTGRES_USER: cachet
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [8.4, 8.3]
-        laravel: [13.x, 12.x, 11.x]
-        stability: [prefer-lowest, prefer-stable]
-
-    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 13
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
-
-      - name: Get Composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
-          restore-keys: |
-            composer-${{ matrix.php }}-${{ matrix.stability }}-
-
-      - name: Install dependencies
-        run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
-
-      - name: Download compiled assets
-        uses: actions/download-artifact@v4
-        with:
-          name: build-assets
-          path: public/build
-
-      - name: Build tests environment
-        run: composer build
-
-      - name: Execute tests
-        run: composer test
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: localhost
-          DB_DATABASE: cachet
-          DB_USERNAME: cachet
-          DB_PASSWORD: password
-
-  postgres14:
-    runs-on: ubuntu-latest
-    needs: build-assets
-
-    services:
-      postgres:
-        image: postgres:14
-        env:
-          POSTGRES_DB: cachet
-          POSTGRES_USER: cachet
-          POSTGRES_PASSWORD: password
-        ports:
-          - 5432:5432
-        options: --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [8.4, 8.3]
-        laravel: [13.x, 12.x, 11.x]
-        stability: [ prefer-lowest, prefer-stable ]
-
-    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 14
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
-
-      - name: Get Composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
-          restore-keys: |
-            composer-${{ matrix.php }}-${{ matrix.stability }}-
-
-      - name: Install dependencies
-        run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
-
-      - name: Download compiled assets
-        uses: actions/download-artifact@v4
-        with:
-          name: build-assets
-          path: public/build
-
-      - name: Build tests environment
-        run: composer build
-
-      - name: Execute tests
-        run: composer test
-        env:
-          DB_CONNECTION: mysql
-          DB_HOST: localhost
-          DB_DATABASE: cachet
-          DB_USERNAME: cachet
-          DB_PASSWORD: password
-
-  postgres15:
+  postgres:
     runs-on: ubuntu-latest
     needs: build-assets
 
@@ -321,9 +251,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3]
-        laravel: [13.x, 12.x, 11.x]
-        stability: [ prefer-lowest, prefer-stable ]
+        include:
+          # Dependency ceiling
+          - php: 8.4
+            laravel: 13.x
+            stability: prefer-stable
+          # Dependency floor
+          - php: 8.3
+            laravel: 11.x
+            stability: prefer-lowest
 
     name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 15
 
@@ -367,63 +303,12 @@ jobs:
       - name: Execute tests
         run: composer test
         env:
-          DB_CONNECTION: mysql
+          DB_CONNECTION: pgsql
           DB_HOST: localhost
+          DB_PORT: 5432
           DB_DATABASE: cachet
           DB_USERNAME: cachet
           DB_PASSWORD: password
-
-  sqlite:
-    runs-on: ubuntu-latest
-    needs: build-assets
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [8.4, 8.3]
-        laravel: [13.x, 12.x, 11.x]
-        stability: [ prefer-lowest, prefer-stable ]
-
-    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - SQLite
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
-
-      - name: Get Composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ matrix.php }}-${{ matrix.stability }}-${{ hashFiles('composer.json') }}
-          restore-keys: |
-            composer-${{ matrix.php }}-${{ matrix.stability }}-
-
-      - name: Install dependencies
-        run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
-
-      - name: Download compiled assets
-        uses: actions/download-artifact@v4
-        with:
-          name: build-assets
-          path: public/build
-
-      - name: Build tests environment
-        run: composer build
-
-      - name: Execute tests
-        run: composer test
 
   check:
     if: always()
@@ -431,9 +316,7 @@ jobs:
       - build-assets
       - static-analysis
       - mysql
-      - postgres13
-      - postgres14
-      - postgres15
+      - postgres
       - sqlite
     runs-on: ubuntu-latest
 
