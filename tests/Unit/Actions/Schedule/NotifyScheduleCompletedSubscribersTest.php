@@ -30,7 +30,7 @@ it('notifies subscribers when maintenance is completed', function () {
     Notification::assertSentTo($this->subscriber, ScheduleCompletedNotification::class);
 });
 
-it('does not notify when the completion time is in the future', function () {
+it('does not notify completion when the completion time is in the future', function () {
     $schedule = Schedule::factory()->create([
         'notifications' => true,
         'scheduled_at' => now()->subHours(2),
@@ -38,7 +38,7 @@ it('does not notify when the completion time is in the future', function () {
 
     $schedule->update(['completed_at' => now()->addHour()]);
 
-    Notification::assertNothingSent();
+    Notification::assertNotSentTo($this->subscriber, ScheduleCompletedNotification::class);
 });
 
 it('does not notify when the schedule does not want notifications', function () {

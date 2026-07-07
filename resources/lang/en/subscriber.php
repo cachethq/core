@@ -73,6 +73,12 @@ return [
             'updated_at' => 'Updated',
             'button' => 'View maintenance',
         ],
+        'schedule_rescheduled' => [
+            'subject' => 'Maintenance rescheduled: :schedule',
+            'previously' => 'Previously',
+            'now' => 'Now scheduled for',
+            'button' => 'View maintenance',
+        ],
         'schedule_completed' => [
             'subject' => 'Maintenance complete: :schedule',
             'completed_at' => 'Completed',

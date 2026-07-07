@@ -3,6 +3,7 @@
 namespace Cachet\Models;
 
 use Cachet\Actions\Schedule\NotifyScheduleCompletedSubscribers;
+use Cachet\Actions\Schedule\NotifyScheduleRescheduledSubscribers;
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\QueryBuilders\ScheduleBuilder;
@@ -47,13 +48,23 @@ class Schedule extends Model
     use SoftDeletes;
 
     /**
-     * Notify subscribers when the schedule transitions to complete.
+     * Notify subscribers when the schedule transitions to complete, or when its window moves.
      */
     protected static function booted(): void
     {
         self::updated(function (Schedule $schedule) {
             if ($schedule->wasChanged('completed_at') && $schedule->status === ScheduleStatusEnum::complete) {
                 app(NotifyScheduleCompletedSubscribers::class)->handle($schedule);
+
+                return;
+            }
+
+            if ($schedule->wasChanged(['scheduled_at', 'completed_at'])) {
+                app(NotifyScheduleRescheduledSubscribers::class)->handle(
+                    $schedule,
+                    $schedule->getOriginal('scheduled_at'),
+                    $schedule->getOriginal('completed_at'),
+                );
             }
         });
     }

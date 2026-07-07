@@ -2,6 +2,7 @@
 
 namespace Cachet\Actions\Update;
 
+use Cachet\Actions\Schedule\NotifyScheduleCompletedSubscribers;
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\ComponentStatusEnum;
@@ -16,6 +17,7 @@ class CreateUpdate
     public function __construct(
         private NotifyIncidentUpdateSubscribers $notifyIncidentUpdateSubscribers,
         private NotifyScheduleUpdateSubscribers $notifyScheduleUpdateSubscribers,
+        private NotifyScheduleCompletedSubscribers $notifyScheduleCompletedSubscribers,
     ) {
         //
     }
@@ -50,8 +52,10 @@ class CreateUpdate
     /**
      * Complete the schedule when the update provides a completion time.
      *
-     * Returns true when the schedule has actually completed, in which case the
-     * completion notification supersedes the update notification.
+     * The window change is applied quietly — the update itself is the
+     * communication — and returns true when the schedule has actually
+     * completed, in which case the completion notification supersedes
+     * the update notification.
      */
     private function completeSchedule(Schedule $schedule, CreateIncidentUpdateRequestData|CreateScheduleUpdateRequestData $data): bool
     {
@@ -59,9 +63,15 @@ class CreateUpdate
             return false;
         }
 
-        $schedule->update(['completed_at' => $data->completedAt]);
+        $schedule->updateQuietly(['completed_at' => $data->completedAt]);
 
-        return $schedule->status === ScheduleStatusEnum::complete;
+        if ($schedule->status === ScheduleStatusEnum::complete) {
+            $this->notifyScheduleCompletedSubscribers->handle($schedule);
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

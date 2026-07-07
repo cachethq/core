@@ -37,6 +37,31 @@ it('renders the themed new schedule email with an unsubscribe link', function ()
         ->toContain(e($subscriber->unsubscribeUrl()));
 });
 
+it('renders the themed rescheduled email with the old and new windows', function () {
+    $previous = now()->addDay();
+
+    $schedule = Schedule::factory()->create([
+        'name' => 'Database maintenance',
+        'message' => 'We will be upgrading the database.',
+        'scheduled_at' => now()->addDays(2),
+        'completed_at' => now()->addDays(2)->addHours(2),
+    ]);
+    $subscriber = Subscriber::factory()->verified()->create();
+
+    $mail = (new \Cachet\Notifications\ScheduleRescheduledNotification($schedule, $previous, null))->toMail($subscriber);
+
+    $html = (new Markdown(app('view'), ['theme' => Cachet::MAIL_THEME]))
+        ->render($mail->markdown, $mail->viewData)
+        ->toHtml();
+
+    expect($mail->subject)->toBe(__('cachet::subscriber.mail.schedule_rescheduled.subject', ['schedule' => 'Database maintenance']))
+        ->and($html)->toContain($previous->toDayDateTimeString())
+        ->toContain($schedule->scheduled_at->toDayDateTimeString())
+        ->toContain('We will be upgrading the database.')
+        ->toContain(e(route('cachet.status-page.schedule', ['schedule' => $schedule])))
+        ->toContain(e($subscriber->unsubscribeUrl()));
+});
+
 it('renders the themed schedule completed email with an unsubscribe link', function () {
     $schedule = Schedule::factory()->create([
         'name' => 'Database maintenance',
@@ -58,7 +83,10 @@ it('renders the themed schedule completed email with an unsubscribe link', funct
 });
 
 it('renders the themed schedule update email with an unsubscribe link', function () {
-    $schedule = Schedule::factory()->create(['name' => 'Database maintenance']);
+    $schedule = Schedule::factory()->create([
+        'name' => 'Database maintenance',
+        'scheduled_at' => now()->addDay(),
+    ]);
 
     $update = new Update(['message' => 'Maintenance is **complete**.']);
     $schedule->updates()->save($update);
@@ -78,5 +106,6 @@ it('renders the themed schedule update email with an unsubscribe link', function
     expect($mail->subject)->toBe(__('cachet::subscriber.mail.schedule_updated.subject', ['schedule' => 'Database maintenance']))
         ->and($html)->toContain('Database maintenance')
         ->toContain('complete</strong>')
+        ->toContain($schedule->scheduled_at->toDayDateTimeString())
         ->toContain(e($subscriber->unsubscribeUrl()));
 });
