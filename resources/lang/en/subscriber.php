@@ -17,7 +17,12 @@ return [
         ],
         'actions' => [
             'verify_label' => 'Verify',
+            'resend_verification_label' => 'Resend Verification',
         ],
+    ],
+    'resend_verification' => [
+        'success_title' => 'Verification email sent',
+        'success_body' => 'A new verification email has been sent to :email.',
     ],
     'form' => [
         'email_label' => 'Email',

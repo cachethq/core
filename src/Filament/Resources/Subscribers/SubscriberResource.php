@@ -14,6 +14,7 @@ use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -86,13 +87,26 @@ class SubscriberResource extends Resource
                 //
             ])
             ->recordActions([
-                EditAction::make(),
                 Action::make('verify')
                     ->label(__('cachet::subscriber.list.actions.verify_label'))
                     ->color('warning')
                     ->action(fn (Subscriber $record) => $record->verify())
                     ->requiresConfirmation()
                     ->hidden(fn (Subscriber $record): bool => $record->hasVerifiedEmail()),
+                Action::make('resend-verification')
+                    ->label(__('cachet::subscriber.list.actions.resend_verification_label'))
+                    ->color('gray')
+                    ->action(function (Subscriber $record) {
+                        $record->sendEmailVerificationNotification();
+
+                        Notification::make()
+                            ->title(__('cachet::subscriber.resend_verification.success_title'))
+                            ->body(__('cachet::subscriber.resend_verification.success_body', ['email' => $record->email]))
+                            ->success()
+                            ->send();
+                    })
+                    ->hidden(fn (Subscriber $record): bool => $record->hasVerifiedEmail()),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
