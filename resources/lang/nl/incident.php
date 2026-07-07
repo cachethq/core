@@ -75,7 +75,7 @@ return [
         ],
     ],
     'overview' => [
-        'total_incidents_label' => 'Incidenten in totaal',
-        'total_incidents_description' => 'Aantal van alle incidenten',
+        'open_incidents_label' => 'Openstaande incidenten',
+        'open_incidents_description' => 'Incidenten die nog niet zijn opgelost.',
     ],
 ];

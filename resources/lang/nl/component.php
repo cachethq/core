@@ -36,5 +36,9 @@ return [
         'under_maintenance' => 'In onderhoud',
         'unknown' => 'Onbekend',
     ],
+    'overview' => [
+        'operational_components_label' => 'Functionele componenten',
+        'operational_components_description' => 'Componenten die volledig functioneel zijn.',
+    ],
 
 ];

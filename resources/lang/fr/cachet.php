@@ -5,7 +5,6 @@ return [
         'section_heading' => 'Support de Cachet',
         'consider_supporting' => 'Veuillez envisager de soutenir Cachet via *GitHub Sponsors*.',
         'keep_up_to_date' => 'Restez informé des dernières nouvelles et mises à jour en suivant le *blog de Cachet*.',
-        'work_in_progress_text' => 'Cachet est en cours de développement actif. Des modifications peuvent encore survenir.',
     ],
     'feed' => [
         'section_heading' => 'Derniers articles',

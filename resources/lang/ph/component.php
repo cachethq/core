@@ -36,5 +36,9 @@ return [
         'under_maintenance' => 'Nasa ilalim ng maintenance',
         'unknown' => 'Hindi Alam',
     ],
+    'overview' => [
+        'operational_components_label' => 'Mga Gumaganang Komponent',
+        'operational_components_description' => 'Mga komponent na ganap na gumagana.',
+    ],
 
 ];

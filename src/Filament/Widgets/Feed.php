@@ -2,7 +2,6 @@
 
 namespace Cachet\Filament\Widgets;
 
-use Filament\Widgets\Concerns\CanPoll;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
@@ -14,8 +13,6 @@ use Throwable;
 
 class Feed extends Widget
 {
-    use CanPoll;
-
     protected int|string|array $columnSpan = 'full';
 
     protected string $view = 'cachet::filament.widgets.feed';
@@ -60,8 +57,10 @@ class Feed extends Widget
      */
     protected function fetchFeed(string $uri, int $maxPosts = 5): array
     {
+        $useInternalErrors = libxml_use_internal_errors(true);
+
         try {
-            $response = Http::get($uri);
+            $response = Http::timeout(5)->get($uri);
 
             $xml = simplexml_load_string($response->body());
 
@@ -91,7 +90,12 @@ class Feed extends Widget
 
             return $posts;
         } catch (Throwable $e) {
+            report($e);
+
             return [];
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($useInternalErrors);
         }
     }
 }

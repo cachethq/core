@@ -75,7 +75,7 @@ return [
         ],
     ],
     'overview' => [
-        'total_incidents_label' => 'Vorfälle insgesamt',
-        'total_incidents_description' => 'Anzahl aller Vorfälle',
+        'open_incidents_label' => 'Offene Vorfälle',
+        'open_incidents_description' => 'Vorfälle, die noch nicht behoben wurden.',
     ],
 ];

@@ -29,6 +29,6 @@ return [
     ],
     'overview' => [
         'total_subscribers_label' => '总订阅者数',
-        'total_subscribers_description' => '订阅者的总数。',
+        'verified_subscribers_description' => ':count 位已验证',
     ],
 ];

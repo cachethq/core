@@ -36,5 +36,9 @@ return [
         'under_maintenance' => 'Wartungsarbeiten',
         'unknown' => 'Unbekannt',
     ],
+    'overview' => [
+        'operational_components_label' => 'Funktionsfähige Komponenten',
+        'operational_components_description' => 'Komponenten, die voll funktionsfähig sind.',
+    ],
 
 ];

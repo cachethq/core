@@ -36,4 +36,8 @@ return [
         'under_maintenance' => 'En maintenance',
         'unknown' => 'Inconnu',
     ],
+    'overview' => [
+        'operational_components_label' => 'Composants opérationnels',
+        'operational_components_description' => 'Composants entièrement opérationnels.',
+    ],
 ];

@@ -29,6 +29,6 @@ return [
     ],
     'overview' => [
         'total_subscribers_label' => '총 구독자 수',
-        'total_subscribers_description' => '총 구독자 수입니다.',
+        'verified_subscribers_description' => ':count명 인증됨',
     ],
 ];

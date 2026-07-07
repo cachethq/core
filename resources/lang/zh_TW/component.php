@@ -36,5 +36,9 @@ return [
         'under_maintenance' => '維護中',
         'unknown' => '未知',
     ],
+    'overview' => [
+        'operational_components_label' => '正常運行的組件',
+        'operational_components_description' => '完全正常運行的組件。',
+    ],
 
 ];

@@ -39,6 +39,10 @@ return [
         'under_maintenance' => 'Under maintenance',
         'unknown' => 'Unknown',
     ],
+    'overview' => [
+        'operational_components_label' => 'Operational Components',
+        'operational_components_description' => 'Components that are fully operational.',
+    ],
     'checks' => [
         'title' => 'Recent checks',
         'empty_state' => [

@@ -75,7 +75,7 @@ return [
         ],
     ],
     'overview' => [
-        'total_incidents_label' => 'Kabuuang Insidente',
-        'total_incidents_description' => 'Kabuuang bilang ng mga insidente.',
+        'open_incidents_label' => 'Mga Bukas na Insidente',
+        'open_incidents_description' => 'Mga insidenteng hindi pa naaayos.',
     ],
 ];

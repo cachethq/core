@@ -75,7 +75,7 @@ return [
         ],
     ],
     'overview' => [
-        'total_incidents_label' => 'Total Incidents',
-        'total_incidents_description' => 'Total number of incidents.',
+        'open_incidents_label' => 'Open Incidents',
+        'open_incidents_description' => 'Incidents that have not been fixed.',
     ],
 ];

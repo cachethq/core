@@ -36,4 +36,8 @@ return [
         'under_maintenance' => '유지보수 중',
         'unknown' => '알 수 없음',
     ],
+    'overview' => [
+        'operational_components_label' => '정상 작동 중인 구성 요소',
+        'operational_components_description' => '완전히 정상 작동 중인 구성 요소입니다.',
+    ],
 ];

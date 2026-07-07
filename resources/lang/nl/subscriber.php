@@ -29,6 +29,6 @@ return [
     ],
     'overview' => [
         'total_subscribers_label' => 'Totaal aantal abonnees',
-        'total_subscribers_description' => 'Aantal van alle abonnees',
+        'verified_subscribers_description' => ':count geverifieerd',
     ],
 ];

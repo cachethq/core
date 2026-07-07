@@ -29,6 +29,6 @@ return [
     ],
     'overview' => [
         'total_subscribers_label' => 'Kabuuang mga Subscriber',
-        'total_subscribers_description' => 'Kabuuang bilang ng mga subscriber.',
+        'verified_subscribers_description' => ':count ang nakumpirma',
     ],
 ];

@@ -3,14 +3,16 @@
 namespace Cachet\Filament\Widgets;
 
 use Cachet\Models\Incident;
-use Cachet\Models\MetricPoint;
 use Cachet\Models\Subscriber;
+use Cachet\Status;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
 
 class Overview extends BaseWidget
 {
+    protected static ?int $sort = 1;
+
     protected function getColumns(): int
     {
         return 3;
@@ -18,30 +20,52 @@ class Overview extends BaseWidget
 
     protected function getStats(): array
     {
-        return [
-            Stat::make('total_incidents', Incident::count())
-                ->label(__('cachet::incident.overview.total_incidents_label'))
-                ->description(__('cachet::incident.overview.total_incidents_description'))
-                ->chart(DB::table('incidents')->selectRaw('count(*) as total')->groupByRaw('date(created_at)')->pluck('total')->toArray())
-                ->icon('cachet-incident')
-                ->chartColor('info')
-                ->color('gray'),
+        $openIncidents = Incident::query()->unresolved()->count();
+        $components = app(Status::class)->components();
+        $totalComponents = (int) $components->total;
+        $operationalComponents = (int) $components->operational;
+        $allOperational = $totalComponents === $operationalComponents;
 
-            Stat::make('metric_points', MetricPoint::count())
-                ->label(__('cachet::metric.overview.metric_points_label'))
-                ->description(__('cachet::metric.overview.metric_points_description'))
-                ->chart(DB::table('metric_points')->selectRaw('count(*) as total')->groupBy('created_at')->pluck('total')->toArray())
-                ->icon('cachet-metrics')
-                ->chartColor('info')
-                ->color('gray'),
+        return [
+            Stat::make('open_incidents', $openIncidents)
+                ->label(__('cachet::incident.overview.open_incidents_label'))
+                ->description(__('cachet::incident.overview.open_incidents_description'))
+                ->chart($this->dailyCounts('incidents'))
+                ->icon('cachet-incident')
+                ->chartColor($openIncidents > 0 ? 'danger' : 'success')
+                ->color($openIncidents > 0 ? 'danger' : 'success'),
+
+            Stat::make('operational_components', "{$operationalComponents} / {$totalComponents}")
+                ->label(__('cachet::component.overview.operational_components_label'))
+                ->description(__('cachet::component.overview.operational_components_description'))
+                ->icon('cachet-components')
+                ->color($allOperational ? 'success' : 'warning'),
 
             Stat::make('total_subscribers', Subscriber::count())
                 ->label(__('cachet::subscriber.overview.total_subscribers_label'))
-                ->description(__('cachet::subscriber.overview.total_subscribers_description'))
-                ->chart(DB::table('subscribers')->selectRaw('count(*) as total')->groupByRaw('date(created_at)')->pluck('total')->toArray())
+                ->description(__('cachet::subscriber.overview.verified_subscribers_description', [
+                    'count' => Subscriber::query()->whereNotNull('verified_at')->count(),
+                ]))
+                ->chart($this->dailyCounts('subscribers'))
                 ->icon('cachet-subscribers')
                 ->chartColor('info')
                 ->color('gray'),
         ];
+    }
+
+    /**
+     * Get the number of records created per day over the last 30 days.
+     *
+     * @return array<int, int>
+     */
+    protected function dailyCounts(string $table): array
+    {
+        return DB::table($table)
+            ->selectRaw('count(*) as total')
+            ->where('created_at', '>=', now()->subDays(30))
+            ->groupByRaw('date(created_at)')
+            ->orderByRaw('date(created_at)')
+            ->pluck('total')
+            ->all();
     }
 }

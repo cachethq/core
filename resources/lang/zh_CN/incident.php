@@ -75,7 +75,7 @@ return [
         ],
     ],
     'overview' => [
-        'total_incidents_label' => '总事件数',
-        'total_incidents_description' => '事件的总数。',
+        'open_incidents_label' => '未解决的事件',
+        'open_incidents_description' => '尚未修复的事件。',
     ],
 ];

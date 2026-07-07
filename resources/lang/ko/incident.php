@@ -75,7 +75,7 @@ return [
         ],
     ],
     'overview' => [
-        'total_incidents_label' => '총 사고 수',
-        'total_incidents_description' => '총 사고 수입니다.',
+        'open_incidents_label' => '진행 중인 사고',
+        'open_incidents_description' => '아직 해결되지 않은 사고입니다.',
     ],
 ];

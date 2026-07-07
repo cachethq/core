@@ -22,6 +22,8 @@ class Components extends Widget implements HasSchemas
 
     protected int|string|array $columnSpan = 'full';
 
+    protected static ?int $sort = 4;
+
     public Collection $formData;
 
     public Collection $components;

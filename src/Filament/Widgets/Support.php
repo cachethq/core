@@ -11,6 +11,8 @@ class Support extends Widget
 
     protected string $view = 'cachet::filament.widgets.support';
 
+    protected static ?int $sort = 20;
+
     public function getConsiderSupportingBlock()
     {
         return preg_replace(

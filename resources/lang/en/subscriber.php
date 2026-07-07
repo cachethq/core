@@ -29,6 +29,6 @@ return [
     ],
     'overview' => [
         'total_subscribers_label' => 'Total Subscribers',
-        'total_subscribers_description' => 'Total number of subscribers.',
+        'verified_subscribers_description' => ':count verified',
     ],
 ];
