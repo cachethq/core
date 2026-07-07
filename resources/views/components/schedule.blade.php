@@ -10,7 +10,9 @@
         <div class="flex flex-col-reverse items-start justify-between gap-3 sm:flex-row sm:items-center">
             <div class="flex flex-1 flex-col gap-1">
                 <h3 class="max-w-full break-words text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">
-                    {{ $schedule->name }}
+                    <a href="{{ route('cachet.status-page.schedule', ['schedule' => $schedule]) }}" class="transition hover:text-accent-content">
+                        {{ $schedule->name }}
+                    </a>
                 </h3>
                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
                     {{ $schedule->scheduled_at->diffForHumans() }} <span class="text-zinc-300 dark:text-zinc-600">·</span> <time datetime="{{ $schedule->scheduled_at->toW3cString()}}" x-text="timestamp.toLocaleString(@if($appSettings->timezone !== '-')undefined, {timeZone: '{{$appSettings->timezone}}'}@endif )"></time>

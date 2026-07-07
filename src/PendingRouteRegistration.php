@@ -35,6 +35,7 @@ class PendingRouteRegistration
             ->group(function (Router $router) {
                 $router->get('/', [StatusPageController::class, 'index'])->name('status-page');
                 $router->get('/incidents/{incident:guid}', [StatusPageController::class, 'show'])->name('status-page.incident');
+                $router->get('/schedules/{schedule}', [StatusPageController::class, 'schedule'])->name('status-page.schedule');
 
                 $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
                 $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');

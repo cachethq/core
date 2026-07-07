@@ -41,4 +41,17 @@ class StatusPageController
             ]),
         ]);
     }
+
+    /**
+     * Show the details of a particular schedule.
+     */
+    public function schedule(Schedule $schedule): View
+    {
+        return view('cachet::status-page.schedule', [
+            'schedule' => $schedule->loadMissing([
+                'components',
+                'updates' => fn ($query) => $query->orderByDesc('created_at'),
+            ]),
+        ]);
+    }
 }
