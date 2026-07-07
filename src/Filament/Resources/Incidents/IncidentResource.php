@@ -13,6 +13,7 @@ use Cachet\Filament\Resources\Incidents\Pages\ListIncidents;
 use Cachet\Filament\Resources\Incidents\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Incident;
+use Cachet\Settings\MailSettings;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -101,7 +102,8 @@ class IncidentResource extends Resource
                         ->preload(),
                     Toggle::make('notifications')
                         ->label(__('cachet::incident.form.notifications_label'))
-                        ->required(),
+                        ->required()
+                        ->visible(fn (): bool => app(MailSettings::class)->allow_subscribers),
                     Toggle::make('stickied')
                         ->label(__('cachet::incident.form.stickied_label'))
                         ->required(),
