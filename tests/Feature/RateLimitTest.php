@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Pest\Expectation;
 
@@ -37,3 +39,16 @@ test('API rate limiting can be configured via config', function (int $limit) {
     100,
     1000,
 ]);
+
+test('Cachet API routes do not inherit the host application "api" rate limiter', function () {
+    RateLimiter::for('api', fn () => Limit::perMinute(60));
+    Route::middlewareGroup('api', ['throttle:api']);
+
+    Route::get('/cachet-api-test', fn () => response()->json())
+        ->middleware(['cachet:api', 'throttle:cachet-api']);
+
+    $response = getJson('/cachet-api-test');
+
+    expect($response->status())->toBe(200)
+        ->and($response->headers->get('X-RateLimit-Limit'))->toBe('300');
+});

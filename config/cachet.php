@@ -75,8 +75,20 @@ return [
         //        \Cachet\Http\Middleware\AuthenticateRemoteUser::class,
     ],
 
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet API Middleware
+     |--------------------------------------------------------------------------
+     |
+     | This is the middleware that will be applied to the Cachet API routes.
+     | Cachet manages its own rate limiting via the "cachet.api_rate_limit"
+     | option, so the host application's "api" middleware group (which may
+     | register its own, more restrictive "throttle:api" limiter) is
+     | intentionally not included here.
+     |
+     */
     'api_middleware' => [
-        'api',
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
     ],
 
     'trusted_proxies' => env('CACHET_TRUSTED_PROXIES', ''),
