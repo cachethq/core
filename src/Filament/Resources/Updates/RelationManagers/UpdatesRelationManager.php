@@ -3,8 +3,8 @@
 namespace Cachet\Filament\Resources\Updates\RelationManagers;
 
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Incident;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -60,7 +60,8 @@ class UpdatesRelationManager extends RelationManager
                     ->inline()
                     ->columnSpanFull()
                     ->options(IncidentStatusEnum::class)
-                    ->required(),
+                    ->required()
+                    ->visible(fn (): bool => $this->getOwnerRecord() instanceof Incident),
             ]);
     }
 
@@ -74,7 +75,8 @@ class UpdatesRelationManager extends RelationManager
                 TextColumn::make('status')
                     ->label(__('Status'))
                     ->badge()
-                    ->sortable(),
+                    ->sortable()
+                    ->visible(fn (): bool => $this->getOwnerRecord() instanceof Incident),
                 TextColumn::make('user.name')
                     ->label(__('User'))
                     ->sortable(),
@@ -92,10 +94,8 @@ class UpdatesRelationManager extends RelationManager
             ->filters([
                 SelectFilter::make('status')
                     ->label(__('Status'))
-                    ->options(IncidentStatusEnum::class),
-            ])
-            ->headerActions([
-                CreateAction::make(),
+                    ->options(IncidentStatusEnum::class)
+                    ->visible(fn (): bool => $this->getOwnerRecord() instanceof Incident),
             ])
             ->recordActions([
                 EditAction::make(),

@@ -12,6 +12,7 @@ use Cachet\Filament\Resources\Schedules\Pages\ListSchedules;
 use Cachet\Filament\Resources\Schedules\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Schedule;
+use Cachet\Settings\MailSettings;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -22,6 +23,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
@@ -39,41 +41,49 @@ class ScheduleResource extends Resource
     {
         return $schema
             ->components([
-                Section::make()->schema([
+                Section::make()->columns(2)->schema([
                     TextInput::make('name')
                         ->label(__('cachet::schedule.form.name_label'))
+                        ->required()
+                        ->maxLength(255)
+                        ->autocomplete(false)
+                        ->columnSpanFull(),
+                    DateTimePicker::make('scheduled_at')
+                        ->label(__('cachet::schedule.form.scheduled_at_label'))
+                        ->helperText(__('cachet::schedule.form.scheduled_at_helper'))
+                        ->native(false) // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
                         ->required(),
+                    DateTimePicker::make('completed_at')
+                        ->label(__('cachet::schedule.form.completed_at_label'))
+                        ->helperText(__('cachet::schedule.form.completed_at_helper'))
+                        ->native(false), // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
                     MarkdownEditor::make('message')
                         ->label(__('cachet::schedule.form.message_label'))
+                        ->columnSpanFull(),
+                    Toggle::make('notifications')
+                        ->label(__('cachet::schedule.form.notifications_label'))
+                        ->helperText(__('cachet::schedule.form.notifications_helper'))
+                        ->visible(fn (): bool => app(MailSettings::class)->allow_subscribers)
                         ->columnSpanFull(),
                     Repeater::make('scheduleComponents')
                         ->visibleOn('create')
                         ->relationship()
                         ->defaultItems(0)
-                        ->addActionLabel(__('Add Component'))
+                        ->addActionLabel(__('cachet::schedule.form.add_component.action_label'))
                         ->schema([
                             Select::make('component_id')
                                 ->preload()
                                 ->required()
                                 ->relationship('component', 'name')
                                 ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                ->label(__('Component')),
+                                ->label(__('cachet::schedule.form.add_component.component_label')),
                             Hidden::make('component_status')
                                 ->default(ComponentStatusEnum::operational->value),
                         ])
-                        ->label(__('Affected Components'))
+                        ->label(__('cachet::schedule.form.add_component.header'))
                         ->columnSpanFull(),
-                ])->columnSpan(3),
-                Section::make()->schema([
-                    DateTimePicker::make('scheduled_at')
-                        ->label(__('cachet::schedule.form.scheduled_at_label'))
-                        ->native(false) // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
-                        ->required(),
-                    DateTimePicker::make('completed_at')
-                        ->label(__('cachet::schedule.form.completed_at_label'))
-                        ->native(false), // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
-                ])->columnSpan(1),
-            ])->columns(4);
+                ]),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -115,27 +125,7 @@ class ScheduleResource extends Resource
                 //
             ])
             ->recordActions([
-                Action::make('add-update')
-                    ->disabled(fn (Schedule $record) => $record->status === ScheduleStatusEnum::complete)
-                    ->label(__('cachet::schedule.list.actions.record_update'))
-                    ->color('info')
-                    ->action(function (CreateUpdate $createUpdate, Schedule $record, array $data) {
-                        $createUpdate->handle($record, CreateScheduleUpdateRequestData::from($data));
-
-                        Notification::make()
-                            ->title(__('cachet::schedule.add_update.success_title', ['name' => $record->name]))
-                            ->body(__('cachet::schedule.add_update.success_body'))
-                            ->success()
-                            ->send();
-                    })
-                    ->schema([
-                        MarkdownEditor::make('message')
-                            ->label(__('cachet::schedule.add_update.form.message_label'))
-                            ->required(),
-
-                        DateTimePicker::make('completed_at')
-                            ->label(__('cachet::schedule.add_update.form.completed_at_label')),
-                    ]),
+                static::recordUpdateAction(),
                 Action::make('complete')
                     ->disabled(fn (Schedule $record): bool => $record->status === ScheduleStatusEnum::complete)
                     ->label(__('cachet::schedule.list.actions.complete'))
@@ -154,6 +144,34 @@ class ScheduleResource extends Resource
             ])
             ->emptyStateHeading(__('cachet::schedule.list.empty_state.heading'))
             ->emptyStateDescription(__('cachet::schedule.list.empty_state.description'));
+    }
+
+    /**
+     * The action for recording a new schedule update, shared by the schedules table and edit page.
+     */
+    public static function recordUpdateAction(): Action
+    {
+        return Action::make('add-update')
+            ->disabled(fn (Schedule $record) => $record->status === ScheduleStatusEnum::complete)
+            ->label(__('cachet::schedule.list.actions.record_update'))
+            ->color('info')
+            ->action(function (CreateUpdate $createUpdate, Schedule $record, array $data) {
+                $createUpdate->handle($record, CreateScheduleUpdateRequestData::from($data));
+
+                Notification::make()
+                    ->title(__('cachet::schedule.add_update.success_title'))
+                    ->body(__('cachet::schedule.add_update.success_body', ['name' => $record->name]))
+                    ->success()
+                    ->send();
+            })
+            ->schema([
+                MarkdownEditor::make('message')
+                    ->label(__('cachet::schedule.add_update.form.message_label'))
+                    ->required(),
+
+                DateTimePicker::make('completed_at')
+                    ->label(__('cachet::schedule.add_update.form.completed_at_label')),
+            ]);
     }
 
     public static function getPages(): array

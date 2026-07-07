@@ -13,6 +13,9 @@ class EditSchedule extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            ScheduleResource::recordUpdateAction()
+                ->label(__('cachet::schedule.add_update.new_update_label'))
+                ->icon('heroicon-o-plus'),
             DeleteAction::make(),
         ];
     }
