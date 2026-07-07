@@ -8,6 +8,7 @@ use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -35,6 +36,13 @@ class ManageNotifications extends SettingsPage
     {
         return $schema
             ->components([
+                Section::make(__('cachet::settings.manage_notifications.subscriptions_section_title'))
+                    ->schema([
+                        Toggle::make('allow_subscribers')
+                            ->label(__('cachet::settings.manage_notifications.allow_subscribers_label'))
+                            ->helperText(__('cachet::settings.manage_notifications.allow_subscribers_helper')),
+                    ]),
+
                 Section::make(__('cachet::settings.manage_notifications.mail_section_title'))
                     ->description(__('cachet::settings.manage_notifications.mail_section_description'))
                     ->columns(2)

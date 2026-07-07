@@ -6,6 +6,8 @@ use Spatie\LaravelSettings\Settings;
 
 class MailSettings extends Settings
 {
+    public bool $allow_subscribers = false;
+
     public ?string $mailer = null;
 
     public ?string $host = null;

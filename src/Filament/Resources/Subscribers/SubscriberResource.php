@@ -6,6 +6,7 @@ use Cachet\Filament\Resources\Subscribers\Pages\CreateSubscriber;
 use Cachet\Filament\Resources\Subscribers\Pages\EditSubscriber;
 use Cachet\Filament\Resources\Subscribers\Pages\ListSubscribers;
 use Cachet\Models\Subscriber;
+use Cachet\Settings\MailSettings;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -27,6 +28,11 @@ class SubscriberResource extends Resource
     protected static ?string $model = Subscriber::class;
 
     protected static string|\BackedEnum|null $navigationIcon = 'cachet-subscribers';
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return app(MailSettings::class)->allow_subscribers;
+    }
 
     public static function form(Schema $schema): Schema
     {

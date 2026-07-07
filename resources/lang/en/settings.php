@@ -54,6 +54,9 @@ return [
         ],
     ],
     'manage_notifications' => [
+        'subscriptions_section_title' => 'Subscriptions',
+        'allow_subscribers_label' => 'Allow Subscriptions',
+        'allow_subscribers_helper' => 'Let visitors subscribe to the status page and receive updates by email.',
         'mail_section_title' => 'Mail Server',
         'mail_section_description' => 'Configure how Cachet delivers email to subscribers.',
         'mailer_label' => 'Mailer',
