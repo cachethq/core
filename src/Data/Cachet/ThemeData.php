@@ -292,6 +292,9 @@ final class ThemeData extends BaseData
     #[Computed]
     public string $styles;
 
+    /** @var array<string, string> */
+    private array $lightColors = [];
+
     public function __construct(
         #[Required]
         public readonly ThemeSettings $themeSettings,
@@ -341,6 +344,13 @@ final class ThemeData extends BaseData
         $pairingKey = ucwords($pairing);
         $pairingColor = constant("Filament\Support\Colors\Color::{$pairingKey}");
 
+        $this->lightColors = [
+            'accent' => $theme['light']['accent'],
+            'accent-content' => $theme['light']['accent-content'],
+            'accent-foreground' => $theme['light']['accent-foreground'],
+            'accent-background' => $pairingColor[50],
+        ];
+
         return <<<CSS
             :root {
                 --accent: {$theme['light']['accent']};
@@ -358,6 +368,16 @@ final class ThemeData extends BaseData
                 }
             }
         CSS;
+    }
+
+    /**
+     * The resolved light-mode theme colors, keyed by CSS variable name.
+     *
+     * @return array<string, string>
+     */
+    public function lightColors(): array
+    {
+        return $this->lightColors;
     }
 
     /**

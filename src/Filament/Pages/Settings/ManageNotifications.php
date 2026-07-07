@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Pages\Settings;
 
+use Cachet\Mail\TestMail;
 use Cachet\Settings\MailSettings;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
@@ -11,7 +12,6 @@ use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
@@ -125,16 +125,13 @@ class ManageNotifications extends SettingsPage
                 ? Mail::build($settings->toMailerConfig())
                 : Mail::mailer();
 
-            $mailer->raw(
-                __('cachet::settings.manage_notifications.test_email_body'),
-                function (Message $message) use ($settings, $email) {
-                    $message->to($email)
-                        ->from(
-                            $settings->from_address ?? config('mail.from.address'),
-                            $settings->from_name ?? config('mail.from.name'),
-                        )
-                        ->subject(__('cachet::settings.manage_notifications.test_email_subject'));
-                }
+            $mailer->send(
+                (new TestMail)
+                    ->to($email)
+                    ->from(
+                        $settings->from_address ?? config('mail.from.address'),
+                        $settings->from_name ?? config('mail.from.name'),
+                    )
             );
         } catch (Throwable $exception) {
             Notification::make()
