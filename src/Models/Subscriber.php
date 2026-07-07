@@ -83,18 +83,18 @@ class Subscriber extends Model implements MustVerifyEmailContract
     }
 
     /**
-     * Scope the query to subscribers who should hear about the given incident.
+     * Scope the query to subscribers who should hear about the given resource.
      *
      * @param  Builder<$this>  $query
      * @return Builder<$this>
      */
-    public function scopeSubscribedTo(Builder $query, Incident $incident): Builder
+    public function scopeSubscribedTo(Builder $query, Incident|Schedule $resource): Builder
     {
         return $query->where(fn (Builder $query) => $query
             ->where('global', true)
             ->orWhereHas('components', fn (Builder $query) => $query->whereIn(
                 'components.id',
-                $incident->components()->pluck('components.id'),
+                $resource->components()->pluck('components.id'),
             )));
     }
 

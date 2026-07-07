@@ -63,6 +63,22 @@ return [
             'subject' => 'Incident updated: :incident',
             'button' => 'View incident',
         ],
+        'new_schedule' => [
+            'subject' => 'Scheduled maintenance: :schedule',
+            'scheduled_for' => 'Scheduled for',
+            'button' => 'View maintenance',
+        ],
+        'schedule_updated' => [
+            'subject' => 'Maintenance updated: :schedule',
+            'updated_at' => 'Updated',
+            'button' => 'View maintenance',
+        ],
+        'schedule_completed' => [
+            'subject' => 'Maintenance complete: :schedule',
+            'completed_at' => 'Completed',
+            'body' => 'The scheduled maintenance has been completed and all affected services should now be operating normally.',
+            'button' => 'View maintenance',
+        ],
         'verify' => [
             'subject' => 'Confirm your subscription',
             'heading' => 'Confirm your subscription',

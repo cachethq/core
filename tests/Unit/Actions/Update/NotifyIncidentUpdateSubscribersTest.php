@@ -9,6 +9,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\IncidentUpdatedNotification;
+use Cachet\Notifications\ScheduleUpdatedNotification;
 use Cachet\Settings\MailSettings;
 use Illuminate\Support\Facades\Notification;
 
@@ -68,10 +69,22 @@ it('does not notify unverified subscribers', function () {
     Notification::assertNothingSent();
 });
 
-it('does not notify subscribers about schedule updates', function () {
+it('notifies subscribers about updates to notifiable schedules', function () {
+    $subscriber = Subscriber::factory()->verified()->create(['global' => true]);
+
+    $schedule = Schedule::factory()->create(['notifications' => true]);
+
+    app(CreateUpdate::class)->handle($schedule, CreateScheduleUpdateRequestData::from([
+        'message' => 'Maintenance is progressing.',
+    ]));
+
+    Notification::assertSentTo($subscriber, ScheduleUpdatedNotification::class);
+});
+
+it('does not notify about updates to schedules that do not want notifications', function () {
     Subscriber::factory()->verified()->create(['global' => true]);
 
-    $schedule = Schedule::factory()->create();
+    $schedule = Schedule::factory()->create(['notifications' => false]);
 
     app(CreateUpdate::class)->handle($schedule, CreateScheduleUpdateRequestData::from([
         'message' => 'Maintenance is progressing.',

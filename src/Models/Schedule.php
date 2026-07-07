@@ -2,6 +2,7 @@
 
 namespace Cachet\Models;
 
+use Cachet\Actions\Schedule\NotifyScheduleCompletedSubscribers;
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\QueryBuilders\ScheduleBuilder;
@@ -24,6 +25,8 @@ use Illuminate\Support\Str;
  * @property ?string $message
  * @property ?Carbon $scheduled_at
  * @property ?Carbon $completed_at
+ * @property ?Carbon $completed_notified_at
+ * @property bool $notifications
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
@@ -43,10 +46,24 @@ class Schedule extends Model
 
     use SoftDeletes;
 
+    /**
+     * Notify subscribers when the schedule transitions to complete.
+     */
+    protected static function booted(): void
+    {
+        self::updated(function (Schedule $schedule) {
+            if ($schedule->wasChanged('completed_at') && $schedule->status === ScheduleStatusEnum::complete) {
+                app(NotifyScheduleCompletedSubscribers::class)->handle($schedule);
+            }
+        });
+    }
+
     /** @var array<string, string> */
     protected $casts = [
         'scheduled_at' => 'datetime',
         'completed_at' => 'datetime',
+        'completed_notified_at' => 'datetime',
+        'notifications' => 'bool',
     ];
 
     /** @var list<string> */
@@ -55,6 +72,7 @@ class Schedule extends Model
         'message',
         'scheduled_at',
         'completed_at',
+        'notifications',
     ];
 
     /**
