@@ -13,6 +13,7 @@ use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Cachet\Settings\MailSettings;
 use Cachet\View\ViewManager;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
@@ -74,6 +75,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
+        $this->configureMail();
 
         Event::listen([
             'Cachet\Events\Incidents\*',
@@ -105,6 +107,33 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->configureRateLimiting();
         $this->registerRoutes();
+    }
+
+    /**
+     * Override the application's mail configuration with Cachet's mail settings, when configured.
+     *
+     * Wrapped in rescue() so a missing settings table (pre-setup, pre-migration) is not fatal.
+     */
+    private function configureMail(): void
+    {
+        rescue(function (): void {
+            $settings = $this->app->make(MailSettings::class);
+
+            if ($settings->from_address !== null) {
+                config()->set('mail.from.address', $settings->from_address);
+            }
+
+            if ($settings->from_name !== null) {
+                config()->set('mail.from.name', $settings->from_name);
+            }
+
+            if (! $settings->configured()) {
+                return;
+            }
+
+            config()->set('mail.mailers.cachet', $settings->toMailerConfig());
+            config()->set('mail.default', 'cachet');
+        }, report: false);
     }
 
     /**
