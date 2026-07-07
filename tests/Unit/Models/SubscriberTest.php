@@ -3,7 +3,9 @@
 use Cachet\Events\Subscribers\SubscriberVerified;
 use Cachet\Models\Component;
 use Cachet\Models\Subscriber;
+use Cachet\Notifications\VerifySubscriberEmail;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 
 it('can verify', function () {
     Event::fake();
@@ -12,7 +14,7 @@ it('can verify', function () {
     $subscriber->verify();
 
     expect($subscriber)
-        ->verified_at->toBeInstanceOf(DateTime::class);
+        ->email_verified_at->toBeInstanceOf(DateTime::class);
 
     Event::assertDispatched(SubscriberVerified::class);
 });
@@ -24,19 +26,27 @@ it('does not verify again', function () {
     $subscriber->verify();
 
     expect($subscriber)
-        ->verified_at->toBeInstanceOf(DateTime::class);
+        ->email_verified_at->toBeInstanceOf(DateTime::class);
 
     Event::assertNotDispatched(SubscriberVerified::class);
 });
 
 it('can reset the verification status', function () {
     $subscriber = Subscriber::factory()->verified()->create();
-    $verifyCode = $subscriber->verify_code;
     $subscriber->resetVerification();
 
     expect($subscriber)
-        ->verified_at->toBeNull()
-        ->verify_code->not()->toBe($verifyCode);
+        ->email_verified_at->toBeNull()
+        ->hasVerifiedEmail()->toBeFalse();
+});
+
+it('sends the verification notification', function () {
+    Notification::fake();
+
+    $subscriber = Subscriber::factory()->create();
+    $subscriber->sendEmailVerificationNotification();
+
+    Notification::assertSentTo($subscriber, VerifySubscriberEmail::class);
 });
 
 it('has components', function () {

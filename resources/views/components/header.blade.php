@@ -10,8 +10,13 @@
             @endif
         </a>
 
-        @if ($dashboardLoginLink)
-            <div class="flex items-center gap-3 sm:gap-4">
+        <div class="flex items-center gap-3 sm:gap-4">
+            @if ($allowSubscribers)
+                <a href="{{ route('cachet.subscribers.create') }}" class="inline-flex items-center rounded-md px-3 py-1.5 text-sm font-semibold text-accent-content ring-1 ring-inset ring-accent/40 transition hover:bg-accent/10">
+                    {{ __('cachet::subscriber.status_page.subscribe.button_label') }}
+                </a>
+            @endif
+            @if ($dashboardLoginLink)
                 <a href="{{ Cachet\Cachet::dashboardPath() }}" class="inline-flex items-center rounded-md bg-accent px-3 py-1.5 text-sm font-semibold text-accent-foreground shadow-sm ring-1 ring-accent/30 transition hover:opacity-90">
                     {{ __('filament-panels::pages/dashboard.title') }}
                 </a>
@@ -23,8 +28,8 @@
                         </button>
                     </form>
                 @endauth
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
 </header>
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_NAVIGATION_AFTER) }}

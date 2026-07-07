@@ -5,7 +5,6 @@ return [
     'list' => [
         'headers' => [
             'email' => 'Email',
-            'verify_code' => 'Verify code',
             'global' => 'Global',
             'phone_number' => 'Phone number',
             'slack_webhook_url' => 'Slack Webhook URL',
@@ -23,12 +22,37 @@ return [
     ],
     'form' => [
         'email_label' => 'Email',
-        'verify_code_label' => 'Verify code',
         'verified_at_label' => 'Verified at',
         'global_label' => 'Global',
     ],
     'overview' => [
         'total_subscribers_label' => 'Total Subscribers',
         'verified_subscribers_description' => ':count verified',
+    ],
+    'status_page' => [
+        'subscribe' => [
+            'title' => 'Subscribe to updates',
+            'heading' => 'Subscribe to updates',
+            'description' => 'Get an email whenever incidents are reported or maintenance is scheduled.',
+            'consent' => 'We\'ll send you a confirmation email. You can unsubscribe at any time.',
+            'back' => 'Back to status page',
+            'button_label' => 'Subscribe to updates',
+            'subscribed_heading' => 'Check your email',
+            'subscribed_body' => 'If this email address isn\'t already subscribed, you\'ll receive an email with a link to confirm your subscription.',
+            'verified_heading' => 'Subscription confirmed',
+            'verified_body' => 'You\'ll now receive status updates by email.',
+        ],
+        'email_label' => 'Email address',
+        'email_placeholder' => 'you@example.com',
+        'subscribe_button' => 'Subscribe',
+    ],
+    'mail' => [
+        'verify' => [
+            'subject' => 'Confirm your subscription',
+            'heading' => 'Confirm your subscription',
+            'body' => 'You\'re receiving this email because someone subscribed to status updates from :app. Confirm your subscription to start receiving updates.',
+            'button' => 'Confirm subscription',
+            'ignore' => 'If you didn\'t subscribe to :app, you can safely ignore this email.',
+        ],
     ],
 ];

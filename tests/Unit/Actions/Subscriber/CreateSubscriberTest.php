@@ -13,7 +13,7 @@ it('can create a subscriber', function () {
     expect($subscriber)
         ->email->toBe('james@alt-three.com')
         ->global->toBeFalse()
-        ->verified_at->toBeNull()
+        ->email_verified_at->toBeNull()
         ->subscriptions->toBeEmpty();
 
     Event::assertDispatched(SubscriberCreated::class);
@@ -27,7 +27,7 @@ it('can create a global subscriber', function () {
     expect($subscriber)
         ->email->toBe('james@alt-three.com')
         ->global->toBeTrue()
-        ->verified_at->toBeNull()
+        ->email_verified_at->toBeNull()
         ->subscriptions->toBeEmpty();
 
     Event::assertDispatched(SubscriberCreated::class);
@@ -41,7 +41,7 @@ it('can create a verified subscriber', function () {
     expect($subscriber)
         ->email->toBe('james@alt-three.com')
         ->global->toBeFalse()
-        ->verified_at->toBeInstanceOf(DateTime::class)
+        ->email_verified_at->toBeInstanceOf(DateTime::class)
         ->subscriptions->toBeEmpty();
 
     Event::assertDispatched(SubscriberCreated::class);
@@ -59,7 +59,7 @@ it('can create a subscriber with components', function () {
     expect($subscriber)
         ->email->toBe('james@alt-three.com')
         ->global->toBeFalse()
-        ->verified_at->toBeInstanceOf(DateTime::class)
+        ->email_verified_at->toBeInstanceOf(DateTime::class)
         ->components->toHaveCount(2);
 
     Event::assertDispatched(SubscriberCreated::class);

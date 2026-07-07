@@ -3,7 +3,6 @@
 namespace Cachet\Actions\Subscriber;
 
 use Cachet\Models\Subscriber;
-use Illuminate\Support\Str;
 
 class CreateSubscriber
 {
@@ -16,8 +15,7 @@ class CreateSubscriber
             'email' => $email,
         ], [
             'global' => $global,
-            'verify_code' => Str::random(42),
-            'verified_at' => $verified ? now() : null,
+            'email_verified_at' => $verified ? now() : null,
         ]);
 
         $subscriber->components()->attach($components);

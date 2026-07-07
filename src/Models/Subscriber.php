@@ -6,19 +6,21 @@ use Cachet\Database\Factories\SubscriberFactory;
 use Cachet\Events\Subscribers\SubscriberCreated;
 use Cachet\Events\Subscribers\SubscriberUnsubscribed;
 use Cachet\Events\Subscribers\SubscriberVerified;
+use Cachet\Notifications\VerifySubscriberEmail;
 use Carbon\Carbon;
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 /**
  * @property int $id
  * @property ?string $email
- * @property string $verify_code
- * @property ?Carbon $verified_at
+ * @property ?Carbon $email_verified_at
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property int $global
@@ -26,14 +28,14 @@ use Illuminate\Support\Str;
  * @property ?string $slack_webhook_url
  * @property Collection<int, Component> $components
  */
-class Subscriber extends Model
+class Subscriber extends Model implements MustVerifyEmailContract
 {
     /** @use HasFactory<SubscriberFactory> */
-    use HasFactory;
+    use HasFactory, MustVerifyEmail, Notifiable;
 
     /** @var array<string, string> */
     protected $casts = [
-        'verified_at' => 'datetime',
+        'email_verified_at' => 'datetime',
     ];
 
     /** @var array<string, class-string> */
@@ -46,8 +48,7 @@ class Subscriber extends Model
     protected $fillable = [
         'email',
         'global',
-        'verify_code',
-        'verified_at',
+        'email_verified_at',
     ];
 
     /**
@@ -61,13 +62,20 @@ class Subscriber extends Model
     }
 
     /**
+     * Send the email verification notification.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifySubscriberEmail);
+    }
+
+    /**
      * Reset the subscriber's verification status.
      */
     public function resetVerification(): void
     {
         $this->update([
-            'verify_code' => Str::random(42),
-            'verified_at' => null,
+            'email_verified_at' => null,
         ]);
     }
 
@@ -76,13 +84,11 @@ class Subscriber extends Model
      */
     public function verify(): void
     {
-        if ($this->verified_at) {
+        if ($this->hasVerifiedEmail()) {
             return;
         }
 
-        $this->update([
-            'verified_at' => now(),
-        ]);
+        $this->markEmailAsVerified();
 
         SubscriberVerified::dispatch($this);
     }

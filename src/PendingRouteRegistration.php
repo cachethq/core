@@ -7,6 +7,8 @@ use Cachet\Http\Controllers\HealthController;
 use Cachet\Http\Controllers\RssController;
 use Cachet\Http\Controllers\Setup\SetupController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
+use Cachet\Http\Controllers\Subscribers\SubscriberController;
+use Cachet\Http\Controllers\Subscribers\VerifySubscriberEmailController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
@@ -36,7 +38,13 @@ class PendingRouteRegistration
                 $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
                 $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');
 
-                // @todo subscription routes... subscribe, manage subscriptions, unsubscribe
+                $router->get('/subscribe', [SubscriberController::class, 'create'])->name('subscribers.create');
+                $router->post('/subscribe', [SubscriberController::class, 'store'])
+                    ->middleware('throttle:6,1')
+                    ->name('subscribers.store');
+                $router->get('/subscribers/verify/{subscriber}/{hash}', VerifySubscriberEmailController::class)
+                    ->middleware(['signed', 'throttle:6,1'])
+                    ->name('subscribers.verify');
 
                 $router->get('/health', HealthController::class)->name('health');
 

@@ -34,6 +34,10 @@ class RenderHook
 
     const STATUS_PAGE_BANNER = 'cachet::status-page.banner';
 
+    const STATUS_PAGE_SUBSCRIBE_AFTER = 'cachet::status-page.subscribe.after';
+
+    const STATUS_PAGE_SUBSCRIBE_BEFORE = 'cachet::status-page.subscribe.before';
+
     const STATUS_PAGE_METRICS_AFTER = 'cachet::status-page.metrics.after';
 
     const STATUS_PAGE_METRICS_BEFORE = 'cachet::status-page.metrics.before';

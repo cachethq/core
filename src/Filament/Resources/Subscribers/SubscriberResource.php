@@ -21,7 +21,6 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 
 class SubscriberResource extends Resource
 {
@@ -45,12 +44,7 @@ class SubscriberResource extends Resource
                         ->required()
                         ->maxLength(255)
                         ->autocomplete(false),
-                    TextInput::make('verify_code')
-                        ->label(__('cachet::subscriber.form.verify_code_label'))
-                        ->required()
-                        ->default(fn () => Str::random())
-                        ->maxLength(255),
-                    DateTimePicker::make('verified_at')
+                    DateTimePicker::make('email_verified_at')
                         ->label(__('cachet::subscriber.form.verified_at_label')),
                     Toggle::make('global')
                         ->label(__('cachet::subscriber.form.global_label'))
@@ -69,10 +63,6 @@ class SubscriberResource extends Resource
                 TextColumn::make('email')
                     ->label(__('cachet::subscriber.list.headers.email'))
                     ->searchable(),
-                TextColumn::make('verify_code')
-                    ->label(__('cachet::subscriber.list.headers.verify_code'))
-                    ->fontFamily('mono')
-                    ->searchable(),
                 IconColumn::make('global')
                     ->label(__('cachet::subscriber.list.headers.global'))
                     ->boolean(),
@@ -84,7 +74,7 @@ class SubscriberResource extends Resource
                     ->label(__('cachet::subscriber.list.headers.slack_webhook_url'))
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('verified_at')
+                TextColumn::make('email_verified_at')
                     ->label(__('cachet::subscriber.list.headers.verified_at'))
                     ->dateTime()
                     ->sortable()

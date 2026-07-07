@@ -81,7 +81,6 @@ return [
         'test_email_heading' => 'It works!',
         'test_email_body' => 'This is a test email from :app. If you\'re reading this, your mail settings are working perfectly.',
         'test_email_button' => 'Visit your status page',
-        'test_email_footer' => 'Powered by Cachet',
         'test_email_sent' => 'Test email sent to :email.',
         'test_email_failed' => 'The test email could not be sent.',
     ],

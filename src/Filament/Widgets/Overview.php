@@ -44,7 +44,7 @@ class Overview extends BaseWidget
             Stat::make('total_subscribers', Subscriber::count())
                 ->label(__('cachet::subscriber.overview.total_subscribers_label'))
                 ->description(__('cachet::subscriber.overview.verified_subscribers_description', [
-                    'count' => Subscriber::query()->whereNotNull('verified_at')->count(),
+                    'count' => Subscriber::query()->whereNotNull('email_verified_at')->count(),
                 ]))
                 ->chart($this->dailyCounts('subscribers'))
                 ->icon('cachet-subscribers')

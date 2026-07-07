@@ -22,10 +22,10 @@ it('can update a subscriber without passing an email address', function () {
 
     expect($subscriber->fresh())
         ->email->toBe('james@alt-three.com')
-        ->verified_at->not()->toBeNull();
+        ->email_verified_at->not()->toBeNull();
 });
 
-it('does not reset the verified_at column when updating a subscriber without changing email', function () {
+it('does not reset the email_verified_at column when updating a subscriber without changing email', function () {
     $subscriber = Subscriber::factory()->verified()->create([
         'email' => 'james@alt-three.com',
     ]);
@@ -34,22 +34,19 @@ it('does not reset the verified_at column when updating a subscriber without cha
 
     expect($subscriber->fresh())
         ->email->toBe('james@alt-three.com')
-        ->verified_at->not()->toBeNull();
+        ->email_verified_at->not()->toBeNull();
 });
 
-it('resets the verified_at and verify_code columns when changing email', function () {
+it('resets the email_verified_at column when changing email', function () {
     $subscriber = Subscriber::factory()->verified()->create([
         'email' => 'james@alt-three.com',
     ]);
-
-    $verifyCode = $subscriber->verify_code;
 
     app(UpdateSubscriber::class)->handle($subscriber, email: 'james@cachethq.io');
 
     expect($subscriber->fresh())
         ->email->toBe('james@cachethq.io')
-        ->verified_at->toBeNull()
-        ->verify_code->not()->toBe($verifyCode);
+        ->email_verified_at->toBeNull();
 });
 
 it('can update a subscriber\'s component subscriptions', function () {

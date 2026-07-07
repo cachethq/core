@@ -1,0 +1,52 @@
+<?php
+
+namespace Cachet\Notifications;
+
+use Cachet\Models\Subscriber;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\URL;
+
+class VerifySubscriberEmail extends Notification implements ShouldQueue
+{
+    use Queueable;
+
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @return list<string>
+     */
+    public function via(object $notifiable): array
+    {
+        return ['mail'];
+    }
+
+    /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail(Subscriber $notifiable): MailMessage
+    {
+        return (new MailMessage)
+            ->subject(__('cachet::subscriber.mail.verify.subject'))
+            ->view('cachet::mail.subscribers.verify', [
+                'verificationUrl' => $this->verificationUrl($notifiable),
+            ]);
+    }
+
+    /**
+     * Build the temporary signed verification URL for the subscriber.
+     */
+    protected function verificationUrl(Subscriber $subscriber): string
+    {
+        return URL::temporarySignedRoute(
+            'cachet.subscribers.verify',
+            now()->addMinutes(config('auth.verification.expire', 60)),
+            [
+                'subscriber' => $subscriber->getKey(),
+                'hash' => sha1($subscriber->getEmailForVerification()),
+            ],
+        );
+    }
+}

@@ -14,6 +14,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\MailSettings;
+use Cachet\View\Composers\MailThemeComposer;
 use Cachet\View\ViewManager;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
@@ -195,6 +196,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerBladeComponents(): void
     {
         view()->share('appSettings', app(AppSettings::class));
+        view()->composer('cachet::mail.*', MailThemeComposer::class);
         Blade::componentNamespace('Cachet\\View\\Components', 'cachet');
 
         $this->callAfterResolving(Factory::class, function (Factory $factory) {

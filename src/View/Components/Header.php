@@ -3,6 +3,7 @@
 namespace Cachet\View\Components;
 
 use Cachet\Settings\AppSettings;
+use Cachet\Settings\MailSettings;
 use Cachet\Settings\ThemeSettings;
 use Closure;
 use Illuminate\Contracts\View\View;
@@ -13,8 +14,11 @@ class Header extends Component
     /**
      * Create a new component instance.
      */
-    public function __construct(private AppSettings $appSettings, private ThemeSettings $themeSettings)
-    {
+    public function __construct(
+        private AppSettings $appSettings,
+        private ThemeSettings $themeSettings,
+        private MailSettings $mailSettings,
+    ) {
         //
     }
 
@@ -27,6 +31,7 @@ class Header extends Component
             'siteName' => $this->appSettings->name,
             'appBanner' => $this->themeSettings->app_banner,
             'dashboardLoginLink' => $this->appSettings->dashboard_login_link,
+            'allowSubscribers' => $this->mailSettings->allow_subscribers,
         ]);
     }
 }
