@@ -2,6 +2,7 @@
 
 namespace Cachet\Notifications;
 
+use Cachet\Cachet;
 use Cachet\Models\Subscriber;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -30,7 +31,8 @@ class VerifySubscriberEmail extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject(__('cachet::subscriber.mail.verify.subject'))
-            ->view('cachet::mail.subscribers.verify', [
+            ->theme(Cachet::MAIL_THEME)
+            ->markdown('cachet::mail.subscribers.verify', [
                 'verificationUrl' => $this->verificationUrl($notifiable),
                 'unsubscribeUrl' => $notifiable->unsubscribeUrl(),
             ]);

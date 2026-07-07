@@ -2,17 +2,22 @@
 
 namespace Tests\Unit\Notifications;
 
+use Cachet\Cachet;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\VerifySubscriberEmail;
+use Illuminate\Mail\Markdown;
 
 it('renders the themed verification email', function () {
     $subscriber = Subscriber::factory()->create();
 
     $mail = (new VerifySubscriberEmail)->toMail($subscriber);
 
-    $html = view($mail->view, $mail->viewData)->render();
+    $html = (new Markdown(app('view'), ['theme' => Cachet::MAIL_THEME]))
+        ->render($mail->markdown, $mail->viewData)
+        ->toHtml();
 
-    expect($html)->toContain(__('cachet::subscriber.mail.verify.heading'))
+    expect($mail->theme)->toBe(Cachet::MAIL_THEME)
+        ->and($html)->toContain(__('cachet::subscriber.mail.verify.heading'))
         ->toContain(e($mail->viewData['verificationUrl']))
         ->toContain(e($subscriber->unsubscribeUrl()));
 });

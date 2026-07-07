@@ -6,6 +6,7 @@ use Cachet\Data\Cachet\ThemeData;
 use Cachet\Mail\TestMail;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\ThemeSettings;
+use Cachet\View\Composers\MailThemeComposer;
 
 it('renders the themed test email', function () {
     $html = (new TestMail)->render();
@@ -20,7 +21,7 @@ it('uses the configured theme accent color', function () {
     $theme->accent = 'purple';
     $theme->save();
 
-    $accent = (new ThemeData($theme))->lightColors()['accent'];
+    $accent = MailThemeComposer::hex((new ThemeData($theme))->lightColors()['accent']);
 
     expect((new TestMail)->render())->toContain($accent);
 });

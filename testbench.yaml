@@ -9,6 +9,7 @@ providers:
 
 env:
   - AUTH_MODEL=\Workbench\App\User
+  - APP_URL=http://localhost:8001
   - MAIL_MAILER=smtp
   - MAIL_HOST=127.0.0.1
   - MAIL_PORT=2525

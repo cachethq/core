@@ -17,6 +17,13 @@ class Cachet
     public const USER_AGENT = 'Cachet/3.0 (+https://docs.cachethq.io)';
 
     /**
+     * The Markdown mail theme used by Cachet's emails.
+     *
+     * @var string
+     */
+    public const MAIL_THEME = 'cachet::mail.theme';
+
+    /**
      * The user agent used by Cachet's webhooks.
      */
     public const WEBHOOK_USER_AGENT = 'Cachet/3.0 Webhook (+https://docs.cachethq.io)';

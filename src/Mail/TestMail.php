@@ -2,12 +2,15 @@
 
 namespace Cachet\Mail;
 
+use Cachet\Cachet;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
 class TestMail extends Mailable
 {
+    public $theme = Cachet::MAIL_THEME;
+
     public function envelope(): Envelope
     {
         return new Envelope(
@@ -18,7 +21,7 @@ class TestMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'cachet::mail.test',
+            markdown: 'cachet::mail.test',
             with: [
                 'statusPageUrl' => route('cachet.status-page'),
             ],
