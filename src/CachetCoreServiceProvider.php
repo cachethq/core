@@ -5,6 +5,7 @@ namespace Cachet;
 use BladeUI\Icons\Factory;
 use Cachet\Commands\CheckComponentsCommand;
 use Cachet\Commands\MakeUserCommand;
+use Cachet\Commands\NotifyLongRunningIncidentsCommand;
 use Cachet\Commands\SendBeaconCommand;
 use Cachet\Commands\VersionCommand;
 use Cachet\Database\Seeders\DatabaseSeeder;
@@ -216,6 +217,7 @@ class CachetCoreServiceProvider extends ServiceProvider
             $this->commands([
                 CheckComponentsCommand::class,
                 MakeUserCommand::class,
+                NotifyLongRunningIncidentsCommand::class,
                 SendBeaconCommand::class,
                 VersionCommand::class,
             ]);
@@ -243,6 +245,8 @@ class CachetCoreServiceProvider extends ServiceProvider
             $demoMode = fn () => Cachet::demoMode();
 
             $schedule->command('cachet:beacon')->daily();
+
+            $schedule->command('cachet:notify-long-running-incidents')->hourly();
 
             $schedule->command('db:seed', [
                 '--class' => DatabaseSeeder::class,

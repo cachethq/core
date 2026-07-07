@@ -64,6 +64,14 @@ return [
             'status_label' => 'Status',
         ],
     ],
+    'mail' => [
+        'long_running' => [
+            'subject' => 'Incident needs attention: :incident',
+            'heading' => 'This incident needs attention',
+            'body' => 'There has been no activity on this incident since :since. Consider posting an update to keep your subscribers informed, or mark it as fixed.',
+            'button' => 'Manage incident',
+        ],
+    ],
     'record_update' => [
         'new_update_label' => 'New Update',
         'success_title' => 'Incident :name Updated',

@@ -43,6 +43,25 @@ class ManageNotifications extends SettingsPage
                             ->helperText(__('cachet::settings.manage_notifications.allow_subscribers_helper')),
                     ]),
 
+                Section::make(__('cachet::settings.manage_notifications.long_running_section_title'))
+                    ->description(__('cachet::settings.manage_notifications.long_running_section_description'))
+                    ->columns(2)
+                    ->schema([
+                        Toggle::make('notify_long_running_incidents')
+                            ->label(__('cachet::settings.manage_notifications.notify_long_running_incidents_label'))
+                            ->helperText(__('cachet::settings.manage_notifications.notify_long_running_incidents_helper'))
+                            ->reactive(),
+                        TextInput::make('long_running_incident_hours')
+                            ->label(__('cachet::settings.manage_notifications.long_running_incident_hours_label'))
+                            ->helperText(__('cachet::settings.manage_notifications.long_running_incident_hours_helper'))
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(720)
+                            ->suffix(__('cachet::settings.manage_notifications.long_running_incident_hours_suffix'))
+                            ->required(fn (Get $get): bool => $get('notify_long_running_incidents') === true)
+                            ->visible(fn (Get $get): bool => $get('notify_long_running_incidents') === true),
+                    ]),
+
                 Section::make(__('cachet::settings.manage_notifications.mail_section_title'))
                     ->description(__('cachet::settings.manage_notifications.mail_section_description'))
                     ->columns(2)

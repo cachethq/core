@@ -8,6 +8,10 @@ class MailSettings extends Settings
 {
     public bool $allow_subscribers = false;
 
+    public bool $notify_long_running_incidents = false;
+
+    public int $long_running_incident_hours = 6;
+
     public ?string $mailer = null;
 
     public ?string $host = null;

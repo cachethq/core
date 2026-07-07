@@ -39,6 +39,7 @@ use Illuminate\Support\Str;
  * @property ResourceVisibilityEnum $visible
  * @property bool $stickied
  * @property ?Carbon $occurred_at
+ * @property ?Carbon $long_running_notified_at
  * @property ?int $user_id
  * @property int $notifications
  * @property string $guid
@@ -71,6 +72,7 @@ class Incident extends Model
         'stickied' => 'bool',
         'scheduled_at' => 'datetime',
         'occurred_at' => 'datetime',
+        'long_running_notified_at' => 'datetime',
     ];
 
     /** @var array<string, class-string> */
