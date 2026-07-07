@@ -32,7 +32,7 @@
                  class="relative shrink-0">
                 <div x-ref="badgeAnchor">
                     @if ($component->incidents_count > 0)
-                        <a href="{{ route('cachet.status-page.incident', [$component->incidents->first()]) }}" class="inline-flex">
+                        <a href="{{ route('cachet.status-page.incident', [$component->latest_unresolved_incident]) }}" class="inline-flex">
                             <x-cachet::badge :status="$component->latest_status" />
                         </a>
                     @else

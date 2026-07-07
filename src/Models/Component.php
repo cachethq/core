@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ?string $link
  * @property ?ComponentStatusEnum $status
  * @property ComponentStatusEnum $latest_status
+ * @property-read Incident|null $latest_unresolved_incident
  * @property ?int $order
  * @property ?int $component_group_id
  * @property ?bool $checked
@@ -172,11 +173,19 @@ class Component extends Model
     }
 
     /**
+     * Get the latest unresolved incident for the component.
+     */
+    public function latestUnresolvedIncident(): Attribute
+    {
+        return Attribute::get(fn () => $this->incidents()->unresolved()->latest()->first());
+    }
+
+    /**
      * Get the latest status for the component.
      */
     public function latestStatus(): Attribute
     {
-        return Attribute::get(fn () => $this->incidents()->unresolved()->latest()->first()?->pivot->component_status ?? $this->status);
+        return Attribute::get(fn () => $this->latest_unresolved_incident?->pivot->component_status ?? $this->status);
     }
 
     /**
