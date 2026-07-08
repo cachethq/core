@@ -14,7 +14,7 @@ it('uses a component foreign key type compatible with the components table', fun
         ->with('component_checks', \Mockery::on(function (callable $callback) use (&$sql): bool {
             $connection = new MySqlConnection(new \PDO('sqlite::memory:'), 'testing');
             $grammar = new MySqlGrammar($connection);
-            $blueprint = new Blueprint($connection, 'component_checks');
+            $blueprint = new Blueprint('component_checks');
 
             $blueprint->create();
             $callback($blueprint);
