@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('component_checks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('component_id')->constrained('components')->cascadeOnDelete();
+            $table->unsignedInteger('component_id');
             $table->unsignedTinyInteger('status');
             $table->boolean('successful')->default(false);
             $table->unsignedSmallInteger('response_code')->nullable();
             $table->unsignedInteger('response_time')->nullable();
             $table->timestamp('checked_at');
             $table->timestamps();
+
+            $table->foreign('component_id')->references('id')->on('components')->cascadeOnDelete();
         });
     }
 
