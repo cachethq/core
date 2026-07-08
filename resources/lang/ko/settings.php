@@ -37,6 +37,8 @@ return [
             'api_enabled_helper' => 'Cachet API에 대한 접근을 허용합니다. 비활성화하면 모든 API 요청이 404를 반환합니다.',
             'api_protected' => '인증 필요',
             'api_protected_helper' => '읽기 전용 엔드포인트를 포함한 모든 API 요청에 API 토큰을 요구합니다.',
+            'dynamic_favicon' => '동적 파비콘',
+            'dynamic_favicon_helper' => '시스템의 현재 상태를 반영하도록 파비콘을 업데이트합니다.',
         ],
         'display_settings_title' => '표시 설정',
         'api_settings_title' => 'API 설정',

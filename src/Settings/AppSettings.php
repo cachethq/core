@@ -42,6 +42,8 @@ class AppSettings extends Settings
 
     public bool $api_protected = false;
 
+    public bool $dynamic_favicon = false;
+
     public static function group(): string
     {
         return 'app';

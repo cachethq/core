@@ -36,6 +36,8 @@ return [
             'api_enabled_helper' => 'Allow access to the Cachet API. When disabled, all API requests return a 404.',
             'api_protected' => 'Require Authentication',
             'api_protected_helper' => 'Require an API token for all API requests, including read-only endpoints.',
+            'dynamic_favicon' => 'Dynamic Favicon',
+            'dynamic_favicon_helper' => 'Update the favicon to reflect the current status of your systems.',
         ],
         'display_settings_title' => 'Display Settings',
         'api_settings_title' => 'API Settings',

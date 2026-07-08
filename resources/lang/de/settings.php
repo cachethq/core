@@ -36,6 +36,8 @@ return [
             'api_enabled_helper' => 'Zugriff auf die Cachet-API erlauben. Wenn deaktiviert, geben alle API-Anfragen 404 zurück.',
             'api_protected' => 'Authentifizierung erforderlich',
             'api_protected_helper' => 'Für alle API-Anfragen einen API-Token verlangen, auch für rein lesende Endpunkte.',
+            'dynamic_favicon' => 'Dynamisches Favicon',
+            'dynamic_favicon_helper' => 'Das Favicon aktualisieren, damit es den aktuellen Status deiner Systeme widerspiegelt.',
         ],
         'display_settings_title' => 'Anzeigeeinstellungen',
         'api_settings_title' => 'API-Einstellungen',

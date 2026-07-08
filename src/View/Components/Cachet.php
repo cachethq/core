@@ -6,6 +6,7 @@ use Cachet\Data\Cachet\ThemeData;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\CustomizationSettings;
 use Cachet\Settings\ThemeSettings;
+use Cachet\Status;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -20,6 +21,7 @@ class Cachet extends Component
         private readonly AppSettings $appSettings,
         private readonly CustomizationSettings $customizationSettings,
         private readonly ThemeSettings $themeSettings,
+        private readonly Status $status,
         private ?string $title = null,
         private ?string $description = null
     ) {
@@ -51,6 +53,21 @@ class Cachet extends Component
             'cachet_footer' => $this->customizationSettings->footer,
             'refresh_rate' => $this->appSettings->refresh_rate,
             'theme' => new ThemeData($this->themeSettings),
+            'favicon' => $this->favicon(),
         ]);
+    }
+
+    /**
+     * Get the status-based favicon, when dynamic favicons are enabled.
+     */
+    private function favicon(): ?string
+    {
+        if (! $this->appSettings->dynamic_favicon) {
+            return null;
+        }
+
+        $favicon = $this->status->current()->getFavicon();
+
+        return $favicon ? asset('vendor/cachethq/cachet/'.$favicon) : null;
     }
 }

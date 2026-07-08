@@ -37,6 +37,8 @@ return [
             'api_enabled_helper' => '允许访问 Cachet API。禁用后,所有 API 请求将返回 404。',
             'api_protected' => '需要身份验证',
             'api_protected_helper' => '所有 API 请求(包括只读接口)都需要 API 令牌。',
+            'dynamic_favicon' => '动态网站图标',
+            'dynamic_favicon_helper' => '根据系统当前状态更新网站图标。',
         ],
         'display_settings_title' => '显示设置',
         'api_settings_title' => 'API 设置',

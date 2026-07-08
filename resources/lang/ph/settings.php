@@ -37,6 +37,8 @@ return [
             'api_enabled_helper' => 'Payagan ang pag-access sa Cachet API. Kapag naka-disable, lahat ng API request ay magbabalik ng 404.',
             'api_protected' => 'Kailangan ng Authentication',
             'api_protected_helper' => 'Mangailangan ng API token para sa lahat ng API request, kabilang ang mga read-only na endpoint.',
+            'dynamic_favicon' => 'Dynamic na Favicon',
+            'dynamic_favicon_helper' => 'I-update ang favicon upang ipakita ang kasalukuyang status ng iyong mga sistema.',
         ],
         'display_settings_title' => 'Mga Setting ng Display',
         'api_settings_title' => 'Mga Setting ng API',

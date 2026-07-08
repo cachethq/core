@@ -37,6 +37,8 @@ return [
             'api_enabled_helper' => "Autoriser l\u{2019}acc\u{00E8}s \u{00E0} l\u{2019}API de Cachet. Si d\u{00E9}sactiv\u{00E9}, toutes les requ\u{00EA}tes API renvoient une erreur 404.",
             'api_protected' => 'Exiger une authentification',
             'api_protected_helper' => "Exiger un jeton d\u{2019}API pour toutes les requ\u{00EA}tes, y compris les points de terminaison en lecture seule.",
+            'dynamic_favicon' => 'Favicon dynamique',
+            'dynamic_favicon_helper' => "Met \u{00E0} jour le favicon pour refl\u{00E9}ter l\u{2019}\u{00E9}tat actuel de vos syst\u{00E8}mes.",
         ],
         'display_settings_title' => "Param\u{00E8}tres d\u{2019}affichage",
         'api_settings_title' => "Param\u{00E8}tres de l\u{2019}API",

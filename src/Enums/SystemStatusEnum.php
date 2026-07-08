@@ -43,4 +43,14 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
             self::under_maintenance => 'cachet-component-under-maintenance',
         };
     }
+
+    public function getFavicon(): ?string
+    {
+        return match ($this) {
+            self::operational => null,
+            self::partial_outage => 'favicon-partial-outage.svg',
+            self::major_outage => 'favicon-major-outage.svg',
+            self::under_maintenance => 'favicon-under-maintenance.svg',
+        };
+    }
 }

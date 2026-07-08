@@ -37,6 +37,8 @@ return [
             'api_enabled_helper' => 'Sta toegang tot de Cachet API toe. Indien uitgeschakeld, geven alle API-verzoeken een 404 terug.',
             'api_protected' => 'Authenticatie vereist',
             'api_protected_helper' => 'Vereis een API-token voor alle API-verzoeken, inclusief alleen-lezen endpoints.',
+            'dynamic_favicon' => 'Dynamische favicon',
+            'dynamic_favicon_helper' => 'Werk de favicon bij zodat deze de huidige status van je systemen weergeeft.',
         ],
         'display_settings_title' => 'Weergave-instellingen',
         'api_settings_title' => 'API-instellingen',

@@ -106,6 +106,9 @@ class ManageCachet extends SettingsPage
                         Toggle::make('only_disrupted_days')
                             ->label(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days_helper')),
+                        Toggle::make('dynamic_favicon')
+                            ->label(__('cachet::settings.manage_cachet.toggles.dynamic_favicon'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.dynamic_favicon_helper')),
                     ]),
 
                 Section::make(__('cachet::settings.manage_cachet.api_settings_title'))

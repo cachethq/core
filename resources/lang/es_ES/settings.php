@@ -37,6 +37,8 @@ return [
             'api_enabled_helper' => 'Permitir el acceso a la API de Cachet. Si se desactiva, todas las peticiones a la API devolverán 404.',
             'api_protected' => 'Requerir autenticación',
             'api_protected_helper' => 'Exigir un token de API para todas las peticiones, incluidos los endpoints de solo lectura.',
+            'dynamic_favicon' => 'Favicon Dinámico',
+            'dynamic_favicon_helper' => 'Actualiza el favicon para reflejar el estado actual de tus sistemas.',
         ],
         'display_settings_title' => 'Configuración de visualización',
         'api_settings_title' => 'Configuración de la API',
