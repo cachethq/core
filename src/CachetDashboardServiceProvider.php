@@ -2,6 +2,7 @@
 
 namespace Cachet;
 
+use Cachet\Filament\MultiFactor\AppAuthentication;
 use Cachet\Filament\Pages\EditProfile;
 use Cachet\Http\Middleware\AuthenticateSession;
 use Cachet\Http\Middleware\SetAppLocale;
@@ -40,6 +41,9 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->default()
             ->login()
             ->passwordReset()
+            ->multiFactorAuthentication([
+                AppAuthentication::make()->recoverable(),
+            ])
             ->profile(EditProfile::class)
             ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->brandLogoHeight('2rem')

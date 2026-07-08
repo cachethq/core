@@ -131,6 +131,19 @@ class UserResource extends Resource
                     ->icon('heroicon-o-check-badge')
                     ->disabled(fn (User $record): bool => $record->hasVerifiedEmail())
                     ->action(fn (Builder $query, User $record) => $record->sendEmailVerificationNotification()),
+                Action::make('reset-two-factor')
+                    ->label(__('cachet::user.list.actions.reset_two_factor'))
+                    ->icon('heroicon-o-shield-exclamation')
+                    ->requiresConfirmation()
+                    ->modalDescription(__('cachet::user.list.actions.reset_two_factor_confirmation'))
+                    ->visible(fn (User $record): bool => filled($record->getAppAuthenticationSecret()))
+                    ->action(function (Action $action, User $record): void {
+                        $record->saveAppAuthenticationSecret(null);
+                        $record->saveAppAuthenticationRecoveryCodes(null);
+
+                        $action->success();
+                    })
+                    ->successNotificationTitle(__('cachet::user.list.actions.reset_two_factor_success')),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

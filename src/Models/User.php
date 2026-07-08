@@ -4,6 +4,10 @@ namespace Cachet\Models;
 
 use Cachet\Concerns\CachetUser;
 use Cachet\Database\Factories\UserFactory;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
+use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
+use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -20,11 +24,13 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string $password
  * @property bool $is_admin
  * @property string $preferred_locale
+ * @property ?string $app_authentication_secret
+ * @property ?array $app_authentication_recovery_codes
  */
-class User extends Authenticatable implements CachetUser, HasLocalePreference, MustVerifyEmail
+class User extends Authenticatable implements CachetUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasLocalePreference, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, MustVerifyEmailTrait, Notifiable;
+    use HasApiTokens, HasFactory, InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, MustVerifyEmailTrait, Notifiable;
 
     /**
      * The attributes that are mass assignable.
