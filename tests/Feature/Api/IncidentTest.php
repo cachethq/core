@@ -563,3 +563,32 @@ it('shows an authenticated incident to authenticated users', function () {
     $response->assertOk();
     $response->assertJsonPath('data.attributes.id', $incident->id);
 });
+
+it('does not reveal component groups hidden from guests through incident includes', function () {
+    $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $component = Component::factory()->for($hiddenGroup, 'group')->create();
+    $incident = Incident::factory()->create();
+    $incident->components()->attach($component, ['component_status' => ComponentStatusEnum::partial_outage->value]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id.'?include=components.group');
+
+    $response->assertOk();
+
+    $included = collect($response->json('included'));
+
+    expect($included->firstWhere('attributes.name', $hiddenGroup->name))->toBeNull();
+});
+
+it('lists authenticated incidents to callers presenting a bearer token', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('api')->plainTextToken;
+
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/incidents', ['Authorization' => 'Bearer '.$token]);
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});

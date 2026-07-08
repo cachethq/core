@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
@@ -13,29 +14,25 @@ use Cachet\Filters\MetaFilter;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
+use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Number;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Components', weight: 1)]
 class ComponentController extends Controller
 {
+    use ChecksApiAuthentication;
     use GuardsApiAbilities;
-
-    /**
-     * The list of allowed includes.
-     */
-    public const ALLOWED_INCLUDES = [
-        'group',
-        'incidents',
-        'meta',
-    ];
 
     /**
      * List Components
@@ -50,7 +47,7 @@ class ComponentController extends Controller
     public function index(Request $request)
     {
         $components = QueryBuilder::for($this->visibleComponents())
-            ->allowedIncludes(self::ALLOWED_INCLUDES)
+            ->allowedIncludes($this->allowedIncludes())
             ->allowedFilters([
                 'name',
                 AllowedFilter::exact('status'),
@@ -64,21 +61,41 @@ class ComponentController extends Controller
     }
 
     /**
+     * The list of allowed includes, scoped to the current caller.
+     *
+     * @return array<int, string|Collection<int, AllowedInclude>>
+     */
+    protected function allowedIncludes(): array
+    {
+        return [
+            'group',
+            AllowedInclude::callback('incidents', function (BelongsToMany $query): void {
+                /** @var BelongsToMany<Incident, Component> $query */
+                $query->visible($this->isAuthenticated());
+            }),
+            'meta',
+        ];
+    }
+
+    /**
      * Base query scoping components to those visible to the current caller.
      *
      * Components have no visibility of their own; they inherit it from their
-     * group. Ungrouped components are always public, matching the status page.
+     * group. Ungrouped components are always public and disabled components
+     * are hidden from guests, matching the status page.
      *
      * @return Builder<Component>
      */
     protected function visibleComponents(): Builder
     {
-        $visibleGroups = ComponentGroup::query()->visible(auth()->check())->select('id');
+        $visibleGroups = ComponentGroup::query()->visible($this->isAuthenticated())->select('id');
 
-        return Component::query()->where(function ($query) use ($visibleGroups): void {
-            $query->whereNull('component_group_id')
-                ->orWhereIn('component_group_id', $visibleGroups);
-        });
+        return Component::query()
+            ->unless($this->isAuthenticated(), fn (Builder $query) => $query->enabled())
+            ->where(function ($query) use ($visibleGroups): void {
+                $query->whereNull('component_group_id')
+                    ->orWhereIn('component_group_id', $visibleGroups);
+            });
     }
 
     /**
@@ -101,8 +118,8 @@ class ComponentController extends Controller
     #[QueryParameter('include', 'Include related data (group, incidents, meta).', example: 'meta')]
     public function show(Component $component)
     {
-        $componentQuery = QueryBuilder::for($this->visibleComponents()->enabled())
-            ->allowedIncludes(self::ALLOWED_INCLUDES)
+        $componentQuery = QueryBuilder::for($this->visibleComponents())
+            ->allowedIncludes($this->allowedIncludes())
             ->findOrFail($component->id);
 
         return ComponentResource::make($componentQuery)

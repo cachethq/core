@@ -5,36 +5,54 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Incident\CreateIncident;
 use Cachet\Actions\Incident\DeleteIncident;
 use Cachet\Actions\Incident\UpdateIncident;
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Filters\MetaFilter;
 use Cachet\Http\Resources\Incident as IncidentResource;
+use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Number;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Incidents', weight: 3)]
 class IncidentController extends Controller
 {
+    use ChecksApiAuthentication;
     use GuardsApiAbilities;
 
     /**
-     * The list of allowed includes.
+     * The list of allowed includes, scoped to the current caller.
+     *
+     * Component groups hidden from the caller are excluded from the nested
+     * include so a visible incident cannot reveal them.
+     *
+     * @return array<int, string|Collection<int, AllowedInclude>>
      */
-    public const ALLOWED_INCLUDES = [
-        'components',
-        'components.group',
-        'updates',
-        'user',
-        'meta',
-    ];
+    protected function allowedIncludes(): array
+    {
+        return [
+            'components',
+            AllowedInclude::callback('components.group', function (BelongsTo $query): void {
+                /** @var BelongsTo<ComponentGroup, Component> $query */
+                $query->visible($this->isAuthenticated());
+            }),
+            'updates',
+            'user',
+            'meta',
+        ];
+    }
 
     /**
      * List Incidents
@@ -45,8 +63,8 @@ class IncidentController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $incidents = QueryBuilder::for(Incident::query()->with('updates')->visible(auth()->check()))
-            ->allowedIncludes(self::ALLOWED_INCLUDES)
+        $incidents = QueryBuilder::for(Incident::query()->with('updates')->visible($this->isAuthenticated()))
+            ->allowedIncludes($this->allowedIncludes())
             ->allowedFilters([
                 'name',
                 AllowedFilter::exact('status'),
@@ -80,8 +98,8 @@ class IncidentController extends Controller
     #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     public function show(Incident $incident)
     {
-        $incidentQuery = QueryBuilder::for(Incident::query()->visible(auth()->check()))
-            ->allowedIncludes(self::ALLOWED_INCLUDES)
+        $incidentQuery = QueryBuilder::for(Incident::query()->visible($this->isAuthenticated()))
+            ->allowedIncludes($this->allowedIncludes())
             ->findOrFail($incident->id);
 
         return IncidentResource::make($incidentQuery)

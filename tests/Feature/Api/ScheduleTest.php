@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
@@ -480,4 +481,19 @@ it('can delete a schedule', function () {
     $this->assertSoftDeleted('schedules', [
         'id' => $schedule->id,
     ]);
+});
+
+it('does not reveal component groups hidden from guests through schedule includes', function () {
+    $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $component = Component::factory()->for($hiddenGroup, 'group')->create();
+    $schedule = Schedule::factory()->create();
+    $schedule->components()->attach($component, ['component_status' => ComponentStatusEnum::under_maintenance->value]);
+
+    $response = getJson('/status/api/schedules/'.$schedule->id.'?include=components.group');
+
+    $response->assertOk();
+
+    $included = collect($response->json('included'));
+
+    expect($included->firstWhere('attributes.name', $hiddenGroup->name))->toBeNull();
 });

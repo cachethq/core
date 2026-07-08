@@ -528,3 +528,41 @@ it('shows an authenticated component group to authenticated users', function () 
     $response->assertOk();
     $response->assertJsonPath('data.attributes.id', $componentGroup->id);
 });
+
+it('does not include disabled components in a group to guests', function () {
+    $group = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Component::factory()->enabled()->create(['component_group_id' => $group->id]);
+    Component::factory()->disabled()->create(['component_group_id' => $group->id]);
+
+    $response = getJson('/status/api/component-groups/'.$group->id.'?include=components');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'included');
+});
+
+it('includes disabled components in a group to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $group = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Component::factory()->enabled()->create(['component_group_id' => $group->id]);
+    Component::factory()->disabled()->create(['component_group_id' => $group->id]);
+
+    $response = getJson('/status/api/component-groups/'.$group->id.'?include=components');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'included');
+});
+
+it('lists authenticated component groups to callers presenting a bearer token', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('api')->plainTextToken;
+
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/component-groups', ['Authorization' => 'Bearer '.$token]);
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});

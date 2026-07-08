@@ -4,6 +4,7 @@ namespace Cachet\Http\Controllers\Api;
 
 use Cachet\Actions\Metric\CreateMetricPoint;
 use Cachet\Actions\Metric\DeleteMetricPoint;
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Metric\CreateMetricPointRequestData;
 use Cachet\Http\Resources\MetricPoint as MetricPointResource;
@@ -20,6 +21,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 #[Group('Metric Points', weight: 7)]
 class MetricPointController extends Controller
 {
+    use ChecksApiAuthentication;
     use GuardsApiAbilities;
 
     /**
@@ -78,7 +80,7 @@ class MetricPointController extends Controller
     protected function ensureMetricVisible(Metric $metric): void
     {
         abort_unless(
-            Metric::query()->visible(auth()->check())->whereKey($metric->getKey())->exists(),
+            Metric::query()->visible($this->isAuthenticated())->whereKey($metric->getKey())->exists(),
             Response::HTTP_NOT_FOUND,
         );
     }

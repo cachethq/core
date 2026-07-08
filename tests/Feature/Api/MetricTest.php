@@ -373,3 +373,17 @@ it('shows an authenticated metric to authenticated users', function () {
     $response->assertOk();
     $response->assertJsonPath('data.attributes.id', $metric->id);
 });
+
+it('lists authenticated metrics to callers presenting a bearer token', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('api')->plainTextToken;
+
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/metrics', ['Authorization' => 'Bearer '.$token]);
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});

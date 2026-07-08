@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Data\Requests\IncidentUpdate\EditIncidentUpdateRequestData;
@@ -24,6 +25,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 #[Group('Incident Updates', weight: 4)]
 class IncidentUpdateController extends Controller
 {
+    use ChecksApiAuthentication;
     use GuardsApiAbilities;
 
     /**
@@ -86,7 +88,7 @@ class IncidentUpdateController extends Controller
     protected function ensureIncidentVisible(Incident $incident): void
     {
         abort_unless(
-            Incident::query()->visible(auth()->check())->whereKey($incident->getKey())->exists(),
+            Incident::query()->visible($this->isAuthenticated())->whereKey($incident->getKey())->exists(),
             Response::HTTP_NOT_FOUND,
         );
     }

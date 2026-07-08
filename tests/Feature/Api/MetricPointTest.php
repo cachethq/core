@@ -185,3 +185,12 @@ it('lists points of an authenticated metric to authenticated users', function ()
     $response->assertOk();
     $response->assertJsonCount(2, 'data');
 });
+
+it('does not show a point of a metric hidden from guests', function () {
+    $metric = Metric::factory()->hasMetricPoints(1)->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $point = $metric->metricPoints()->first();
+
+    $response = getJson('/status/api/metrics/'.$metric->id.'/points/'.$point->id);
+
+    $response->assertNotFound();
+});
