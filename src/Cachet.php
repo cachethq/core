@@ -99,6 +99,7 @@ class Cachet
             'metric-points' => ['manage', 'delete'],
             'schedules' => ['manage', 'delete'],
             'schedule-updates' => ['manage', 'delete'],
+            'subscribers' => ['manage', 'delete'],
         ];
     }
 

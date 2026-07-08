@@ -11,6 +11,7 @@ use Cachet\Http\Controllers\Api\MetricPointController;
 use Cachet\Http\Controllers\Api\ScheduleController;
 use Cachet\Http\Controllers\Api\ScheduleUpdateController;
 use Cachet\Http\Controllers\Api\StatusController;
+use Cachet\Http\Controllers\Api\SubscriberController;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResources([
@@ -63,6 +64,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     ])
         ->parameter('points', 'metricPoint')
         ->scoped();
+
+    Route::apiResource('subscribers', SubscriberController::class);
 });
 
 Route::get('/ping', [GeneralController::class, 'ping'])->name('ping');

@@ -1,0 +1,110 @@
+<?php
+
+namespace Cachet\Http\Controllers\Api;
+
+use Cachet\Actions\Subscriber\CreateSubscriber;
+use Cachet\Actions\Subscriber\UnsubscribeSubscriber;
+use Cachet\Actions\Subscriber\UpdateSubscriber;
+use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Data\Requests\Subscriber\CreateSubscriberRequestData;
+use Cachet\Data\Requests\Subscriber\UpdateSubscriberRequestData;
+use Cachet\Http\Resources\Subscriber as SubscriberResource;
+use Cachet\Models\Subscriber;
+use Dedoc\Scramble\Attributes\Group;
+use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
+
+#[Group('Subscribers', weight: 10)]
+class SubscriberController extends Controller
+{
+    use GuardsApiAbilities;
+
+    /**
+     * List Subscribers
+     */
+    #[QueryParameter('filter[email]', 'Filter by email address.', example: 'john@example.com')]
+    #[QueryParameter('filter[global]', 'Filter by global subscription status.', type: 'bool', example: '1')]
+    #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
+    #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
+    public function index(Request $request)
+    {
+        $subscribers = QueryBuilder::for(Subscriber::class)
+            ->allowedIncludes(['components'])
+            ->allowedFilters([
+                'email',
+                AllowedFilter::exact('global'),
+            ])
+            ->allowedSorts(['email', 'id'])
+            ->simplePaginate($request->input('per_page', 15));
+
+        return SubscriberResource::collection($subscribers);
+    }
+
+    /**
+     * Create Subscriber
+     */
+    public function store(CreateSubscriberRequestData $data, CreateSubscriber $createSubscriberAction)
+    {
+        $this->guard('subscribers.manage');
+
+        $subscriber = $createSubscriberAction->handle(
+            $data->email,
+            $data->global ?? true,
+            $data->components ?? [],
+            $data->verified ?? false,
+        );
+
+        if (! $subscriber->hasVerifiedEmail()) {
+            $subscriber->sendEmailVerificationNotification();
+        }
+
+        return SubscriberResource::make($subscriber);
+    }
+
+    /**
+     * Get Subscriber
+     */
+    public function show(Subscriber $subscriber)
+    {
+        $subscriberQuery = QueryBuilder::for(Subscriber::class)
+            ->allowedIncludes(['components'])
+            ->find($subscriber->id);
+
+        return SubscriberResource::make($subscriberQuery)
+            ->response()
+            ->setStatusCode(Response::HTTP_OK);
+    }
+
+    /**
+     * Update Subscriber
+     */
+    public function update(UpdateSubscriberRequestData $data, Subscriber $subscriber, UpdateSubscriber $updateSubscriberAction)
+    {
+        $this->guard('subscribers.manage');
+
+        $updateSubscriberAction->handle(
+            $subscriber,
+            email: $data->email,
+            global: $data->global,
+            components: $data->components,
+        );
+
+        return SubscriberResource::make($subscriber->fresh());
+    }
+
+    /**
+     * Delete Subscriber
+     */
+    public function destroy(Subscriber $subscriber, UnsubscribeSubscriber $unsubscribeSubscriberAction)
+    {
+        $this->guard('subscribers.delete');
+
+        $unsubscribeSubscriberAction->handle($subscriber);
+
+        return response()->noContent();
+    }
+}

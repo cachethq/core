@@ -9,7 +9,7 @@ class UpdateSubscriber
     /**
      * Handle the action.
      */
-    public function handle(Subscriber $subscriber, ?string $email = null, ?bool $global = null, array $components = []): Subscriber
+    public function handle(Subscriber $subscriber, ?string $email = null, ?bool $global = null, ?array $components = null): Subscriber
     {
         $subscriber->update(array_filter([
             'email' => $email,
@@ -20,7 +20,9 @@ class UpdateSubscriber
             $subscriber->resetVerification();
         }
 
-        $subscriber->components()->sync($components);
+        if ($components !== null) {
+            $subscriber->components()->sync($components);
+        }
 
         return $subscriber;
     }
