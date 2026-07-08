@@ -38,6 +38,10 @@ class AppSettings extends Settings
 
     public bool $enable_external_dependencies = true;
 
+    public bool $api_enabled = true;
+
+    public bool $api_protected = false;
+
     public static function group(): string
     {
         return 'app';

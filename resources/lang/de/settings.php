@@ -32,8 +32,13 @@ return [
             'recent_incidents_only_helper' => 'Beschränke die Vorfallliste auf einen aktuellen Zeitraum, anstatt alle anzuzeigen.',
             'recent_incidents_days' => 'Anzahl der Tage, an denen aktuelle Vorfälle angezeigt werden sollen',
             'recent_incidents_days_helper' => 'Wie weit zurück bei der Anzeige aktueller Vorfälle gesucht werden soll.',
+            'api_enabled' => 'API aktivieren',
+            'api_enabled_helper' => 'Zugriff auf die Cachet-API erlauben. Wenn deaktiviert, geben alle API-Anfragen 404 zurück.',
+            'api_protected' => 'Authentifizierung erforderlich',
+            'api_protected_helper' => 'Für alle API-Anfragen einen API-Token verlangen, auch für rein lesende Endpunkte.',
         ],
         'display_settings_title' => 'Anzeigeeinstellungen',
+        'api_settings_title' => 'API-Einstellungen',
     ],
     'manage_customization' => [
         'header_label' => 'Benutzerdefinierter HTML-Header',

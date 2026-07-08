@@ -32,8 +32,13 @@ return [
             'recent_incidents_only_helper' => 'Limit the incidents list to a recent window instead of showing all.',
             'recent_incidents_days' => 'Number of Days to Show Recent Incidents',
             'recent_incidents_days_helper' => 'How far back to look when listing recent incidents.',
+            'api_enabled' => 'Enable API',
+            'api_enabled_helper' => 'Allow access to the Cachet API. When disabled, all API requests return a 404.',
+            'api_protected' => 'Require Authentication',
+            'api_protected_helper' => 'Require an API token for all API requests, including read-only endpoints.',
         ],
         'display_settings_title' => 'Display Settings',
+        'api_settings_title' => 'API Settings',
     ],
     'manage_customization' => [
         'header_label' => 'Custom Header HTML',

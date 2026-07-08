@@ -33,8 +33,13 @@ return [
             'recent_incidents_only_helper' => 'Beperk de incidentenlijst tot een recent venster in plaats van alle te tonen.',
             'recent_incidents_days' => 'Aantal dagen waarop actuele incidenten moeten worden weergegeven',
             'recent_incidents_days_helper' => 'Hoe ver terug gekeken moet worden bij het tonen van recente incidenten.',
+            'api_enabled' => 'API inschakelen',
+            'api_enabled_helper' => 'Sta toegang tot de Cachet API toe. Indien uitgeschakeld, geven alle API-verzoeken een 404 terug.',
+            'api_protected' => 'Authenticatie vereist',
+            'api_protected_helper' => 'Vereis een API-token voor alle API-verzoeken, inclusief alleen-lezen endpoints.',
         ],
         'display_settings_title' => 'Weergave-instellingen',
+        'api_settings_title' => 'API-instellingen',
     ],
     'manage_customization' => [
         'header_label' => 'Aangepaste HTML-Header',

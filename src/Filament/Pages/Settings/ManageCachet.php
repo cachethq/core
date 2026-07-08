@@ -9,6 +9,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 
 use function __;
@@ -105,6 +106,20 @@ class ManageCachet extends SettingsPage
                         Toggle::make('only_disrupted_days')
                             ->label(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.only_show_disrupted_days_helper')),
+                    ]),
+
+                Section::make(__('cachet::settings.manage_cachet.api_settings_title'))
+                    ->columns(2)
+                    ->schema([
+                        Toggle::make('api_enabled')
+                            ->label(__('cachet::settings.manage_cachet.toggles.api_enabled'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.api_enabled_helper'))
+                            ->afterStateUpdated(fn (Set $set) => $set('api_protected', false))
+                            ->reactive(),
+                        Toggle::make('api_protected')
+                            ->label(__('cachet::settings.manage_cachet.toggles.api_protected'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.api_protected_helper'))
+                            ->visible(fn (Get $get) => $get('api_enabled') === true),
                     ]),
             ]);
     }

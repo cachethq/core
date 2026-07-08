@@ -33,8 +33,13 @@ return [
             'enable_external_dependencies_helper' => '允许 Cachet 从外部服务加载字体等资源。',
             'recent_incidents_days' => '显示最近事件的天数',
             'recent_incidents_days_helper' => '列出最近事件时回溯多远。',
+            'api_enabled' => '启用 API',
+            'api_enabled_helper' => '允许访问 Cachet API。禁用后,所有 API 请求将返回 404。',
+            'api_protected' => '需要身份验证',
+            'api_protected_helper' => '所有 API 请求(包括只读接口)都需要 API 令牌。',
         ],
         'display_settings_title' => '显示设置',
+        'api_settings_title' => 'API 设置',
     ],
     'manage_customization' => [
         'header_label' => '自定义 Header HTML',

@@ -33,8 +33,13 @@ return [
             'enable_external_dependencies_helper' => '允許 Cachet 從外部服務載入字型等資源。',
             'recent_incidents_days' => '顯示最近事件的天數',
             'recent_incidents_days_helper' => '列出最近事件時回溯多遠。',
+            'api_enabled' => '啟用 API',
+            'api_enabled_helper' => '允許存取 Cachet API。停用後,所有 API 請求將返回 404。',
+            'api_protected' => '需要身份驗證',
+            'api_protected_helper' => '所有 API 請求(包括唯讀端點)都需要 API 權杖。',
         ],
         'display_settings_title' => '顯示設定',
+        'api_settings_title' => 'API 設定',
     ],
     'manage_customization' => [
         'header_label' => '自定義 Header HTML',

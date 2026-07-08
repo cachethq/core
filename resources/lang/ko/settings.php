@@ -33,8 +33,13 @@ return [
             'enable_external_dependencies_helper' => 'Cachet가 외부 서비스에서 글꼴 등의 자산을 로드할 수 있도록 허용합니다.',
             'recent_incidents_days' => '최근 사고를 표시할 일수',
             'recent_incidents_days_helper' => '최근 사고를 나열할 때 얼마나 거슬러 올라갈지 결정합니다.',
+            'api_enabled' => 'API 활성화',
+            'api_enabled_helper' => 'Cachet API에 대한 접근을 허용합니다. 비활성화하면 모든 API 요청이 404를 반환합니다.',
+            'api_protected' => '인증 필요',
+            'api_protected_helper' => '읽기 전용 엔드포인트를 포함한 모든 API 요청에 API 토큰을 요구합니다.',
         ],
         'display_settings_title' => '표시 설정',
+        'api_settings_title' => 'API 설정',
     ],
     'manage_customization' => [
         'header_label' => '사용자 정의 헤더 HTML',

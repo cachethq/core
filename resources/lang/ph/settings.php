@@ -33,8 +33,13 @@ return [
             'enable_external_dependencies_helper' => 'Payagan ang Cachet na mag-load ng mga asset tulad ng mga font mula sa mga panlabas na serbisyo.',
             'recent_incidents_days' => 'Bilang ng Araw para Ipakita ang Mga Kamakailang Insidente',
             'recent_incidents_days_helper' => 'Gaano kalayo bumalik kapag naglilista ng mga kamakailang insidente.',
+            'api_enabled' => 'Paganahin ang API',
+            'api_enabled_helper' => 'Payagan ang pag-access sa Cachet API. Kapag naka-disable, lahat ng API request ay magbabalik ng 404.',
+            'api_protected' => 'Kailangan ng Authentication',
+            'api_protected_helper' => 'Mangailangan ng API token para sa lahat ng API request, kabilang ang mga read-only na endpoint.',
         ],
         'display_settings_title' => 'Mga Setting ng Display',
+        'api_settings_title' => 'Mga Setting ng API',
     ],
     'manage_customization' => [
         'header_label' => 'Custom na HTML para sa Header',

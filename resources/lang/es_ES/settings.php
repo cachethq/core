@@ -33,8 +33,13 @@ return [
             'enable_external_dependencies_helper' => 'Permite a Cachet cargar recursos como fuentes desde servicios externos.',
             'recent_incidents_days' => 'Número de Días para Mostrar Incidentes Recientes',
             'recent_incidents_days_helper' => 'Cuánto tiempo atrás buscar al listar incidentes recientes.',
+            'api_enabled' => 'Activar API',
+            'api_enabled_helper' => 'Permitir el acceso a la API de Cachet. Si se desactiva, todas las peticiones a la API devolverán 404.',
+            'api_protected' => 'Requerir autenticación',
+            'api_protected_helper' => 'Exigir un token de API para todas las peticiones, incluidos los endpoints de solo lectura.',
         ],
         'display_settings_title' => 'Configuración de visualización',
+        'api_settings_title' => 'Configuración de la API',
     ],
     'manage_customization' => [
         'header_label' => 'Encabezado Personalizado HTML',

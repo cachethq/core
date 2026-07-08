@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\User;
+use Cachet\Http\Middleware\AuthenticateApiIfProtected;
+use Cachet\Http\Middleware\EnsureApiIsEnabled;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return [
@@ -89,6 +91,8 @@ return [
      |
      */
     'api_middleware' => [
+        EnsureApiIsEnabled::class,
+        AuthenticateApiIfProtected::class,
         SubstituteBindings::class,
     ],
 
