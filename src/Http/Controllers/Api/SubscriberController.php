@@ -15,6 +15,7 @@ use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Number;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -39,7 +40,7 @@ class SubscriberController extends Controller
                 AllowedFilter::exact('global'),
             ])
             ->allowedSorts(['email', 'id'])
-            ->simplePaginate($request->input('per_page', 15));
+            ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
         return SubscriberResource::collection($subscribers);
     }

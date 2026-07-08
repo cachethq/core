@@ -7,7 +7,6 @@ use Cachet\Notifications\LongRunningIncidentNotification;
 use Cachet\Settings\MailSettings;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Notification;
 
 class NotifyLongRunningIncidentsCommand extends Command
 {
@@ -53,10 +52,10 @@ class NotifyLongRunningIncidentsCommand extends Command
             return 0;
         }
 
-        $users = config('cachet.user_model')::query()->get();
-
-        $incidents->each(function (Incident $incident) use ($users) {
-            Notification::send($users, new LongRunningIncidentNotification($incident));
+        $incidents->each(function (Incident $incident) {
+            config('cachet.user_model')::query()
+                ->cursor()
+                ->each(fn ($user) => $user->notify(new LongRunningIncidentNotification($incident)));
 
             $incident->forceFill(['long_running_notified_at' => Carbon::now()])->saveQuietly();
         });

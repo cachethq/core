@@ -4,8 +4,10 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\ComponentCheckFactory;
 use Cachet\Enums\ComponentStatusEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -28,6 +30,8 @@ class ComponentCheck extends Model
 {
     /** @use HasFactory<ComponentCheckFactory> */
     use HasFactory;
+
+    use MassPrunable;
 
     /** @var array<string, string> */
     protected $casts = [
@@ -56,6 +60,18 @@ class ComponentCheck extends Model
     public function component(): BelongsTo
     {
         return $this->belongsTo(Component::class);
+    }
+
+    /**
+     * Get the prunable model query.
+     *
+     * @return Builder<static>
+     */
+    public function prunable(): Builder
+    {
+        return static::query()->where('created_at', '<', now()->subDays(
+            config('cachet.checks.prune_checks_after_days', 30)
+        ));
     }
 
     /**

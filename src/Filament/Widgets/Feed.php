@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Widgets;
 
+use Cachet\Cachet;
 use Filament\Widgets\Widget;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Blade;
@@ -60,7 +61,7 @@ class Feed extends Widget
         $useInternalErrors = libxml_use_internal_errors(true);
 
         try {
-            $response = Http::timeout(5)->get($uri);
+            $response = Http::withUserAgent(Cachet::USER_AGENT)->timeout(5)->get($uri);
 
             $xml = simplexml_load_string($response->body());
 

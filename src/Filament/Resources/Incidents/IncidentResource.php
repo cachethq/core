@@ -14,6 +14,7 @@ use Cachet\Filament\Resources\Incidents\RelationManagers\ComponentsRelationManag
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Incident;
 use Cachet\Settings\MailSettings;
+use Cachet\Status;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -35,6 +36,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class IncidentResource extends Resource
 {
@@ -253,11 +255,14 @@ class IncidentResource extends Resource
         return trans_choice('cachet::incident.resource_label', 2);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with('updates');
+    }
+
     public static function getNavigationBadge(): ?string
     {
-        return (string) Incident::unresolved()
-            ->get()
-            ->filter(fn (Incident $incident) => in_array($incident->latest_status, IncidentStatusEnum::unresolved()))->count();
+        return (string) (int) app(Status::class)->incidents()->unresolved;
     }
 
     public static function getNavigationBadgeColor(): string

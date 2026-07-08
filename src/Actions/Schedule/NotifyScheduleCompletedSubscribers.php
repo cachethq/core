@@ -7,7 +7,6 @@ use Cachet\Models\Schedule;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\ScheduleCompletedNotification;
 use Cachet\Settings\MailSettings;
-use Illuminate\Support\Facades\Notification;
 
 class NotifyScheduleCompletedSubscribers
 {
@@ -37,10 +36,11 @@ class NotifyScheduleCompletedSubscribers
             return;
         }
 
-        Notification::send(
-            Subscriber::query()->verified()->subscribedTo($schedule)->get(),
-            new ScheduleCompletedNotification($schedule),
-        );
+        Subscriber::query()
+            ->verified()
+            ->subscribedTo($schedule)
+            ->cursor()
+            ->each(fn (Subscriber $subscriber) => $subscriber->notify(new ScheduleCompletedNotification($schedule)));
 
         $schedule->forceFill(['completed_notified_at' => now()])->saveQuietly();
     }

@@ -104,6 +104,10 @@ class ComponentGroup extends Model
 
     public function hasActiveIncident(): bool
     {
+        if ($this->components->every(fn (Component $component) => $component->hasAttribute('incidents_count'))) {
+            return $this->components->contains(fn (Component $component) => $component->incidents_count > 0);
+        }
+
         return Incident::query()
             ->unresolved()
             ->whereHas('components', fn ($query) => $query->whereIn('components.id', $this->components->pluck('id')))

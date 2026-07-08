@@ -8,7 +8,6 @@ use Cachet\Models\Subscriber;
 use Cachet\Notifications\ScheduleRescheduledNotification;
 use Cachet\Settings\MailSettings;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Notification;
 
 class NotifyScheduleRescheduledSubscribers
 {
@@ -34,9 +33,10 @@ class NotifyScheduleRescheduledSubscribers
             return;
         }
 
-        Notification::send(
-            Subscriber::query()->verified()->subscribedTo($schedule)->get(),
-            new ScheduleRescheduledNotification($schedule, $previousScheduledAt, $previousCompletedAt),
-        );
+        Subscriber::query()
+            ->verified()
+            ->subscribedTo($schedule)
+            ->cursor()
+            ->each(fn (Subscriber $subscriber) => $subscriber->notify(new ScheduleRescheduledNotification($schedule, $previousScheduledAt, $previousCompletedAt)));
     }
 }

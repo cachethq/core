@@ -29,7 +29,7 @@ class EditWebhookSubscription extends EditRecord
                 $this->getFormContentComponent(),
                 $this->getRelationManagersContentComponent(),
                 view('cachet::filament.widgets.webhook-attempts', [
-                    'attempts' => $webhookSubscription->attempts,
+                    'attempts' => $webhookSubscription->attempts()->latest()->limit(50)->get(),
                 ]),
             ]);
     }

@@ -106,6 +106,16 @@ class Component extends Model
     }
 
     /**
+     * Get the unresolved incidents for the component, newest first.
+     *
+     * @return BelongsToMany<Incident, $this, IncidentComponent>
+     */
+    public function unresolvedIncidents(): BelongsToMany
+    {
+        return $this->incidents()->unresolved()->latest();
+    }
+
+    /**
      * Get the schedules for the component.
      *
      * @return BelongsToMany<Schedule, $this>
@@ -174,10 +184,14 @@ class Component extends Model
 
     /**
      * Get the latest unresolved incident affecting the component.
+     *
+     * Uses the eager-loaded relation when available to avoid a query per component.
      */
     public function latestUnresolvedIncident(): Attribute
     {
-        return Attribute::get(fn () => $this->incidents()->unresolved()->latest()->first())->shouldCache();
+        return Attribute::get(fn () => $this->relationLoaded('unresolvedIncidents')
+            ? $this->unresolvedIncidents->first()
+            : $this->unresolvedIncidents()->first())->shouldCache();
     }
 
     /**

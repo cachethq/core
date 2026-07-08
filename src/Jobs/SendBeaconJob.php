@@ -23,6 +23,7 @@ class SendBeaconJob
         }
 
         $request = Http::asJson()
+            ->withUserAgent(Cachet::USER_AGENT)
             ->retry(3)
             ->post('https://cachethq.io/beacon', [
                 'install_id' => app(AppSettings::class)->install_id,

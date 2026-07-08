@@ -14,8 +14,10 @@ use Cachet\Models\Update;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Number;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -29,7 +31,7 @@ class ScheduleUpdateController extends Controller
      */
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
-    public function index(Schedule $schedule)
+    public function index(Request $request, Schedule $schedule)
     {
         $query = Update::query()
             ->where('updateable_id', $schedule->id)
@@ -38,7 +40,7 @@ class ScheduleUpdateController extends Controller
         $updates = QueryBuilder::for($query)
             ->allowedSorts(['created_at'])
             ->allowedIncludes(['schedule'])
-            ->simplePaginate(request('per_page', 15));
+            ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
         return UpdateResource::collection($updates);
     }

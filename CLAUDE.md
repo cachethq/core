@@ -116,3 +116,9 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 - Add useful array shape type definitions when appropriate.
 </laravel-boost-guidelines>
+
+# Project Conventions
+
+## HTTP Requests
+
+- Never use the `request()` helper. Inject `Illuminate\Http\Request` into the controller method and read input from `$request` (e.g. `$request->integer('per_page', 15)`).

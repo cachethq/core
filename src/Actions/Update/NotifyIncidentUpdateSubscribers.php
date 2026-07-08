@@ -8,7 +8,6 @@ use Cachet\Models\Subscriber;
 use Cachet\Models\Update;
 use Cachet\Notifications\IncidentUpdatedNotification;
 use Cachet\Settings\MailSettings;
-use Illuminate\Support\Facades\Notification;
 
 class NotifyIncidentUpdateSubscribers
 {
@@ -40,9 +39,10 @@ class NotifyIncidentUpdateSubscribers
             return;
         }
 
-        Notification::send(
-            Subscriber::query()->verified()->subscribedTo($incident)->get(),
-            new IncidentUpdatedNotification($update),
-        );
+        Subscriber::query()
+            ->verified()
+            ->subscribedTo($incident)
+            ->cursor()
+            ->each(fn (Subscriber $subscriber) => $subscriber->notify(new IncidentUpdatedNotification($update)));
     }
 }

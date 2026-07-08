@@ -134,6 +134,31 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet Settings Cache
+     |--------------------------------------------------------------------------
+     |
+     | Cache Cachet's settings so they are not read from the database on every
+     | request. The cache is refreshed automatically whenever settings are
+     | saved, so it never serves stale values.
+     |
+     */
+    'settings_cache' => env('CACHET_SETTINGS_CACHE', true),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Component Checks
+     |--------------------------------------------------------------------------
+     |
+     | Configure how long component check results are kept before they are
+     | pruned by the model:prune scheduled task.
+     |
+     */
+    'checks' => [
+        'prune_checks_after_days' => env('CACHET_PRUNE_CHECKS_AFTER_DAYS', 30),
+    ],
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Webhooks
      |--------------------------------------------------------------------------
      |

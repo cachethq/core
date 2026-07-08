@@ -8,10 +8,16 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\Component;
 
 class Metrics extends Component
 {
+    /**
+     * How long the metrics are cached for, in seconds.
+     */
+    private const CACHE_TTL = 30;
+
     public function __construct(protected AppSettings $appSettings)
     {
         //
@@ -19,16 +25,22 @@ class Metrics extends Component
 
     public function render(): View
     {
-        $startDate = Carbon::now()->subDays(30);
+        $cacheKey = 'cachet::metrics.'.(auth()->check() ? 'users' : 'guests');
 
-        $metrics = $this->metrics($startDate);
+        $metrics = Cache::remember($cacheKey, self::CACHE_TTL, function () {
+            $startDate = Carbon::now()->subDays(30);
 
-        // Convert each metric point to Chart.js format (x, y)
-        $metrics->each(function ($metric) {
-            $metric->metricPoints->transform(fn ($point) => [
-                'x' => $point->created_at->utc(),
-                'y' => $point->value,
-            ]);
+            $metrics = $this->metrics($startDate);
+
+            // Convert each metric point to Chart.js format (x, y)
+            $metrics->each(function ($metric) {
+                $metric->metricPoints->transform(fn ($point) => [
+                    'x' => $point->created_at->utc(),
+                    'y' => $point->value,
+                ]);
+            });
+
+            return $metrics;
         });
 
         return view('cachet::components.metrics', [
@@ -37,14 +49,14 @@ class Metrics extends Component
     }
 
     /**
-     * Fetch the available metrics and their points.
+     * Fetch the available metrics and their points within the chart window.
      */
     private function metrics(Carbon $startDate): Collection
     {
         return Metric::query()
             ->visible(auth()->check())
             ->with([
-                'metricPoints' => fn ($query) => $query->orderBy('created_at'),
+                'metricPoints' => fn ($query) => $query->where('created_at', '>=', $startDate)->orderBy('created_at'),
             ])
             ->where('display_chart', true)
             ->where(fn (Builder $query) => $query->where('show_when_empty', true)->orWhereHas('metricPoints', fn (Builder $query) => $query->where('created_at', '>=', $startDate)))

@@ -15,6 +15,7 @@ use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Number;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -40,7 +41,7 @@ class IncidentController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $incidents = QueryBuilder::for(Incident::query())
+        $incidents = QueryBuilder::for(Incident::query()->with('updates'))
             ->allowedIncludes(self::ALLOWED_INCLUDES)
             ->allowedFilters([
                 'name',
@@ -51,7 +52,7 @@ class IncidentController extends Controller
             ])
             ->allowedSorts(['name', 'status', 'id', 'created_at'])
             ->defaultSort('-created_at')
-            ->simplePaginate($request->input('per_page', 15));
+            ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
         return IncidentResource::collection($incidents);
     }

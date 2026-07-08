@@ -49,7 +49,7 @@ class Components extends Widget implements HasSchemas
                 return Section::make($componentGroup->name)
                     ->schema(function () use ($componentGroup) {
                         return $this->components
-                            ->filter(fn (Component $component) => $componentGroup->is($component->group))
+                            ->filter(fn (Component $component) => $component->component_group_id === $componentGroup->getKey())
                             ->map(fn (Component $component) => Group::make([$this->buildToggleButton($component)]))
                             ->toArray();
                     })

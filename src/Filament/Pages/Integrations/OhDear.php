@@ -3,6 +3,7 @@
 namespace Cachet\Filament\Pages\Integrations;
 
 use Cachet\Actions\Integrations\ImportOhDearFeed;
+use Cachet\Cachet;
 use Cachet\Filament\Resources\ComponentGroups\ComponentGroupResource;
 use Cachet\Models\Component;
 use Filament\Forms\Components\Select;
@@ -103,6 +104,7 @@ class OhDear extends Page
 
         try {
             $ohDear = Http::baseUrl(rtrim($this->url))
+                ->withUserAgent(Cachet::USER_AGENT)
                 ->get('/json')
                 ->throw()
                 ->json();

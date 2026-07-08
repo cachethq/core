@@ -56,7 +56,9 @@ class PendingRouteRegistration
 
                 $router->get('/health', HealthController::class)->name('health');
 
-                $router->get('/rss', RssController::class)->name('rss');
+                $router->get('/rss', RssController::class)
+                    ->middleware('throttle:60,1')
+                    ->name('rss');
 
             });
 

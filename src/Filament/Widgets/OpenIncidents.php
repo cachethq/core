@@ -24,6 +24,7 @@ class OpenIncidents extends TableWidget
             ->query(
                 Incident::query()
                     ->unresolved()
+                    ->with('updates')
                     ->withCount('components')
                     ->orderByDesc('occurred_at')
             )

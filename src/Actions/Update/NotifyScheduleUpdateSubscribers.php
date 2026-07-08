@@ -7,7 +7,6 @@ use Cachet\Models\Subscriber;
 use Cachet\Models\Update;
 use Cachet\Notifications\ScheduleUpdatedNotification;
 use Cachet\Settings\MailSettings;
-use Illuminate\Support\Facades\Notification;
 
 class NotifyScheduleUpdateSubscribers
 {
@@ -35,9 +34,10 @@ class NotifyScheduleUpdateSubscribers
             return;
         }
 
-        Notification::send(
-            Subscriber::query()->verified()->subscribedTo($schedule)->get(),
-            new ScheduleUpdatedNotification($update),
-        );
+        Subscriber::query()
+            ->verified()
+            ->subscribedTo($schedule)
+            ->cursor()
+            ->each(fn (Subscriber $subscriber) => $subscriber->notify(new ScheduleUpdatedNotification($update)));
     }
 }

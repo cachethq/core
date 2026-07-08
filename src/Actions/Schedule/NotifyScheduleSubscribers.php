@@ -6,7 +6,6 @@ use Cachet\Models\Schedule;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\NewScheduleNotification;
 use Cachet\Settings\MailSettings;
-use Illuminate\Support\Facades\Notification;
 
 class NotifyScheduleSubscribers
 {
@@ -31,9 +30,10 @@ class NotifyScheduleSubscribers
             return;
         }
 
-        Notification::send(
-            Subscriber::query()->verified()->subscribedTo($schedule)->get(),
-            new NewScheduleNotification($schedule),
-        );
+        Subscriber::query()
+            ->verified()
+            ->subscribedTo($schedule)
+            ->cursor()
+            ->each(fn (Subscriber $subscriber) => $subscriber->notify(new NewScheduleNotification($schedule)));
     }
 }

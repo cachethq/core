@@ -12,8 +12,10 @@ use Cachet\Http\Resources\IncidentTemplate as IncidentTemplateResource;
 use Cachet\Models\IncidentTemplate;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Number;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Incident Templates', weight: 5)]
@@ -28,12 +30,12 @@ class IncidentTemplateController extends Controller
     #[QueryParameter('filter[slug]', 'Filter by slug', example: 'my-template')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
-    public function index()
+    public function index(Request $request)
     {
         $templates = QueryBuilder::for(IncidentTemplate::class)
             ->allowedFilters(['name', 'slug'])
             ->allowedSorts(['name', 'slug', 'id'])
-            ->simplePaginate(request('per_page', 15));
+            ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
         return IncidentTemplateResource::collection($templates);
     }

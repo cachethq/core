@@ -13,8 +13,10 @@ use Cachet\Models\Incident;
 use Cachet\Models\Update;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Number;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -29,7 +31,7 @@ class IncidentUpdateController extends Controller
      */
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
-    public function index(Incident $incident)
+    public function index(Request $request, Incident $incident)
     {
         $query = Update::query()
             ->where('updateable_id', $incident->id)
@@ -39,7 +41,7 @@ class IncidentUpdateController extends Controller
             ->allowedFilters([AllowedFilter::exact('status')])
             ->allowedIncludes(['incident'])
             ->allowedSorts(['status', 'created_at'])
-            ->simplePaginate(request('per_page', 15));
+            ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
         return UpdateResource::collection($updates);
     }

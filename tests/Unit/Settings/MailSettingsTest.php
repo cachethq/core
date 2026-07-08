@@ -2,9 +2,7 @@
 
 namespace Tests\Unit\Settings;
 
-use Cachet\CachetCoreServiceProvider;
 use Cachet\Settings\MailSettings;
-use ReflectionMethod;
 
 it('is not configured until a mailer is chosen', function () {
     expect(app(MailSettings::class)->configured())->toBeFalse();
@@ -47,7 +45,7 @@ it('builds a sendmail mailer configuration', function () {
     ]);
 });
 
-it('overrides the application mail configuration when configured', function () {
+it('overrides the application mail configuration when configured and the mailer resolves', function () {
     app(MailSettings::class)->fill([
         'mailer' => 'smtp',
         'host' => 'smtp.example.com',
@@ -55,8 +53,7 @@ it('overrides the application mail configuration when configured', function () {
         'from_name' => 'Example Status',
     ])->save();
 
-    $provider = app()->getProvider(CachetCoreServiceProvider::class);
-    (new ReflectionMethod($provider, 'configureMail'))->invoke($provider);
+    app('mail.manager');
 
     expect(config('mail.default'))->toBe('cachet')
         ->and(config('mail.mailers.cachet.host'))->toBe('smtp.example.com')
@@ -64,11 +61,19 @@ it('overrides the application mail configuration when configured', function () {
         ->and(config('mail.from.name'))->toBe('Example Status');
 });
 
+it('does not touch the mail configuration before the mailer resolves', function () {
+    app(MailSettings::class)->fill([
+        'mailer' => 'smtp',
+        'host' => 'smtp.example.com',
+    ])->save();
+
+    expect(config('mail.mailers.cachet'))->toBeNull();
+});
+
 it('leaves the application mail configuration alone when not configured', function () {
     $default = config('mail.default');
 
-    $provider = app()->getProvider(CachetCoreServiceProvider::class);
-    (new ReflectionMethod($provider, 'configureMail'))->invoke($provider);
+    app('mail.manager');
 
     expect(config('mail.default'))->toBe($default)
         ->and(config('mail.mailers.cachet'))->toBeNull();

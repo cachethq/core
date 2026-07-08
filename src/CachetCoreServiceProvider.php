@@ -12,8 +12,10 @@ use Cachet\Commands\VersionCommand;
 use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
+use Cachet\Models\ComponentCheck;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
+use Cachet\Models\WebhookAttempt;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\MailSettings;
 use Cachet\View\Composers\MailThemeComposer;
@@ -33,7 +35,6 @@ use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -54,6 +55,22 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->app->singleton(Cachet::class);
         $this->app->singleton(ViewManager::class);
+        $this->app->scoped(Status::class);
+
+        $this->configureSettingsCache();
+    }
+
+    /**
+     * Enable spatie/laravel-settings' cache so settings are not read from the
+     * database on every request. The cache is refreshed automatically when
+     * settings are saved. Must run during registration, before the dashboard
+     * panel provider resolves any settings.
+     */
+    private function configureSettingsCache(): void
+    {
+        if (config('cachet.settings_cache', true)) {
+            config()->set('settings.cache.enabled', true);
+        }
     }
 
     /**
@@ -88,10 +105,6 @@ class CachetCoreServiceProvider extends ServiceProvider
         ], SendWebhookListener::class);
         Event::listen([WebhookCallSucceededEvent::class, WebhookCallFailedEvent::class], WebhookCallEventListener::class);
 
-        Http::globalRequestMiddleware(fn ($request) => $request->withHeader(
-            'User-Agent', Cachet::USER_AGENT
-        ));
-
         FilamentColor::register([
             'cachet' => Color::generateV3Palette('rgb(4, 193, 71)'),
         ]);
@@ -115,9 +128,19 @@ class CachetCoreServiceProvider extends ServiceProvider
     /**
      * Override the application's mail configuration with Cachet's mail settings, when configured.
      *
+     * Deferred until the mailer is first resolved so requests that never send
+     * mail do not pay for loading the mail settings.
+     *
      * Wrapped in rescue() so a missing settings table (pre-setup, pre-migration) is not fatal.
      */
     private function configureMail(): void
+    {
+        $this->callAfterResolving('mail.manager', function (): void {
+            $this->applyMailSettings();
+        });
+    }
+
+    private function applyMailSettings(): void
     {
         rescue(function (): void {
             $settings = $this->app->make(MailSettings::class);
@@ -251,6 +274,10 @@ class CachetCoreServiceProvider extends ServiceProvider
             $schedule->command('cachet:notify-long-running-incidents')->hourly();
 
             $schedule->command('cachet:notify-completed-schedules')->everyFiveMinutes();
+
+            $schedule->command('model:prune', [
+                '--model' => [WebhookAttempt::class, ComponentCheck::class],
+            ])->daily();
 
             $schedule->command('db:seed', [
                 '--class' => DatabaseSeeder::class,
