@@ -50,8 +50,8 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 
 Cachet is built on:
 
-- [Laravel 11.x](https://laravel.com)
-- [Filament 3.x](https://filamentphp.com)
+- [Laravel](https://laravel.com)
+- [Filament](https://filamentphp.com)
 - [Tailwind CSS](https://tailwindcss.com)
 - [Alpine.js](https://alpinejs.dev)
 
