@@ -3,7 +3,6 @@
 namespace Cachet\Actions\Integrations;
 
 use Cachet\Actions\Component\ChangeComponentStatus;
-use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Enums\ExternalProviderEnum;
 use Cachet\Models\Component;
@@ -37,7 +36,7 @@ class ImportOhDearFeed
     private function importSites(array $sites, ?int $componentGroupId): void
     {
         foreach ($sites as $site) {
-            $status = $site['status'] === 'up' ? ComponentStatusEnum::operational : ComponentStatusEnum::partial_outage;
+            $status = ExternalProviderEnum::OhDear->componentStatus($site['status']);
             $attributes = ['name' => $site['label'], 'component_group_id' => $componentGroupId];
 
             $component = Component::firstOrNew(['link' => $site['url']]);

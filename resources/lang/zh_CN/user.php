@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'level' => [
-        'admin' => '管理员',
-        'user' => '用户',
-    ],
     'resource_label' => '用户|用户',
     'list' => [
         'headers' => [
