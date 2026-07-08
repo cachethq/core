@@ -495,5 +495,6 @@ it('does not reveal component groups hidden from guests through schedule include
 
     $included = collect($response->json('included'));
 
-    expect($included->firstWhere('attributes.name', $hiddenGroup->name))->toBeNull();
+    expect($included->firstWhere('id', (string) $component->id))->not->toBeNull()
+        ->and($included->firstWhere('type', 'componentGroups'))->toBeNull();
 });
