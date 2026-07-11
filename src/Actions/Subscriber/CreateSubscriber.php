@@ -9,7 +9,7 @@ class CreateSubscriber
     /**
      * Handle the action.
      */
-    public function handle(string $email, bool $global = true, array $components = [], bool $verified = false): Subscriber
+    public function handle(string $email, bool $global = true, array $components = [], bool $verified = false, ?array $meta = null): Subscriber
     {
         $subscriber = Subscriber::firstOrCreate([
             'email' => $email,
@@ -19,6 +19,10 @@ class CreateSubscriber
         ]);
 
         $subscriber->components()->attach($components);
+
+        if ($meta !== null) {
+            $subscriber->syncMeta($meta);
+        }
 
         return $subscriber;
     }

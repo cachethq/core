@@ -27,6 +27,7 @@ return [
     'form' => [
         'email_label' => 'Email',
         'verified_at_label' => 'Verified at',
+        'meta_label' => 'Meta',
     ],
     'overview' => [
         'total_subscribers_label' => 'Total subscribers',

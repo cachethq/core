@@ -164,6 +164,63 @@ it('can filter incidents by occurred at date', function () {
     $response->assertJsonPath('data.0.attributes.id', $incident->id);
 });
 
+it('can filter incidents by meta', function () {
+    Incident::factory(5)->create();
+    $incident = Incident::factory()->create();
+    $incident->syncMeta(['region' => 'eu-west']);
+
+    $query = http_build_query([
+        'filter' => [
+            'meta' => ['region' => 'eu-west'],
+        ],
+    ]);
+
+    $response = getJson('/status/api/incidents?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incident->id);
+});
+
+it('can create an incident with meta', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $response = postJson('/status/api/incidents', [
+        'name' => 'Test',
+        'message' => 'Something happened.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'meta' => ['region' => 'eu-west', 'priority' => 3, 'critical' => true],
+    ]);
+
+    $response->assertCreated();
+    expect(Incident::query()->firstWhere('name', 'Test')->metaValues())
+        ->toBe(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+});
+
+it('can include meta on an incident', function () {
+    $incident = Incident::factory()->create();
+    $incident->syncMeta(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id.'?include=meta');
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.meta', [
+        'region' => 'eu-west',
+        'priority' => 3,
+        'critical' => true,
+    ]);
+});
+
+it('does not include meta on an incident by default', function () {
+    $incident = Incident::factory()->create();
+    $incident->syncMeta(['region' => 'eu-west']);
+
+    $response = getJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertOk();
+    $response->assertJsonMissingPath('data.attributes.meta');
+});
+
 it('can get an incident', function () {
     Incident::factory(5)->create();
     $incident = Incident::factory()->create();

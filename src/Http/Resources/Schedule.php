@@ -14,6 +14,10 @@ class Schedule extends JsonApiResource
             'id' => $this->id,
             'name' => $this->name,
             'message' => $this->message,
+            'meta' => $this->when(
+                $this->resource->relationLoaded('meta'),
+                fn () => $this->meta->pluck('value', 'key'),
+            ),
             'status' => [
                 'human' => $this->status->getLabel(),
                 'value' => $this->status->value,

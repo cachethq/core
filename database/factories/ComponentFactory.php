@@ -66,10 +66,8 @@ class ComponentFactory extends Factory
      */
     public function withMeta(): self
     {
-        return $this->state([
-            'meta' => [
-                'foo' => 'bar',
-            ],
-        ]);
+        return $this->afterCreating(function (Component $component) {
+            $component->meta()->create(['key' => 'foo', 'value' => 'bar']);
+        });
     }
 }

@@ -119,6 +119,65 @@ it('can get a subscriber with components', function () {
     $response->assertJsonFragment(['id' => $subscriber->id]);
 });
 
+it('can filter subscribers by meta', function () {
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+
+    Subscriber::factory(5)->create();
+    $subscriber = Subscriber::factory()->create();
+    $subscriber->syncMeta(['region' => 'eu-west']);
+
+    $query = http_build_query(['filter' => ['meta' => ['region' => 'eu-west']]]);
+
+    $response = getJson('/status/api/subscribers?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $subscriber->id);
+});
+
+it('can include meta on a subscriber', function () {
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+
+    $subscriber = Subscriber::factory()->create();
+    $subscriber->syncMeta(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+
+    $response = getJson('/status/api/subscribers/'.$subscriber->id.'?include=meta');
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.meta', [
+        'region' => 'eu-west',
+        'priority' => 3,
+        'critical' => true,
+    ]);
+});
+
+it('does not include meta on a subscriber by default', function () {
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+
+    $subscriber = Subscriber::factory()->create();
+    $subscriber->syncMeta(['region' => 'eu-west']);
+
+    $response = getJson('/status/api/subscribers/'.$subscriber->id);
+
+    $response->assertOk();
+    $response->assertJsonMissingPath('data.attributes.meta');
+});
+
+it('can create a subscriber with meta', function () {
+    Notification::fake();
+
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+
+    $response = postJson('/status/api/subscribers', [
+        'email' => 'james@alt-three.com',
+        'meta' => ['region' => 'eu-west', 'priority' => 3, 'critical' => true],
+    ]);
+
+    $response->assertCreated();
+    expect(Subscriber::query()->firstWhere('email', 'james@alt-three.com')->metaValues())
+        ->toBe(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+});
+
 it('cannot create a subscriber when not authenticated', function () {
     $response = postJson('/status/api/subscribers', [
         'email' => 'james@alt-three.com',

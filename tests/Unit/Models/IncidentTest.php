@@ -22,6 +22,14 @@ it('will set default guid', function () {
     expect($incident)->guid->not()->toBeNull();
 });
 
+it('has meta', function () {
+    $incident = Incident::factory()->withMeta()->create();
+
+    expect($incident->metaValues())->toBe([
+        'foo' => 'bar',
+    ]);
+});
+
 it('can scope to a specific status', function () {
     Incident::factory()->sequence(
         ['status' => IncidentStatusEnum::investigating],

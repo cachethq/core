@@ -9,6 +9,7 @@ use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Enums\ScheduleStatusEnum;
+use Cachet\Filters\MetaFilter;
 use Cachet\Filters\ScheduleStatusFilter;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Schedule;
@@ -31,13 +32,19 @@ class ScheduleController extends Controller
      */
     #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
     #[QueryParameter('filter[status]', 'Filter the resources by status.', type: ScheduleStatusEnum::class)]
+    #[QueryParameter('filter[meta][key]', 'Filter by a metadata key/value pair.', example: 'eu-west')]
+    #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
         $schedules = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components', 'components.group', 'updates', 'user'])
-            ->allowedFilters(['name', AllowedFilter::custom('status', new ScheduleStatusFilter)])
+            ->allowedIncludes(['components', 'components.group', 'updates', 'user', 'meta'])
+            ->allowedFilters([
+                'name',
+                AllowedFilter::custom('status', new ScheduleStatusFilter),
+                AllowedFilter::custom('meta', new MetaFilter),
+            ])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
@@ -59,10 +66,11 @@ class ScheduleController extends Controller
     /**
      * Get Schedule
      */
+    #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     public function show(Schedule $schedule)
     {
         $scheduleQuery = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components', 'components.group', 'updates', 'user'])
+            ->allowedIncludes(['components', 'components.group', 'updates', 'user', 'meta'])
             ->find($schedule->id);
 
         return ScheduleResource::make($scheduleQuery)

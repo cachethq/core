@@ -32,7 +32,7 @@ class CreateIncident
 
         return tap(Incident::create(array_merge(
             ['guid' => Str::uuid()],
-            $data->except('components')->toArray()
+            $data->except('components', 'meta')->toArray()
         )), function (Incident $incident) use ($data) {
             if ($data->components) {
                 $components = collect($data->components)->map(fn (IncidentComponentRequestData $component) => [
@@ -42,6 +42,8 @@ class CreateIncident
 
                 $incident->components()->sync($components);
             }
+
+            $incident->syncMeta($data->meta ?? []);
 
             $this->notifyIncidentSubscribers->handle($incident);
         });

@@ -17,8 +17,10 @@ class CreateComponentGroup
     public function handle(CreateComponentGroupRequestData $data): ComponentGroup
     {
         return tap(ComponentGroup::create(
-            $data->except('components')->toArray(),
+            $data->except('components', 'meta')->toArray(),
         ), function (ComponentGroup $componentGroup) use ($data) {
+            $componentGroup->syncMeta($data->meta ?? []);
+
             if (! $data->components) {
                 return;
             }

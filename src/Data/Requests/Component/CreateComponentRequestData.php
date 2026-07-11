@@ -17,6 +17,8 @@ final class CreateComponentRequestData extends BaseData
         public readonly ?int $order = null,
         public readonly bool $enabled = true,
         public readonly ?int $componentGroupId = null,
+        /** @var array<string, mixed>|null */
+        public readonly ?array $meta = null,
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -29,6 +31,7 @@ final class CreateComponentRequestData extends BaseData
             'order' => ['int', 'min:0'],
             'enabled' => ['boolean'],
             'component_group_id' => ['int', 'min:0', Rule::exists('component_groups', 'id')],
+            'meta' => ['nullable', 'array'],
         ];
     }
 

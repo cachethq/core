@@ -41,4 +41,14 @@ class ComponentGroupFactory extends Factory
             'order_direction' => $column === ResourceOrderColumnEnum::Manual ? null : $direction,
         ]);
     }
+
+    /**
+     * Provide the component group with additional meta.
+     */
+    public function withMeta(): self
+    {
+        return $this->afterCreating(function (ComponentGroup $componentGroup) {
+            $componentGroup->meta()->create(['key' => 'foo', 'value' => 'bar']);
+        });
+    }
 }

@@ -3,7 +3,9 @@
 namespace Cachet\Models;
 
 use Cachet\Cachet;
+use Cachet\Concerns\HasMeta;
 use Cachet\Concerns\HasVisibility;
+use Cachet\Concerns\Metable;
 use Cachet\Database\Factories\IncidentFactory;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
@@ -50,6 +52,7 @@ use Illuminate\Support\Str;
  * @property ?Component $component
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Meta> $meta
  * @property-read Carbon $timestamp
  * @property-read IncidentComponent $pivot
  *
@@ -58,11 +61,12 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|static unresolved()
  * @method static Builder<static>|static stickied()
  */
-class Incident extends Model
+class Incident extends Model implements Metable
 {
     /** @use HasFactory<IncidentFactory> */
     use HasFactory;
 
+    use HasMeta;
     use HasVisibility;
     use SoftDeletes;
 

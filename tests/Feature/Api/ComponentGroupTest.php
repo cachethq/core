@@ -72,12 +72,63 @@ it('can get a component group with components', function () {
     $response->assertJsonFragment(['id' => $componentGroup->id]);
 });
 
+it('can filter component groups by meta', function () {
+    ComponentGroup::factory(5)->create();
+    $group = ComponentGroup::factory()->create();
+    $group->syncMeta(['region' => 'eu-west']);
+
+    $query = http_build_query(['filter' => ['meta' => ['region' => 'eu-west']]]);
+
+    $response = getJson('/status/api/component-groups?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $group->id);
+});
+
+it('can include meta on a component group', function () {
+    $group = ComponentGroup::factory()->create();
+    $group->syncMeta(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+
+    $response = getJson('/status/api/component-groups/'.$group->id.'?include=meta');
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.meta', [
+        'region' => 'eu-west',
+        'priority' => 3,
+        'critical' => true,
+    ]);
+});
+
+it('does not include meta on a component group by default', function () {
+    $group = ComponentGroup::factory()->create();
+    $group->syncMeta(['region' => 'eu-west']);
+
+    $response = getJson('/status/api/component-groups/'.$group->id);
+
+    $response->assertOk();
+    $response->assertJsonMissingPath('data.attributes.meta');
+});
+
 it('cannot create a component group when not authenticated', function () {
     $response = postJson('/status/api/component-groups', [
         'name' => 'New Group',
     ]);
 
     $response->assertUnauthorized();
+});
+
+it('can create a component group with meta', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'meta' => ['region' => 'eu-west', 'priority' => 3, 'critical' => true],
+    ]);
+
+    $response->assertCreated();
+    expect(ComponentGroup::query()->firstWhere('name', 'New Group')->metaValues())
+        ->toBe(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
 });
 
 it('cannot create a component group without the token ability', function () {

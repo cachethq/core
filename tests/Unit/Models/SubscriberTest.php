@@ -57,3 +57,11 @@ it('has components', function () {
         ->and($subscriber->components()->first())
         ->toBeInstanceOf(Component::class);
 });
+
+it('has meta', function () {
+    $subscriber = Subscriber::factory()->withMeta()->create();
+
+    expect($subscriber->metaValues())->toBe([
+        'foo' => 'bar',
+    ]);
+});

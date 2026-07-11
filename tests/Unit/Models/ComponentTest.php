@@ -24,13 +24,12 @@ it('has incidents', function () {
     expect($component->incidents)->toHaveCount(2);
 });
 
-it('casts meta to json', function () {
+it('has meta', function () {
     $component = Component::factory()->withMeta()->create();
 
-    expect($component)
-        ->meta->toBe([
-            'foo' => 'bar',
-        ]);
+    expect($component->metaValues())->toBe([
+        'foo' => 'bar',
+    ]);
 });
 
 it('can scope to disabled components', function () {

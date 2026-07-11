@@ -25,4 +25,14 @@ class SubscriberFactory extends Factory
             'email_verified_at' => now(),
         ]);
     }
+
+    /**
+     * Provide the subscriber with additional meta.
+     */
+    public function withMeta(): self
+    {
+        return $this->afterCreating(function (Subscriber $subscriber) {
+            $subscriber->meta()->create(['key' => 'foo', 'value' => 'bar']);
+        });
+    }
 }

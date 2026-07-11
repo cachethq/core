@@ -12,6 +12,8 @@ final class UpdateSubscriberRequestData extends BaseData
         public readonly ?string $email = null,
         public readonly ?bool $global = null,
         public readonly ?array $components = null,
+        /** @var array<string, mixed>|null */
+        public readonly ?array $meta = null,
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -21,6 +23,7 @@ final class UpdateSubscriberRequestData extends BaseData
             'global' => ['bool'],
             'components' => ['array'],
             'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
+            'meta' => ['nullable', 'array'],
         ];
     }
 }

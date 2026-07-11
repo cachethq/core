@@ -13,6 +13,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
@@ -48,6 +49,9 @@ class SubscriberResource extends Resource
                     //                Forms\Components\TextInput::make('phone_number')
                     //                    ->tel(),
                     //                Forms\Components\TextInput::make('slack_webhook_url'),
+                    KeyValue::make('meta')
+                        ->label(__('cachet::subscriber.form.meta_label'))
+                        ->columnSpanFull(),
                 ]),
             ]);
     }

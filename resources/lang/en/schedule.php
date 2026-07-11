@@ -30,6 +30,7 @@ return [
         'completed_at_helper' => 'When the maintenance window is expected to end.',
         'notify_subscribers_label' => 'Notify subscribers of this maintenance.',
         'notifications_helper' => 'Email subscribers about this scheduled maintenance and its updates.',
+        'meta_label' => 'Meta',
         'add_component' => [
             'action_label' => 'Add component',
             'header' => 'Affected components',

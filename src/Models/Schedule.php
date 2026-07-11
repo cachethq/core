@@ -5,6 +5,8 @@ namespace Cachet\Models;
 use Cachet\Actions\Schedule\NotifyScheduleCompletedSubscribers;
 use Cachet\Actions\Schedule\NotifyScheduleRescheduledSubscribers;
 use Cachet\Cachet;
+use Cachet\Concerns\HasMeta;
+use Cachet\Concerns\Metable;
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\QueryBuilders\ScheduleBuilder;
@@ -33,6 +35,7 @@ use Illuminate\Support\Collection;
  * @property ?Carbon $deleted_at
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Meta> $meta
  *
  * @method static ScheduleFactory factory($count = null, $state = [])
  * @method static ScheduleBuilder incomplete()
@@ -40,11 +43,12 @@ use Illuminate\Support\Collection;
  * @method static ScheduleBuilder inTheFuture()
  * @method static ScheduleBuilder inThePast()
  */
-class Schedule extends Model
+class Schedule extends Model implements Metable
 {
     /** @use HasFactory<ScheduleFactory> */
     use HasFactory;
 
+    use HasMeta;
     use SoftDeletes;
 
     /**

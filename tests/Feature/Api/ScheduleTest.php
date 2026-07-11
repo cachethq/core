@@ -186,6 +186,63 @@ it('can filter schedules by multiple statuses', function () {
     $response->assertJsonPath('data.1.attributes.id', $scheduleInProgress->id);
 });
 
+it('can filter schedules by meta', function () {
+    Schedule::factory(5)->create();
+    $schedule = Schedule::factory()->create();
+    $schedule->syncMeta(['region' => 'eu-west']);
+
+    $query = http_build_query([
+        'filter' => [
+            'meta' => ['region' => 'eu-west'],
+        ],
+    ]);
+
+    $response = getJson('/status/api/schedules?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $schedule->id);
+});
+
+it('can create a schedule with meta', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $response = postJson('/status/api/schedules', [
+        'name' => 'Test',
+        'message' => 'Scheduled maintenance.',
+        'scheduled_at' => now()->addDay()->toDateTimeString(),
+        'meta' => ['region' => 'eu-west', 'priority' => 3, 'critical' => true],
+    ]);
+
+    $response->assertCreated();
+    expect(Schedule::query()->firstWhere('name', 'Test')->metaValues())
+        ->toBe(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+});
+
+it('can include meta on a schedule', function () {
+    $schedule = Schedule::factory()->create();
+    $schedule->syncMeta(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+
+    $response = getJson('/status/api/schedules/'.$schedule->id.'?include=meta');
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.meta', [
+        'region' => 'eu-west',
+        'priority' => 3,
+        'critical' => true,
+    ]);
+});
+
+it('does not include meta on a schedule by default', function () {
+    $schedule = Schedule::factory()->create();
+    $schedule->syncMeta(['region' => 'eu-west']);
+
+    $response = getJson('/status/api/schedules/'.$schedule->id);
+
+    $response->assertOk();
+    $response->assertJsonMissingPath('data.attributes.meta');
+});
+
 it('can get a schedule', function () {
     $schedule = Schedule::factory()->create();
 

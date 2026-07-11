@@ -8,6 +8,7 @@ use Cachet\Actions\Incident\UpdateIncident;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
+use Cachet\Filters\MetaFilter;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
@@ -32,11 +33,14 @@ class IncidentController extends Controller
         'components.group',
         'updates',
         'user',
+        'meta',
     ];
 
     /**
      * List Incidents
      */
+    #[QueryParameter('filter[meta][key]', 'Filter by a metadata key/value pair.', example: 'eu-west')]
+    #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
@@ -49,6 +53,7 @@ class IncidentController extends Controller
                 AllowedFilter::scope('occurs_after'),
                 AllowedFilter::scope('occurs_before'),
                 AllowedFilter::scope('occurs_on'),
+                AllowedFilter::custom('meta', new MetaFilter),
             ])
             ->allowedSorts(['name', 'status', 'id', 'created_at'])
             ->defaultSort('-created_at')
@@ -72,6 +77,7 @@ class IncidentController extends Controller
     /**
      * Get Incident
      */
+    #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     public function show(Incident $incident)
     {
 

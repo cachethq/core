@@ -57,4 +57,14 @@ class ScheduleFactory extends Factory
             'completed_at' => now()->subDays(30),
         ]);
     }
+
+    /**
+     * Provide the schedule with additional meta.
+     */
+    public function withMeta(): self
+    {
+        return $this->afterCreating(function (Schedule $schedule) {
+            $schedule->meta()->create(['key' => 'foo', 'value' => 'bar']);
+        });
+    }
 }

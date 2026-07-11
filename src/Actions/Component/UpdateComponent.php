@@ -15,7 +15,11 @@ class UpdateComponent
     {
         $oldStatus = $component->status;
 
-        $component->update($data->toArray());
+        $component->update($data->except('meta')->toArray());
+
+        if ($data->meta !== null) {
+            $component->syncMeta($data->meta);
+        }
 
         if ($component->wasChanged('status')) {
             ComponentStatusWasChanged::dispatch(

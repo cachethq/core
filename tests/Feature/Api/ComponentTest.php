@@ -152,6 +152,61 @@ it('can filter components by disabled', function () {
     $response->assertJsonMissing(['id' => $component->id]);
 });
 
+it('can filter components by meta', function () {
+    Component::factory(5)->create();
+    $component = Component::factory()->create();
+    $component->syncMeta(['region' => 'eu-west']);
+
+    $query = http_build_query([
+        'filter' => [
+            'meta' => ['region' => 'eu-west'],
+        ],
+    ]);
+
+    $response = getJson('/status/api/components?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $component->id);
+});
+
+it('can create a component with meta', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
+    $response = postJson('/status/api/components', [
+        'name' => 'Test',
+        'meta' => ['region' => 'eu-west', 'priority' => 3, 'critical' => true],
+    ]);
+
+    $response->assertCreated();
+    expect(Component::query()->firstWhere('name', 'Test')->metaValues())
+        ->toBe(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+});
+
+it('can include meta on a component', function () {
+    $component = Component::factory()->create();
+    $component->syncMeta(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+
+    $response = getJson('/status/api/components/'.$component->id.'?include=meta');
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.meta', [
+        'region' => 'eu-west',
+        'priority' => 3,
+        'critical' => true,
+    ]);
+});
+
+it('does not include meta on a component by default', function () {
+    $component = Component::factory()->create();
+    $component->syncMeta(['region' => 'eu-west']);
+
+    $response = getJson('/status/api/components/'.$component->id);
+
+    $response->assertOk();
+    $response->assertJsonMissingPath('data.attributes.meta');
+});
+
 it('can get a component', function () {
     Component::factory(5)->create();
     $component = Component::factory()->create();

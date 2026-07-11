@@ -9,6 +9,7 @@ use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Filters\MetaFilter;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
 use Dedoc\Scramble\Attributes\Group;
@@ -31,6 +32,7 @@ class ComponentController extends Controller
     public const ALLOWED_INCLUDES = [
         'group',
         'incidents',
+        'meta',
     ];
 
     /**
@@ -39,6 +41,8 @@ class ComponentController extends Controller
     #[QueryParameter('filter[status]', 'Filter by status', type: ComponentStatusEnum::class, example: 1)]
     #[QueryParameter('filter[name]', 'Filter by name.', example: 'My Component')]
     #[QueryParameter('filter[enabled]', 'Filter by enabled status.', type: 'bool', example: '1')]
+    #[QueryParameter('filter[meta][key]', 'Filter by a metadata key/value pair.', example: 'eu-west')]
+    #[QueryParameter('include', 'Include related data (group, incidents, meta).', example: 'meta')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
@@ -49,6 +53,7 @@ class ComponentController extends Controller
                 'name',
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('enabled'),
+                AllowedFilter::custom('meta', new MetaFilter),
             ])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
@@ -73,6 +78,7 @@ class ComponentController extends Controller
     /**
      * Get Component
      */
+    #[QueryParameter('include', 'Include related data (group, incidents, meta).', example: 'meta')]
     public function show(Component $component)
     {
 

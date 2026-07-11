@@ -21,6 +21,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -92,6 +93,9 @@ class IncidentResource extends Resource
                                 ->required(),
                         ])
                         ->label(__('cachet::incident.form.add_component.header')),
+                    KeyValue::make('meta')
+                        ->label(__('cachet::incident.form.meta_label'))
+                        ->columnSpanFull(),
                 ])
                     ->columnSpan(3),
                 Section::make()->schema([

@@ -19,6 +19,10 @@ class Subscriber extends JsonApiResource
                 'human' => $this->email_verified_at?->diffForHumans(),
                 'string' => $this->email_verified_at?->toDateTimeString(),
             ],
+            'meta' => $this->when(
+                $this->resource->relationLoaded('meta'),
+                fn () => $this->meta->pluck('value', 'key'),
+            ),
             'created' => [
                 'human' => $this->created_at?->diffForHumans(),
                 'string' => $this->created_at?->toDateTimeString(),

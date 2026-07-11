@@ -8,6 +8,7 @@ use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\ComponentGroup\CreateComponentGroupRequestData;
 use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
+use Cachet\Filters\MetaFilter;
 use Cachet\Http\Resources\ComponentGroup as ComponentGroupResource;
 use Cachet\Models\ComponentGroup;
 use Dedoc\Scramble\Attributes\Group;
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Number;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Component Groups', weight: 2)]
@@ -26,12 +28,17 @@ class ComponentGroupController extends Controller
     /**
      * List Component Groups
      */
+    #[QueryParameter('filter[meta][key]', 'Filter by a metadata key/value pair.', example: 'eu-west')]
+    #[QueryParameter('include', 'Include related data (components, meta).', example: 'meta')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
         $componentGroups = QueryBuilder::for(ComponentGroup::class)
-            ->allowedIncludes(['components'])
+            ->allowedIncludes(['components', 'meta'])
+            ->allowedFilters([
+                AllowedFilter::custom('meta', new MetaFilter),
+            ])
             ->allowedSorts(['name', 'id'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
@@ -53,11 +60,12 @@ class ComponentGroupController extends Controller
     /**
      * Get Component Group
      */
+    #[QueryParameter('include', 'Include related data (components, meta).', example: 'meta')]
     public function show(ComponentGroup $componentGroup)
     {
 
         $componentQuery = QueryBuilder::for(ComponentGroup::class)
-            ->allowedIncludes(['components'])
+            ->allowedIncludes(['components', 'meta'])
             ->find($componentGroup->id);
 
         return ComponentGroupResource::make($componentQuery)

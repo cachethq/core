@@ -57,6 +57,7 @@ return [
         'notify_subscribers_label' => 'Notify subscribers of this incident.',
         'pin_incident_label' => 'Pin the incident to the top of the status page.',
         'guid_label' => 'Incident UUID',
+        'meta_label' => 'Meta',
         'add_component' => [
             'action_label' => 'Add component',
             'header' => 'Components',
