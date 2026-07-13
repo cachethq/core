@@ -41,7 +41,9 @@ it('stores meta as key/value pairs when creating a component from the dashboard'
 });
 
 it('updates meta when editing a component from the dashboard', function () {
-    $component = Component::factory()->create();
+    $component = Component::factory()->create([
+        'description' => 'A short description.',
+    ]);
     $component->syncMeta(['region' => 'eu-west-1', 'stale' => 'yes']);
 
     livewire(EditComponent::class, ['record' => $component->getKey()])
