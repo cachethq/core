@@ -25,6 +25,11 @@ class EditSubscriber extends EditRecord
         return $this->fillMetaFormData($data);
     }
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return $this->extractMetaFormData($data);
+    }
+
     protected function afterSave(): void
     {
         $this->persistMeta();

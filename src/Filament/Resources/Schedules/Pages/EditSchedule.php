@@ -32,7 +32,7 @@ class EditSchedule extends EditRecord
     {
         $data['completed_at'] = $data['completed_at'] ?? null;
 
-        return $data;
+        return $this->extractMetaFormData($data);
     }
 
     protected function afterSave(): void

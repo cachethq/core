@@ -14,6 +14,11 @@ class CreateSchedule extends CreateRecord
 
     protected static string $resource = ScheduleResource::class;
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return $this->extractMetaFormData($data);
+    }
+
     protected function afterCreate(): void
     {
         /** @var Schedule $schedule */

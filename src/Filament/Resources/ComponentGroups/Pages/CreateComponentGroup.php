@@ -12,6 +12,11 @@ class CreateComponentGroup extends CreateRecord
 
     protected static string $resource = ComponentGroupResource::class;
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return $this->extractMetaFormData($data);
+    }
+
     protected function afterCreate(): void
     {
         $this->persistMeta();

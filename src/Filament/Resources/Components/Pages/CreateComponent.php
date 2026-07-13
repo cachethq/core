@@ -12,6 +12,11 @@ class CreateComponent extends CreateRecord
 
     protected static string $resource = ComponentResource::class;
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return $this->extractMetaFormData($data);
+    }
+
     protected function afterCreate(): void
     {
         $this->persistMeta();

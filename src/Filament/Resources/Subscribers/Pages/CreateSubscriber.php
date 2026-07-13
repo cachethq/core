@@ -13,6 +13,11 @@ class CreateSubscriber extends CreateRecord
 
     protected static string $resource = SubscriberResource::class;
 
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return $this->extractMetaFormData($data);
+    }
+
     protected function afterCreate(): void
     {
         /** @var Subscriber $subscriber */
