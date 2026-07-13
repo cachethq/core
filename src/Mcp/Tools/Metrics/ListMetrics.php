@@ -2,6 +2,7 @@
 
 namespace Cachet\Mcp\Tools\Metrics;
 
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Mcp\Concerns\InteractsWithPagination;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Cachet\Models\Metric;
@@ -15,6 +16,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[IsReadOnly]
 class ListMetrics extends Tool
 {
+    use ChecksApiAuthentication;
     use InteractsWithPagination;
     use PresentsResources;
 
@@ -37,6 +39,7 @@ class ListMetrics extends Tool
     public function handle(Request $request): ResponseFactory
     {
         $metrics = Metric::query()
+            ->visible($this->isAuthenticated())
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->orderBy('order')
             ->simplePaginate(perPage: $this->perPage($request), page: $this->page($request));

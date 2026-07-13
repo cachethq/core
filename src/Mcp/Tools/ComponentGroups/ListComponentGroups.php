@@ -2,6 +2,7 @@
 
 namespace Cachet\Mcp\Tools\ComponentGroups;
 
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Mcp\Concerns\InteractsWithPagination;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Cachet\Models\ComponentGroup;
@@ -15,6 +16,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[IsReadOnly]
 class ListComponentGroups extends Tool
 {
+    use ChecksApiAuthentication;
     use InteractsWithPagination;
     use PresentsResources;
 
@@ -37,7 +39,12 @@ class ListComponentGroups extends Tool
     public function handle(Request $request): ResponseFactory
     {
         $groups = ComponentGroup::query()
-            ->with('components')
+            ->visible($this->isAuthenticated())
+            ->with(['components' => function ($query): void {
+                if (! $this->isAuthenticated()) {
+                    $query->enabled();
+                }
+            }])
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->orderBy('order')
             ->simplePaginate(perPage: $this->perPage($request), page: $this->page($request));

@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Mcp\CachetServer;
 use Cachet\Mcp\Tools\ComponentGroups\CreateComponentGroup;
 use Cachet\Mcp\Tools\ComponentGroups\DeleteComponentGroup;
@@ -142,4 +143,113 @@ it('deletes a component group', function () {
         ->assertOk();
 
     assertDatabaseMissing('component_groups', ['id' => $group->id]);
+});
+
+it('hides components in restricted groups from guests', function () {
+    $hidden = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $internal = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Component::factory()->create(['name' => 'Hidden Component', 'component_group_id' => $hidden->id]);
+    Component::factory()->create(['name' => 'Internal Component', 'component_group_id' => $internal->id]);
+    Component::factory()->create(['name' => 'Ungrouped Component']);
+
+    CachetServer::tool(ListComponents::class)
+        ->assertOk()
+        ->assertSee('Ungrouped Component')
+        ->assertDontSee('Hidden Component')
+        ->assertDontSee('Internal Component');
+});
+
+it('shows components in authenticated-only groups to authenticated callers', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $hidden = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $internal = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Component::factory()->create(['name' => 'Hidden Component', 'component_group_id' => $hidden->id]);
+    Component::factory()->create(['name' => 'Internal Component', 'component_group_id' => $internal->id]);
+
+    CachetServer::tool(ListComponents::class)
+        ->assertOk()
+        ->assertSee('Internal Component')
+        ->assertDontSee('Hidden Component');
+});
+
+it('hides disabled components from guests', function () {
+    Component::factory()->create(['name' => 'Enabled Component', 'enabled' => true]);
+    Component::factory()->create(['name' => 'Disabled Component', 'enabled' => false]);
+
+    CachetServer::tool(ListComponents::class)
+        ->assertOk()
+        ->assertSee('Enabled Component')
+        ->assertDontSee('Disabled Component');
+});
+
+it('lets authenticated callers list disabled components', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    Component::factory()->create(['name' => 'Enabled Component', 'enabled' => true]);
+    Component::factory()->create(['name' => 'Disabled Component', 'enabled' => false]);
+
+    CachetServer::tool(ListComponents::class, ['enabled' => false])
+        ->assertOk()
+        ->assertSee('Disabled Component')
+        ->assertDontSee('Enabled Component');
+});
+
+it('does not reveal disabled components to guests by id', function () {
+    $component = Component::factory()->create(['enabled' => false]);
+
+    CachetServer::tool(GetComponent::class, ['id' => $component->id])
+        ->assertHasErrors(["Component [{$component->id}] not found."]);
+});
+
+it('lets authenticated callers get disabled components by id', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $component = Component::factory()->create(['name' => 'Disabled Component', 'enabled' => false]);
+
+    CachetServer::tool(GetComponent::class, ['id' => $component->id])
+        ->assertOk()
+        ->assertSee('Disabled Component');
+});
+
+it('does not reveal components in restricted groups to guests by id', function () {
+    $group = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    $component = Component::factory()->create(['component_group_id' => $group->id]);
+
+    CachetServer::tool(GetComponent::class, ['id' => $component->id])
+        ->assertHasErrors(["Component [{$component->id}] not found."]);
+});
+
+it('hides restricted component groups from guests', function () {
+    ComponentGroup::factory()->create(['name' => 'Public Group', 'visible' => ResourceVisibilityEnum::guest]);
+    ComponentGroup::factory()->create(['name' => 'Internal Group', 'visible' => ResourceVisibilityEnum::authenticated]);
+    ComponentGroup::factory()->create(['name' => 'Hidden Group', 'visible' => ResourceVisibilityEnum::hidden]);
+
+    CachetServer::tool(ListComponentGroups::class)
+        ->assertOk()
+        ->assertSee('Public Group')
+        ->assertDontSee('Internal Group')
+        ->assertDontSee('Hidden Group');
+});
+
+it('shows authenticated-only component groups to authenticated callers but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    ComponentGroup::factory()->create(['name' => 'Internal Group', 'visible' => ResourceVisibilityEnum::authenticated]);
+    ComponentGroup::factory()->create(['name' => 'Hidden Group', 'visible' => ResourceVisibilityEnum::hidden]);
+
+    CachetServer::tool(ListComponentGroups::class)
+        ->assertOk()
+        ->assertSee('Internal Group')
+        ->assertDontSee('Hidden Group');
+});
+
+it('hides disabled components inside groups from guests', function () {
+    $group = ComponentGroup::factory()->create(['name' => 'Core Services']);
+    Component::factory()->create(['name' => 'Disabled Grouped Component', 'component_group_id' => $group->id, 'enabled' => false]);
+
+    CachetServer::tool(ListComponentGroups::class)
+        ->assertOk()
+        ->assertSee('Core Services')
+        ->assertDontSee('Disabled Grouped Component');
 });

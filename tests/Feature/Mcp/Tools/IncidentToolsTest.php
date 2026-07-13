@@ -2,6 +2,7 @@
 
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Mcp\CachetServer;
 use Cachet\Mcp\Tools\Incidents\CreateIncident;
 use Cachet\Mcp\Tools\Incidents\DeleteIncident;
@@ -260,4 +261,45 @@ it('deletes an incident template', function () {
         ->assertOk();
 
     expect(IncidentTemplate::query()->find($template->id))->toBeNull();
+});
+
+it('hides restricted incidents from guests', function () {
+    Incident::factory()->create(['name' => 'Public Incident', 'visible' => ResourceVisibilityEnum::guest]);
+    Incident::factory()->create(['name' => 'Internal Incident', 'visible' => ResourceVisibilityEnum::authenticated]);
+    Incident::factory()->create(['name' => 'Hidden Incident', 'visible' => ResourceVisibilityEnum::hidden]);
+
+    CachetServer::tool(ListIncidents::class)
+        ->assertOk()
+        ->assertSee('Public Incident')
+        ->assertDontSee('Internal Incident')
+        ->assertDontSee('Hidden Incident');
+});
+
+it('shows authenticated-only incidents to authenticated callers but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    Incident::factory()->create(['name' => 'Internal Incident', 'visible' => ResourceVisibilityEnum::authenticated]);
+    Incident::factory()->create(['name' => 'Hidden Incident', 'visible' => ResourceVisibilityEnum::hidden]);
+
+    CachetServer::tool(ListIncidents::class)
+        ->assertOk()
+        ->assertSee('Internal Incident')
+        ->assertDontSee('Hidden Incident');
+});
+
+it('does not reveal restricted incidents to guests by id', function () {
+    $incident = Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    CachetServer::tool(GetIncident::class, ['id' => $incident->id])
+        ->assertHasErrors(["Incident [{$incident->id}] not found."]);
+});
+
+it('reveals authenticated-only incidents by id to authenticated callers', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $incident = Incident::factory()->create(['name' => 'Internal Incident', 'visible' => ResourceVisibilityEnum::authenticated]);
+
+    CachetServer::tool(GetIncident::class, ['id' => $incident->id])
+        ->assertOk()
+        ->assertSee('Internal Incident');
 });

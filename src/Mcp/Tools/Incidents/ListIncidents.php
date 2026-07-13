@@ -2,6 +2,7 @@
 
 namespace Cachet\Mcp\Tools\Incidents;
 
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Mcp\Concerns\InteractsWithPagination;
 use Cachet\Mcp\Concerns\PresentsResources;
@@ -16,6 +17,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[IsReadOnly]
 class ListIncidents extends Tool
 {
+    use ChecksApiAuthentication;
     use InteractsWithPagination;
     use PresentsResources;
 
@@ -41,6 +43,7 @@ class ListIncidents extends Tool
     public function handle(Request $request): ResponseFactory
     {
         $incidents = Incident::query()
+            ->visible($this->isAuthenticated())
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->integer('status')))
             ->latest()

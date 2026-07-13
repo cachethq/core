@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Mcp\CachetServer;
 use Cachet\Mcp\Tools\MetricPoints\AddMetricPoint;
 use Cachet\Mcp\Tools\MetricPoints\DeleteMetricPoint;
@@ -110,4 +111,35 @@ it('scopes metric points to the metric', function () {
         'metric_id' => $metric->id,
         'metric_point_id' => $point->id,
     ])->assertHasErrors(["Metric point [{$point->id}] not found on metric [{$metric->id}]."]);
+});
+
+it('hides restricted metrics from guests', function () {
+    Metric::factory()->create(['name' => 'Public Metric', 'visible' => ResourceVisibilityEnum::guest]);
+    Metric::factory()->create(['name' => 'Internal Metric', 'visible' => ResourceVisibilityEnum::authenticated]);
+    Metric::factory()->create(['name' => 'Hidden Metric', 'visible' => ResourceVisibilityEnum::hidden]);
+
+    CachetServer::tool(ListMetrics::class)
+        ->assertOk()
+        ->assertSee('Public Metric')
+        ->assertDontSee('Internal Metric')
+        ->assertDontSee('Hidden Metric');
+});
+
+it('shows authenticated-only metrics to authenticated callers but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    Metric::factory()->create(['name' => 'Internal Metric', 'visible' => ResourceVisibilityEnum::authenticated]);
+    Metric::factory()->create(['name' => 'Hidden Metric', 'visible' => ResourceVisibilityEnum::hidden]);
+
+    CachetServer::tool(ListMetrics::class)
+        ->assertOk()
+        ->assertSee('Internal Metric')
+        ->assertDontSee('Hidden Metric');
+});
+
+it('does not reveal restricted metrics to guests by id', function () {
+    $metric = Metric::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    CachetServer::tool(GetMetric::class, ['id' => $metric->id])
+        ->assertHasErrors(["Metric [{$metric->id}] not found."]);
 });

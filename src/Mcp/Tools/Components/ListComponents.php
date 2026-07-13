@@ -5,6 +5,7 @@ namespace Cachet\Mcp\Tools\Components;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Mcp\Concerns\InteractsWithPagination;
 use Cachet\Mcp\Concerns\PresentsResources;
+use Cachet\Mcp\Concerns\ScopesComponentVisibility;
 use Cachet\Models\Component;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
@@ -18,6 +19,7 @@ class ListComponents extends Tool
 {
     use InteractsWithPagination;
     use PresentsResources;
+    use ScopesComponentVisibility;
 
     protected string $name = 'list_components';
 
@@ -33,7 +35,7 @@ class ListComponents extends Tool
             'status' => $schema->integer()
                 ->enum(array_column(ComponentStatusEnum::cases(), 'value'))
                 ->description('Filter by status: 1 operational, 2 performance issues, 3 partial outage, 4 major outage, 5 unknown, 6 under maintenance.'),
-            'enabled' => $schema->boolean()->description('Filter by enabled state.'),
+            'enabled' => $schema->boolean()->default(true)->description('Filter by enabled state. Disabled components are hidden by default and are only visible to authenticated callers.'),
             'component_group_id' => $schema->integer()->description('Filter by component group ID.'),
             'per_page' => $schema->integer()->min(1)->max(100)->default(15),
             'page' => $schema->integer()->min(1)->default(1),
@@ -42,10 +44,10 @@ class ListComponents extends Tool
 
     public function handle(Request $request): ResponseFactory
     {
-        $components = Component::query()
+        $components = $this->visibleComponents()
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->integer('status')))
-            ->when($request->filled('enabled'), fn ($query) => $query->where('enabled', $request->boolean('enabled')))
+            ->where('enabled', $request->boolean('enabled', true))
             ->when($request->filled('component_group_id'), fn ($query) => $query->where('component_group_id', $request->integer('component_group_id')))
             ->orderBy('order')
             ->simplePaginate(perPage: $this->perPage($request), page: $this->page($request));
