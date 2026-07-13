@@ -100,7 +100,7 @@ class ScheduleController extends Controller
     {
         $scheduleQuery = QueryBuilder::for(Schedule::class)
             ->allowedIncludes($this->allowedIncludes())
-            ->find($schedule->id);
+            ->findOrFail($schedule->id);
 
         return ScheduleResource::make($scheduleQuery)
             ->response()
