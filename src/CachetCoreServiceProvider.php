@@ -13,6 +13,7 @@ use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Database\Seeders\DemoMetricSeeder;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
+use Cachet\Mcp\CachetServer;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentCheck;
 use Cachet\Models\ComponentGroup;
@@ -43,6 +44,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Laravel\Mcp\Facades\Mcp;
 use Spatie\WebhookServer\Events\WebhookCallFailedEvent;
 use Spatie\WebhookServer\Events\WebhookCallSucceededEvent;
 
@@ -88,6 +90,7 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         Route::middlewareGroup('cachet', config('cachet.middleware', []));
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
+        Route::middlewareGroup('cachet:mcp', config('cachet.mcp_middleware', []));
 
         Relation::morphMap([
             'component' => Component::class,
@@ -178,6 +181,11 @@ class CachetCoreServiceProvider extends ServiceProvider
             return Limit::perMinute(config('cachet.api_rate_limit', 300))
                 ->by($request->user()?->id ?: $request->ip());
         });
+
+        RateLimiter::for('cachet-mcp', function ($request) {
+            return Limit::perMinute(config('cachet.mcp_rate_limit', 300))
+                ->by($request->user('sanctum')?->getKey() ?: $request->ip());
+        });
     }
 
     /**
@@ -194,6 +202,17 @@ class CachetCoreServiceProvider extends ServiceProvider
             ], function (Router $router) {
                 $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
             });
+
+            if ($application->runningInConsole() || ! $application->routesAreCached()) {
+                $router->group([
+                    'domain' => config('cachet.domain'),
+                    'as' => 'cachet.mcp.',
+                    'prefix' => Cachet::path().'/mcp',
+                    'middleware' => ['cachet:mcp', 'throttle:cachet-mcp'],
+                ], function () {
+                    Mcp::web('/', CachetServer::class)->name('server');
+                });
+            }
 
             Cachet::routes()
                 ->register();

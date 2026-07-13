@@ -42,6 +42,10 @@ class AppSettings extends Settings
 
     public bool $api_protected = false;
 
+    public bool $mcp_enabled = false;
+
+    public bool $mcp_protected = true;
+
     public bool $dynamic_favicon = false;
 
     public static function group(): string

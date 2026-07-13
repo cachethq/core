@@ -30,3 +30,18 @@ it('saves the dynamic favicon setting', function () {
 
     expect(app(AppSettings::class)->refresh()->dynamic_favicon)->toBeTrue();
 });
+
+it('saves the mcp settings', function () {
+    expect(app(AppSettings::class))
+        ->mcp_enabled->toBeFalse()
+        ->mcp_protected->toBeTrue();
+
+    livewire(ManageCachet::class)
+        ->fillForm(['mcp_enabled' => true, 'mcp_protected' => false])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect(app(AppSettings::class)->refresh())
+        ->mcp_enabled->toBeTrue()
+        ->mcp_protected->toBeFalse();
+});

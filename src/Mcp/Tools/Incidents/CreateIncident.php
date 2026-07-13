@@ -1,0 +1,73 @@
+<?php
+
+namespace Cachet\Mcp\Tools\Incidents;
+
+use Cachet\Actions\Incident\CreateIncident as CreateIncidentAction;
+use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
+use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Mcp\Concerns\GuardsMcpAbilities;
+use Cachet\Mcp\Concerns\PresentsResources;
+use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Laravel\Mcp\Request;
+use Laravel\Mcp\Response;
+use Laravel\Mcp\ResponseFactory;
+use Laravel\Mcp\Server\Tool;
+
+class CreateIncident extends Tool
+{
+    use GuardsMcpAbilities;
+    use PresentsResources;
+
+    protected string $name = 'create_incident';
+
+    protected string $description = 'Create a new incident, optionally from an incident template and linking affected components with their new statuses. Requires the incidents.manage token ability.';
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function schema(JsonSchema $schema): array
+    {
+        return [
+            'name' => $schema->string()->max(255)->required()->description('The name of the incident.'),
+            'status' => $schema->integer()
+                ->enum(array_column(IncidentStatusEnum::cases(), 'value'))
+                ->required()
+                ->description('The status: 0 unknown, 1 investigating, 2 identified, 3 watching, 4 fixed.'),
+            'message' => $schema->string()->description('The incident message, in Markdown. Required unless template is given.'),
+            'template' => $schema->string()->description('The slug of an incident template to render the message from.'),
+            'template_vars' => $schema->object()->description('Variables passed to the incident template.'),
+            'visible' => $schema->boolean()->default(false)->description('Whether the incident is visible to guests.'),
+            'stickied' => $schema->boolean()->default(false)->description('Whether the incident is stickied to the top of the status page.'),
+            'notifications' => $schema->boolean()->default(false)->description('Whether to notify verified subscribers.'),
+            'occurred_at' => $schema->string()->description('When the incident occurred, as an ISO-8601 datetime. Defaults to now.'),
+            'components' => $schema->array()
+                ->items($schema->object([
+                    'id' => $schema->integer()->required()->description('The component ID.'),
+                    'status' => $schema->integer()
+                        ->enum(array_column(ComponentStatusEnum::cases(), 'value'))
+                        ->required()
+                        ->description('The status to set on the component: 1 operational, 2 performance issues, 3 partial outage, 4 major outage, 5 unknown, 6 under maintenance.'),
+                ]))
+                ->description('Affected components and the status to set on each.'),
+        ];
+    }
+
+    public function handle(Request $request, CreateIncidentAction $action): Response|ResponseFactory
+    {
+        if (! $this->tokenCan('incidents.manage')) {
+            return $this->missingAbility('incidents.manage');
+        }
+
+        $data = CreateIncidentRequestData::validateAndCreate($request->all());
+
+        $incident = $action->handle($data)->load(['components', 'updates']);
+
+        return Response::structured(['data' => $this->presentIncident($incident)]);
+    }
+
+    public function shouldRegister(): bool
+    {
+        return $this->tokenCan('incidents.manage');
+    }
+}
