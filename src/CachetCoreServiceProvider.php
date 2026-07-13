@@ -10,6 +10,7 @@ use Cachet\Commands\NotifyLongRunningIncidentsCommand;
 use Cachet\Commands\SendBeaconCommand;
 use Cachet\Commands\VersionCommand;
 use Cachet\Database\Seeders\DatabaseSeeder;
+use Cachet\Database\Seeders\DemoMetricSeeder;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
 use Cachet\Models\ComponentCheck;
@@ -283,6 +284,11 @@ class CachetCoreServiceProvider extends ServiceProvider
                 '--class' => DatabaseSeeder::class,
                 '--force',
             ])->everyThirtyMinutes()->when($demoMode);
+
+            $schedule->command('db:seed', [
+                '--class' => DemoMetricSeeder::class,
+                '--force',
+            ])->everyMinute()->when($demoMode);
         });
     }
 

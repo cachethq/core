@@ -21,7 +21,6 @@ use Cachet\Settings\CustomizationSettings;
 use Cachet\Settings\ThemeSettings;
 use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -139,7 +138,7 @@ EOF
         ]);
 
         $metric = Metric::create([
-            'name' => 'Cachet API Requests',
+            'name' => DemoMetricSeeder::METRIC_NAME,
             'suffix' => 'req/s',
             'description' => 'The number of requests to the Cachet API.',
             'default_view' => MetricViewEnum::today,
@@ -149,10 +148,14 @@ EOF
             'default_value' => 0,
         ]);
 
-        $metric->metricPoints()->createMany(Arr::map(range(1, 60), fn (int $i) => [
-            'value' => random_int(1, 100),
-            'created_at' => now()->subMinutes(random_int(0, $i * 60)),
-        ]));
+        $metricPointTimestamps = collect(range(30 * 24, 25, -1))->map(fn (int $hours) => now()->subHours($hours))
+            ->concat(collect(range(24 * 12, 13, -1))->map(fn (int $intervals) => now()->subMinutes($intervals * 5)))
+            ->concat(collect(range(60, 0, -1))->map(fn (int $minutes) => now()->subMinutes($minutes)));
+
+        $metric->metricPoints()->createMany($metricPointTimestamps->map(fn ($timestamp) => [
+            'value' => DemoMetricSeeder::valueAt($timestamp),
+            'created_at' => $timestamp,
+        ])->all());
 
         tap(Incident::create([
             'name' => 'DNS Provider Outage',
