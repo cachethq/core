@@ -14,13 +14,14 @@ trait HasMeta
     /**
      * Delete the metadata when the owning model is removed.
      *
-     * Soft-deleted models keep their metadata so it survives a restore; the
-     * rows are only purged once the model is hard or force deleted.
+     * Soft-deleted models still exist, so they keep their metadata for a
+     * restore; the rows are only purged once the model is hard or force
+     * deleted and gone from the database.
      */
     protected static function bootHasMeta(): void
     {
         static::deleted(function (self $model): void {
-            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
+            if ($model->exists) {
                 return;
             }
 
