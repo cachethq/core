@@ -8,6 +8,8 @@ use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthentication;
 use Filament\Auth\MultiFactor\App\Concerns\InteractsWithAppAuthenticationRecovery;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthentication;
 use Filament\Auth\MultiFactor\App\Contracts\HasAppAuthenticationRecovery;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -27,7 +29,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property ?string $app_authentication_secret
  * @property ?array $app_authentication_recovery_codes
  */
-class User extends Authenticatable implements CachetUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasLocalePreference, MustVerifyEmail
+class User extends Authenticatable implements CachetUser, FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasLocalePreference, MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, MustVerifyEmailTrait, Notifiable;
@@ -67,6 +69,14 @@ class User extends Authenticatable implements CachetUser, HasAppAuthentication, 
             'password' => 'hashed',
             'is_admin' => 'bool',
         ];
+    }
+
+    /**
+     * Determine if the user can access the given Filament panel.
+     */
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 
     /**
