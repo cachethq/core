@@ -12,6 +12,23 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 trait HasMeta
 {
     /**
+     * Delete the metadata when the owning model is removed.
+     *
+     * Soft-deleted models keep their metadata so it survives a restore; the
+     * rows are only purged once the model is hard or force deleted.
+     */
+    protected static function bootHasMeta(): void
+    {
+        static::deleted(function (self $model): void {
+            if (method_exists($model, 'isForceDeleting') && ! $model->isForceDeleting()) {
+                return;
+            }
+
+            $model->meta()->delete();
+        });
+    }
+
+    /**
      * Get the metadata assigned to the model.
      *
      * @return MorphMany<Meta, $this>
@@ -42,7 +59,9 @@ trait HasMeta
      */
     public function syncMeta(array $meta): void
     {
-        $this->meta()->whereNotIn('key', array_keys($meta))->delete();
+        $keys = array_map(strval(...), array_keys($meta));
+
+        $this->meta()->whereNotIn('key', $keys)->delete();
 
         foreach ($meta as $key => $value) {
             $this->meta()->updateOrCreate(

@@ -5,6 +5,7 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
+use Cachet\Models\Meta;
 
 it('has a group', function () {
     $component = Component::factory()->forGroup([
@@ -30,6 +31,18 @@ it('has meta', function () {
     expect($component->metaValues())->toBe([
         'foo' => 'bar',
     ]);
+});
+
+it('keeps meta when soft deleted and purges it when force deleted', function () {
+    $component = Component::factory()->withMeta()->create();
+
+    $component->delete();
+
+    expect(Meta::query()->where('meta_id', $component->id)->count())->toBe(1);
+
+    $component->forceDelete();
+
+    expect(Meta::query()->where('meta_id', $component->id)->count())->toBe(0);
 });
 
 it('can scope to disabled components', function () {

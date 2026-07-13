@@ -170,6 +170,24 @@ it('can filter components by meta', function () {
     $response->assertJsonPath('data.0.attributes.id', $component->id);
 });
 
+it('can filter components by typed meta values', function () {
+    Component::factory(5)->create();
+    $component = Component::factory()->create();
+    $component->syncMeta(['priority' => 3, 'critical' => true]);
+
+    $query = http_build_query([
+        'filter' => [
+            'meta' => ['priority' => 3, 'critical' => 'true'],
+        ],
+    ]);
+
+    $response = getJson('/status/api/components?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $component->id);
+});
+
 it('can create a component with meta', function () {
     Sanctum::actingAs(User::factory()->create(), ['components.manage']);
 

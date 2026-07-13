@@ -1,14 +1,29 @@
 <?php
 
-use Cachet\Models\Component;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * The morph aliases written by the metadata feature this migration enables.
+     *
+     * Hardcoded rather than read from the runtime morph map so this migration
+     * stays stable as application code evolves.
+     *
+     * @var list<string>
+     */
+    private array $morphAliases = [
+        'component',
+        'component_group',
+        'incident',
+        'schedule',
+        'subscriber',
+    ];
+
     /**
      * Run the migrations.
      */
@@ -18,28 +33,31 @@ return new class extends Migration
             $table->text('value')->nullable()->change();
         });
 
-        $type = Relation::getMorphAlias(Component::class);
-
         DB::table('components')
             ->whereNotNull('meta')
             ->orderBy('id')
-            ->each(function (object $component) use ($type) {
+            ->each(function (object $component) {
                 $meta = json_decode($component->meta, true);
 
                 if (! is_array($meta)) {
+                    Log::warning('Skipping component meta that is not a key/value object during migration.', [
+                        'component_id' => $component->id,
+                        'meta' => $component->meta,
+                    ]);
+
                     return;
                 }
 
-                foreach ($meta as $key => $value) {
-                    DB::table('meta')->insert([
-                        'key' => (string) $key,
-                        'value' => json_encode($value),
-                        'meta_id' => $component->id,
-                        'meta_type' => $type,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ]);
-                }
+                $rows = collect($meta)->map(fn (mixed $value, int|string $key) => [
+                    'key' => (string) $key,
+                    'value' => json_encode($value),
+                    'meta_id' => $component->id,
+                    'meta_type' => 'component',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])->values()->all();
+
+                DB::table('meta')->insert($rows);
             });
 
         Schema::table('components', function (Blueprint $table) {
@@ -56,10 +74,8 @@ return new class extends Migration
             $table->longText('meta')->nullable()->default(null)->after('enabled');
         });
 
-        $type = Relation::getMorphAlias(Component::class);
-
         DB::table('meta')
-            ->where('meta_type', $type)
+            ->where('meta_type', 'component')
             ->orderBy('meta_id')
             ->get()
             ->groupBy('meta_id')
@@ -73,10 +89,10 @@ return new class extends Migration
                     ->update(['meta' => json_encode($meta)]);
             });
 
-        DB::table('meta')->where('meta_type', $type)->delete();
+        DB::table('meta')->whereIn('meta_type', $this->morphAliases)->delete();
 
         Schema::table('meta', function (Blueprint $table) {
-            $table->text('value')->nullable()->change();
+            $table->string('value')->nullable(false)->change();
         });
     }
 };
