@@ -48,7 +48,6 @@ class IncidentTemplateResource extends Resource
                         ->label(__('cachet::incident_template.form.template_label'))
                         ->hint(fn (Get $get) => new HtmlString(Blade::render(match ($get('engine')) {
                             IncidentTemplateEngineEnum::twig => '<x-filament::link href="https://twig.symfony.com/doc/">'.__('cachet::incident_template.engine.twig_docs').'</x-filament::link>',
-                            IncidentTemplateEngineEnum::blade => '<x-filament::link href="https://laravel.com/blade">'.__('cachet::incident_template.engine.laravel_blade_docs').'</x-filament::link>',
                             default => null,
                         })))
                         ->required()

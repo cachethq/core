@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Models\IncidentTemplate;
+use Twig\Sandbox\SecurityError;
 
 it('can fetch data', function () {
     $template = IncidentTemplate::factory()->create([
@@ -27,9 +28,9 @@ it('can render a twig template', function () {
         ->toBe('Hello, James Brooks!');
 });
 
-it('can render a blade template', function () {
-    $template = IncidentTemplate::factory()->blade()->create([
-        'template' => 'Hello, {{ $name }}!',
+it('renders allowed twig filters', function () {
+    $template = IncidentTemplate::factory()->twig()->create([
+        'template' => 'Hello, {{ name|upper }}!',
     ]);
 
     $output = $template->render([
@@ -37,5 +38,23 @@ it('can render a blade template', function () {
     ]);
 
     expect($output)
-        ->toBe('Hello, James Brooks!');
+        ->toBe('Hello, JAMES BROOKS!');
+});
+
+it('sandboxes twig templates to block code execution', function () {
+    $template = IncidentTemplate::factory()->twig()->create([
+        'template' => "{{ ['id']|map('system')|join }}",
+    ]);
+
+    expect(fn () => $template->render())
+        ->toThrow(SecurityError::class);
+});
+
+it('blocks disallowed twig filters', function () {
+    $template = IncidentTemplate::factory()->twig()->create([
+        'template' => "{{ ['whoami']|filter('system')|join }}",
+    ]);
+
+    expect(fn () => $template->render())
+        ->toThrow(SecurityError::class);
 });

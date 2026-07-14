@@ -70,30 +70,6 @@ it('can create an incident with a twig template', function () {
     Event::assertDispatched(IncidentCreated::class, fn ($event) => $event->incident->is($incident));
 });
 
-it('can create an incident with a blade template', function () {
-    $template = IncidentTemplate::factory()->blade()->create([
-        'slug' => 'my-template',
-        'template' => 'This is a template: {{ $incident[\'name\'] }} foo: {{ $foo }}',
-    ]);
-
-    $data = CreateIncidentRequestData::from([
-        'name' => 'My Incident',
-        'template' => 'my-template',
-        'template_vars' => [
-            'foo' => 'bar',
-        ],
-        'status' => IncidentStatusEnum::investigating,
-    ]);
-
-    $incident = app(CreateIncident::class)->handle($data);
-
-    expect($incident)
-        ->name->toBe($data->name)
-        ->message->toBe('This is a template: My Incident foo: bar');
-
-    Event::assertDispatched(IncidentCreated::class, fn ($event) => $event->incident->is($incident));
-});
-
 it('attaches provided components to the incident', function () {
     [$componentA, $componentB] = Component::factory(2)->create();
 

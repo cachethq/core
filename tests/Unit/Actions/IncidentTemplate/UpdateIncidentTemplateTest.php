@@ -6,7 +6,7 @@ use Cachet\Enums\IncidentTemplateEngineEnum;
 use Cachet\Models\IncidentTemplate;
 
 it('can update an incident template', function () {
-    $incidentTemplate = IncidentTemplate::factory()->blade()->create();
+    $incidentTemplate = IncidentTemplate::factory()->twig()->create();
 
     app(UpdateIncidentTemplate::class)->handle($incidentTemplate, UpdateIncidentTemplateRequestData::from([
         'name' => 'GitHub Issues',

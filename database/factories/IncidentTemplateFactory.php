@@ -29,21 +29,6 @@ class IncidentTemplateFactory extends Factory
         ];
     }
 
-    public function blade(): self
-    {
-        return $this->state([
-            'engine' => IncidentTemplateEngineEnum::blade,
-            'template' => <<<'EOT'
-Hey,
-
-A new incident has been reported:
-
-Name: {{ $incident['name'] }}
-{{ $incident['message'] }}
-EOT,
-        ]);
-    }
-
     public function twig(): self
     {
         return $this->state([

@@ -4,7 +4,6 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\IncidentTemplateFactory;
 use Cachet\Enums\IncidentTemplateEngineEnum;
-use Cachet\Renderers\BladeRenderer;
 use Cachet\Renderers\TwigRenderer;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -47,7 +46,6 @@ class IncidentTemplate extends Model
     public function render(array $variables = []): string
     {
         return match ($this->engine) {
-            IncidentTemplateEngineEnum::blade => $this->renderWithBlade($variables),
             IncidentTemplateEngineEnum::twig => $this->renderWithTwig($variables),
         };
     }
@@ -58,14 +56,6 @@ class IncidentTemplate extends Model
     private function renderWithTwig(array $variables = []): string
     {
         return app(TwigRenderer::class)->render($this->template, $variables);
-    }
-
-    /**
-     * Render a template using Laravel Blade.
-     */
-    private function renderWithBlade(array $variables = []): string
-    {
-        return app(BladeRenderer::class)->render($this->template, $variables);
     }
 
     /**
