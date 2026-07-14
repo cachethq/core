@@ -4,6 +4,24 @@
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
 
+/*
+  Dark mode is class-based so viewers can override their system preference.
+  The `.dark` and `.light` classes are managed on `<html>`: rendered by the
+  server when a theme is forced, otherwise applied by the theme switcher.
+  The media query branch keeps system dark mode working without JavaScript.
+*/
+@custom-variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:where(:not(.light, .light *)) {
+      @slot;
+    }
+  }
+}
+
 @theme {
   --color-primary-50: #e6f7ed;
   --color-primary-100: #c1edce;

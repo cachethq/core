@@ -1,9 +1,11 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ThemeModeEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Cachet\Settings\ThemeSettings;
 
 it('renders the status page', function () {
     $this->get(route('cachet.status-page'))
@@ -82,6 +84,25 @@ it('falls back to the default favicon when operational and dynamic favicons are 
         ->assertSee('favicon.ico')
         ->assertDontSee('image/svg+xml');
 });
+
+it('lets visitors pick a theme when the theme mode is automatic', function () {
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('data-theme-mode="auto"', escape: false)
+        ->assertSee('data-theme-toggle', escape: false);
+});
+
+it('forces the theme and hides the theme toggle when a theme mode is forced', function (ThemeModeEnum $mode) {
+    $settings = app(ThemeSettings::class);
+    $settings->theme_mode = $mode;
+    $settings->save();
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('data-theme-mode="'.$mode->value.'"', escape: false)
+        ->assertSee('class="bg-accent-background text-zinc-700 dark:text-zinc-300 '.$mode->value.'"', escape: false)
+        ->assertDontSee('data-theme-toggle', escape: false);
+})->with([ThemeModeEnum::light, ThemeModeEnum::dark]);
 
 it('does not render raw html in component descriptions', function () {
     Component::factory()->create([

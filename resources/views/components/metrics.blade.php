@@ -18,8 +18,13 @@
         return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
     }
 
+    function isDarkMode() {
+        return document.documentElement.classList.contains('dark')
+            || (window.matchMedia('(prefers-color-scheme: dark)').matches && !document.documentElement.classList.contains('light'))
+    }
+
     function getFontColor() {
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches === true) {
+        if (isDarkMode()) {
             return `rgba(${getCssVar('--gray-100')}, 1)`
         }
 
@@ -34,7 +39,7 @@
     function getThemeColors() {
         const fontColor = getFontColor()
         const accent = getCssVar('--accent')
-        const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const isDark = isDarkMode()
         const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.05)'
         const mutedColor = isDark ? 'rgba(161, 161, 170, 1)' : 'rgba(113, 113, 122, 1)'
 
@@ -151,7 +156,7 @@
             return 'day'
         }
 
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        const refreshThemeColors = () => {
             themeColors = getThemeColors()
 
             chart.data.datasets[0].backgroundColor = themeColors.fillColor
@@ -162,7 +167,10 @@
             chart.options.scales.y.grid.color = themeColors.gridColor
 
             chart.update()
-        })
+        }
+
+        window.addEventListener('theme-changed', refreshThemeColors)
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', refreshThemeColors)
     }
 </script>
 

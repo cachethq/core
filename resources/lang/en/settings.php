@@ -101,6 +101,17 @@ return [
     'manage_theme' => [
         'app_banner_label' => 'Banner image',
         'app_banner_helper' => 'An image displayed at the top of the status page.',
+        'theme_mode' => [
+            'heading' => 'Appearance',
+            'description' => 'Choose how the status page appears to visitors.',
+            'label' => 'Theme',
+            'helper' => 'Automatic follows each visitor\'s device preference and lets them pick a theme. Light and dark force the status page into that theme.',
+            'modes' => [
+                'auto' => 'Automatic (System)',
+                'light' => 'Light',
+                'dark' => 'Dark',
+            ],
+        ],
         'status_page_accent' => [
             'heading' => 'Status page accent',
             'description' => 'Customize the accent color of your status page. Cachet can automatically select a matching base color.',

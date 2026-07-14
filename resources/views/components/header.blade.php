@@ -29,6 +29,7 @@
                     </form>
                 @endauth
             @endif
+            <x-cachet::theme-toggle />
         </div>
     </div>
 </header>

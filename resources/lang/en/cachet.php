@@ -18,4 +18,10 @@ return [
     'open_source_status_page' => 'The open source status page.',
     'all_times_shown_in' => 'All times are shown in *:timezone*.',
     'rss_feed' => ':name RSS feed',
+    'theme' => [
+        'label' => 'Theme',
+        'auto' => 'System',
+        'light' => 'Light',
+        'dark' => 'Dark',
+    ],
 ];

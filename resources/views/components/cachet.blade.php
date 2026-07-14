@@ -1,9 +1,30 @@
 @use('Cachet\Cachet')
+@use('Cachet\Enums\ThemeModeEnum')
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="bg-accent-background text-zinc-700 dark:text-zinc-300">
+<html
+    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+    data-theme-mode="{{ $theme_mode->value }}"
+    @class([
+        'bg-accent-background text-zinc-700 dark:text-zinc-300',
+        'light' => $theme_mode === ThemeModeEnum::light,
+        'dark' => $theme_mode === ThemeModeEnum::dark,
+    ])
+>
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        @if ($theme_mode === ThemeModeEnum::auto)
+        <script>
+            (() => {
+                let theme = 'auto'
+                try { theme = localStorage.getItem('cachet.theme') ?? 'auto' } catch {}
+                const dark = theme === 'dark' || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+                document.documentElement.classList.toggle('dark', dark)
+                document.documentElement.classList.toggle('light', !dark)
+            })()
+        </script>
+        @endif
 
         @if ($favicon)
         <link rel="icon" href="{{ asset('vendor/cachethq/cachet/favicon.ico') }}" sizes="32x32" />

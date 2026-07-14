@@ -353,14 +353,24 @@ final class ThemeData extends BaseData
 
         return <<<CSS
             :root {
+                color-scheme: light;
                 --accent: {$theme['light']['accent']};
                 --accent-content: {$theme['light']['accent-content']};
                 --accent-foreground: {$theme['light']['accent-foreground']};
                 --accent-background: {$pairingColor[50]};
             }
 
+            :root.dark {
+                color-scheme: dark;
+                --accent: {$theme['dark']['accent']};
+                --accent-content: {$theme['dark']['accent-content']};
+                --accent-foreground: {$theme['dark']['accent-foreground']};
+                --accent-background: {$pairingColor[900]};
+            }
+
             @media(prefers-color-scheme: dark) {
-                :root {
+                :root:not(.light) {
+                    color-scheme: dark;
                     --accent: {$theme['dark']['accent']};
                     --accent-content: {$theme['dark']['accent-content']};
                     --accent-foreground: {$theme['dark']['accent-foreground']};
