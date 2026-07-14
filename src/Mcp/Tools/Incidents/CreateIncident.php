@@ -53,11 +53,21 @@ class CreateIncident extends Tool
         ];
     }
 
+    /**
+     * The message/template interdependency is validated explicitly because
+     * older spatie/laravel-data versions skip the data object's rules for
+     * absent properties that declare default values.
+     */
     public function handle(Request $request, CreateIncidentAction $action): Response|ResponseFactory
     {
         if (! $this->tokenCan('incidents.manage')) {
             return $this->missingAbility('incidents.manage');
         }
+
+        $request->validate([
+            'message' => ['required_without:template', 'nullable', 'string'],
+            'template' => ['required_without:message', 'nullable', 'string'],
+        ]);
 
         $data = CreateIncidentRequestData::validateAndCreate($request->all());
 
