@@ -4,6 +4,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Mcp\CachetServer;
+use Cachet\Mcp\Tools\Components\GetComponent;
 use Cachet\Mcp\Tools\Incidents\CreateIncident;
 use Cachet\Mcp\Tools\Incidents\DeleteIncident;
 use Cachet\Mcp\Tools\Incidents\GetIncident;
@@ -302,4 +303,47 @@ it('reveals authenticated-only incidents by id to authenticated callers', functi
     CachetServer::tool(GetIncident::class, ['id' => $incident->id])
         ->assertOk()
         ->assertSee('Internal Incident');
+});
+
+it('overlays the displayed component status while an incident is unresolved', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+
+    CachetServer::tool(CreateIncident::class, [
+        'name' => 'API Outage',
+        'status' => IncidentStatusEnum::identified->value,
+        'message' => 'The API is down.',
+        'components' => [
+            ['id' => $component->id, 'status' => ComponentStatusEnum::major_outage->value],
+        ],
+    ])->assertOk();
+
+    CachetServer::tool(GetComponent::class, ['id' => $component->id])
+        ->assertOk()
+        ->assertStructuredContent(fn (AssertableJson $json) => $json
+            ->where('data.status.name', 'operational')
+            ->where('data.latest_status.name', 'major_outage')
+            ->etc());
+});
+
+it('restores the displayed component status when the incident is fixed', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage', 'incident-updates.manage']);
+
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::identified]);
+    $incident->components()->attach($component->id, ['component_status' => ComponentStatusEnum::major_outage]);
+
+    CachetServer::tool(RecordIncidentUpdate::class, [
+        'incident_id' => $incident->id,
+        'status' => IncidentStatusEnum::fixed->value,
+        'message' => 'The problem is resolved.',
+    ])->assertOk();
+
+    CachetServer::tool(GetComponent::class, ['id' => $component->id])
+        ->assertOk()
+        ->assertStructuredContent(fn (AssertableJson $json) => $json
+            ->where('data.status.name', 'operational')
+            ->where('data.latest_status.name', 'operational')
+            ->etc());
 });

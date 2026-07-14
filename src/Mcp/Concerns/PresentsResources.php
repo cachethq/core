@@ -42,6 +42,7 @@ trait PresentsResources
             'description' => $component->description,
             'link' => $component->link,
             'status' => $this->presentEnum($component->status),
+            'latest_status' => $this->presentEnum($component->latest_status),
             'order' => $component->order,
             'enabled' => $component->enabled,
             'component_group_id' => $component->component_group_id,

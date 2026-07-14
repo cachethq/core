@@ -64,9 +64,13 @@ class CachetServer extends Server
 
         Statuses are integers. Component status: 1 operational, 2 performance issues,
         3 partial outage, 4 major outage, 5 unknown, 6 under maintenance. Incident status:
-        0 unknown, 1 investigating, 2 identified, 3 watching, 4 fixed. Recording an incident
-        update with status 4 (fixed) resolves the incident and returns its affected components
-        to operational.
+        0 unknown, 1 investigating, 2 identified, 3 watching, 4 fixed.
+
+        Linking components to an incident overlays their displayed status rather than
+        changing the component itself: a component's `status` is its own base status, while
+        `latest_status` is what the status page shows, taking any unresolved incident into
+        account. Recording an incident update with status 4 (fixed) resolves the incident
+        and restores the displayed status of its affected components.
         MARKDOWN;
 
     /**
