@@ -4,6 +4,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Enums\ThemeModeEnum;
 use Cachet\Facades\CachetView;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
@@ -12,6 +13,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Cachet\Settings\ThemeSettings;
 use Cachet\View\RenderHook;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -570,6 +572,25 @@ it('links a component to an http url', function () {
         ->assertOk()
         ->assertSee('href="https://status.example.com/api"', escape: false);
 });
+
+it('lets visitors pick a theme when the theme mode is automatic', function () {
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('data-theme-mode="auto"', escape: false)
+        ->assertSee('data-theme-toggle', escape: false);
+});
+
+it('forces the theme and hides the theme toggle when a theme mode is forced', function (ThemeModeEnum $mode) {
+    $settings = app(ThemeSettings::class);
+    $settings->theme_mode = $mode;
+    $settings->save();
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('data-theme-mode="'.$mode->value.'"', escape: false)
+        ->assertSee('class="bg-accent-background text-zinc-700 dark:text-zinc-300 '.$mode->value.'"', escape: false)
+        ->assertDontSee('data-theme-toggle', escape: false);
+})->with([ThemeModeEnum::light, ThemeModeEnum::dark]);
 
 it('does not render raw html in component descriptions', function () {
     Component::factory()->create([
