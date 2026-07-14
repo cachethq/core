@@ -19,6 +19,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -81,6 +82,9 @@ class ScheduleResource extends Resource
                                 ->default(ComponentStatusEnum::operational->value),
                         ])
                         ->label(__('cachet::schedule.form.add_component.header'))
+                        ->columnSpanFull(),
+                    KeyValue::make('meta')
+                        ->label(__('cachet::schedule.form.meta_label'))
                         ->columnSpanFull(),
                 ]),
             ]);

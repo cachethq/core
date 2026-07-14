@@ -3,6 +3,8 @@
 namespace Cachet\Models;
 
 use Cachet\Cachet;
+use Cachet\Concerns\HasMeta;
+use Cachet\Concerns\Metable;
 use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ResourceOrderColumnEnum;
@@ -37,9 +39,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
  * @property bool $enabled
- * @property array<string, mixed> $meta
  * @property ?ComponentGroup $componentGroup
  * @property-read Collection<int, ComponentCheck> $checks
+ * @property-read Collection<int, Meta> $meta
  * @property-read IncidentComponent|null $pivot
  *
  * @method static Builder<static>|static checked()
@@ -49,11 +51,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder<static>|static status(ComponentStatusEnum $status)
  * @method static ComponentFactory factory($count = null, $state = [])
  */
-class Component extends Model
+class Component extends Model implements Metable
 {
     /** @use HasFactory<ComponentFactory> */
     use HasFactory;
 
+    use HasMeta;
     use SoftDeletes;
 
     /** @var array<string, string> */
@@ -62,7 +65,6 @@ class Component extends Model
         'status' => ComponentStatusEnum::class,
         'order' => 'int',
         'enabled' => 'bool',
-        'meta' => 'json',
     ];
 
     /** @var list<string> */
@@ -74,7 +76,6 @@ class Component extends Model
         'status',
         'component_group_id',
         'enabled',
-        'meta',
         'checked',
         'checked_at',
     ];

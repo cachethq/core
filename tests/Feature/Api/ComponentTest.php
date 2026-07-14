@@ -1,8 +1,10 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
+use Cachet\Models\Incident;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 
@@ -139,6 +141,8 @@ it('can filter components by enabled', function () {
 });
 
 it('can filter components by disabled', function () {
+    Sanctum::actingAs(User::factory()->create());
+
     Component::factory(20)->disabled()->create();
     $component = Component::factory()->enabled()->create();
 
@@ -150,6 +154,79 @@ it('can filter components by disabled', function () {
 
     $response->assertJsonCount(20, 'data');
     $response->assertJsonMissing(['id' => $component->id]);
+});
+
+it('can filter components by meta', function () {
+    Component::factory(5)->create();
+    $component = Component::factory()->create();
+    $component->syncMeta(['region' => 'eu-west']);
+
+    $query = http_build_query([
+        'filter' => [
+            'meta' => ['region' => 'eu-west'],
+        ],
+    ]);
+
+    $response = getJson('/status/api/components?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $component->id);
+});
+
+it('can filter components by typed meta values', function () {
+    Component::factory(5)->create();
+    $component = Component::factory()->create();
+    $component->syncMeta(['priority' => 3, 'critical' => true]);
+
+    $query = http_build_query([
+        'filter' => [
+            'meta' => ['priority' => 3, 'critical' => 'true'],
+        ],
+    ]);
+
+    $response = getJson('/status/api/components?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $component->id);
+});
+
+it('can create a component with meta', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
+    $response = postJson('/status/api/components', [
+        'name' => 'Test',
+        'meta' => ['region' => 'eu-west', 'priority' => 3, 'critical' => true],
+    ]);
+
+    $response->assertCreated();
+    expect(Component::query()->firstWhere('name', 'Test')->metaValues())
+        ->toBe(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+});
+
+it('can include meta on a component', function () {
+    $component = Component::factory()->create();
+    $component->syncMeta(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+
+    $response = getJson('/status/api/components/'.$component->id.'?include=meta');
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.meta', [
+        'region' => 'eu-west',
+        'priority' => 3,
+        'critical' => true,
+    ]);
+});
+
+it('does not include meta on a component by default', function () {
+    $component = Component::factory()->create();
+    $component->syncMeta(['region' => 'eu-west']);
+
+    $response = getJson('/status/api/components/'.$component->id);
+
+    $response->assertOk();
+    $response->assertJsonMissingPath('data.attributes.meta');
 });
 
 it('can get a component', function () {
@@ -414,4 +491,120 @@ it('can delete a component', function () {
     $this->assertSoftDeleted('components', [
         'id' => $component->id,
     ]);
+});
+
+it('does not list components belonging to groups hidden from guests', function () {
+    $guestGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    $authGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    Component::factory()->create(['component_group_id' => $guestGroup->id]);
+    Component::factory()->create(['component_group_id' => $authGroup->id]);
+    Component::factory()->create(['component_group_id' => $hiddenGroup->id]);
+    Component::factory()->create(['component_group_id' => null]);
+
+    $response = getJson('/status/api/components?per_page=50');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('lists components in authenticated groups to authenticated users but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $authGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    Component::factory()->create(['component_group_id' => $authGroup->id]);
+    Component::factory()->create(['component_group_id' => $hiddenGroup->id]);
+    Component::factory()->create(['component_group_id' => null]);
+
+    $response = getJson('/status/api/components?per_page=50');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('does not show a component in a hidden group to guests', function () {
+    $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $component = Component::factory()->create(['component_group_id' => $hiddenGroup->id]);
+
+    $response = getJson('/status/api/components/'.$component->id);
+
+    $response->assertNotFound();
+});
+
+it('does not list disabled components by default', function () {
+    Component::factory(3)->enabled()->create();
+    Component::factory(2)->disabled()->create();
+
+    $response = getJson('/status/api/components?per_page=50');
+
+    $response->assertOk();
+    $response->assertJsonCount(3, 'data');
+});
+
+it('does not list disabled components to guests even when explicitly filtered', function () {
+    Component::factory(3)->enabled()->create();
+    Component::factory(2)->disabled()->create();
+
+    $response = getJson('/status/api/components?per_page=50&filter[enabled]=false');
+
+    $response->assertOk();
+    $response->assertJsonCount(0, 'data');
+});
+
+it('lists disabled components to authenticated users when explicitly filtered', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    Component::factory(3)->enabled()->create();
+    Component::factory(2)->disabled()->create();
+
+    $response = getJson('/status/api/components?per_page=50&filter[enabled]=false');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('does not show a disabled component to guests', function () {
+    $component = Component::factory()->disabled()->create();
+
+    $response = getJson('/status/api/components/'.$component->id);
+
+    $response->assertNotFound();
+});
+
+it('shows a disabled component to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $component = Component::factory()->disabled()->create();
+
+    $response = getJson('/status/api/components/'.$component->id);
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.id', $component->id);
+});
+
+it('does not include incidents hidden from guests on visible components', function () {
+    $component = Component::factory()->enabled()->create();
+    $component->incidents()->attach(Incident::factory()->create(['visible' => ResourceVisibilityEnum::guest]));
+    $component->incidents()->attach(Incident::factory()->create(['visible' => ResourceVisibilityEnum::hidden]));
+
+    $response = getJson('/status/api/components/'.$component->id.'?include=incidents');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'included');
+});
+
+it('lists components in authenticated groups to callers presenting a bearer token', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('api')->plainTextToken;
+
+    $authGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Component::factory()->create(['component_group_id' => $authGroup->id]);
+
+    $response = getJson('/status/api/components', ['Authorization' => 'Bearer '.$token]);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
 });

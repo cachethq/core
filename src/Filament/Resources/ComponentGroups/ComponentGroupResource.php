@@ -14,6 +14,7 @@ use Cachet\Models\ComponentGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
@@ -68,6 +69,11 @@ class ComponentGroupResource extends Resource
                         ->options(ResourceOrderDirectionEnum::class)
                         ->required(fn (Get $get) => $get('order_column') !== ResourceOrderColumnEnum::Manual->value)
                         ->visible(fn (Get $get) => $get('order_column') !== ResourceOrderColumnEnum::Manual->value),
+                ]),
+                Section::make()->schema([
+                    KeyValue::make('meta')
+                        ->label(__('cachet::component_group.form.meta_label'))
+                        ->columnSpanFull(),
                 ]),
             ]);
     }

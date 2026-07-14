@@ -5,39 +5,75 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Schedule\CreateSchedule;
 use Cachet\Actions\Schedule\DeleteSchedule;
 use Cachet\Actions\Schedule\UpdateSchedule;
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Enums\ScheduleStatusEnum;
+use Cachet\Filters\MetaFilter;
 use Cachet\Filters\ScheduleStatusFilter;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
+use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Schedule;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Number;
 use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
 #[Group('Schedules', weight: 8)]
 class ScheduleController extends Controller
 {
+    use ChecksApiAuthentication;
     use GuardsApiAbilities;
+
+    /**
+     * The list of allowed includes, scoped to the current caller.
+     *
+     * Component groups hidden from the caller are excluded from the nested
+     * include so a schedule cannot reveal them.
+     *
+     * @return array<int, string|Collection<int, AllowedInclude>>
+     */
+    protected function allowedIncludes(): array
+    {
+        return [
+            'components',
+            AllowedInclude::callback('components.group', function (BelongsTo $query): void {
+                /** @var BelongsTo<ComponentGroup, Component> $query */
+                $query->visible($this->isAuthenticated());
+            }),
+            'updates',
+            'user',
+            'meta',
+        ];
+    }
 
     /**
      * List Schedules
      */
     #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
     #[QueryParameter('filter[status]', 'Filter the resources by status.', type: ScheduleStatusEnum::class)]
+    #[QueryParameter('filter[meta][key]', 'Filter by a metadata key/value pair.', example: 'eu-west')]
+    #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
         $schedules = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components', 'components.group', 'updates', 'user'])
-            ->allowedFilters(['name', AllowedFilter::custom('status', new ScheduleStatusFilter)])
+            ->allowedIncludes($this->allowedIncludes())
+            ->allowedFilters([
+                'name',
+                AllowedFilter::custom('status', new ScheduleStatusFilter),
+                AllowedFilter::custom('meta', new MetaFilter),
+            ])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
@@ -59,11 +95,12 @@ class ScheduleController extends Controller
     /**
      * Get Schedule
      */
+    #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     public function show(Schedule $schedule)
     {
         $scheduleQuery = QueryBuilder::for(Schedule::class)
-            ->allowedIncludes(['components', 'components.group', 'updates', 'user'])
-            ->find($schedule->id);
+            ->allowedIncludes($this->allowedIncludes())
+            ->findOrFail($schedule->id);
 
         return ScheduleResource::make($scheduleQuery)
             ->response()

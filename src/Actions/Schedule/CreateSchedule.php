@@ -19,7 +19,7 @@ class CreateSchedule
     public function handle(CreateScheduleRequestData $data): Schedule
     {
         /** @phpstan-ignore-next-line argument.type */
-        return tap(Schedule::create($data->except('components')->toArray()), function (Schedule $schedule) use ($data) {
+        return tap(Schedule::create($data->except('components', 'meta')->toArray()), function (Schedule $schedule) use ($data) {
             if ($data->components) {
                 $components = collect($data->components)->map(fn (ScheduleComponentRequestData $component) => [
                     'component_id' => $component->id,
@@ -28,6 +28,8 @@ class CreateSchedule
 
                 $schedule->components()->sync($components);
             }
+
+            $schedule->syncMeta($data->meta ?? []);
 
             $this->notifyScheduleSubscribers->handle($schedule);
         });

@@ -13,7 +13,11 @@ class UpdateSchedule
      */
     public function handle(Schedule $schedule, UpdateScheduleRequestData $data): Schedule
     {
-        $schedule->update($data->except('components')->toArray());
+        $schedule->update($data->except('components', 'meta')->toArray());
+
+        if ($data->meta !== null) {
+            $schedule->syncMeta($data->meta);
+        }
 
         if ($data->components) {
             $components = collect($data->components)->map(fn (ScheduleComponentRequestData $component) => [

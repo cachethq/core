@@ -200,3 +200,11 @@ it('reports operational for a group without components', function () {
 
     expect($group->worstComponentStatus())->toBe(ComponentStatusEnum::operational);
 });
+
+it('has meta', function () {
+    $group = ComponentGroup::factory()->withMeta()->create();
+
+    expect($group->metaValues())->toBe([
+        'foo' => 'bar',
+    ]);
+});

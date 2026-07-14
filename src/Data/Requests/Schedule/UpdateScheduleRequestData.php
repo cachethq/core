@@ -24,6 +24,8 @@ final class UpdateScheduleRequestData extends BaseData
         public readonly ?Carbon $completedAt = null,
         #[DataCollectionOf(ScheduleComponentRequestData::class)]
         public readonly ?array $components = null,
+        /** @var array<string, mixed>|null */
+        public readonly ?array $meta = null,
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -36,6 +38,7 @@ final class UpdateScheduleRequestData extends BaseData
             'components' => ['array'],
             'components.*.id' => ['required_with:components', 'int', 'exists:components,id'],
             'components.*.status' => ['required_with:components', Rule::enum(ComponentStatusEnum::class)],
+            'meta' => ['nullable', 'array'],
         ];
     }
 }

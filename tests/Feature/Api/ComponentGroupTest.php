@@ -3,6 +3,7 @@
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Enums\ResourceOrderDirectionEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Laravel\Sanctum\Sanctum;
@@ -72,12 +73,63 @@ it('can get a component group with components', function () {
     $response->assertJsonFragment(['id' => $componentGroup->id]);
 });
 
+it('can filter component groups by meta', function () {
+    ComponentGroup::factory(5)->create();
+    $group = ComponentGroup::factory()->create();
+    $group->syncMeta(['region' => 'eu-west']);
+
+    $query = http_build_query(['filter' => ['meta' => ['region' => 'eu-west']]]);
+
+    $response = getJson('/status/api/component-groups?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $group->id);
+});
+
+it('can include meta on a component group', function () {
+    $group = ComponentGroup::factory()->create();
+    $group->syncMeta(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+
+    $response = getJson('/status/api/component-groups/'.$group->id.'?include=meta');
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.meta', [
+        'region' => 'eu-west',
+        'priority' => 3,
+        'critical' => true,
+    ]);
+});
+
+it('does not include meta on a component group by default', function () {
+    $group = ComponentGroup::factory()->create();
+    $group->syncMeta(['region' => 'eu-west']);
+
+    $response = getJson('/status/api/component-groups/'.$group->id);
+
+    $response->assertOk();
+    $response->assertJsonMissingPath('data.attributes.meta');
+});
+
 it('cannot create a component group when not authenticated', function () {
     $response = postJson('/status/api/component-groups', [
         'name' => 'New Group',
     ]);
 
     $response->assertUnauthorized();
+});
+
+it('can create a component group with meta', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'New Group',
+        'meta' => ['region' => 'eu-west', 'priority' => 3, 'critical' => true],
+    ]);
+
+    $response->assertCreated();
+    expect(ComponentGroup::query()->firstWhere('name', 'New Group')->metaValues())
+        ->toBe(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
 });
 
 it('cannot create a component group without the token ability', function () {
@@ -432,4 +484,85 @@ it('can update an unrelated attribute without supplying an order direction', fun
         'id' => $componentGroup->id,
         'name' => 'Renamed Group',
     ]);
+});
+
+it('does not list component groups hidden from guests', function () {
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/component-groups');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+});
+
+it('lists authenticated component groups to authenticated users but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/component-groups');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('does not show a hidden component group to guests', function () {
+    $componentGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/component-groups/'.$componentGroup->id);
+
+    $response->assertNotFound();
+});
+
+it('shows an authenticated component group to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $componentGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    $response = getJson('/status/api/component-groups/'.$componentGroup->id);
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.id', $componentGroup->id);
+});
+
+it('does not include disabled components in a group to guests', function () {
+    $group = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Component::factory()->enabled()->create(['component_group_id' => $group->id]);
+    Component::factory()->disabled()->create(['component_group_id' => $group->id]);
+
+    $response = getJson('/status/api/component-groups/'.$group->id.'?include=components');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'included');
+});
+
+it('includes disabled components in a group to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $group = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Component::factory()->enabled()->create(['component_group_id' => $group->id]);
+    Component::factory()->disabled()->create(['component_group_id' => $group->id]);
+
+    $response = getJson('/status/api/component-groups/'.$group->id.'?include=components');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'included');
+});
+
+it('lists authenticated component groups to callers presenting a bearer token', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('api')->plainTextToken;
+
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/component-groups', ['Authorization' => 'Bearer '.$token]);
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
 });

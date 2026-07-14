@@ -28,5 +28,6 @@ return [
         'collapsed_label' => 'Collapsed',
         'order_column_label' => 'Component group order',
         'order_direction' => 'Order direction',
+        'meta_label' => 'Meta',
     ],
 ];

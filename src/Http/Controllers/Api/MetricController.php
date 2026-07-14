@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Metric\CreateMetric;
 use Cachet\Actions\Metric\DeleteMetric;
 use Cachet\Actions\Metric\UpdateMetric;
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Metric\CreateMetricRequestData;
 use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
@@ -24,6 +25,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 #[Group('Metrics', weight: 6)]
 class MetricController extends Controller
 {
+    use ChecksApiAuthentication;
     use GuardsApiAbilities;
 
     /**
@@ -36,6 +38,7 @@ class MetricController extends Controller
     public function index(Request $request)
     {
         $query = Metric::query()
+            ->visible($this->isAuthenticated())
             ->when(! $request->input('sort'), function (Builder $builder) {
                 $builder->orderByDesc('created_at');
             });
@@ -68,11 +71,11 @@ class MetricController extends Controller
      */
     public function show(Metric $metric)
     {
-        $metricQuery = QueryBuilder::for(Metric::class)
+        $metricQuery = QueryBuilder::for(Metric::query()->visible($this->isAuthenticated()))
             ->allowedIncludes([
                 AllowedInclude::relationship('points', 'metricPoints'),
             ])
-            ->find($metric->id);
+            ->findOrFail($metric->id);
 
         return MetricResource::make($metricQuery)
             ->response()

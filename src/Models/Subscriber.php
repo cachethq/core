@@ -2,6 +2,8 @@
 
 namespace Cachet\Models;
 
+use Cachet\Concerns\HasMeta;
+use Cachet\Concerns\Metable;
 use Cachet\Database\Factories\SubscriberFactory;
 use Cachet\Events\Subscribers\SubscriberCreated;
 use Cachet\Events\Subscribers\SubscriberUnsubscribed;
@@ -29,11 +31,12 @@ use Illuminate\Support\Facades\URL;
  * @property ?string $phone_number
  * @property ?string $slack_webhook_url
  * @property Collection<int, Component> $components
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Meta> $meta
  */
-class Subscriber extends Model implements MustVerifyEmailContract
+class Subscriber extends Model implements Metable, MustVerifyEmailContract
 {
     /** @use HasFactory<SubscriberFactory> */
-    use HasFactory, MustVerifyEmail, Notifiable;
+    use HasFactory, HasMeta, MustVerifyEmail, Notifiable;
 
     /** @var array<string, string> */
     protected $casts = [

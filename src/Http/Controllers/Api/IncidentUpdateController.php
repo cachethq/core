@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
+use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Data\Requests\IncidentUpdate\EditIncidentUpdateRequestData;
@@ -24,6 +25,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 #[Group('Incident Updates', weight: 4)]
 class IncidentUpdateController extends Controller
 {
+    use ChecksApiAuthentication;
     use GuardsApiAbilities;
 
     /**
@@ -33,6 +35,8 @@ class IncidentUpdateController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request, Incident $incident)
     {
+        $this->ensureIncidentVisible($incident);
+
         $query = Update::query()
             ->where('updateable_id', $incident->id)
             ->where('updateable_type', 'incident');
@@ -65,6 +69,8 @@ class IncidentUpdateController extends Controller
      */
     public function show(Incident $incident, Update $update)
     {
+        $this->ensureIncidentVisible($incident);
+
         $updateQuery = QueryBuilder::for(Update::class)
             ->allowedIncludes([
                 AllowedInclude::relationship('incident', 'updateable'),
@@ -74,6 +80,17 @@ class IncidentUpdateController extends Controller
         return UpdateResource::make($updateQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
+    }
+
+    /**
+     * Abort with a 404 when the parent incident is not visible to the caller.
+     */
+    protected function ensureIncidentVisible(Incident $incident): void
+    {
+        abort_unless(
+            Incident::query()->visible($this->isAuthenticated())->whereKey($incident->getKey())->exists(),
+            Response::HTTP_NOT_FOUND,
+        );
     }
 
     /**

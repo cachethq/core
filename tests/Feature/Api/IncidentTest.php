@@ -2,6 +2,7 @@
 
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
@@ -162,6 +163,63 @@ it('can filter incidents by occurred at date', function () {
 
     $response->assertJsonCount(1, 'data');
     $response->assertJsonPath('data.0.attributes.id', $incident->id);
+});
+
+it('can filter incidents by meta', function () {
+    Incident::factory(5)->create();
+    $incident = Incident::factory()->create();
+    $incident->syncMeta(['region' => 'eu-west']);
+
+    $query = http_build_query([
+        'filter' => [
+            'meta' => ['region' => 'eu-west'],
+        ],
+    ]);
+
+    $response = getJson('/status/api/incidents?'.$query);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.id', $incident->id);
+});
+
+it('can create an incident with meta', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $response = postJson('/status/api/incidents', [
+        'name' => 'Test',
+        'message' => 'Something happened.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'meta' => ['region' => 'eu-west', 'priority' => 3, 'critical' => true],
+    ]);
+
+    $response->assertCreated();
+    expect(Incident::query()->firstWhere('name', 'Test')->metaValues())
+        ->toBe(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+});
+
+it('can include meta on an incident', function () {
+    $incident = Incident::factory()->create();
+    $incident->syncMeta(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id.'?include=meta');
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.meta', [
+        'region' => 'eu-west',
+        'priority' => 3,
+        'critical' => true,
+    ]);
+});
+
+it('does not include meta on an incident by default', function () {
+    $incident = Incident::factory()->create();
+    $incident->syncMeta(['region' => 'eu-west']);
+
+    $response = getJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertOk();
+    $response->assertJsonMissingPath('data.attributes.meta');
 });
 
 it('can get an incident', function () {
@@ -452,4 +510,86 @@ it('can delete an incident', function () {
     $response = deleteJson('/status/api/incidents/'.$incident->id);
 
     $response->assertNoContent();
+});
+
+it('does not list incidents hidden from guests', function () {
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/incidents');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.visible', ResourceVisibilityEnum::guest->value);
+});
+
+it('lists authenticated incidents to authenticated users but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/incidents');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('does not show a hidden incident to guests', function () {
+    $incident = Incident::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertNotFound();
+});
+
+it('does not show an authenticated incident to guests', function () {
+    $incident = Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertNotFound();
+});
+
+it('shows an authenticated incident to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $incident = Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id);
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.id', $incident->id);
+});
+
+it('does not reveal component groups hidden from guests through incident includes', function () {
+    $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $component = Component::factory()->for($hiddenGroup, 'group')->create();
+    $incident = Incident::factory()->create();
+    $incident->components()->attach($component, ['component_status' => ComponentStatusEnum::partial_outage->value]);
+
+    $response = getJson('/status/api/incidents/'.$incident->id.'?include=components.group');
+
+    $response->assertOk();
+
+    $included = collect($response->json('included'));
+
+    expect($included->firstWhere('id', (string) $component->id))->not->toBeNull()
+        ->and($included->firstWhere('type', 'componentGroups'))->toBeNull();
+});
+
+it('lists authenticated incidents to callers presenting a bearer token', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('api')->plainTextToken;
+
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/incidents', ['Authorization' => 'Bearer '.$token]);
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
 });

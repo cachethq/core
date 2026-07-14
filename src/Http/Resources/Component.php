@@ -21,7 +21,10 @@ class Component extends JsonApiResource
                 'value' => $this->status?->value,
             ],
             'enabled' => $this->enabled,
-            'meta' => $this->meta,
+            'meta' => $this->when(
+                $this->resource->relationLoaded('meta'),
+                fn () => $this->meta->pluck('value', 'key'),
+            ),
             'created' => [
                 'human' => $this->created_at?->diffForHumans(),
                 'string' => $this->created_at?->toDateTimeString(),

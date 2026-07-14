@@ -17,6 +17,14 @@ it('has components', function () {
         ->components->toHaveCount(2);
 });
 
+it('has meta', function () {
+    $schedule = Schedule::factory()->withMeta()->create();
+
+    expect($schedule->metaValues())->toBe([
+        'foo' => 'bar',
+    ]);
+});
+
 it('can get incomplete schedules', function () {
     $scheduleA = Schedule::factory()->inTheFuture()->create();
     Schedule::factory()->inProgress()->create();

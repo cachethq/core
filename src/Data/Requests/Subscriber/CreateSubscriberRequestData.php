@@ -13,6 +13,8 @@ final class CreateSubscriberRequestData extends BaseData
         public readonly ?bool $global = null,
         public readonly ?array $components = null,
         public readonly ?bool $verified = null,
+        /** @var array<string, mixed>|null */
+        public readonly ?array $meta = null,
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -23,6 +25,7 @@ final class CreateSubscriberRequestData extends BaseData
             'components' => ['array'],
             'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
             'verified' => ['bool'],
+            'meta' => ['nullable', 'array'],
         ];
     }
 }

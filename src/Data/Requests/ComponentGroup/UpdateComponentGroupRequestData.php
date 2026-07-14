@@ -19,6 +19,8 @@ final class UpdateComponentGroupRequestData extends BaseData
         public readonly ?ResourceOrderColumnEnum $orderColumn = null,
         public readonly ?ResourceOrderDirectionEnum $orderDirection = null,
         public readonly ?array $components = null,
+        /** @var array<string, mixed>|null */
+        public readonly ?array $meta = null,
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -40,6 +42,7 @@ final class UpdateComponentGroupRequestData extends BaseData
             ],
             'components' => ['array'],
             'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
+            'meta' => ['nullable', 'array'],
         ];
     }
 

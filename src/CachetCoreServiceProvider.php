@@ -13,9 +13,12 @@ use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Database\Seeders\DemoMetricSeeder;
 use Cachet\Listeners\SendWebhookListener;
 use Cachet\Listeners\WebhookCallEventListener;
+use Cachet\Models\Component;
 use Cachet\Models\ComponentCheck;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
+use Cachet\Models\Subscriber;
 use Cachet\Models\WebhookAttempt;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\MailSettings;
@@ -87,8 +90,11 @@ class CachetCoreServiceProvider extends ServiceProvider
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
 
         Relation::morphMap([
+            'component' => Component::class,
+            'component_group' => ComponentGroup::class,
             'incident' => Incident::class,
             'schedule' => Schedule::class,
+            'subscriber' => Subscriber::class,
         ]);
 
         $this->registerCommands();

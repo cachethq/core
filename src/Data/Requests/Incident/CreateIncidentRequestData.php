@@ -36,6 +36,8 @@ final class CreateIncidentRequestData extends BaseData
         public readonly ?ComponentStatusEnum $componentStatus = null,
         #[DataCollectionOf(IncidentComponentRequestData::class)]
         public readonly ?array $components = null,
+        /** @var array<string, mixed>|null */
+        public readonly ?array $meta = null,
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -55,6 +57,7 @@ final class CreateIncidentRequestData extends BaseData
             'components' => ['array'],
             'components.*.id' => ['required_with:components', 'int', 'exists:components,id'],
             'components.*.status' => ['required_with:components', 'int', Rule::enum(ComponentStatusEnum::class)],
+            'meta' => ['nullable', 'array'],
         ];
     }
 
@@ -73,6 +76,7 @@ final class CreateIncidentRequestData extends BaseData
             componentId: $this->componentId,
             componentStatus: $this->componentStatus,
             components: $this->components,
+            meta: $this->meta,
         );
     }
 }

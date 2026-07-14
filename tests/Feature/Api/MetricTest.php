@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\MetricTypeEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Metric;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
@@ -328,4 +329,61 @@ it('can delete metric', function () {
     $this->assertDatabaseMissing('metric_points', [
         'metric_id' => $metric->id,
     ]);
+});
+
+it('does not list metrics hidden from guests', function () {
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/metrics');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+});
+
+it('lists authenticated metrics to authenticated users but never hidden ones', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/metrics');
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('does not show a hidden metric to guests', function () {
+    $metric = Metric::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/metrics/'.$metric->id);
+
+    $response->assertNotFound();
+});
+
+it('shows an authenticated metric to authenticated users', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $metric = Metric::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+
+    $response = getJson('/status/api/metrics/'.$metric->id);
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.id', $metric->id);
+});
+
+it('lists authenticated metrics to callers presenting a bearer token', function () {
+    $user = User::factory()->create();
+    $token = $user->createToken('api')->plainTextToken;
+
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    Metric::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+
+    $response = getJson('/status/api/metrics', ['Authorization' => 'Bearer '.$token]);
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
 });

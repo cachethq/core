@@ -2,9 +2,9 @@
 
 namespace Cachet\Database\Factories;
 
-use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Enums\ResourceOrderDirectionEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\ComponentGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -27,7 +27,7 @@ class ComponentGroupFactory extends Factory
             'order' => 0,
             'order_column' => ResourceOrderColumnEnum::Manual,
             'order_direction' => null,
-            'visible' => ComponentGroupVisibilityEnum::expanded->value,
+            'visible' => ResourceVisibilityEnum::guest->value,
         ];
     }
 
@@ -40,5 +40,15 @@ class ComponentGroupFactory extends Factory
             'order_column' => $column,
             'order_direction' => $column === ResourceOrderColumnEnum::Manual ? null : $direction,
         ]);
+    }
+
+    /**
+     * Provide the component group with additional meta.
+     */
+    public function withMeta(): self
+    {
+        return $this->afterCreating(function (ComponentGroup $componentGroup) {
+            $componentGroup->meta()->create(['key' => 'foo', 'value' => 'bar']);
+        });
     }
 }

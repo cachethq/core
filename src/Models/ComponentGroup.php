@@ -2,7 +2,9 @@
 
 namespace Cachet\Models;
 
+use Cachet\Concerns\HasMeta;
 use Cachet\Concerns\HasVisibility;
+use Cachet\Concerns\Metable;
 use Cachet\Database\Factories\ComponentGroupFactory;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ComponentStatusEnum;
@@ -25,14 +27,16 @@ use Illuminate\Support\Collection;
  * @property ComponentGroupVisibilityEnum $collapsed
  * @property ResourceVisibilityEnum $visible
  * @property Collection<int, Component> $components
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Meta> $meta
  *
  * @method static ComponentGroupFactory factory($count = null, $state = [])
  */
-class ComponentGroup extends Model
+class ComponentGroup extends Model implements Metable
 {
     /** @use HasFactory<ComponentGroupFactory> */
     use HasFactory;
 
+    use HasMeta;
     use HasVisibility;
 
     /** @var array<string, string> */

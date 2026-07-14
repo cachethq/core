@@ -18,6 +18,8 @@ final class UpdateIncidentRequestData extends BaseData
         public readonly ?bool $stickied = null,
         public readonly ?bool $notifications = null,
         public readonly ?string $occurredAt = null,
+        /** @var array<string, mixed>|null */
+        public readonly ?array $meta = null,
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -30,6 +32,7 @@ final class UpdateIncidentRequestData extends BaseData
             'stickied' => ['boolean'],
             'notifications' => ['boolean'],
             'occurred_at' => ['nullable', 'date'],
+            'meta' => ['nullable', 'array'],
         ];
     }
 

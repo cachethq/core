@@ -2,6 +2,7 @@
 
 use Cachet\Events\Subscribers\SubscriberVerified;
 use Cachet\Models\Component;
+use Cachet\Models\Meta;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\VerifySubscriberEmail;
 use Illuminate\Support\Facades\Event;
@@ -56,4 +57,20 @@ it('has components', function () {
         ->components->toHaveCount(1)
         ->and($subscriber->components()->first())
         ->toBeInstanceOf(Component::class);
+});
+
+it('has meta', function () {
+    $subscriber = Subscriber::factory()->withMeta()->create();
+
+    expect($subscriber->metaValues())->toBe([
+        'foo' => 'bar',
+    ]);
+});
+
+it('purges meta when deleted', function () {
+    $subscriber = Subscriber::factory()->withMeta()->create();
+
+    $subscriber->delete();
+
+    expect(Meta::query()->where('meta_id', $subscriber->id)->where('meta_type', 'subscriber')->count())->toBe(0);
 });

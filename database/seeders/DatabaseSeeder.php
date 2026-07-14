@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
         DB::table('component_checks')->truncate();
         DB::table('component_groups')->truncate();
         DB::table('schedules')->truncate();
+        DB::table('meta')->truncate();
         DB::table('metrics')->truncate();
         DB::table('metric_points')->truncate();
         DB::table('updates')->truncate();
