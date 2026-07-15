@@ -163,6 +163,18 @@ jobs:
           name: build-assets
           path: public/build
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
       - name: Build tests environment
         run: composer build
 
@@ -239,6 +251,18 @@ jobs:
         with:
           name: build-assets
           path: public/build
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
 
       - name: Build tests environment
         run: composer build
@@ -321,6 +345,18 @@ jobs:
         with:
           name: build-assets
           path: public/build
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
 
       - name: Build tests environment
         run: composer build
