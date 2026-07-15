@@ -31,7 +31,17 @@ final class UpdateIncidentRequestData extends BaseData
             'visible' => ['boolean'],
             'stickied' => ['boolean'],
             'notifications' => ['boolean'],
+            /**
+             * The date/time the incident occurred, e.g. "2023-11-07 05:31:56" or ISO 8601.
+             */
             'occurred_at' => ['nullable', 'date'],
+            /**
+             * Key/value metadata to store against the resource.
+             *
+             * @var array<string, mixed>|null
+             *
+             * @example {"cluster": "eu-west"}
+             */
             'meta' => ['nullable', 'array'],
         ];
     }

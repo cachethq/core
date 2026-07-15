@@ -17,6 +17,11 @@ final class CreateMetricPointRequestData extends BaseData
     {
         return [
             'value' => ['required', 'numeric'],
+            /**
+             * The date/time or Unix timestamp the metric point was recorded at. Defaults to now.
+             *
+             * @example "2023-11-07 05:31:56"
+             */
             'timestamp' => ['nullable', new ValidTimestamp],
         ];
     }
