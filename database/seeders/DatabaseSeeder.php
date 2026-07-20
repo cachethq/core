@@ -254,6 +254,8 @@ ABOUT;
         $appSettings->recent_incidents_days = 7;
         $appSettings->api_enabled = true;
         $appSettings->api_protected = false;
+        $appSettings->mcp_enabled = true;
+        $appSettings->mcp_protected = false;
         $appSettings->save();
 
         $customizationSettings = app(CustomizationSettings::class);

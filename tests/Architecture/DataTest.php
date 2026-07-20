@@ -22,6 +22,7 @@ test('data requests test')
         'Cachet\Data',
         'Cachet\Http\Controllers',
         'Cachet\Filament\Resources',
+        'Cachet\Mcp',
     ]);
 
 test('base data test')

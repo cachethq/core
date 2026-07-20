@@ -124,6 +124,20 @@ class ManageCachet extends SettingsPage
                             ->helperText(__('cachet::settings.manage_cachet.toggles.api_protected_helper'))
                             ->visible(fn (Get $get) => $get('api_enabled') === true),
                     ]),
+
+                Section::make(__('cachet::settings.manage_cachet.mcp_settings_title'))
+                    ->columns(2)
+                    ->schema([
+                        Toggle::make('mcp_enabled')
+                            ->label(__('cachet::settings.manage_cachet.toggles.mcp_enabled'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.mcp_enabled_helper'))
+                            ->afterStateUpdated(fn (Set $set) => $set('mcp_protected', true))
+                            ->reactive(),
+                        Toggle::make('mcp_protected')
+                            ->label(__('cachet::settings.manage_cachet.toggles.mcp_protected'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.mcp_protected_helper'))
+                            ->visible(fn (Get $get) => $get('mcp_enabled') === true),
+                    ]),
             ]);
     }
 }

@@ -2,7 +2,9 @@
 
 use App\Models\User;
 use Cachet\Http\Middleware\AuthenticateApiIfProtected;
+use Cachet\Http\Middleware\AuthenticateMcpIfProtected;
 use Cachet\Http\Middleware\EnsureApiIsEnabled;
+use Cachet\Http\Middleware\EnsureMcpIsEnabled;
 use Cachet\Http\Middleware\ForceJsonResponse;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
@@ -98,6 +100,21 @@ return [
         SubstituteBindings::class,
     ],
 
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet MCP Middleware
+     |--------------------------------------------------------------------------
+     |
+     | This is the middleware that will be applied to the Cachet MCP server
+     | endpoint. The MCP server is disabled until the "Enable MCP server"
+     | setting is turned on from the dashboard.
+     |
+     */
+    'mcp_middleware' => [
+        EnsureMcpIsEnabled::class,
+        AuthenticateMcpIfProtected::class,
+    ],
+
     'trusted_proxies' => env('CACHET_TRUSTED_PROXIES', ''),
 
     /*
@@ -111,6 +128,18 @@ return [
      |
      */
     'api_rate_limit' => env('CACHET_API_RATE_LIMIT', 300),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet MCP Rate Limit (attempts per minute)
+     |--------------------------------------------------------------------------
+     |
+     | This is the rate limit for the Cachet MCP server. By default, the MCP
+     | server is rate limited to 300 requests a minute. You can adjust the
+     | limit as needed by your application.
+     |
+     */
+    'mcp_rate_limit' => env('CACHET_MCP_RATE_LIMIT', 300),
 
     /*
      |--------------------------------------------------------------------------
