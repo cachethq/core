@@ -192,6 +192,39 @@ it('can create a metric', function () {
     ]);
 });
 
+it('can create a metric with a calc type, display chart and places', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
+    $response = postJson('/status/api/metrics', [
+        'name' => 'New Metric',
+        'suffix' => 'cups of tea',
+        'calc_type' => 1,
+        'display_chart' => true,
+        'places' => 3,
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('metrics', [
+        'name' => 'New Metric',
+        'calc_type' => 1,
+        'display_chart' => true,
+        'places' => 3,
+    ]);
+});
+
+it('cannot create a metric with invalid places', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
+    $response = postJson('/status/api/metrics', [
+        'name' => 'New Metric',
+        'suffix' => 'cups of tea',
+        'places' => 10,
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors(['places']);
+});
+
 it('cannot update a metric if not authenticated', function () {
     $metric = Metric::factory()->create();
 

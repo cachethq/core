@@ -3,6 +3,7 @@
 use App\Models\User;
 use Cachet\Http\Middleware\AuthenticateApiIfProtected;
 use Cachet\Http\Middleware\EnsureApiIsEnabled;
+use Cachet\Http\Middleware\ForceJsonResponse;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return [
@@ -91,6 +92,7 @@ return [
      |
      */
     'api_middleware' => [
+        ForceJsonResponse::class,
         EnsureApiIsEnabled::class,
         AuthenticateApiIfProtected::class,
         SubstituteBindings::class,

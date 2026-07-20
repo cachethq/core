@@ -23,6 +23,13 @@ final class UpdateSubscriberRequestData extends BaseData
             'global' => ['bool'],
             'components' => ['array'],
             'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
+            /**
+             * Key/value metadata to store against the resource.
+             *
+             * @var array<string, mixed>|null
+             *
+             * @example {"cluster": "eu-west"}
+             */
             'meta' => ['nullable', 'array'],
         ];
     }

@@ -50,13 +50,30 @@ final class CreateIncidentRequestData extends BaseData
             'visible' => ['boolean'],
             'stickied' => ['boolean'],
             'notifications' => ['boolean'],
+            /**
+             * The date/time the incident occurred, e.g. "2023-11-07 05:31:56" or ISO 8601. Defaults to now.
+             */
             'occurred_at' => ['nullable', 'date'],
+            /**
+             * Key/value variables passed to the incident template when rendering the message.
+             *
+             * @var array<string, mixed>
+             *
+             * @example {"reason": "scheduled maintenance"}
+             */
             'template_vars' => ['array'],
             'component_id' => [Rule::exists('components', 'id')],
             'component_status' => ['nullable', Rule::enum(ComponentStatusEnum::class), 'required_with:component_id'],
             'components' => ['array'],
-            'components.*.id' => ['required_with:components', 'int', 'exists:components,id'],
-            'components.*.status' => ['required_with:components', 'int', Rule::enum(ComponentStatusEnum::class)],
+            'components.*.id' => ['required', 'int', 'exists:components,id'],
+            'components.*.status' => ['required', 'int', Rule::enum(ComponentStatusEnum::class)],
+            /**
+             * Key/value metadata to store against the resource.
+             *
+             * @var array<string, mixed>|null
+             *
+             * @example {"cluster": "eu-west"}
+             */
             'meta' => ['nullable', 'array'],
         ];
     }

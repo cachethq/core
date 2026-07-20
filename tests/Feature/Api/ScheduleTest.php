@@ -322,6 +322,61 @@ it('can create a schedule', function () {
     $this->assertDatabaseCount('schedule_components', 0);
 });
 
+it('can create a schedule with ISO 8601 dates', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $response = postJson('/status/api/schedules', [
+        'name' => 'New Scheduled Maintenance',
+        'message' => 'Something will go wrong.',
+        'scheduled_at' => '2033-11-07T05:31:56Z',
+        'completed_at' => '2033-11-08T05:31:56Z',
+    ]);
+
+    $response->assertCreated();
+    $response->assertJson([
+        'data' => [
+            'attributes' => [
+                'scheduled' => [
+                    'string' => '2033-11-07 05:31:56',
+                ],
+                'completed' => [
+                    'string' => '2033-11-08 05:31:56',
+                ],
+            ],
+        ],
+    ]);
+});
+
+it('responds with a JSON validation error when the Accept header is not set', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $response = $this->post('/status/api/schedules', [
+        'name' => 'Missing Message and Scheduled At',
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertHeader('Content-Type', 'application/json');
+    $response->assertJsonValidationErrors(['message', 'scheduled_at']);
+});
+
+it('cannot create a schedule with a component missing a status', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $component = Component::factory()->create();
+
+    $response = postJson('/status/api/schedules', [
+        'name' => 'New Scheduled Maintenance',
+        'message' => 'Something will go wrong.',
+        'scheduled_at' => now()->addWeek()->toDateTimeString(),
+        'components' => [
+            ['id' => $component->id],
+        ],
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors(['components.0.status']);
+});
+
 it('can create a schedule with components', function () {
     Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
 

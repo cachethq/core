@@ -5,6 +5,7 @@ namespace Cachet\Data\Requests\Metric;
 use Cachet\Data\BaseData;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Rules\FactorOfSixty;
+use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateMetricRequestData extends BaseData
@@ -25,9 +26,12 @@ final class CreateMetricRequestData extends BaseData
         return [
             'name' => ['required', 'string', 'max:255'],
             'suffix' => ['required', 'string', 'max:255'],
+            'calc_type' => ['nullable', Rule::enum(MetricTypeEnum::class)],
             'description' => ['string'],
             'default_value' => ['decimal:1,2'],
+            'display_chart' => ['nullable', 'boolean'],
             'threshold' => ['int', 'min:0', 'max:60', new FactorOfSixty],
+            'places' => ['int', 'min:0', 'max:4'],
         ];
     }
 }
