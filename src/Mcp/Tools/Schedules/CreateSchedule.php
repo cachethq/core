@@ -30,8 +30,8 @@ class CreateSchedule extends Tool
         return [
             'name' => $schema->string()->max(255)->required()->description('The name of the maintenance schedule.'),
             'message' => $schema->string()->required()->description('The schedule message, in Markdown.'),
-            'scheduled_at' => $schema->string()->required()->description('When the maintenance starts, formatted as Y-m-d H:i:s.'),
-            'completed_at' => $schema->string()->description('When the maintenance finished, formatted as Y-m-d H:i:s. Leave empty for incomplete maintenance.'),
+            'scheduled_at' => $schema->string()->required()->description('When the maintenance starts, as an ISO-8601 or Y-m-d H:i:s datetime.'),
+            'completed_at' => $schema->string()->description('When the maintenance finished, as an ISO-8601 or Y-m-d H:i:s datetime. Leave empty for incomplete maintenance.'),
             'notifications' => $schema->boolean()->default(false)->description('Whether to notify verified subscribers.'),
             'components' => $schema->array()
                 ->items($schema->object([

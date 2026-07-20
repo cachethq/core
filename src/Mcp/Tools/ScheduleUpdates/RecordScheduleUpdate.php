@@ -30,7 +30,7 @@ class RecordScheduleUpdate extends Tool
         return [
             'schedule_id' => $schema->integer()->required()->description('The schedule ID.'),
             'message' => $schema->string()->required()->description('The update message, in Markdown.'),
-            'completed_at' => $schema->string()->description('When the maintenance finished, formatted as Y-m-d H:i:s. Marks the schedule as complete.'),
+            'completed_at' => $schema->string()->description('When the maintenance finished, as an ISO-8601 or Y-m-d H:i:s datetime. Marks the schedule as complete.'),
         ];
     }
 

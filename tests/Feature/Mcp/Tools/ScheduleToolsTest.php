@@ -142,3 +142,36 @@ it('deletes a schedule update', function () {
 
     expect($schedule->updates()->count())->toBe(0);
 });
+
+it('accepts iso-8601 datetimes when creating a schedule', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    CachetServer::tool(CreateSchedule::class, [
+        'name' => 'Timezone Maintenance',
+        'message' => 'Testing ISO-8601 input.',
+        'scheduled_at' => now()->addDay()->toIso8601String(),
+    ])->assertOk();
+
+    expect(Schedule::query()->firstWhere('name', 'Timezone Maintenance'))
+        ->not->toBeNull()
+        ->scheduled_at->not->toBeNull();
+});
+
+it('accepts iso-8601 datetimes when completing a schedule through an update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedule-updates.manage']);
+
+    $schedule = Schedule::factory()->create([
+        'scheduled_at' => now()->subHour(),
+        'completed_at' => null,
+    ]);
+
+    CachetServer::tool(RecordScheduleUpdate::class, [
+        'schedule_id' => $schedule->id,
+        'message' => 'Maintenance is complete.',
+        'completed_at' => now()->toIso8601String(),
+    ])->assertOk();
+
+    expect($schedule->fresh())
+        ->completed_at->not->toBeNull()
+        ->status->toBe(ScheduleStatusEnum::complete);
+});
