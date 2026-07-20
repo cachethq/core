@@ -22,6 +22,7 @@ return [
             'previous' => 'Previous',
             'today' => 'Today',
             'next' => 'Next',
+            'timeline' => 'Back to timeline',
         ],
     ],
     'list' => [

@@ -22,6 +22,7 @@ return [
             'previous' => '上一頁',
             'today' => '今天',
             'next' => '下一頁',
+            'timeline' => '返回時間軸',
         ],
     ],
     'list' => [

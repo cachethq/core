@@ -22,6 +22,7 @@ return [
             'previous' => 'Achteruit',
             'today' => 'Vandaag',
             'next' => 'Vooruit',
+            'timeline' => 'Terug naar tijdlijn',
         ],
     ],
     'list' => [

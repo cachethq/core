@@ -3,13 +3,16 @@
     'date',
     'incidents',
     'schedules' => [],
+    'withDate' => true,
 ])
 
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_BEFORE) }}
 <div @class(['relative flex flex-col', 'gap-5' => count($incidents) > 0 || count($schedules) > 0, 'gap-2' => count($incidents) === 0 && count($schedules) === 0]) x-data="{ forDate: new Date(@js($date)) }">
-    <h3 class="border-b border-zinc-900/10 pb-2 text-base font-semibold tracking-tight text-zinc-800 dark:border-white/15 dark:text-zinc-200">
-        <time datetime="{{ $date }}" x-text="forDate.toLocaleDateString(undefined, { dateStyle: 'medium'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
-    </h3>
+    @if($withDate)
+        <h3 class="border-b border-zinc-900/10 pb-2 text-base font-semibold tracking-tight text-zinc-800 dark:border-white/15 dark:text-zinc-200">
+            <time datetime="{{ $date }}" x-text="forDate.toLocaleDateString(undefined, { dateStyle: 'medium'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+        </h3>
+    @endif
 
     @foreach($incidents as $incident)
         <div x-data="{ timestamp: new Date(@js($incident->timestamp)) }"

@@ -43,22 +43,14 @@ final class CreateComponentGroupRequestData extends BaseData
             ],
             'components' => ['array'],
             'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
+            /**
+             * Key/value metadata to store against the resource.
+             *
+             * @var array<string, mixed>|null
+             *
+             * @example {"cluster": "eu-west"}
+             */
             'meta' => ['nullable', 'array'],
-        ];
-    }
-
-    public function bodyParameters(): array
-    {
-        return [
-            'collapsed' => [
-                'description' => 'The collapsed state of the component group on the status page.',
-                'example' => '0',
-                'required' => false,
-                'schema' => [
-                    'type' => 'integer',
-                    'enum' => ComponentGroupVisibilityEnum::cases(),
-                ],
-            ],
         ];
     }
 }

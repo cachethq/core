@@ -22,6 +22,7 @@ return [
             'previous' => 'Nakaraan',
             'today' => 'Ngayon',
             'next' => 'Susunod',
+            'timeline' => 'Bumalik sa timeline',
         ],
     ],
     'list' => [

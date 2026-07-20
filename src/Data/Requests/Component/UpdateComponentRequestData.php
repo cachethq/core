@@ -31,6 +31,13 @@ final class UpdateComponentRequestData extends BaseData
             'order' => ['int', 'min:0'],
             'component_group_id' => ['int', 'min:0', Rule::exists('component_groups', 'id')],
             'enabled' => ['boolean'],
+            /**
+             * Key/value metadata to store against the resource.
+             *
+             * @var array<string, mixed>|null
+             *
+             * @example {"cluster": "eu-west"}
+             */
             'meta' => ['nullable', 'array'],
         ];
     }

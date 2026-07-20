@@ -5,6 +5,7 @@ use Cachet\Http\Middleware\AuthenticateApiIfProtected;
 use Cachet\Http\Middleware\AuthenticateMcpIfProtected;
 use Cachet\Http\Middleware\EnsureApiIsEnabled;
 use Cachet\Http\Middleware\EnsureMcpIsEnabled;
+use Cachet\Http\Middleware\ForceJsonResponse;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return [
@@ -93,6 +94,7 @@ return [
      |
      */
     'api_middleware' => [
+        ForceJsonResponse::class,
         EnsureApiIsEnabled::class,
         AuthenticateApiIfProtected::class,
         SubstituteBindings::class,

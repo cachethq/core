@@ -25,6 +25,13 @@ final class CreateSubscriberRequestData extends BaseData
             'components' => ['array'],
             'components.*' => ['int', 'min:0', Rule::exists('components', 'id')],
             'verified' => ['bool'],
+            /**
+             * Key/value metadata to store against the resource.
+             *
+             * @var array<string, mixed>|null
+             *
+             * @example {"cluster": "eu-west"}
+             */
             'meta' => ['nullable', 'array'],
         ];
     }

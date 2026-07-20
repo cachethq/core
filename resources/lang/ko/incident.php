@@ -22,6 +22,7 @@ return [
             'previous' => '이전',
             'today' => '오늘',
             'next' => '다음',
+            'timeline' => '타임라인으로 돌아가기',
         ],
     ],
     'list' => [

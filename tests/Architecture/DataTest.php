@@ -1,12 +1,14 @@
 <?php
 
 use Cachet\Data\BaseData;
+use Cachet\Data\Casts\FlexibleDateTimeCast;
 use Spatie\LaravelData\Data;
 
 test('data test')
     ->expect('Cachet\Data')
     ->toBeClasses()
     ->toExtend(BaseData::class)
+    ->ignoring(FlexibleDateTimeCast::class)
     ->toBeFinal()
     ->ignoring(BaseData::class);
 
