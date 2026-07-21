@@ -21,6 +21,7 @@ use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\Concerns\WithWorkbench;
 use Orchestra\Testbench\TestCase as Orchestra;
 use Spatie\QueryBuilder\QueryBuilderServiceProvider;
+use Spatie\WebhookServer\WebhookServerServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -52,6 +53,7 @@ abstract class TestCase extends Orchestra
             WidgetsServiceProvider::class,
             ScrambleServiceProvider::class,
             QueryBuilderServiceProvider::class,
+            WebhookServerServiceProvider::class,
         ]);
 
         // Laravel apps register providers in alphabetical order, so we do the same here for consistency.

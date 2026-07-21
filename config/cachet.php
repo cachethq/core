@@ -193,12 +193,14 @@ return [
      | Cachet Webhooks
      |--------------------------------------------------------------------------
      |
-     | Configure how Cachet sends webhooks for events.
+     | Configure how Cachet sends webhooks for events. When the connection or
+     | queue name is null, the application's default queue connection and
+     | queue are used.
      |
      */
     'webhooks' => [
-        'queue_connection' => env('CACHET_WEBHOOK_QUEUE_CONNECTION', 'default'),
-        'queue_name' => env('CACHET_WEBHOOK_QUEUE_NAME', 'webhooks'),
+        'queue_connection' => env('CACHET_WEBHOOK_QUEUE_CONNECTION'),
+        'queue_name' => env('CACHET_WEBHOOK_QUEUE_NAME'),
 
         'logs' => [
             'prune_logs_after_days' => 30,
