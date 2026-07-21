@@ -6,6 +6,7 @@ use Cachet\Http\Middleware\AuthenticateMcpIfProtected;
 use Cachet\Http\Middleware\EnsureApiIsEnabled;
 use Cachet\Http\Middleware\EnsureMcpIsEnabled;
 use Cachet\Http\Middleware\ForceJsonResponse;
+use Cachet\Http\Middleware\SetStatusPageLocale;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return [
@@ -78,6 +79,7 @@ return [
      */
     'middleware' => [
         'web',
+        SetStatusPageLocale::class,
         //        \Cachet\Http\Middleware\AuthenticateRemoteUser::class,
     ],
 
