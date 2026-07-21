@@ -179,6 +179,30 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet Migrations
+     |--------------------------------------------------------------------------
+     |
+     | Whether Cachet loads its migrations into the application's migrator.
+     | Disable this when the host application manages Cachet's migrations
+     | itself.
+     |
+     */
+    'run_migrations' => env('CACHET_RUN_MIGRATIONS', true),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Schedules
+     |--------------------------------------------------------------------------
+     |
+     | Whether Cachet registers its scheduled tasks (beacon, notifications,
+     | pruning) with the application's scheduler. Disable this when the
+     | host application schedules these commands itself.
+     |
+     */
+    'register_schedules' => env('CACHET_REGISTER_SCHEDULES', true),
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Component Checks
      |--------------------------------------------------------------------------
      |

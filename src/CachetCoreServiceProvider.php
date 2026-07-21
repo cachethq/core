@@ -128,7 +128,11 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerResources(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'cachet');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        if (config('cachet.run_migrations', true)) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
+
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'cachet');
 
         $this->configureRateLimiting();
@@ -288,6 +292,10 @@ class CachetCoreServiceProvider extends ServiceProvider
     private function registerSchedules(): void
     {
         if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        if (! config('cachet.register_schedules', true)) {
             return;
         }
 
