@@ -10,6 +10,16 @@ it('renders the status page', function () {
         ->assertOk();
 });
 
+it('renders the status page in the configured locale', function () {
+    $settings = app(AppSettings::class);
+    $settings->locale = 'de';
+    $settings->save();
+
+    $this->get(route('cachet.status-page'))->assertOk();
+
+    expect(app()->getLocale())->toBe('de');
+});
+
 it('does not error when the from query parameter is malformed', function () {
     $this->get(route('cachet.status-page', ['from' => '2024-04-15/']))
         ->assertOk();

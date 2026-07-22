@@ -74,8 +74,8 @@ class WebhookSubscription extends Model
                 'subscription_id' => $this->getKey(),
                 'event' => $event->value,
             ])
-            ->onConnection(config('cachet.webhooks.queue.connection'))
-            ->onQueue(config('cachet.webhooks.queue.name'))
+            ->onConnection(config('cachet.webhooks.queue_connection'))
+            ->onQueue(config('cachet.webhooks.queue_name'))
             ->useSecret($this->secret);
     }
 

@@ -6,6 +6,7 @@ use Cachet\Http\Middleware\AuthenticateMcpIfProtected;
 use Cachet\Http\Middleware\EnsureApiIsEnabled;
 use Cachet\Http\Middleware\EnsureMcpIsEnabled;
 use Cachet\Http\Middleware\ForceJsonResponse;
+use Cachet\Http\Middleware\SetStatusPageLocale;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 return [
@@ -78,6 +79,7 @@ return [
      */
     'middleware' => [
         'web',
+        SetStatusPageLocale::class,
         //        \Cachet\Http\Middleware\AuthenticateRemoteUser::class,
     ],
 
@@ -177,6 +179,30 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet Migrations
+     |--------------------------------------------------------------------------
+     |
+     | Whether Cachet loads its migrations into the application's migrator.
+     | Disable this when the host application manages Cachet's migrations
+     | itself.
+     |
+     */
+    'run_migrations' => env('CACHET_RUN_MIGRATIONS', true),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Schedules
+     |--------------------------------------------------------------------------
+     |
+     | Whether Cachet registers its scheduled tasks (beacon, notifications,
+     | pruning) with the application's scheduler. Disable this when the
+     | host application schedules these commands itself.
+     |
+     */
+    'register_schedules' => env('CACHET_REGISTER_SCHEDULES', true),
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Component Checks
      |--------------------------------------------------------------------------
      |
@@ -193,12 +219,14 @@ return [
      | Cachet Webhooks
      |--------------------------------------------------------------------------
      |
-     | Configure how Cachet sends webhooks for events.
+     | Configure how Cachet sends webhooks for events. When the connection or
+     | queue name is null, the application's default queue connection and
+     | queue are used.
      |
      */
     'webhooks' => [
-        'queue_connection' => env('CACHET_WEBHOOK_QUEUE_CONNECTION', 'default'),
-        'queue_name' => env('CACHET_WEBHOOK_QUEUE_NAME', 'webhooks'),
+        'queue_connection' => env('CACHET_WEBHOOK_QUEUE_CONNECTION'),
+        'queue_name' => env('CACHET_WEBHOOK_QUEUE_NAME'),
 
         'logs' => [
             'prune_logs_after_days' => 30,
