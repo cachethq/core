@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Commands\AssetsCommand;
 use Cachet\Commands\CheckComponentsCommand;
 use Cachet\Commands\MakeUserCommand;
 use Cachet\Commands\NotifyCompletedSchedulesCommand;
@@ -269,6 +270,7 @@ class CachetCoreServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
+                AssetsCommand::class,
                 CheckComponentsCommand::class,
                 MakeUserCommand::class,
                 NotifyCompletedSchedulesCommand::class,
