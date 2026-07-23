@@ -21,7 +21,7 @@ class WebhookSubscriptionFactory extends Factory
     {
         return [
             'url' => fake()->url,
-            'secret' => fake()->randomAscii(),
+            'secret' => fake()->sha256(),
             'description' => fake()->sentence(),
             'send_all_events' => false,
             'selected_events' => [],

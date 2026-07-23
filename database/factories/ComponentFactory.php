@@ -22,7 +22,7 @@ class ComponentFactory extends Factory
     {
         return [
             'name' => fake()->word,
-            'description' => fake()->paragraph,
+            'description' => fake()->text(200),
             'status' => ComponentStatusEnum::performance_issues->value,
             'order' => 0,
             'component_group_id' => null,
