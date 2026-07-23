@@ -27,20 +27,28 @@ class Metrics extends Component
     {
         $cacheKey = 'cachet::metrics.'.(auth()->check() ? 'users' : 'guests');
 
-        $metrics = Cache::remember($cacheKey, self::CACHE_TTL, fn (): Collection => $this->prepareMetrics());
-
-        // A cached entry left by another cache store, or otherwise corrupt, can
-        // deserialize to something other than a collection of metrics. Rather
-        // than let the view fatal on it, drop it and rebuild from the database.
-        if (! $metrics instanceof Collection || $metrics->contains(fn ($metric): bool => ! $metric instanceof Metric)) {
-            Cache::forget($cacheKey);
-
-            $metrics = $this->prepareMetrics();
-        }
+        $cached = Cache::remember($cacheKey, self::CACHE_TTL, fn (): Collection => $this->prepareMetrics());
 
         return view('cachet::components.metrics', [
-            'metrics' => $metrics,
+            'metrics' => $this->validMetrics($cached, $cacheKey),
         ]);
+    }
+
+    /**
+     * Return the cached metrics, or rebuild them from the database when the
+     * cached value is not a collection of metrics. A stale entry left behind
+     * after switching cache stores can deserialize to something else entirely,
+     * which would otherwise fatal the view reading properties off each item.
+     */
+    private function validMetrics(mixed $cached, string $cacheKey): Collection
+    {
+        if ($cached instanceof Collection && $cached->every(fn (mixed $metric): bool => $metric instanceof Metric)) {
+            return $cached;
+        }
+
+        Cache::forget($cacheKey);
+
+        return $this->prepareMetrics();
     }
 
     /**
@@ -50,8 +58,8 @@ class Metrics extends Component
     {
         $metrics = $this->metrics(Carbon::now()->subDays(30));
 
-        $metrics->each(function (Metric $metric): void {
-            $metric->metricPoints->transform(fn ($point): array => [
+        $metrics->each(function ($metric) {
+            $metric->metricPoints->transform(fn ($point) => [
                 'x' => $point->created_at->utc(),
                 'y' => $point->value,
             ]);
