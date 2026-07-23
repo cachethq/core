@@ -27,25 +27,37 @@ class Metrics extends Component
     {
         $cacheKey = 'cachet::metrics.'.(auth()->check() ? 'users' : 'guests');
 
-        $metrics = Cache::remember($cacheKey, self::CACHE_TTL, function () {
-            $startDate = Carbon::now()->subDays(30);
+        $metrics = Cache::remember($cacheKey, self::CACHE_TTL, fn (): Collection => $this->prepareMetrics());
 
-            $metrics = $this->metrics($startDate);
+        // A cached entry left by another cache store, or otherwise corrupt, can
+        // deserialize to something other than a collection of metrics. Rather
+        // than let the view fatal on it, drop it and rebuild from the database.
+        if (! $metrics instanceof Collection || $metrics->contains(fn ($metric): bool => ! $metric instanceof Metric)) {
+            Cache::forget($cacheKey);
 
-            // Convert each metric point to Chart.js format (x, y)
-            $metrics->each(function ($metric) {
-                $metric->metricPoints->transform(fn ($point) => [
-                    'x' => $point->created_at->utc(),
-                    'y' => $point->value,
-                ]);
-            });
-
-            return $metrics;
-        });
+            $metrics = $this->prepareMetrics();
+        }
 
         return view('cachet::components.metrics', [
             'metrics' => $metrics,
         ]);
+    }
+
+    /**
+     * Build the metrics collection with each point cast to Chart.js format.
+     */
+    private function prepareMetrics(): Collection
+    {
+        $metrics = $this->metrics(Carbon::now()->subDays(30));
+
+        $metrics->each(function (Metric $metric): void {
+            $metric->metricPoints->transform(fn ($point): array => [
+                'x' => $point->created_at->utc(),
+                'y' => $point->value,
+            ]);
+        });
+
+        return $metrics;
     }
 
     /**
