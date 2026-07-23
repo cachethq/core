@@ -27,25 +27,45 @@ class Metrics extends Component
     {
         $cacheKey = 'cachet::metrics.'.(auth()->check() ? 'users' : 'guests');
 
-        $metrics = Cache::remember($cacheKey, self::CACHE_TTL, function () {
-            $startDate = Carbon::now()->subDays(30);
-
-            $metrics = $this->metrics($startDate);
-
-            // Convert each metric point to Chart.js format (x, y)
-            $metrics->each(function ($metric) {
-                $metric->metricPoints->transform(fn ($point) => [
-                    'x' => $point->created_at->utc(),
-                    'y' => $point->value,
-                ]);
-            });
-
-            return $metrics;
-        });
+        $cached = Cache::remember($cacheKey, self::CACHE_TTL, fn (): Collection => $this->prepareMetrics());
 
         return view('cachet::components.metrics', [
-            'metrics' => $metrics,
+            'metrics' => $this->validMetrics($cached, $cacheKey),
         ]);
+    }
+
+    /**
+     * Return the cached metrics, or rebuild them from the database when the
+     * cached value is not a collection of metrics. A stale entry left behind
+     * after switching cache stores can deserialize to something else entirely,
+     * which would otherwise fatal the view reading properties off each item.
+     */
+    private function validMetrics(mixed $cached, string $cacheKey): Collection
+    {
+        if ($cached instanceof Collection && $cached->every(fn (mixed $metric): bool => $metric instanceof Metric)) {
+            return $cached;
+        }
+
+        Cache::forget($cacheKey);
+
+        return $this->prepareMetrics();
+    }
+
+    /**
+     * Build the metrics collection with each point cast to Chart.js format.
+     */
+    private function prepareMetrics(): Collection
+    {
+        $metrics = $this->metrics(Carbon::now()->subDays(30));
+
+        $metrics->each(function ($metric) {
+            $metric->metricPoints->transform(fn ($point) => [
+                'x' => $point->created_at->utc(),
+                'y' => $point->value,
+            ]);
+        });
+
+        return $metrics;
     }
 
     /**
