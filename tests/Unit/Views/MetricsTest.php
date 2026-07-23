@@ -24,6 +24,12 @@ it('rebuilds the metrics when the cache holds a corrupt value', function () {
     expect($html)->toContain('chart_'.$metric->id);
 });
 
+it('renders nothing when the metric component is given a non-metric', function () {
+    $html = Blade::render('<x-cachet::metric :metric="$metric" />', ['metric' => 'not-a-metric']);
+
+    expect(trim($html))->toBe('');
+});
+
 it('caches a valid metrics collection', function () {
     $metric = Metric::factory()->create([
         'visible' => ResourceVisibilityEnum::guest,
