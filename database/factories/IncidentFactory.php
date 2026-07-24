@@ -29,6 +29,22 @@ class IncidentFactory extends Factory
     }
 
     /**
+     * Schedule the incident to publish in the future, hiding it from public surfaces until then.
+     */
+    public function scheduled(): self
+    {
+        return $this->state(['published_at' => now()->addDays(7)]);
+    }
+
+    /**
+     * Mark the incident as already published.
+     */
+    public function published(): self
+    {
+        return $this->state(['published_at' => now()->subDay()]);
+    }
+
+    /**
      * Provide the incident with additional meta.
      */
     public function withMeta(): self

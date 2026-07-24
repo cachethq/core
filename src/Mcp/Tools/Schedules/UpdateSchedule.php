@@ -36,6 +36,7 @@ class UpdateSchedule extends Tool
             'message' => $schema->string()->description('The schedule message, in Markdown.'),
             'scheduled_at' => $schema->string()->description('When the maintenance starts, as an ISO-8601 or Y-m-d H:i:s datetime.'),
             'completed_at' => $schema->string()->description('When the maintenance finished, as an ISO-8601 or Y-m-d H:i:s datetime.'),
+            'published_at' => $schema->string()->description('When to publish the maintenance, as an ISO-8601 or Y-m-d H:i:s datetime. While set in the future the maintenance is hidden from the status page and public API.'),
             'components' => $schema->array()
                 ->items($schema->object([
                     'id' => $schema->integer()->required()->description('The component ID.'),
@@ -61,7 +62,7 @@ class UpdateSchedule extends Tool
         }
 
         $data = UpdateScheduleRequestData::validateAndCreate(
-            $request->only(['name', 'message', 'scheduled_at', 'completed_at', 'components'])
+            $request->only(['name', 'message', 'scheduled_at', 'completed_at', 'published_at', 'components'])
         );
 
         return Response::structured(['data' => $this->presentSchedule($action->handle($schedule, $data))]);

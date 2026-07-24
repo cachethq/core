@@ -26,6 +26,22 @@ class ScheduleFactory extends Factory
         ];
     }
 
+    /**
+     * Schedule the maintenance to publish in the future, hiding it from public surfaces until then.
+     */
+    public function scheduled(): self
+    {
+        return $this->state(['published_at' => now()->addDays(3)]);
+    }
+
+    /**
+     * Mark the maintenance as already published.
+     */
+    public function published(): self
+    {
+        return $this->state(['published_at' => now()->subDay()]);
+    }
+
     public function completed(): self
     {
         return $this->state([

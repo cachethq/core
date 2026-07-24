@@ -13,6 +13,8 @@ use Illuminate\Database\Eloquent\Builder;
  * @method static \Cachet\QueryBuilders\ScheduleBuilder inProgress()
  * @method static \Cachet\QueryBuilders\ScheduleBuilder inTheFuture()
  * @method static \Cachet\QueryBuilders\ScheduleBuilder inThePast()
+ * @method static \Cachet\QueryBuilders\ScheduleBuilder published()
+ * @method static \Cachet\QueryBuilders\ScheduleBuilder unpublished()
  *
  * @extends Builder<Schedule>
  *

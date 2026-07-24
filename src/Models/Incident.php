@@ -6,6 +6,7 @@ use Cachet\Cachet;
 use Cachet\Concerns\HasMeta;
 use Cachet\Concerns\HasVisibility;
 use Cachet\Concerns\Metable;
+use Cachet\Concerns\Publishable;
 use Cachet\Database\Factories\IncidentFactory;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
@@ -42,6 +43,8 @@ use Illuminate\Support\Str;
  * @property ResourceVisibilityEnum $visible
  * @property bool $stickied
  * @property ?Carbon $occurred_at
+ * @property ?Carbon $published_at
+ * @property ?Carbon $published_notified_at
  * @property ?Carbon $long_running_notified_at
  * @property ?int $user_id
  * @property int $notifications
@@ -60,6 +63,8 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|static status(IncidentStatusEnum $status)
  * @method static Builder<static>|static unresolved()
  * @method static Builder<static>|static stickied()
+ * @method static Builder<static>|static published()
+ * @method static Builder<static>|static unpublished()
  */
 class Incident extends Model implements Metable
 {
@@ -68,6 +73,7 @@ class Incident extends Model implements Metable
 
     use HasMeta;
     use HasVisibility;
+    use Publishable;
     use SoftDeletes;
 
     /** @var array<string, string> */
@@ -77,6 +83,8 @@ class Incident extends Model implements Metable
         'stickied' => 'bool',
         'scheduled_at' => 'datetime',
         'occurred_at' => 'datetime',
+        'published_at' => 'datetime',
+        'published_notified_at' => 'datetime',
         'long_running_notified_at' => 'datetime',
     ];
 
@@ -102,6 +110,7 @@ class Incident extends Model implements Metable
         'message',
         'scheduled_at',
         'occurred_at',
+        'published_at',
     ];
 
     protected static function boot()
@@ -110,6 +119,11 @@ class Incident extends Model implements Metable
 
         self::creating(function (Incident $model) {
             $model->guid = Str::uuid();
+
+            if ($model->published_at === null) {
+                $model->published_at = $model->freshTimestamp();
+                $model->published_notified_at = $model->freshTimestamp();
+            }
         });
     }
 

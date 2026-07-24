@@ -16,6 +16,7 @@ use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -63,7 +64,8 @@ class IncidentController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $incidents = QueryBuilder::for(Incident::query()->with('updates')->visible($this->isAuthenticated()))
+        $incidents = QueryBuilder::for(Incident::query()->with('updates')->visible($this->isAuthenticated())
+            ->when(! $this->tokenCan('incidents.manage'), fn (Builder $query) => $query->published()))
             ->allowedIncludes($this->allowedIncludes())
             ->allowedFilters([
                 'name',
@@ -98,7 +100,8 @@ class IncidentController extends Controller
     #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     public function show(Incident $incident)
     {
-        $incidentQuery = QueryBuilder::for(Incident::query()->visible($this->isAuthenticated()))
+        $incidentQuery = QueryBuilder::for(Incident::query()->visible($this->isAuthenticated())
+            ->when(! $this->tokenCan('incidents.manage'), fn (Builder $query) => $query->published()))
             ->allowedIncludes($this->allowedIncludes())
             ->findOrFail($incident->id);
 

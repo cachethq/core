@@ -8,6 +8,7 @@ use Cachet\Commands\CheckComponentsCommand;
 use Cachet\Commands\MakeUserCommand;
 use Cachet\Commands\NotifyCompletedSchedulesCommand;
 use Cachet\Commands\NotifyLongRunningIncidentsCommand;
+use Cachet\Commands\PublishScheduledCommand;
 use Cachet\Commands\SendBeaconCommand;
 use Cachet\Commands\VersionCommand;
 use Cachet\Database\Seeders\DatabaseSeeder;
@@ -275,6 +276,7 @@ class CachetCoreServiceProvider extends ServiceProvider
                 MakeUserCommand::class,
                 NotifyCompletedSchedulesCommand::class,
                 NotifyLongRunningIncidentsCommand::class,
+                PublishScheduledCommand::class,
                 SendBeaconCommand::class,
                 VersionCommand::class,
             ]);
@@ -310,6 +312,8 @@ class CachetCoreServiceProvider extends ServiceProvider
             $schedule->command('cachet:notify-long-running-incidents')->hourly();
 
             $schedule->command('cachet:notify-completed-schedules')->everyFiveMinutes();
+
+            $schedule->command('cachet:publish-scheduled')->everyMinute();
 
             $schedule->command('model:prune', [
                 '--model' => [WebhookAttempt::class, ComponentCheck::class],

@@ -86,6 +86,7 @@ class IncidentTimeline extends Component
                 'updates' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id'),
             ])
             ->visible(auth()->check())
+            ->published()
             ->when($this->appSettings->recent_incidents_only, function ($query) {
                 $query->where(function ($query) {
                     $query->whereDate(
@@ -130,6 +131,7 @@ class IncidentTimeline extends Component
     {
         return Schedule::query()
             ->with(['components', 'updates' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id')])
+            ->published()
             ->inThePast()
             ->when($this->appSettings->recent_incidents_only, fn ($query) => $query->whereDate(
                 'completed_at',

@@ -7,6 +7,7 @@ use Cachet\Actions\Schedule\NotifyScheduleRescheduledSubscribers;
 use Cachet\Cachet;
 use Cachet\Concerns\HasMeta;
 use Cachet\Concerns\Metable;
+use Cachet\Concerns\Publishable;
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\QueryBuilders\ScheduleBuilder;
@@ -29,6 +30,8 @@ use Illuminate\Support\Collection;
  * @property ?Carbon $scheduled_at
  * @property ?Carbon $completed_at
  * @property ?Carbon $completed_notified_at
+ * @property ?Carbon $published_at
+ * @property ?Carbon $published_notified_at
  * @property bool $notifications
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -42,6 +45,8 @@ use Illuminate\Support\Collection;
  * @method static ScheduleBuilder inProgress()
  * @method static ScheduleBuilder inTheFuture()
  * @method static ScheduleBuilder inThePast()
+ * @method static ScheduleBuilder published()
+ * @method static ScheduleBuilder unpublished()
  */
 class Schedule extends Model implements Metable
 {
@@ -49,6 +54,7 @@ class Schedule extends Model implements Metable
     use HasFactory;
 
     use HasMeta;
+    use Publishable;
     use SoftDeletes;
 
     /**
@@ -56,6 +62,13 @@ class Schedule extends Model implements Metable
      */
     protected static function booted(): void
     {
+        self::creating(function (Schedule $schedule) {
+            if ($schedule->published_at === null) {
+                $schedule->published_at = $schedule->freshTimestamp();
+                $schedule->published_notified_at = $schedule->freshTimestamp();
+            }
+        });
+
         self::updated(function (Schedule $schedule) {
             if ($schedule->wasChanged('completed_at') && $schedule->status === ScheduleStatusEnum::complete) {
                 app(NotifyScheduleCompletedSubscribers::class)->handle($schedule);
@@ -78,6 +91,8 @@ class Schedule extends Model implements Metable
         'scheduled_at' => 'datetime',
         'completed_at' => 'datetime',
         'completed_notified_at' => 'datetime',
+        'published_at' => 'datetime',
+        'published_notified_at' => 'datetime',
         'notifications' => 'bool',
     ];
 
@@ -87,6 +102,7 @@ class Schedule extends Model implements Metable
         'message',
         'scheduled_at',
         'completed_at',
+        'published_at',
         'notifications',
     ];
 
