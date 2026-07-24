@@ -8,9 +8,14 @@ return [
             'status' => '狀態',
             'scheduled_at' => '預定時間',
             'completed_at' => '完成時間',
+            'published_at' => '發布時間',
             'created_at' => '創建時間',
             'updated_at' => '更新時間',
             'deleted_at' => '刪除時間',
+        ],
+        'published_now' => '已發布',
+        'filters' => [
+            'scheduled' => '已排程（尚未發布）',
         ],
         'empty_state' => [
             'heading' => '計劃安排',
@@ -26,6 +31,8 @@ return [
         'message_label' => '消息',
         'scheduled_at_label' => '預定時間',
         'completed_at_label' => '完成時間',
+        'published_at_label' => '發布時間',
+        'published_at_helper' => '安排維護在未來的日期顯示於狀態頁面。在此之前對所有人隱藏。留空則立即發布。',
     ],
     'add_update' => [
         'success_title' => '計劃 :name 已更新',

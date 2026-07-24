@@ -8,9 +8,14 @@ return [
             'status' => '状态',
             'scheduled_at' => '预定时间',
             'completed_at' => '完成时间',
+            'published_at' => '发布时间',
             'created_at' => '创建时间',
             'updated_at' => '更新时间',
             'deleted_at' => '删除时间',
+        ],
+        'published_now' => '已发布',
+        'filters' => [
+            'scheduled' => '已排期（尚未发布）',
         ],
         'empty_state' => [
             'heading' => '计划安排',
@@ -26,6 +31,8 @@ return [
         'message_label' => '消息',
         'scheduled_at_label' => '预定时间',
         'completed_at_label' => '完成时间',
+        'published_at_label' => '发布时间',
+        'published_at_helper' => '将维护安排在未来某个日期显示在状态页面上。在此之前对所有人隐藏。留空则立即发布。',
     ],
     'add_update' => [
         'success_title' => '计划 :name 已更新',

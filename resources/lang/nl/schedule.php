@@ -8,9 +8,14 @@ return [
             'status' => 'Toestand',
             'scheduled_at' => 'Gepland voor',
             'completed_at' => 'Voltooid op',
+            'published_at' => 'Gepubliceerd op',
             'created_at' => 'Gemaakt op',
             'updated_at' => 'Bijgewerkt op',
             'deleted_at' => 'Verwijderd op',
+        ],
+        'published_now' => 'Gepubliceerd',
+        'filters' => [
+            'scheduled' => 'Gepland (nog niet gepubliceerd)',
         ],
         'empty_state' => [
             'heading' => 'Schema\'s',
@@ -26,6 +31,8 @@ return [
         'message_label' => 'Nieuws',
         'scheduled_at_label' => 'Gepland voor',
         'completed_at_label' => 'Voltooid op',
+        'published_at_label' => 'Gepubliceerd op',
+        'published_at_helper' => 'Plan het onderhoud om op een toekomstige datum op de statuspagina te verschijnen. Tot dan verborgen voor iedereen. Laat leeg om direct te publiceren.',
     ],
     'add_update' => [
         'success_title' => 'Schema bijgewerkt - :name',

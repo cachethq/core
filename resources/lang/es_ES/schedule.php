@@ -8,9 +8,14 @@ return [
             'status' => 'Estado',
             'scheduled_at' => 'Programado para',
             'completed_at' => 'Completado en',
+            'published_at' => 'Publicado el',
             'created_at' => 'Creado el',
             'updated_at' => 'Actualizado el',
             'deleted_at' => 'Eliminado el',
+        ],
+        'published_now' => 'Publicado',
+        'filters' => [
+            'scheduled' => 'Programado (aún no publicado)',
         ],
         'empty_state' => [
             'heading' => 'Horarios',
@@ -26,6 +31,8 @@ return [
         'message_label' => 'Mensaje',
         'scheduled_at_label' => 'Programado para',
         'completed_at_label' => 'Completado en',
+        'published_at_label' => 'Publicado el',
+        'published_at_helper' => 'Programa el mantenimiento para que aparezca en la página de estado en una fecha futura. Oculto para todos hasta entonces. Deja vacío para publicar inmediatamente.',
     ],
     'add_update' => [
         'success_title' => 'Horario :name Actualizado',

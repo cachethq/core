@@ -8,9 +8,14 @@ return [
             'status' => 'Status',
             'scheduled_at' => 'Terminiert für',
             'completed_at' => 'Abgeschlossen am',
+            'published_at' => 'Veröffentlicht am',
             'created_at' => 'Erstellt am',
             'updated_at' => 'Aktualisiert am',
             'deleted_at' => 'Gelöscht am',
+        ],
+        'published_now' => 'Veröffentlicht',
+        'filters' => [
+            'scheduled' => 'Geplant (noch nicht veröffentlicht)',
         ],
         'empty_state' => [
             'heading' => 'Zeitpläne',
@@ -26,6 +31,8 @@ return [
         'message_label' => 'Nachricht',
         'scheduled_at_label' => 'Beginn',
         'completed_at_label' => 'Ende',
+        'published_at_label' => 'Veröffentlicht am',
+        'published_at_helper' => 'Plane die Wartung so, dass sie zu einem späteren Zeitpunkt auf der Statusseite erscheint. Bis dahin für alle verborgen. Leer lassen, um sofort zu veröffentlichen.',
     ],
     'add_update' => [
         'success_title' => 'Zeitplan aktualisiert - :name',
