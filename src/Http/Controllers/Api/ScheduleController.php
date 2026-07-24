@@ -16,6 +16,7 @@ use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Schedule;
+use Cachet\QueryBuilders\ScheduleBuilder;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -67,7 +68,8 @@ class ScheduleController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $schedules = QueryBuilder::for(Schedule::query()->published())
+        $schedules = QueryBuilder::for(Schedule::query()
+            ->when(! $this->tokenCan('schedules.manage'), fn (ScheduleBuilder $query) => $query->published()))
             ->allowedIncludes($this->allowedIncludes())
             ->allowedFilters([
                 'name',
@@ -98,7 +100,8 @@ class ScheduleController extends Controller
     #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     public function show(Schedule $schedule)
     {
-        $scheduleQuery = QueryBuilder::for(Schedule::query()->published())
+        $scheduleQuery = QueryBuilder::for(Schedule::query()
+            ->when(! $this->tokenCan('schedules.manage'), fn (ScheduleBuilder $query) => $query->published()))
             ->allowedIncludes($this->allowedIncludes())
             ->findOrFail($schedule->id);
 

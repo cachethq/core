@@ -5,6 +5,7 @@ use Cachet\Mcp\Tools\Schedules\GetSchedule;
 use Cachet\Mcp\Tools\Schedules\ListSchedules;
 use Cachet\Models\Schedule;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 
 use function Pest\Laravel\actingAs;
@@ -25,6 +26,35 @@ it('returns 404 from the api for a single unpublished schedule', function () {
     $schedule = Schedule::factory()->scheduled()->create();
 
     getJson("/status/api/schedules/{$schedule->id}")->assertNotFound();
+});
+
+it('hides unpublished schedules from a read-only api token', function () {
+    Schedule::factory()->scheduled()->create();
+
+    Sanctum::actingAs(User::factory()->create(), ['schedules.view']);
+
+    getJson('/status/api/schedules')
+        ->assertOk()
+        ->assertJsonCount(0, 'data');
+});
+
+it('exposes unpublished schedules to an api token that can manage schedules', function () {
+    Schedule::factory()->create(['name' => 'Published now']);
+    Schedule::factory()->scheduled()->create(['name' => 'Prescheduled']);
+
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    getJson('/status/api/schedules')
+        ->assertOk()
+        ->assertJsonCount(2, 'data');
+});
+
+it('exposes a single unpublished schedule to an api token that can manage schedules', function () {
+    $schedule = Schedule::factory()->scheduled()->create();
+
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    getJson("/status/api/schedules/{$schedule->id}")->assertOk();
 });
 
 it('hides an unpublished schedule from the status page maintenance block', function () {

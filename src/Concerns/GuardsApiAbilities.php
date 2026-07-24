@@ -19,4 +19,16 @@ trait GuardsApiAbilities
             throw new MissingAbilityException($ability);
         }
     }
+
+    /**
+     * Determine whether the API caller holds the given token ability.
+     *
+     * Unlike guard(), this never throws and resolves the caller through the
+     * Sanctum guard, so it is safe to call on the read routes that carry no
+     * auth middleware. First-party sessions and read-only tokens return false.
+     */
+    protected function tokenCan(string $ability): bool
+    {
+        return (bool) auth('sanctum')->user()?->tokenCan($ability);
+    }
 }

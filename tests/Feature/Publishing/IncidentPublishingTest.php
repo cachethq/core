@@ -1,11 +1,11 @@
 <?php
 
-use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Mcp\CachetServer;
 use Cachet\Mcp\Tools\Incidents\GetIncident;
 use Cachet\Mcp\Tools\Incidents\ListIncidents;
 use Cachet\Models\Incident;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 
 use function Pest\Laravel\actingAs;
@@ -37,15 +37,44 @@ it('returns 404 from the api for a single unpublished incident', function () {
     getJson("/status/api/incidents/{$incident->id}")->assertNotFound();
 });
 
-it('hides unpublished incidents from the api even for authenticated callers', function () {
-    Incident::factory()->scheduled()->create([
-        'visible' => ResourceVisibilityEnum::authenticated,
-    ]);
+it('hides unpublished incidents from a read-only api token', function () {
+    Incident::factory()->scheduled()->create();
 
+    Sanctum::actingAs(User::factory()->create(), ['incidents.view']);
+
+    getJson('/status/api/incidents')
+        ->assertOk()
+        ->assertJsonCount(0, 'data');
+});
+
+it('exposes unpublished incidents to a first-party session on the api', function () {
+    Incident::factory()->scheduled()->create();
+
+    // First-party sessions authenticate with a transient token that grants every
+    // ability, so a logged-in staff user is treated as a manager here.
     actingAs(User::factory()->create())
         ->getJson('/status/api/incidents')
         ->assertOk()
-        ->assertJsonCount(0, 'data');
+        ->assertJsonCount(1, 'data');
+});
+
+it('exposes unpublished incidents to an api token that can manage incidents', function () {
+    Incident::factory()->create(['name' => 'Published now']);
+    Incident::factory()->scheduled()->create(['name' => 'Prescheduled']);
+
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    getJson('/status/api/incidents')
+        ->assertOk()
+        ->assertJsonCount(2, 'data');
+});
+
+it('exposes a single unpublished incident to an api token that can manage incidents', function () {
+    $incident = Incident::factory()->scheduled()->create();
+
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    getJson("/status/api/incidents/{$incident->id}")->assertOk();
 });
 
 it('hides an unpublished incident page from guests', function () {
