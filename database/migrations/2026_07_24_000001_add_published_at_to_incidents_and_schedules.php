@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -20,19 +21,16 @@ return new class extends Migration
             $table->timestamp('published_at')->nullable();
             $table->timestamp('published_notified_at')->nullable();
         });
-    }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::table('incidents', function (Blueprint $table) {
-            $table->dropColumn(['published_at', 'published_notified_at']);
-        });
-
-        Schema::table('schedules', function (Blueprint $table) {
-            $table->dropColumn(['published_at', 'published_notified_at']);
-        });
+        // Existing incidents and schedules were published the moment they were
+        // created, so treat their publish timestamp as their creation time.
+        // published_notified_at is backfilled in lockstep so the publish
+        // notification command never re-announces historical records.
+        foreach (['incidents', 'schedules'] as $table) {
+            DB::table($table)->whereNull('published_at')->update([
+                'published_at' => DB::raw('created_at'),
+                'published_notified_at' => DB::raw('created_at'),
+            ]);
+        }
     }
 };

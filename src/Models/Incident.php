@@ -119,6 +119,11 @@ class Incident extends Model implements Metable
 
         self::creating(function (Incident $model) {
             $model->guid = Str::uuid();
+
+            if ($model->published_at === null) {
+                $model->published_at = $model->freshTimestamp();
+                $model->published_notified_at = $model->freshTimestamp();
+            }
         });
     }
 

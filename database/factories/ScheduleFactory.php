@@ -23,7 +23,6 @@ class ScheduleFactory extends Factory
             'name' => 'Incident Schedule',
             'scheduled_at' => now()->addDays(7),
             'completed_at' => now()->addDays(14),
-            'published_at' => null,
         ];
     }
 

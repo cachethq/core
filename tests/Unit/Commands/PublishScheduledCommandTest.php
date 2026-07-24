@@ -90,6 +90,29 @@ it('does not notify before a maintenance reaches its publish time', function () 
     Notification::assertNothingSent();
 });
 
+it('does not announce an incident that was published immediately on creation', function () {
+    $incident = Incident::factory()->create([
+        'notifications' => true,
+        'visible' => ResourceVisibilityEnum::guest,
+    ]);
+
+    expect($incident->published_notified_at)->not->toBeNull();
+
+    $this->artisan('cachet:publish-scheduled')->assertSuccessful();
+
+    Notification::assertNothingSent();
+});
+
+it('does not announce a maintenance that was published immediately on creation', function () {
+    $schedule = Schedule::factory()->create(['notifications' => true]);
+
+    expect($schedule->published_notified_at)->not->toBeNull();
+
+    $this->artisan('cachet:publish-scheduled')->assertSuccessful();
+
+    Notification::assertNothingSent();
+});
+
 it('does nothing when subscriber notifications are disabled globally', function () {
     $settings = app(MailSettings::class);
     $settings->allow_subscribers = false;

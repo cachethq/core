@@ -10,10 +10,8 @@ use Cachet\Models\Subscriber;
 use Cachet\Settings\MailSettings;
 use Illuminate\Support\Facades\Notification;
 
-it('treats a null publish date as published', function () {
-    $incident = Incident::factory()->create(['published_at' => null]);
-
-    expect($incident->isPublished())->toBeTrue();
+it('defensively treats a missing publish date as published', function () {
+    expect((new Incident)->isPublished())->toBeTrue();
 });
 
 it('treats a past publish date as published', function () {
@@ -28,8 +26,30 @@ it('treats a future publish date as unpublished', function () {
     expect($incident->isPublished())->toBeFalse();
 });
 
+it('populates the publish timestamps when an incident is created without a publish date', function () {
+    $incident = Incident::factory()->create();
+
+    expect($incident->published_at)->not->toBeNull()
+        ->and($incident->published_notified_at)->not->toBeNull()
+        ->and($incident->published_at->timestamp)->toEqualWithDelta($incident->created_at->timestamp, 2);
+});
+
+it('populates the publish timestamps when a schedule is created without a publish date', function () {
+    $schedule = Schedule::factory()->create();
+
+    expect($schedule->published_at)->not->toBeNull()
+        ->and($schedule->published_notified_at)->not->toBeNull()
+        ->and($schedule->published_at->timestamp)->toEqualWithDelta($schedule->created_at->timestamp, 2);
+});
+
+it('leaves the publish timestamps untouched when a future publish date is given', function () {
+    $incident = Incident::factory()->scheduled()->create();
+
+    expect($incident->published_notified_at)->toBeNull();
+});
+
 it('scopes incidents to published and unpublished', function () {
-    Incident::factory()->create(['published_at' => null]);
+    Incident::factory()->create();
     Incident::factory()->published()->create();
     Incident::factory()->scheduled()->create();
 
@@ -38,7 +58,7 @@ it('scopes incidents to published and unpublished', function () {
 });
 
 it('scopes schedules to published and unpublished', function () {
-    Schedule::factory()->create(['published_at' => null]);
+    Schedule::factory()->create();
     Schedule::factory()->scheduled()->create();
 
     expect(Schedule::query()->published()->count())->toBe(1);

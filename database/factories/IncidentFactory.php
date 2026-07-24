@@ -25,7 +25,6 @@ class IncidentFactory extends Factory
             'name' => fake()->sentence,
             'status' => IncidentStatusEnum::identified->value,
             'message' => fake()->paragraph,
-            'published_at' => null,
         ];
     }
 

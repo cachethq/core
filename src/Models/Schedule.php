@@ -62,6 +62,13 @@ class Schedule extends Model implements Metable
      */
     protected static function booted(): void
     {
+        self::creating(function (Schedule $schedule) {
+            if ($schedule->published_at === null) {
+                $schedule->published_at = $schedule->freshTimestamp();
+                $schedule->published_notified_at = $schedule->freshTimestamp();
+            }
+        });
+
         self::updated(function (Schedule $schedule) {
             if ($schedule->wasChanged('completed_at') && $schedule->status === ScheduleStatusEnum::complete) {
                 app(NotifyScheduleCompletedSubscribers::class)->handle($schedule);
