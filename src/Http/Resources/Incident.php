@@ -35,6 +35,10 @@ class Incident extends JsonApiResource
                 'human' => $this->occurred_at?->diffForHumans(),
                 'string' => $this->occurred_at?->toDateTimeString(),
             ],
+            'published' => [
+                'human' => $this->published_at?->diffForHumans(),
+                'string' => $this->published_at?->toDateTimeString(),
+            ],
             'created' => [
                 'human' => $this->created_at?->diffForHumans(),
                 'string' => $this->created_at?->toDateTimeString(),

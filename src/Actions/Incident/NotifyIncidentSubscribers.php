@@ -23,6 +23,10 @@ class NotifyIncidentSubscribers
      */
     public function handle(Incident $incident): void
     {
+        if (! $incident->isPublished()) {
+            return;
+        }
+
         if (! $this->mailSettings->allow_subscribers) {
             return;
         }
@@ -40,5 +44,7 @@ class NotifyIncidentSubscribers
             ->subscribedTo($incident)
             ->cursor()
             ->each(fn (Subscriber $subscriber) => $subscriber->notify(new NewIncidentNotification($incident)));
+
+        $incident->forceFill(['published_notified_at' => now()])->saveQuietly();
     }
 }

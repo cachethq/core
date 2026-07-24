@@ -32,6 +32,7 @@ class CreateSchedule extends Tool
             'message' => $schema->string()->required()->description('The schedule message, in Markdown.'),
             'scheduled_at' => $schema->string()->required()->description('When the maintenance starts, as an ISO-8601 or Y-m-d H:i:s datetime.'),
             'completed_at' => $schema->string()->description('When the maintenance finished, as an ISO-8601 or Y-m-d H:i:s datetime. Leave empty for incomplete maintenance.'),
+            'published_at' => $schema->string()->description('When to publish the maintenance, as an ISO-8601 or Y-m-d H:i:s datetime. While set in the future the maintenance is hidden from the status page and public API. Defaults to published immediately.'),
             'notifications' => $schema->boolean()->default(false)->description('Whether to notify verified subscribers.'),
             'components' => $schema->array()
                 ->items($schema->object([

@@ -34,6 +34,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
@@ -68,6 +69,10 @@ class IncidentResource extends Resource
                     DateTimePicker::make('occurred_at')
                         ->label(__('cachet::incident.form.occurred_at_label'))
                         ->helperText(__('cachet::incident.form.occurred_at_helper')),
+                    DateTimePicker::make('published_at')
+                        ->label(__('cachet::incident.form.published_at_label'))
+                        ->helperText(__('cachet::incident.form.published_at_helper'))
+                        ->native(false),
                     ToggleButtons::make('visible')
                         ->label(__('cachet::incident.form.visible_label'))
                         ->inline()
@@ -148,6 +153,13 @@ class IncidentResource extends Resource
                     ->label(__('cachet::incident.list.headers.occurred_at'))
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('published_at')
+                    ->label(__('cachet::incident.list.headers.published_at'))
+                    ->dateTime()
+                    ->placeholder(__('cachet::incident.list.published_now'))
+                    ->badge()
+                    ->color(fn (Incident $record): string => $record->isPublished() ? 'success' : 'warning')
+                    ->sortable(),
                 IconColumn::make('notifications')
                     ->label(__('cachet::incident.list.headers.notified_subscribers'))
                     ->boolean()
@@ -173,6 +185,11 @@ class IncidentResource extends Resource
                 SelectFilter::make('status')
                     ->label(__('cachet::incident.list.headers.status'))
                     ->options(IncidentStatusEnum::class),
+                Filter::make('unpublished')
+                    ->label(__('cachet::incident.list.filters.scheduled'))
+                    ->query(fn (Builder $query): Builder => $query
+                        ->whereNotNull('published_at')
+                        ->where('published_at', '>', now())),
             ])
             ->recordActions([
                 static::recordUpdateAction(),

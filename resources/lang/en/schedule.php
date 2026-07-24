@@ -8,9 +8,14 @@ return [
             'status' => 'Status',
             'scheduled_at' => 'Scheduled at',
             'completed_at' => 'Completed at',
+            'published_at' => 'Published at',
             'created_at' => 'Created at',
             'updated_at' => 'Updated at',
             'deleted_at' => 'Deleted at',
+        ],
+        'published_now' => 'Published',
+        'filters' => [
+            'scheduled' => 'Scheduled (not yet published)',
         ],
         'empty_state' => [
             'heading' => 'Schedules',
@@ -28,6 +33,8 @@ return [
         'scheduled_at_helper' => 'When the maintenance window begins.',
         'completed_at_label' => 'Completed at',
         'completed_at_helper' => 'When the maintenance window is expected to end.',
+        'published_at_label' => 'Published at',
+        'published_at_helper' => 'Schedule the maintenance to appear on the status page at a future date. Hidden from everyone until then. Leave empty to publish immediately.',
         'notify_subscribers_label' => 'Notify subscribers of this maintenance.',
         'notifications_helper' => 'Email subscribers about this scheduled maintenance and its updates.',
         'meta_label' => 'Meta',

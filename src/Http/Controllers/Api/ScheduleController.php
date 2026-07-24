@@ -67,7 +67,7 @@ class ScheduleController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $schedules = QueryBuilder::for(Schedule::class)
+        $schedules = QueryBuilder::for(Schedule::query()->published())
             ->allowedIncludes($this->allowedIncludes())
             ->allowedFilters([
                 'name',
@@ -98,7 +98,7 @@ class ScheduleController extends Controller
     #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     public function show(Schedule $schedule)
     {
-        $scheduleQuery = QueryBuilder::for(Schedule::class)
+        $scheduleQuery = QueryBuilder::for(Schedule::query()->published())
             ->allowedIncludes($this->allowedIncludes())
             ->findOrFail($schedule->id);
 

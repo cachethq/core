@@ -21,6 +21,10 @@ class NotifyScheduleRescheduledSubscribers
      */
     public function handle(Schedule $schedule, ?Carbon $previousScheduledAt, ?Carbon $previousCompletedAt): void
     {
+        if (! $schedule->isPublished()) {
+            return;
+        }
+
         if (! $this->mailSettings->allow_subscribers) {
             return;
         }

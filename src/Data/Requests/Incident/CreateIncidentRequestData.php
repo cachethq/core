@@ -29,6 +29,7 @@ final class CreateIncidentRequestData extends BaseData
         public readonly bool $stickied = false,
         public readonly bool $notifications = false,
         public readonly ?string $occurredAt = null,
+        public readonly ?string $publishedAt = null,
         public readonly array $templateVars = [],
         #[Exists(Component::class, 'id')]
         public readonly ?int $componentId = null,
@@ -54,6 +55,10 @@ final class CreateIncidentRequestData extends BaseData
              * The date/time the incident occurred, e.g. "2023-11-07 05:31:56" or ISO 8601. Defaults to now.
              */
             'occurred_at' => ['nullable', 'date'],
+            /**
+             * The date/time to publish the incident, e.g. "2023-11-07 05:31:56" or ISO 8601. While set in the future the incident is hidden from the status page and public API. Defaults to published immediately.
+             */
+            'published_at' => ['nullable', 'date'],
             /**
              * Key/value variables passed to the incident template when rendering the message.
              *
@@ -89,6 +94,7 @@ final class CreateIncidentRequestData extends BaseData
             stickied: $this->stickied,
             notifications: $this->notifications,
             occurredAt: $this->occurredAt,
+            publishedAt: $this->publishedAt,
             templateVars: $this->templateVars,
             componentId: $this->componentId,
             componentStatus: $this->componentStatus,

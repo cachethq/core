@@ -85,6 +85,7 @@ trait PresentsResources
             'visible' => $this->presentEnum($incident->visible),
             'stickied' => $incident->stickied,
             'occurred_at' => $incident->occurred_at?->toIso8601String(),
+            'published_at' => $incident->published_at?->toIso8601String(),
             'created_at' => $incident->created_at?->toIso8601String(),
             'updated_at' => $incident->updated_at?->toIso8601String(),
         ], $incident->relationLoaded('components') ? [
@@ -137,6 +138,7 @@ trait PresentsResources
             'status' => $this->presentEnum($schedule->status),
             'scheduled_at' => $schedule->scheduled_at?->toIso8601String(),
             'completed_at' => $schedule->completed_at?->toIso8601String(),
+            'published_at' => $schedule->published_at?->toIso8601String(),
             'created_at' => $schedule->created_at?->toIso8601String(),
             'updated_at' => $schedule->updated_at?->toIso8601String(),
         ], $schedule->relationLoaded('components') ? [

@@ -20,6 +20,10 @@ class NotifyScheduleCompletedSubscribers
      */
     public function handle(Schedule $schedule): void
     {
+        if (! $schedule->isPublished()) {
+            return;
+        }
+
         if (! $this->mailSettings->allow_subscribers) {
             return;
         }

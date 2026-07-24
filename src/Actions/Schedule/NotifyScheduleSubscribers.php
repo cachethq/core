@@ -22,6 +22,10 @@ class NotifyScheduleSubscribers
      */
     public function handle(Schedule $schedule): void
     {
+        if (! $schedule->isPublished()) {
+            return;
+        }
+
         if (! $this->mailSettings->allow_subscribers) {
             return;
         }
@@ -35,5 +39,7 @@ class NotifyScheduleSubscribers
             ->subscribedTo($schedule)
             ->cursor()
             ->each(fn (Subscriber $subscriber) => $subscriber->notify(new NewScheduleNotification($schedule)));
+
+        $schedule->forceFill(['published_notified_at' => now()])->saveQuietly();
     }
 }

@@ -30,6 +30,10 @@ class Schedule extends JsonApiResource
                 'human' => $this->completed_at?->diffForHumans(),
                 'string' => $this->completed_at?->toDateTimeString(),
             ],
+            'published' => [
+                'human' => $this->published_at?->diffForHumans(),
+                'string' => $this->published_at?->toDateTimeString(),
+            ],
             'created' => [
                 'human' => $this->created_at?->diffForHumans(),
                 'string' => $this->created_at?->toDateTimeString(),

@@ -23,7 +23,7 @@ class StatusPageController
     public function index(): View
     {
         return view('cachet::status-page.index', [
-            'schedules' => Schedule::query()->with(['updates', 'components'])->incomplete()->orderBy('scheduled_at')->get(),
+            'schedules' => Schedule::query()->with(['updates', 'components'])->published()->incomplete()->orderBy('scheduled_at')->get(),
 
             'display_graphs' => $this->appSettings->display_graphs,
         ]);
@@ -34,6 +34,8 @@ class StatusPageController
      */
     public function show(Incident $incident): View
     {
+        abort_if(! $incident->isPublished() && ! auth()->check(), 404);
+
         return view('cachet::status-page.incident', [
             'incident' => $incident->loadMissing([
                 'components',
@@ -47,6 +49,8 @@ class StatusPageController
      */
     public function schedule(Schedule $schedule): View
     {
+        abort_if(! $schedule->isPublished() && ! auth()->check(), 404);
+
         return view('cachet::status-page.schedule', [
             'schedule' => $schedule->loadMissing([
                 'components',

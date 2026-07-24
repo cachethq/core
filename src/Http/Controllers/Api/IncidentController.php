@@ -63,7 +63,7 @@ class IncidentController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $incidents = QueryBuilder::for(Incident::query()->with('updates')->visible($this->isAuthenticated()))
+        $incidents = QueryBuilder::for(Incident::query()->with('updates')->visible($this->isAuthenticated())->published())
             ->allowedIncludes($this->allowedIncludes())
             ->allowedFilters([
                 'name',
@@ -98,7 +98,7 @@ class IncidentController extends Controller
     #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     public function show(Incident $incident)
     {
-        $incidentQuery = QueryBuilder::for(Incident::query()->visible($this->isAuthenticated()))
+        $incidentQuery = QueryBuilder::for(Incident::query()->visible($this->isAuthenticated())->published())
             ->allowedIncludes($this->allowedIncludes())
             ->findOrFail($incident->id);
 

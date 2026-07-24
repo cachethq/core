@@ -96,6 +96,7 @@ class Status
     public function incidents(): object
     {
         return $this->incidents ??= Incident::query()
+            ->published()
             ->toBase()
             ->selectRaw('count(*) as total')
             ->selectRaw('sum(case when ? in (incidents.status, coalesce(latest_update.status, ?)) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed->value, 0])

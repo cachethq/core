@@ -18,6 +18,7 @@ final class UpdateIncidentRequestData extends BaseData
         public readonly ?bool $stickied = null,
         public readonly ?bool $notifications = null,
         public readonly ?string $occurredAt = null,
+        public readonly ?string $publishedAt = null,
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -35,6 +36,10 @@ final class UpdateIncidentRequestData extends BaseData
              * The date/time the incident occurred, e.g. "2023-11-07 05:31:56" or ISO 8601.
              */
             'occurred_at' => ['nullable', 'date'],
+            /**
+             * The date/time to publish the incident, e.g. "2023-11-07 05:31:56" or ISO 8601. While set in the future the incident is hidden from the status page and public API.
+             */
+            'published_at' => ['nullable', 'date'],
             /**
              * Key/value metadata to store against the resource.
              *

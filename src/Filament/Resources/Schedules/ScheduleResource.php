@@ -12,6 +12,7 @@ use Cachet\Filament\Resources\Schedules\Pages\ListSchedules;
 use Cachet\Filament\Resources\Schedules\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Schedule;
+use Cachet\QueryBuilders\ScheduleBuilder;
 use Cachet\Settings\MailSettings;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -30,6 +31,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 
 class ScheduleResource extends Resource
@@ -57,6 +59,10 @@ class ScheduleResource extends Resource
                     DateTimePicker::make('completed_at')
                         ->label(__('cachet::schedule.form.completed_at_label'))
                         ->helperText(__('cachet::schedule.form.completed_at_helper'))
+                        ->native(false), // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
+                    DateTimePicker::make('published_at')
+                        ->label(__('cachet::schedule.form.published_at_label'))
+                        ->helperText(__('cachet::schedule.form.published_at_helper'))
                         ->native(false), // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
                     MarkdownEditor::make('message')
                         ->label(__('cachet::schedule.form.message_label'))
@@ -109,6 +115,13 @@ class ScheduleResource extends Resource
                     ->label(__('cachet::schedule.list.headers.completed_at'))
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('published_at')
+                    ->label(__('cachet::schedule.list.headers.published_at'))
+                    ->dateTime()
+                    ->placeholder(__('cachet::schedule.list.published_now'))
+                    ->badge()
+                    ->color(fn (Schedule $record): string => $record->isPublished() ? 'success' : 'warning')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label(__('cachet::schedule.list.headers.created_at'))
                     ->dateTime()
@@ -126,7 +139,9 @@ class ScheduleResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Filter::make('unpublished')
+                    ->label(__('cachet::schedule.list.filters.scheduled'))
+                    ->query(fn (ScheduleBuilder $query): ScheduleBuilder => $query->unpublished()),
             ])
             ->recordActions([
                 static::recordUpdateAction(),

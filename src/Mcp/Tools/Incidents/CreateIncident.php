@@ -41,6 +41,7 @@ class CreateIncident extends Tool
             'stickied' => $schema->boolean()->default(false)->description('Whether the incident is stickied to the top of the status page.'),
             'notifications' => $schema->boolean()->default(false)->description('Whether to notify verified subscribers.'),
             'occurred_at' => $schema->string()->description('When the incident occurred, as an ISO-8601 datetime. Defaults to now.'),
+            'published_at' => $schema->string()->description('When to publish the incident, as an ISO-8601 datetime. While set in the future the incident is hidden from the status page and public API. Defaults to published immediately.'),
             'components' => $schema->array()
                 ->items($schema->object([
                     'id' => $schema->integer()->required()->description('The component ID.'),

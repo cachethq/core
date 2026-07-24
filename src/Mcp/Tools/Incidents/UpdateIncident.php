@@ -41,6 +41,7 @@ class UpdateIncident extends Tool
             'stickied' => $schema->boolean()->description('Whether the incident is stickied to the top of the status page.'),
             'notifications' => $schema->boolean()->description('Whether to notify verified subscribers.'),
             'occurred_at' => $schema->string()->description('When the incident occurred, as an ISO-8601 datetime.'),
+            'published_at' => $schema->string()->description('When to publish the incident, as an ISO-8601 datetime. While set in the future the incident is hidden from the status page and public API.'),
         ];
     }
 
@@ -57,7 +58,7 @@ class UpdateIncident extends Tool
         }
 
         $data = UpdateIncidentRequestData::validateAndCreate(
-            $request->only(['name', 'message', 'status', 'visible', 'stickied', 'notifications', 'occurred_at'])
+            $request->only(['name', 'message', 'status', 'visible', 'stickied', 'notifications', 'occurred_at', 'published_at'])
         );
 
         return Response::structured(['data' => $this->presentIncident($action->handle($incident, $data))]);

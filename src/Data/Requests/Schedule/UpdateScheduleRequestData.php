@@ -22,6 +22,8 @@ final class UpdateScheduleRequestData extends BaseData
         public readonly ?Carbon $scheduledAt = null,
         #[WithCast(FlexibleDateTimeCast::class)]
         public readonly ?Carbon $completedAt = null,
+        #[WithCast(FlexibleDateTimeCast::class)]
+        public readonly ?Carbon $publishedAt = null,
         #[DataCollectionOf(ScheduleComponentRequestData::class)]
         public readonly ?array $components = null,
         /** @var array<string, mixed>|null */
@@ -41,6 +43,10 @@ final class UpdateScheduleRequestData extends BaseData
              * The date/time the maintenance window ends, e.g. "2023-11-07 05:31:56" or ISO 8601.
              */
             'completed_at' => ['nullable', 'date'],
+            /**
+             * The date/time to publish the maintenance, e.g. "2023-11-07 05:31:56" or ISO 8601. While set in the future the maintenance is hidden from the status page and public API.
+             */
+            'published_at' => ['nullable', 'date'],
             'components' => ['array'],
             'components.*.id' => ['required', 'int', 'exists:components,id'],
             'components.*.status' => ['required', Rule::enum(ComponentStatusEnum::class)],
