@@ -98,8 +98,8 @@ class Status
             ->viewableBy(false)
             ->toBase()
             ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when status = ? then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed->value])
-            ->selectRaw('sum(case when status is null or status <> ? then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed->value])
+            ->selectRaw('coalesce(sum(case when status = ? then 1 else 0 end), 0) as resolved', [IncidentStatusEnum::fixed->value])
+            ->selectRaw('coalesce(sum(case when status is null or status <> ? then 1 else 0 end), 0) as unresolved', [IncidentStatusEnum::fixed->value])
             ->first();
     }
 

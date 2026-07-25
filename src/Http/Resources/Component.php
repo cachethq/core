@@ -20,6 +20,10 @@ class Component extends JsonApiResource
                 'human' => $this->status?->getLabel(),
                 'value' => $this->status?->value,
             ],
+            'latest_status' => [
+                'human' => $this->latest_status->getLabel(),
+                'value' => $this->latest_status->value,
+            ],
             'enabled' => $this->enabled,
             'meta' => $this->when(
                 $this->resource->relationLoaded('meta'),

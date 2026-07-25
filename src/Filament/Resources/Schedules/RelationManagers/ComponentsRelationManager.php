@@ -51,12 +51,14 @@ class ComponentsRelationManager extends RelationManager
                         fn (Select $select) => $select->placeholder(__('Select a component')),
                     )
                     ->multiple()
-                    ->mutateFormDataUsing(function (array $data): array {
-                        // Set a default component_status value (Operational)
-                        $data['component_status'] = ComponentStatusEnum::operational->value;
-
-                        return $data;
-                    }),
+                    ->schema(fn (array $schema): array => [
+                        ...$schema,
+                        Select::make('component_status')
+                            ->options(ComponentStatusEnum::class)
+                            ->default(ComponentStatusEnum::under_maintenance->value)
+                            ->required()
+                            ->label(__('cachet::schedule.form.add_component.status_label')),
+                    ]),
             ])
             ->recordActions([
                 DetachAction::make(),

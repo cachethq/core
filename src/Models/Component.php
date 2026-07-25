@@ -11,6 +11,7 @@ use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
+use Cachet\QueryBuilders\ScheduleBuilder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -139,7 +140,10 @@ class Component extends Model implements Metable
     {
         $relation = $this->schedules()->published();
 
-        $relation->getQuery()->inProgress();
+        /** @var ScheduleBuilder $query */
+        $query = $relation->getQuery();
+
+        $query->inProgress();
 
         return $relation;
     }
@@ -164,6 +168,16 @@ class Component extends Model implements Metable
     public function checks(): HasMany
     {
         return $this->hasMany(ComponentCheck::class);
+    }
+
+    /**
+     * Get the recorded changes to the component's baseline status.
+     *
+     * @return HasMany<ComponentStatusChange, $this>
+     */
+    public function statusChanges(): HasMany
+    {
+        return $this->hasMany(ComponentStatusChange::class);
     }
 
     /**
@@ -256,7 +270,7 @@ class Component extends Model implements Metable
     public function impactingIncident(): Attribute
     {
         return Attribute::get(fn (): ?Incident => $this->activeIncidents()
-            ->filter(fn (Incident $incident) => $incident->pivot?->component_status !== null)
+            ->filter(fn (Incident $incident) => $incident->pivot->component_status !== null)
             ->sortByDesc(fn (Incident $incident) => [
                 $incident->pivot->component_status->severity(),
                 $incident->created_at,
@@ -284,7 +298,7 @@ class Component extends Model implements Metable
     protected function activeIncidentImpacts(): SupportCollection
     {
         return $this->activeIncidents()
-            ->map(fn (Incident $incident) => $incident->pivot?->component_status)
+            ->map(fn (Incident $incident) => $incident->pivot->component_status)
             ->filter()
             ->values();
     }

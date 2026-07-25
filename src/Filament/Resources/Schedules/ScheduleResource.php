@@ -19,7 +19,6 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
@@ -84,8 +83,11 @@ class ScheduleResource extends Resource
                                 ->relationship('component', 'name')
                                 ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                 ->label(__('cachet::schedule.form.add_component.component_label')),
-                            Hidden::make('component_status')
-                                ->default(ComponentStatusEnum::operational->value),
+                            Select::make('component_status')
+                                ->options(ComponentStatusEnum::class)
+                                ->default(ComponentStatusEnum::under_maintenance->value)
+                                ->required()
+                                ->label(__('cachet::schedule.form.add_component.status_label')),
                         ])
                         ->label(__('cachet::schedule.form.add_component.header'))
                         ->columnSpanFull(),

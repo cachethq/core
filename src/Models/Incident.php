@@ -191,6 +191,8 @@ class Incident extends Model implements Metable
      * orthogonal, and this is the single place both are decided. Every read
      * surface — the API, MCP, RSS, the status page and the system status —
      * goes through it so none can forget one of the two.
+     *
+     * @param  Builder<static>  $query
      */
     public function scopeViewableBy(Builder $query, bool $authenticated, bool $includeUnpublished = false): void
     {

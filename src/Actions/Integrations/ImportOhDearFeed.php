@@ -2,7 +2,9 @@
 
 namespace Cachet\Actions\Integrations;
 
+use Cachet\Actions\Component\ChangeComponentStatus;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Enums\ExternalProviderEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
@@ -30,13 +32,21 @@ class ImportOhDearFeed
     private function importSites(array $sites, ?int $componentGroupId): void
     {
         foreach ($sites as $site) {
-            Component::updateOrCreate(
+            $status = $site['status'] === 'up' ? ComponentStatusEnum::operational : ComponentStatusEnum::partial_outage;
+
+            $component = Component::updateOrCreate(
                 ['link' => $site['url']],
                 [
                     'name' => $site['label'],
                     'component_group_id' => $componentGroupId,
-                    'status' => $site['status'] === 'up' ? ComponentStatusEnum::operational : ComponentStatusEnum::partial_outage,
                 ]
+            );
+
+            app(ChangeComponentStatus::class)->handle(
+                $component,
+                $status,
+                ComponentStatusSourceEnum::Import,
+                reason: ExternalProviderEnum::OhDear->value,
             );
         }
     }
