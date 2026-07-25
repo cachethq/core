@@ -33,6 +33,7 @@ class MetricController extends Controller
      */
     #[QueryParameter('filter[name]', 'Filter by name.', example: 'metric name')]
     #[QueryParameter('filter[calc_type]', 'Filter by calculation type.', type: MetricTypeEnum::class)]
+    #[QueryParameter('filter[component_id]', 'Filter by the component the metric is displayed with.', type: 'int', example: 1)]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
@@ -45,9 +46,10 @@ class MetricController extends Controller
 
         $metrics = QueryBuilder::for($query)
             ->allowedIncludes([
-                AllowedInclude::relationship('points', 'metricPoints'),
+                AllowedInclude::relationship('points', 'includedMetricPoints'),
+                AllowedInclude::relationship('component'),
             ])
-            ->allowedFilters(['name', 'calc_type'])
+            ->allowedFilters(['name', 'calc_type', 'component_id'])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
@@ -73,7 +75,8 @@ class MetricController extends Controller
     {
         $metricQuery = QueryBuilder::for(Metric::query()->visible($this->isAuthenticated()))
             ->allowedIncludes([
-                AllowedInclude::relationship('points', 'metricPoints'),
+                AllowedInclude::relationship('points', 'includedMetricPoints'),
+                AllowedInclude::relationship('component'),
             ])
             ->findOrFail($metric->id);
 

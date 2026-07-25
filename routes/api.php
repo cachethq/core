@@ -59,6 +59,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     ])
         ->scoped(['updateable_id']);
 
+    Route::post('metrics/{metric}/points/batch', [MetricPointController::class, 'storeBatch'])
+        ->name('metrics.points.batch');
+
     Route::apiResource('metrics.points', MetricPointController::class, [
         'except' => ['index', 'show', 'update'],
     ])

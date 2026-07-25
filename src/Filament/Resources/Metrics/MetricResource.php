@@ -79,6 +79,13 @@ class MetricResource extends Resource
                         ->numeric()
                         ->default(5)
                         ->columnSpan(2),
+                    Select::make('component_id')
+                        ->label(__('cachet::metric.form.component_label'))
+                        ->helperText(__('cachet::metric.form.component_helper_text'))
+                        ->relationship('component', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->columnSpan(4),
                 ])->columnSpan(3),
                 Section::make()->schema([
                     ToggleButtons::make('visible')
@@ -140,6 +147,10 @@ class MetricResource extends Resource
                 TextColumn::make('order')
                     ->label(__('cachet::metric.list.headers.order'))
                     ->numeric()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('component.name')
+                    ->label(__('cachet::metric.list.headers.component'))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('visible')

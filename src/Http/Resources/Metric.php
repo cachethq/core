@@ -22,6 +22,7 @@ class Metric extends JsonApiResource
             'default_view' => $this->default_view,
             'threshold' => $this->threshold,
             'order' => $this->order,
+            'component_id' => $this->component_id,
             'visible' => $this->visible,
             'created' => [
                 'human' => $this->created_at?->diffForHumans(),
@@ -37,7 +38,8 @@ class Metric extends JsonApiResource
     public function toRelationships(Request $request): array
     {
         return [
-            'points' => fn () => MetricPoint::collection($this->metricPoints),
+            'points' => fn () => MetricPoint::collection($this->includedMetricPoints),
+            'component' => fn () => Component::make($this->component),
         ];
     }
 }

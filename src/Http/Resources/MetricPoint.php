@@ -15,6 +15,7 @@ class MetricPoint extends JsonApiResource
             'metric_id' => $this->metric_id,
             'calculated_value' => $this->calculated_value,
             'value' => $this->value,
+            'sum_value' => $this->sum_value,
             'counter' => $this->counter,
             'created' => [
                 'human' => $this->created_at?->diffForHumans(),
