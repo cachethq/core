@@ -13,6 +13,7 @@ return [
             'default_view' => 'Default view',
             'threshold' => 'Threshold',
             'order' => 'Order',
+            'component' => 'Component',
             'visible' => 'Visible',
             'points_count' => 'Points count',
             'created_at' => 'Created at',
@@ -32,6 +33,8 @@ return [
         'calc_type_label' => 'Metric type',
         'places_label' => 'Places',
         'threshold_label' => 'Threshold',
+        'component_label' => 'Component',
+        'component_helper_text' => 'Display this metric alongside a component. Metrics never affect a component\'s status.',
 
         'visible_label' => 'Visible',
         'display_chart_label' => 'Display chart',

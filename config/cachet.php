@@ -216,6 +216,29 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet Metrics
+     |--------------------------------------------------------------------------
+     |
+     | Metrics are a curated, human-readable display series, not a time series
+     | database. "retention_days" is how long metric points are kept before
+     | the model:prune scheduled task removes them; set it to null to keep
+     | every point forever, and expect the table to grow without bound.
+     |
+     | "max_included_points" caps how many points the API will attach to a
+     | metric through "?include=points". Use the metric points endpoint,
+     | which is paginated, to walk the full history of a metric.
+     |
+     */
+    'metrics' => [
+        'retention_days' => env('CACHET_METRICS_RETENTION_DAYS', 90),
+
+        'max_included_points' => env('CACHET_METRICS_MAX_INCLUDED_POINTS', 100),
+
+        'max_batch_points' => env('CACHET_METRICS_MAX_BATCH_POINTS', 1000),
+    ],
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Webhooks
      |--------------------------------------------------------------------------
      |

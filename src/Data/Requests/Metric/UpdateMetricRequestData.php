@@ -14,6 +14,7 @@ final class UpdateMetricRequestData extends BaseData
         public readonly ?string $description = null,
         public readonly ?float $defaultValue = null,
         public readonly ?int $threshold = null,
+        public readonly ?int $componentId = null,
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -24,6 +25,11 @@ final class UpdateMetricRequestData extends BaseData
             'description' => ['string'],
             'default_value' => ['decimal:1,2'],
             'threshold' => ['int', 'min:0', 'max:60', new FactorOfSixty],
+            /**
+             * The component to display this metric alongside. Display only:
+             * a metric never affects a component's status.
+             */
+            'component_id' => ['nullable', 'integer', 'exists:components,id'],
         ];
     }
 }

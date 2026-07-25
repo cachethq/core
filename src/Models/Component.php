@@ -148,6 +148,20 @@ class Component extends Model implements Metable
     }
 
     /**
+     * Get the metrics displayed alongside the component.
+     *
+     * Checks are operational and drive the component's status; metrics are
+     * communicative and only ever describe it. The two are deliberately
+     * separate, and metrics never feed back into component status.
+     *
+     * @return HasMany<Metric, $this>
+     */
+    public function metrics(): HasMany
+    {
+        return $this->hasMany(Metric::class);
+    }
+
+    /**
      * Get the subscribers for this component.
      */
     public function subscribers(): BelongsToMany

@@ -49,20 +49,26 @@
 
     let themeColors = getThemeColors()
 
-    function init() {
-        // Parse metric points
-        const metricPoints = this.metric.metric_points.map((point) => {
+    function parsePoints(points) {
+        return (points ?? []).map((point) => {
             return {
                 x: new Date(point.x),
                 y: point.y,
             }
         })
+    }
+
+    function init() {
+        // The hour and day windows are drawn from raw buckets; the week and
+        // month windows from hourly totals rolled up in the database.
+        const rawPoints = parsePoints(this.metric.chart_points?.raw)
+        const hourlyPoints = parsePoints(this.metric.chart_points?.hourly)
 
         // Filter points based on the selected period
-        this.points[0] = metricPoints.filter((point) => point.x >= previousHour)
-        this.points[1] = metricPoints.filter((point) => point.x >= previous24Hours)
-        this.points[2] = metricPoints.filter((point) => point.x >= previous7Days)
-        this.points[3] = metricPoints.filter((point) => point.x >= previous30Days)
+        this.points[0] = rawPoints.filter((point) => point.x >= previousHour)
+        this.points[1] = rawPoints.filter((point) => point.x >= previous24Hours)
+        this.points[2] = hourlyPoints.filter((point) => point.x >= previous7Days)
+        this.points[3] = hourlyPoints.filter((point) => point.x >= previous30Days)
 
         // Initialize chart
         const chart = new Chart(this.$refs.canvas, {

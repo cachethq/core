@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
@@ -193,4 +194,88 @@ it('does not show a point of a metric hidden from guests', function () {
     $response = getJson('/status/api/metrics/'.$metric->id.'/points/'.$point->id);
 
     $response->assertNotFound();
+});
+
+it('cannot batch create metric points without the token ability', function () {
+    Sanctum::actingAs(User::factory()->create());
+
+    $metric = Metric::factory()->create();
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points/batch', [
+        'points' => [['value' => 1]],
+    ]);
+
+    $response->assertForbidden();
+});
+
+it('can batch create metric points', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metric-points.manage']);
+
+    $metric = Metric::factory()->create(['threshold' => 5]);
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points/batch', [
+        'points' => [
+            ['value' => 1, 'timestamp' => '2026-07-25 12:01:00'],
+            ['value' => 2, 'timestamp' => '2026-07-25 12:03:00'],
+            ['value' => 4, 'timestamp' => '2026-07-25 12:06:00'],
+        ],
+    ]);
+
+    $response->assertCreated();
+
+    // Two of the three observations share a bucket, so they are combined.
+    $response->assertJsonCount(2, 'data');
+    $response->assertJsonFragment(['sum_value' => 3, 'counter' => 2]);
+    $this->assertDatabaseCount('metric_points', 2);
+});
+
+it('rejects a batch without any points', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metric-points.manage']);
+
+    $metric = Metric::factory()->create();
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points/batch', ['points' => []]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('points');
+});
+
+it('rejects a batch larger than the configured maximum', function () {
+    config()->set('cachet.metrics.max_batch_points', 2);
+
+    Sanctum::actingAs(User::factory()->create(), ['metric-points.manage']);
+
+    $metric = Metric::factory()->create();
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points/batch', [
+        'points' => [['value' => 1], ['value' => 2], ['value' => 3]],
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('points');
+});
+
+it('rejects a batch holding an invalid point', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metric-points.manage']);
+
+    $metric = Metric::factory()->create();
+
+    $response = postJson('/status/api/metrics/'.$metric->id.'/points/batch', [
+        'points' => [['value' => 1], ['value' => 'not-a-number']],
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('points.1.value');
+});
+
+it('reports a point through its metric calculation type', function () {
+    $metric = Metric::factory()
+        ->hasMetricPoints(1, ['value' => 5, 'counter' => 4])
+        ->create(['calc_type' => MetricTypeEnum::average]);
+
+    $response = getJson('/status/api/metrics/'.$metric->id.'/points');
+
+    $response->assertOk();
+    $response->assertJsonPath('data.0.attributes.calculated_value', 5);
+    $response->assertJsonPath('data.0.attributes.sum_value', 20);
 });

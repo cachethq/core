@@ -6,15 +6,20 @@ use Cachet\Actions\Metric\CreateMetricPoint;
 use Cachet\Actions\Metric\DeleteMetricPoint;
 use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
+use Cachet\Concerns\RecordsMetricObservations;
+use Cachet\Data\Metrics\MetricObservation;
 use Cachet\Data\Requests\Metric\CreateMetricPointRequestData;
+use Cachet\Data\Requests\Metric\CreateMetricPointsRequestData;
 use Cachet\Http\Resources\MetricPoint as MetricPointResource;
 use Cachet\Models\Metric;
 use Cachet\Models\MetricPoint;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Number;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -34,12 +39,19 @@ class MetricPointController extends Controller
         $this->ensureMetricVisible($metric);
 
         $query = MetricPoint::query()
-            ->where('metric_id', $metric->id);
+            ->where('metric_id', $metric->id)
+            ->when(! $request->input('sort'), function (Builder $builder) {
+                $builder->orderBy('id');
+            });
 
         $points = QueryBuilder::for($query)
             ->allowedIncludes(['metric'])
             ->allowedSorts(['id', 'value', 'created_at'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
+
+        // Every point on this page belongs to the metric we already have, and
+        // each one reads its calculation type back off it.
+        $points->through(fn (MetricPoint $point) => $point->setRelation('metric', $metric));
 
         return MetricPointResource::collection($points);
     }
@@ -59,6 +71,29 @@ class MetricPointController extends Controller
     }
 
     /**
+     * Create Metric Points
+     *
+     * Record many observations against a metric in one request. Observations
+     * that fall into the same bucket are combined before they are written,
+     * so the response holds one point per bucket the batch touched.
+     */
+    public function storeBatch(CreateMetricPointsRequestData $data, Metric $metric, RecordsMetricObservations $recorder)
+    {
+        $this->guard('metric-points.manage');
+
+        $points = $recorder->recordMany($metric, $data->points->toCollection()->map(
+            fn (CreateMetricPointRequestData $point): MetricObservation => new MetricObservation(
+                value: $point->value,
+                recordedAt: $point->timestamp === null ? null : Carbon::parse($point->timestamp),
+            ),
+        ));
+
+        return MetricPointResource::collection($points)
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
+    }
+
+    /**
      * Get Metric Point
      */
     public function show(Metric $metric, MetricPoint $metricPoint)
@@ -68,6 +103,8 @@ class MetricPointController extends Controller
         $metricPointQuery = QueryBuilder::for(MetricPoint::class)
             ->allowedIncludes(['metric'])
             ->find($metricPoint->id);
+
+        $metricPointQuery?->setRelation('metric', $metric);
 
         return MetricPointResource::make($metricPointQuery)
             ->response()

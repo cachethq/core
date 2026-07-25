@@ -2,6 +2,7 @@
 
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Models\Component;
 use Cachet\Models\Metric;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
@@ -419,4 +420,69 @@ it('lists authenticated metrics to callers presenting a bearer token', function 
 
     $response->assertOk();
     $response->assertJsonCount(2, 'data');
+});
+
+it('caps the points embedded in a metric', function () {
+    config()->set('cachet.metrics.max_included_points', 3);
+
+    $metric = Metric::factory()->hasMetricPoints(10)->create();
+
+    $response = getJson('/status/api/metrics/'.$metric->id.'?include=points');
+
+    $response->assertOk();
+    $response->assertJsonCount(3, 'included');
+});
+
+it('can filter metrics by component', function () {
+    $component = Component::factory()->create();
+
+    Metric::factory()->create(['component_id' => $component->id]);
+    Metric::factory()->create();
+
+    $response = getJson('/status/api/metrics?filter[component_id]='.$component->id);
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.attributes.component_id', $component->id);
+});
+
+it('can include the component a metric is displayed alongside', function () {
+    $component = Component::factory()->create(['name' => 'API Gateway']);
+    $metric = Metric::factory()->create(['component_id' => $component->id]);
+
+    $response = getJson('/status/api/metrics/'.$metric->id.'?include=component');
+
+    $response->assertOk();
+    $response->assertJsonPath('included.0.attributes.name', 'API Gateway');
+});
+
+it('can set the component a metric is displayed alongside', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
+    $component = Component::factory()->create();
+
+    $response = postJson('/status/api/metrics', [
+        'name' => 'Response time',
+        'suffix' => 'ms',
+        'component_id' => $component->id,
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('metrics', [
+        'name' => 'Response time',
+        'component_id' => $component->id,
+    ]);
+});
+
+it('cannot set an unknown component on a metric', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
+    $response = postJson('/status/api/metrics', [
+        'name' => 'Response time',
+        'suffix' => 'ms',
+        'component_id' => 12345,
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('component_id');
 });
