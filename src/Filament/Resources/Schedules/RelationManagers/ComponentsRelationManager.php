@@ -51,8 +51,8 @@ class ComponentsRelationManager extends RelationManager
                         fn (Select $select) => $select->placeholder(__('Select a component')),
                     )
                     ->multiple()
-                    ->schema(fn (array $schema): array => [
-                        ...$schema,
+                    ->schema(fn (AttachAction $action): array => [
+                        $action->getRecordSelect(),
                         Select::make('component_status')
                             ->options(ComponentStatusEnum::class)
                             ->default(ComponentStatusEnum::under_maintenance->value)

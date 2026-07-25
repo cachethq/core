@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Update\CreateUpdate;
 use Cachet\Actions\Update\DeleteUpdate;
 use Cachet\Actions\Update\EditUpdate;
+use Cachet\Cachet;
 use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
@@ -55,11 +56,11 @@ class IncidentUpdateController extends Controller
     /**
      * Create Incident Update
      */
-    public function store(CreateIncidentUpdateRequestData $data, Incident $incident, CreateUpdate $createUpdateAction)
+    public function store(Request $request, CreateIncidentUpdateRequestData $data, Incident $incident, CreateUpdate $createUpdateAction)
     {
         $this->guard('incident-updates.manage');
 
-        $update = $createUpdateAction->handle($incident, $data);
+        $update = $createUpdateAction->handle($incident, $data, Cachet::user($request));
 
         return UpdateResource::make($update);
     }

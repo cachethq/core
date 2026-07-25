@@ -3,6 +3,7 @@
 namespace Cachet\Mcp\Tools\Components;
 
 use Cachet\Actions\Component\UpdateComponent as UpdateComponentAction;
+use Cachet\Cachet;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Mcp\Concerns\GuardsMcpAbilities;
@@ -60,7 +61,9 @@ class UpdateComponent extends Tool
             $request->only(['name', 'description', 'status', 'link', 'order', 'enabled', 'component_group_id'])
         );
 
-        return Response::structured(['data' => $this->presentComponent($action->handle($component, $data))]);
+        return Response::structured([
+            'data' => $this->presentComponent($action->handle($component, $data, Cachet::user())),
+        ]);
     }
 
     public function shouldRegister(): bool

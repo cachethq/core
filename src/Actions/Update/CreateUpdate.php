@@ -10,6 +10,8 @@ use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class CreateUpdate
 {
@@ -25,15 +27,20 @@ class CreateUpdate
     /**
      * Handle the action.
      */
-    public function handle(Incident|Schedule $resource, CreateIncidentUpdateRequestData|CreateScheduleUpdateRequestData $data): Update
+    public function handle(Incident|Schedule $resource, CreateIncidentUpdateRequestData|CreateScheduleUpdateRequestData $data, ?Authenticatable $user = null): Update
     {
-        $update = new Update(array_merge(['user_id' => auth()->id()], $data->except('completedAt')->toArray()));
+        $update = new Update(array_merge(
+            ['user_id' => $user?->getAuthIdentifier()],
+            $data->except('completedAt')->toArray()
+        ));
 
-        $resource->updates()->save($update);
+        DB::transaction(function () use ($resource, $update): void {
+            $resource->updates()->save($update);
 
-        if ($resource instanceof Incident) {
-            $this->syncIncidentStatus->handle($resource);
-        }
+            if ($resource instanceof Incident) {
+                $this->syncIncidentStatus->handle($resource);
+            }
+        });
 
         $this->notifyIncidentUpdateSubscribers->handle($update);
 

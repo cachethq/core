@@ -38,6 +38,7 @@ use Illuminate\Support\Collection;
  * @property ?Carbon $deleted_at
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
+ * @property-read ScheduleComponent|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Meta> $meta
  *
  * @method static ScheduleFactory factory($count = null, $state = [])

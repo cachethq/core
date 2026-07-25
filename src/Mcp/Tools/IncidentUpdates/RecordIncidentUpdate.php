@@ -3,6 +3,7 @@
 namespace Cachet\Mcp\Tools\IncidentUpdates;
 
 use Cachet\Actions\Update\CreateUpdate;
+use Cachet\Cachet;
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Mcp\Concerns\GuardsMcpAbilities;
@@ -52,7 +53,7 @@ class RecordIncidentUpdate extends Tool
 
         $data = CreateIncidentUpdateRequestData::validateAndCreate($request->only(['status', 'message']));
 
-        return Response::structured(['data' => $this->presentUpdate($action->handle($incident, $data))]);
+        return Response::structured(['data' => $this->presentUpdate($action->handle($incident, $data, Cachet::user()))]);
     }
 
     public function shouldRegister(): bool

@@ -134,7 +134,7 @@ class Component extends Model implements Metable
     /**
      * Get the published maintenance windows currently in progress for the component.
      *
-     * @return BelongsToMany<Schedule, $this>
+     * @return BelongsToMany<Schedule, $this, ScheduleComponent>
      */
     public function activeMaintenance(): BelongsToMany
     {
@@ -151,11 +151,12 @@ class Component extends Model implements Metable
     /**
      * Get the schedules for the component.
      *
-     * @return BelongsToMany<Schedule, $this>
+     * @return BelongsToMany<Schedule, $this, ScheduleComponent>
      */
     public function schedules(): BelongsToMany
     {
         return $this->belongsToMany(Schedule::class, 'schedule_components')
+            ->using(ScheduleComponent::class)
             ->withTimestamps()
             ->withPivot('component_status');
     }
@@ -250,9 +251,9 @@ class Component extends Model implements Metable
     public function latestStatus(): Attribute
     {
         return Attribute::get(function (): ComponentStatusEnum {
-            $baseline = $this->isUnderMaintenance()
-                ? ComponentStatusEnum::under_maintenance
-                : $this->status ?? ComponentStatusEnum::unknown;
+            $baseline = $this->activeMaintenanceImpact()
+                ?? $this->status
+                ?? ComponentStatusEnum::unknown;
 
             return $this->activeIncidentImpacts()
                 ->push($baseline)
@@ -288,6 +289,30 @@ class Component extends Model implements Metable
         }
 
         return $this->activeMaintenance()->exists();
+    }
+
+    /**
+     * The status the component takes on while maintenance is in progress.
+     *
+     * Each window says what its components should look like while it runs, and
+     * the most severe of any overlapping windows wins. Null when no window is
+     * in progress, in which case the baseline stands.
+     */
+    protected function activeMaintenanceImpact(): ?ComponentStatusEnum
+    {
+        $schedules = $this->relationLoaded('activeMaintenance')
+            ? $this->activeMaintenance
+            : $this->activeMaintenance()->get();
+
+        if ($schedules->isEmpty()) {
+            return null;
+        }
+
+        return $schedules
+            ->map(fn (Schedule $schedule) => $schedule->pivot->component_status)
+            ->filter()
+            ->sortByDesc(fn (ComponentStatusEnum $status) => $status->severity())
+            ->first() ?? ComponentStatusEnum::under_maintenance;
     }
 
     /**

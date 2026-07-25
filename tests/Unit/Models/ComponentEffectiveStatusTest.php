@@ -81,6 +81,34 @@ it('replaces the baseline while maintenance is in progress', function () {
     expect($component->fresh()->latest_status)->toBe(ComponentStatusEnum::under_maintenance);
 });
 
+it('uses the status the maintenance window asked for', function () {
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+
+    $schedule = Schedule::factory()->create([
+        'scheduled_at' => now()->subHour(),
+        'completed_at' => now()->addHour(),
+    ]);
+
+    $schedule->components()->attach($component->id, [
+        'component_status' => ComponentStatusEnum::performance_issues,
+    ]);
+
+    expect($component->fresh()->latest_status)->toBe(ComponentStatusEnum::performance_issues);
+});
+
+it('takes the most severe status across overlapping maintenance windows', function () {
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+
+    foreach ([ComponentStatusEnum::performance_issues, ComponentStatusEnum::partial_outage] as $status) {
+        Schedule::factory()
+            ->create(['scheduled_at' => now()->subHour(), 'completed_at' => now()->addHour()])
+            ->components()
+            ->attach($component->id, ['component_status' => $status]);
+    }
+
+    expect($component->fresh()->latest_status)->toBe(ComponentStatusEnum::partial_outage);
+});
+
 it('still surfaces an incident raised during maintenance', function () {
     $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
 
