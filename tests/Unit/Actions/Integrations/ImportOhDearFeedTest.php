@@ -7,7 +7,7 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 
 it('can import an Oh Dear feed', function () {
-    $importOhDearFeed = new ImportOhDearFeed;
+    $importOhDearFeed = app(ImportOhDearFeed::class);
 
     $data = json_decode(file_get_contents(__DIR__.'/../../../stubs/ohdear-feed-php.json'), true);
 
@@ -29,7 +29,7 @@ it('can import an Oh Dear feed', function () {
 });
 
 it('reguards models after importing incidents', function () {
-    $importOhDearFeed = new ImportOhDearFeed;
+    $importOhDearFeed = app(ImportOhDearFeed::class);
 
     $data = json_decode(file_get_contents(__DIR__.'/../../../stubs/ohdear-feed-php.json'), true);
 

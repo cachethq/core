@@ -66,9 +66,9 @@ class CheckComponent implements ShouldQueue
             'checked_at' => $checkedAt,
         ]);
 
-        $this->component->update(['checked_at' => $checkedAt]);
-
         if ($this->component->isUnderMaintenance()) {
+            $this->component->update(['checked_at' => $checkedAt]);
+
             return;
         }
 
@@ -76,6 +76,7 @@ class CheckComponent implements ShouldQueue
             $this->component,
             $result->status,
             ComponentStatusSourceEnum::Monitor,
+            attributes: ['checked_at' => $checkedAt],
         );
     }
 }

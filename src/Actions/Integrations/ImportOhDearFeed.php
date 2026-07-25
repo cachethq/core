@@ -12,6 +12,11 @@ use Illuminate\Support\Carbon;
 
 class ImportOhDearFeed
 {
+    public function __construct(private ChangeComponentStatus $changeComponentStatus)
+    {
+        //
+    }
+
     /**
      * Import an OhDear feed.
      */
@@ -33,20 +38,22 @@ class ImportOhDearFeed
     {
         foreach ($sites as $site) {
             $status = $site['status'] === 'up' ? ComponentStatusEnum::operational : ComponentStatusEnum::partial_outage;
+            $attributes = ['name' => $site['label'], 'component_group_id' => $componentGroupId];
 
-            $component = Component::updateOrCreate(
-                ['link' => $site['url']],
-                [
-                    'name' => $site['label'],
-                    'component_group_id' => $componentGroupId,
-                ]
-            );
+            $component = Component::firstOrNew(['link' => $site['url']]);
 
-            app(ChangeComponentStatus::class)->handle(
+            if (! $component->exists) {
+                $component->fill([...$attributes, 'status' => $status])->save();
+
+                continue;
+            }
+
+            $this->changeComponentStatus->handle(
                 $component,
                 $status,
                 ComponentStatusSourceEnum::Import,
                 reason: ExternalProviderEnum::OhDear->value,
+                attributes: $attributes,
             );
         }
     }

@@ -92,6 +92,7 @@ class ComponentController extends Controller
         $visibleGroups = ComponentGroup::query()->visible($this->isAuthenticated())->select('id');
 
         return Component::query()
+            ->with(['unresolvedIncidents', 'activeMaintenance'])
             ->unless($this->isAuthenticated(), fn (Builder $query) => $query->enabled())
             ->where(function ($query) use ($visibleGroups): void {
                 $query->whereNull('component_group_id')

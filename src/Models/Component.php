@@ -265,18 +265,24 @@ class Component extends Model implements Metable
     /**
      * Get the incident responsible for the component's effective status, if any.
      *
-     * The most severe impact wins and the most recent breaks a tie, so the
-     * status badge always links to the incident it is actually reporting.
+     * The most severe impact wins and the most recent breaks a tie. Null when
+     * no incident is responsible — the baseline or a maintenance window may
+     * outrank every impact — so the badge never links to an incident that
+     * contradicts the status it is displaying.
      */
     public function impactingIncident(): Attribute
     {
-        return Attribute::get(fn (): ?Incident => $this->activeIncidents()
-            ->filter(fn (Incident $incident) => $incident->pivot->component_status !== null)
-            ->sortByDesc(fn (Incident $incident) => [
-                $incident->pivot->component_status->severity(),
-                $incident->created_at,
-            ])
-            ->first())->shouldCache();
+        return Attribute::get(function (): ?Incident {
+            $incident = $this->activeIncidents()
+                ->filter(fn (Incident $incident) => $incident->pivot->component_status !== null)
+                ->sortByDesc(fn (Incident $incident) => [
+                    $incident->pivot->component_status->severity(),
+                    $incident->created_at,
+                ])
+                ->first();
+
+            return $incident?->pivot->component_status === $this->latest_status ? $incident : null;
+        })->shouldCache();
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Cachet\Actions\Schedule;
 use Cachet\Data\Requests\Schedule\CreateScheduleRequestData;
 use Cachet\Data\Requests\Schedule\ScheduleComponentRequestData;
 use Cachet\Models\Schedule;
+use Illuminate\Support\Facades\DB;
 
 class CreateSchedule
 {
@@ -19,19 +20,24 @@ class CreateSchedule
     public function handle(CreateScheduleRequestData $data): Schedule
     {
         /** @phpstan-ignore-next-line argument.type */
-        return tap(Schedule::create($data->except('components', 'meta')->toArray()), function (Schedule $schedule) use ($data) {
-            if ($data->components) {
-                $components = collect($data->components)->map(fn (ScheduleComponentRequestData $component) => [
-                    'component_id' => $component->id,
-                    'component_status' => $component->status,
-                ])->all();
+        $schedule = DB::transaction(function () use ($data): Schedule {
+            return tap(Schedule::create($data->except('components', 'meta')->toArray()), function (Schedule $schedule) use ($data) {
+                if ($data->components) {
+                    $components = collect($data->components)
+                        ->mapWithKeys(fn (ScheduleComponentRequestData $component) => [
+                            $component->id => ['component_status' => $component->status],
+                        ])
+                        ->all();
 
-                $schedule->components()->sync($components);
-            }
+                    $schedule->components()->sync($components);
+                }
 
-            $schedule->syncMeta($data->meta ?? []);
-
-            $this->notifyScheduleSubscribers->handle($schedule);
+                $schedule->syncMeta($data->meta ?? []);
+            });
         });
+
+        $this->notifyScheduleSubscribers->handle($schedule);
+
+        return $schedule;
     }
 }

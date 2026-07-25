@@ -21,19 +21,22 @@ class UpdateComponent
     public function handle(Component $component, UpdateComponentRequestData $data, ?Authenticatable $user = null): Component
     {
         DB::transaction(function () use ($component, $data, $user): void {
-            $component->update($data->except('meta', 'status')->toArray());
+            $attributes = $data->except('meta', 'status')->toArray();
 
-            if ($data->meta !== null) {
-                $component->syncMeta($data->meta);
-            }
-
-            if ($data->status !== null) {
+            if ($data->status === null) {
+                $component->update($attributes);
+            } else {
                 $this->changeComponentStatus->handle(
                     $component,
                     $data->status,
                     ComponentStatusSourceEnum::Manual,
                     $user,
+                    attributes: $attributes,
                 );
+            }
+
+            if ($data->meta !== null) {
+                $component->syncMeta($data->meta);
             }
         });
 

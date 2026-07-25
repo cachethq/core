@@ -48,7 +48,7 @@ final class UpdateScheduleRequestData extends BaseData
              */
             'published_at' => ['nullable', 'date'],
             'components' => ['array'],
-            'components.*.id' => ['required', 'int', 'exists:components,id'],
+            'components.*.id' => ['required', 'int', 'distinct', 'exists:components,id'],
             'components.*.status' => ['required', Rule::enum(ComponentStatusEnum::class)],
             /**
              * Key/value metadata to store against the resource.

@@ -8,7 +8,7 @@ use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Settings\AppSettings;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 
 class Status
 {
@@ -79,12 +79,7 @@ class Status
      */
     public function components(): object
     {
-        return $this->components ??= $this->countByEffectiveStatus(
-            Component::query()
-                ->where('enabled', true)
-                ->with(['unresolvedIncidents', 'activeMaintenance'])
-                ->get()
-        );
+        return $this->components ??= $this->tally();
     }
 
     /**
@@ -104,22 +99,49 @@ class Status
     }
 
     /**
-     * Tally the given components by their effective status.
+     * Tally the enabled components by their effective status.
      *
-     * @param  Collection<int, Component>  $components
+     * The database counts the baseline, which is all that most components have.
+     * Only those actually carrying an impact — an unresolved incident or a
+     * maintenance window in progress — are loaded, and each is moved out of its
+     * baseline bucket and into its effective one.
+     *
      * @return object{total: int, operational: int, performance_issues: int, partial_outage: int, major_outage: int, under_maintenance: int}
      */
-    private function countByEffectiveStatus(Collection $components): object
+    private function tally(): object
     {
-        $statuses = $components->map(fn (Component $component) => $component->latest_status);
+        $counts = Component::query()
+            ->enabled()
+            ->toBase()
+            ->selectRaw('status, count(*) as aggregate')
+            ->groupBy('status')
+            ->pluck('aggregate', 'status');
 
-        return (object) [
-            'total' => $components->count(),
-            'operational' => $statuses->filter(fn (ComponentStatusEnum $status) => $status === ComponentStatusEnum::operational)->count(),
-            'performance_issues' => $statuses->filter(fn (ComponentStatusEnum $status) => $status === ComponentStatusEnum::performance_issues)->count(),
-            'partial_outage' => $statuses->filter(fn (ComponentStatusEnum $status) => $status === ComponentStatusEnum::partial_outage)->count(),
-            'major_outage' => $statuses->filter(fn (ComponentStatusEnum $status) => $status === ComponentStatusEnum::major_outage)->count(),
-            'under_maintenance' => $statuses->filter(fn (ComponentStatusEnum $status) => $status === ComponentStatusEnum::under_maintenance)->count(),
-        ];
+        $tally = collect(ComponentStatusEnum::cases())
+            ->mapWithKeys(fn (ComponentStatusEnum $status) => [
+                $status->name => (int) $counts->get($status->value, 0),
+            ]);
+
+        $total = $tally->sum();
+
+        Component::query()
+            ->enabled()
+            ->where(fn (Builder $query) => $query
+                ->whereHas('unresolvedIncidents')
+                ->orWhereHas('activeMaintenance'))
+            ->with(['unresolvedIncidents', 'activeMaintenance'])
+            ->each(function (Component $component) use (&$tally): void {
+                $baseline = $component->status ?? ComponentStatusEnum::unknown;
+                $effective = $component->latest_status;
+
+                if ($baseline === $effective) {
+                    return;
+                }
+
+                $tally[$baseline->name] = $tally[$baseline->name] - 1;
+                $tally[$effective->name] = $tally[$effective->name] + 1;
+            });
+
+        return (object) [...$tally->all(), 'total' => $total];
     }
 }

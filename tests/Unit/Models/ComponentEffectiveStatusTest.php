@@ -46,6 +46,29 @@ it('keeps the baseline when an impact is less severe than it', function () {
     expect($component->fresh()->latest_status)->toBe(ComponentStatusEnum::major_outage);
 });
 
+it('links to no incident when the baseline is what is being shown', function () {
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::major_outage]);
+
+    publicIncident(ComponentStatusEnum::performance_issues, $component);
+
+    expect($component->fresh()->impacting_incident)->toBeNull();
+});
+
+it('links to no incident when maintenance is what is being shown', function () {
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+
+    Schedule::factory()
+        ->create(['scheduled_at' => now()->subHour(), 'completed_at' => now()->addHour()])
+        ->components()
+        ->attach($component->id, ['component_status' => ComponentStatusEnum::major_outage]);
+
+    publicIncident(ComponentStatusEnum::performance_issues, $component);
+
+    expect($component->fresh())
+        ->latest_status->toBe(ComponentStatusEnum::major_outage)
+        ->impacting_incident->toBeNull();
+});
+
 it('ignores impacts from incidents that are embargoed or hidden', function (array $attributes) {
     $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
 

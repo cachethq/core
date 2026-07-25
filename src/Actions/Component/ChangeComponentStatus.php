@@ -22,6 +22,12 @@ class ChangeComponentStatus
      *
      * The status and its record are written together, and the event is only
      * announced once both have committed.
+     *
+     * Anything else the caller was going to save on the component is passed in
+     * as `$attributes` and written in the same statement, so a single edit is
+     * one write and one `ComponentUpdated` event rather than two.
+     *
+     * @param  array<string, mixed>  $attributes
      */
     public function handle(
         Component $component,
@@ -29,15 +35,17 @@ class ChangeComponentStatus
         ComponentStatusSourceEnum $source = ComponentStatusSourceEnum::Manual,
         Authenticatable|Model|null $causer = null,
         ?string $reason = null,
+        array $attributes = [],
     ): Component {
         $oldStatus = $component->getAttribute('status');
+        $changed = $oldStatus !== $status;
 
-        if ($oldStatus === $status) {
-            return $component;
-        }
+        DB::transaction(function () use ($component, $status, $source, $causer, $reason, $oldStatus, $changed, $attributes): void {
+            $component->update([...$attributes, 'status' => $status]);
 
-        DB::transaction(function () use ($component, $status, $source, $causer, $reason, $oldStatus): void {
-            $component->update(['status' => $status]);
+            if (! $changed) {
+                return;
+            }
 
             $component->statusChanges()->create([
                 'old_status' => $oldStatus,
@@ -49,7 +57,9 @@ class ChangeComponentStatus
             ]);
         });
 
-        ComponentStatusWasChanged::dispatch($component, $oldStatus, $status, $source);
+        if ($changed) {
+            ComponentStatusWasChanged::dispatch($component, $oldStatus, $status, $source);
+        }
 
         return $component;
     }

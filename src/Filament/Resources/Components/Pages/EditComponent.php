@@ -3,6 +3,7 @@
 namespace Cachet\Filament\Resources\Components\Pages;
 
 use Cachet\Actions\Component\ChangeComponentStatus;
+use Cachet\Cachet;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Filament\Concerns\InteractsWithMeta;
@@ -11,6 +12,7 @@ use Cachet\Models\Component;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 class EditComponent extends EditRecord
 {
@@ -42,22 +44,19 @@ class EditComponent extends EditRecord
      */
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $status = $data['status'] ?? null;
+        $status = Arr::pull($data, 'status');
 
-        unset($data['status']);
-
-        $record = parent::handleRecordUpdate($record, $data);
-
-        if ($status !== null && $record instanceof Component) {
-            app(ChangeComponentStatus::class)->handle(
-                $record,
-                $status instanceof ComponentStatusEnum ? $status : ComponentStatusEnum::from((int) $status),
-                ComponentStatusSourceEnum::Manual,
-                auth()->user(),
-            );
+        if ($status === null || ! $record instanceof Component) {
+            return parent::handleRecordUpdate($record, $data);
         }
 
-        return $record;
+        return app(ChangeComponentStatus::class)->handle(
+            $record,
+            $status instanceof ComponentStatusEnum ? $status : ComponentStatusEnum::from((int) $status),
+            ComponentStatusSourceEnum::Manual,
+            Cachet::user(),
+            attributes: $data,
+        );
     }
 
     protected function afterSave(): void
