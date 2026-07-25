@@ -95,15 +95,15 @@ class Metrics extends Component
             return $metrics;
         }
 
-        $metricIds = $metrics->modelKeys();
+        $metricIds = $metrics->map(fn (Metric $metric): int => $metric->id)->all();
 
         $raw = $this->rawTotals($metricIds, $rawSince);
-        $hourly = $this->hourlyTotals($metricIds, $hourlySince)
+        $hourly = MetricPoint::hourlyTotals($metricIds, $hourlySince)
             ?? $this->rawTotals($metricIds, $hourlySince);
 
         return $metrics->each(fn (Metric $metric) => $metric->setAttribute('chart_points', [
-            'raw' => $this->chartPoints($metric, $raw->get($metric->getKey(), [])),
-            'hourly' => $this->chartPoints($metric, $hourly->get($metric->getKey(), [])),
+            'raw' => $this->chartPoints($metric, $raw[$metric->id] ?? []),
+            'hourly' => $this->chartPoints($metric, $hourly[$metric->id] ?? []),
         ]));
     }
 
@@ -127,61 +127,32 @@ class Metrics extends Component
     /**
      * Read the raw buckets for the given metrics, keyed by metric.
      *
-     * @param  list<int>  $metricIds
-     * @return Collection<int|string, list<array{at: Carbon, sum: float, counter: int}>>
+     * @param  array<int, int>  $metricIds
+     * @return array<int, list<array{at: Carbon, sum: float, counter: int}>>
      */
-    private function rawTotals(array $metricIds, Carbon $since): Collection
+    private function rawTotals(array $metricIds, Carbon $since): array
     {
-        return MetricPoint::query()
+        $points = MetricPoint::query()
             ->whereIn('metric_id', $metricIds)
             ->where('created_at', '>=', $since)
             ->orderBy('created_at')
-            ->get(['metric_id', 'created_at', 'sum_value', 'counter'])
-            ->groupBy(fn (MetricPoint $point): int => (int) $point->metric_id)
-            ->map(function (EloquentCollection $points): array {
-                $totals = [];
+            ->get(['metric_id', 'created_at', 'sum_value', 'counter']);
 
-                foreach ($points as $point) {
-                    if (! ($at = $point->created_at) instanceof Carbon) {
-                        continue;
-                    }
+        $totals = [];
 
-                    $totals[] = [
-                        'at' => $at,
-                        'sum' => (float) $point->sum_value,
-                        'counter' => (int) $point->counter,
-                    ];
-                }
+        foreach ($points as $point) {
+            if (! ($at = $point->created_at) instanceof Carbon) {
+                continue;
+            }
 
-                return $totals;
-            });
-    }
+            $totals[(int) $point->metric_id][] = [
+                'at' => $at,
+                'sum' => (float) $point->sum_value,
+                'counter' => (int) $point->counter,
+            ];
+        }
 
-    /**
-     * Roll the given metrics' buckets up into hourly totals, keyed by metric.
-     *
-     * Returns null when the database cannot do the rollup, leaving the caller
-     * to fall back to raw buckets.
-     *
-     * @param  list<int>  $metricIds
-     * @return ?Collection<int, list<array{at: Carbon, sum: float, counter: int}>>
-     */
-    private function hourlyTotals(array $metricIds, Carbon $since): ?Collection
-    {
-        return MetricPoint::hourlyTotals($metricIds, $since)
-            ?->map(function (Collection $rows): array {
-                $totals = [];
-
-                foreach ($rows as $row) {
-                    $totals[] = [
-                        'at' => Carbon::parse($row->bucket),
-                        'sum' => (float) $row->sum_value,
-                        'counter' => (int) $row->counter,
-                    ];
-                }
-
-                return $totals;
-            });
+        return $totals;
     }
 
     /**

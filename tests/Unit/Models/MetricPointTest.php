@@ -36,14 +36,15 @@ it('rolls points up into hourly totals', function () {
 
     $totals = MetricPoint::hourlyTotals([$metric->id], Carbon::parse('2026-07-25 00:00:00'));
 
-    expect($totals->get($metric->id))->toHaveCount(2);
+    expect($totals[$metric->id])->toHaveCount(2);
 
-    [$noon, $onePm] = $totals->get($metric->id)->all();
+    [$noon, $onePm] = $totals[$metric->id];
 
-    expect((float) $noon->sum_value)->toBe(6.0)
-        ->and((int) $noon->counter)->toBe(2)
-        ->and((float) $onePm->sum_value)->toBe(9.0)
-        ->and((int) $onePm->counter)->toBe(1);
+    expect($noon['at']->toDateTimeString())->toBe('2026-07-25 12:00:00')
+        ->and($noon['sum'])->toBe(6.0)
+        ->and($noon['counter'])->toBe(2)
+        ->and($onePm['sum'])->toBe(9.0)
+        ->and($onePm['counter'])->toBe(1);
 });
 
 it('keeps hourly totals of different metrics apart', function () {
@@ -55,8 +56,8 @@ it('keeps hourly totals of different metrics apart', function () {
 
     $totals = MetricPoint::hourlyTotals([$first->id, $second->id], Carbon::parse('2026-07-25 00:00:00'));
 
-    expect((float) $totals->get($first->id)->first()->sum_value)->toBe(1.0)
-        ->and((float) $totals->get($second->id)->first()->sum_value)->toBe(5.0);
+    expect($totals[$first->id][0]['sum'])->toBe(1.0)
+        ->and($totals[$second->id][0]['sum'])->toBe(5.0);
 });
 
 it('prunes points past the retention window', function () {

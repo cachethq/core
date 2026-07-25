@@ -17,7 +17,6 @@ use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
 /**
  * A bucket of observations recorded against a metric.
@@ -84,13 +83,13 @@ class MetricPoint extends Model
      * inline megabytes of JSON. Returns null when the connection's driver
      * has no hour expression, leaving the caller to read raw points.
      *
-     * @param  list<int>  $metricIds
-     * @return ?Collection<int, Collection<int, object>>
+     * @param  array<int, int>  $metricIds
+     * @return ?array<int, list<array{at: Carbon, sum: float, counter: int}>>
      */
-    public static function hourlyTotals(array $metricIds, DateTimeInterface $since): ?Collection
+    public static function hourlyTotals(array $metricIds, DateTimeInterface $since): ?array
     {
         if ($metricIds === []) {
-            return new Collection;
+            return [];
         }
 
         $instance = new self;
@@ -102,8 +101,7 @@ class MetricPoint extends Model
 
         $grammar = $connection->getQueryGrammar();
 
-        /** @var Collection<int, Collection<int, object>> $totals */
-        $totals = $connection->table($instance->getTable())
+        $rows = $connection->table($instance->getTable())
             ->selectRaw(sprintf(
                 '%s as metric_id, %s as bucket, sum(%s) as sum_value, sum(%s) as counter',
                 $grammar->wrap('metric_id'),
@@ -115,8 +113,17 @@ class MetricPoint extends Model
             ->where('created_at', '>=', $since)
             ->groupByRaw(sprintf('%s, %s', $grammar->wrap('metric_id'), $hour))
             ->orderByRaw($hour)
-            ->get()
-            ->groupBy(fn (object $row): int => (int) $row->metric_id);
+            ->get();
+
+        $totals = [];
+
+        foreach ($rows as $row) {
+            $totals[(int) $row->metric_id][] = [
+                'at' => Carbon::parse($row->bucket),
+                'sum' => (float) $row->sum_value,
+                'counter' => (int) $row->counter,
+            ];
+        }
 
         return $totals;
     }
