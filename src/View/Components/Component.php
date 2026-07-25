@@ -25,7 +25,7 @@ class Component extends ViewComponent
     public function render(): View|Closure|string
     {
         return view('cachet::components.component', [
-            'status' => $this->component->status,
+            'status' => $this->component->latest_status,
         ]);
     }
 }

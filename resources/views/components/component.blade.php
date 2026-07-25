@@ -35,12 +35,12 @@
                  @focusout="tooltipOpen = false"
                  class="relative shrink-0">
                 <div x-ref="badgeAnchor">
-                    @if ($component->incidents_count > 0 && $component->latest_unresolved_incident)
-                        <a href="{{ route('cachet.status-page.incident', [$component->latest_unresolved_incident]) }}" class="inline-flex text-sm font-medium {{ $component->latest_status->getTextColorClasses() }}">
+                    @if ($component->impacting_incident)
+                        <a href="{{ route('cachet.status-page.incident', [$component->impacting_incident]) }}" class="inline-flex text-sm font-medium {{ $component->latest_status->getTextColorClasses() }}">
                             {{ $component->latest_status->getLabel() }}
                         </a>
                     @else
-                        <span class="text-sm font-medium {{ $status->getTextColorClasses() }}">{{ $status->getLabel() }}</span>
+                        <span class="text-sm font-medium {{ $component->latest_status->getTextColorClasses() }}">{{ $component->latest_status->getLabel() }}</span>
                     @endif
                 </div>
 

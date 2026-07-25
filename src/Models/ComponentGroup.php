@@ -99,9 +99,7 @@ class ComponentGroup extends Model implements Metable
     public function worstComponentStatus(): ComponentStatusEnum
     {
         return $this->components
-            ->map(fn (Component $component) => ($component->incidents_count ?? 0) > 0
-                ? $component->latest_status
-                : $component->status)
+            ->map(fn (Component $component) => $component->latest_status)
             ->sortByDesc(fn (ComponentStatusEnum $status) => $status->severity())
             ->first() ?? ComponentStatusEnum::operational;
     }
@@ -114,6 +112,7 @@ class ComponentGroup extends Model implements Metable
 
         return Incident::query()
             ->unresolved()
+            ->viewableBy(auth()->check())
             ->whereHas('components', fn ($query) => $query->whereIn('components.id', $this->components->pluck('id')))
             ->exists();
     }

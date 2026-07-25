@@ -118,7 +118,7 @@ class Schedule extends Model implements Metable
                 $now = Carbon::now();
 
                 return match (true) {
-                    $this->scheduled_at->gte($now) => ScheduleStatusEnum::upcoming,
+                    $this->scheduled_at?->gt($now) === true => ScheduleStatusEnum::upcoming,
                     $this->completed_at === null,
                     $this->completed_at->gte($now) => ScheduleStatusEnum::in_progress,
                     default => ScheduleStatusEnum::complete,

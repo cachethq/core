@@ -2,11 +2,10 @@
 
 namespace Cachet\Actions\Update;
 
+use Cachet\Actions\Incident\SyncIncidentStatus;
 use Cachet\Actions\Schedule\NotifyScheduleCompletedSubscribers;
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
-use Cachet\Enums\ComponentStatusEnum;
-use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
@@ -18,6 +17,7 @@ class CreateUpdate
         private NotifyIncidentUpdateSubscribers $notifyIncidentUpdateSubscribers,
         private NotifyScheduleUpdateSubscribers $notifyScheduleUpdateSubscribers,
         private NotifyScheduleCompletedSubscribers $notifyScheduleCompletedSubscribers,
+        private SyncIncidentStatus $syncIncidentStatus,
     ) {
         //
     }
@@ -31,9 +31,8 @@ class CreateUpdate
 
         $resource->updates()->save($update);
 
-        if ($resource instanceof Incident && $data->status === IncidentStatusEnum::fixed) {
-            $resource->update(['status' => IncidentStatusEnum::fixed]);
-            $this->updateComponentsToOperational($resource);
+        if ($resource instanceof Incident) {
+            $this->syncIncidentStatus->handle($resource);
         }
 
         $this->notifyIncidentUpdateSubscribers->handle($update);
@@ -72,17 +71,5 @@ class CreateUpdate
         }
 
         return false;
-    }
-
-    /**
-     * Set all linked components back to operational when an incident is fixed.
-     */
-    private function updateComponentsToOperational(Incident $incident): void
-    {
-        $incident->components()->each(function ($component) use ($incident) {
-            $incident->components()->updateExistingPivot($component->id, [
-                'component_status' => ComponentStatusEnum::operational,
-            ]);
-        });
     }
 }

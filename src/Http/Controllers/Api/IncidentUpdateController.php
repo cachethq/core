@@ -83,12 +83,18 @@ class IncidentUpdateController extends Controller
     }
 
     /**
-     * Abort with a 404 when the parent incident is not visible to the caller.
+     * Abort with a 404 when the parent incident is not readable by the caller.
+     *
+     * An embargoed incident must not leak its updates either, so publication is
+     * checked here on exactly the same terms as the incident endpoints.
      */
     protected function ensureIncidentVisible(Incident $incident): void
     {
         abort_unless(
-            Incident::query()->visible($this->isAuthenticated())->whereKey($incident->getKey())->exists(),
+            Incident::query()
+                ->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage'))
+                ->whereKey($incident->getKey())
+                ->exists(),
             Response::HTTP_NOT_FOUND,
         );
     }

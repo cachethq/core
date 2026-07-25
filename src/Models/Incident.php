@@ -181,7 +181,41 @@ class Incident extends Model implements Metable
      */
     public function scopeUnresolved(Builder $query): void
     {
-        $query->whereIn('status', IncidentStatusEnum::unresolved());
+        $query->whereIn($this->qualifyColumn('status'), IncidentStatusEnum::unresolved());
+    }
+
+    /**
+     * Scope to the incidents a given viewer is allowed to see.
+     *
+     * Publication (when it may be seen) and visibility (who may see it) are
+     * orthogonal, and this is the single place both are decided. Every read
+     * surface — the API, MCP, RSS, the status page and the system status —
+     * goes through it so none can forget one of the two.
+     */
+    public function scopeViewableBy(Builder $query, bool $authenticated, bool $includeUnpublished = false): void
+    {
+        $query->visible($authenticated)
+            ->unless($includeUnpublished, fn (Builder $query) => $query->published());
+    }
+
+    /**
+     * Determine whether a given viewer is allowed to see this incident.
+     *
+     * The visibility attribute is read through `getAttribute()` because Eloquent
+     * itself declares a `$visible` property for serialisation, which would
+     * otherwise shadow the column when read from inside the model.
+     */
+    public function isViewableBy(bool $authenticated, bool $includeUnpublished = false): bool
+    {
+        $permitted = $authenticated
+            ? ResourceVisibilityEnum::visibleToUsers()
+            : ResourceVisibilityEnum::visibleToGuests();
+
+        if (! in_array($this->getAttribute('visible'), $permitted, true)) {
+            return false;
+        }
+
+        return $includeUnpublished || $this->isPublished();
     }
 
     /**
@@ -218,18 +252,17 @@ class Incident extends Model implements Metable
     }
 
     /**
-     * Determine the latest status of the incident.
+     * The incident's status.
+     *
+     * Retained for backwards compatibility: the status column is canonical and
+     * is kept in step with the latest status-bearing update at write time, so
+     * this is simply an alias for it.
      *
      * @return Attribute<IncidentStatusEnum|null, never>
      */
     protected function latestStatus(): Attribute
     {
-        return Attribute::make(
-            get: fn () => $this->updates
-                ->sortByDesc(fn (Update $update) => [$update->created_at, $update->id])
-                ->first()
-                ->status ?? $this->status
-        );
+        return Attribute::make(get: fn (): ?IncidentStatusEnum => $this->status);
     }
 
     /**
