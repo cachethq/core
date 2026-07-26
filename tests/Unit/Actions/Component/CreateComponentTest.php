@@ -20,7 +20,8 @@ it('can create a component', function () {
 
     expect($component)
         ->name->toBe($data->name)
-        ->description->toBe($data->description);
+        ->description->toBe($data->description)
+        ->status->toBe(ComponentStatusEnum::unknown);
 
     Event::assertDispatched(ComponentCreated::class, fn ($event) => $event->component->is($component));
 });

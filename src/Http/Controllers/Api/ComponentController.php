@@ -72,7 +72,7 @@ class ComponentController extends Controller
             'group',
             AllowedInclude::callback('incidents', function (BelongsToMany $query): void {
                 /** @var BelongsToMany<Incident, Component> $query */
-                $query->visible($this->isAuthenticated());
+                $query->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage'));
             }),
             'meta',
         ];

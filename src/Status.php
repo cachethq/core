@@ -131,7 +131,7 @@ class Status
                 ->orWhereHas('activeMaintenance'))
             ->with(['unresolvedIncidents', 'activeMaintenance'])
             ->each(function (Component $component) use (&$tally): void {
-                $baseline = $component->status ?? ComponentStatusEnum::unknown;
+                $baseline = $component->status;
                 $effective = $component->latest_status;
 
                 if ($baseline === $effective) {

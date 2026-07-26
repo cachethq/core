@@ -30,7 +30,7 @@ use Illuminate\Support\Collection as SupportCollection;
  * @property string $name
  * @property ?string $description
  * @property ?string $link
- * @property ?ComponentStatusEnum $status
+ * @property ComponentStatusEnum $status
  * @property ComponentStatusEnum $latest_status
  * @property-read ?Incident $latest_unresolved_incident
  * @property-read ?Incident $impacting_incident
@@ -252,8 +252,7 @@ class Component extends Model implements Metable
     {
         return Attribute::get(function (): ComponentStatusEnum {
             $baseline = $this->activeMaintenanceImpact()
-                ?? $this->status
-                ?? ComponentStatusEnum::unknown;
+                ?? $this->status;
 
             return $this->activeIncidentImpacts()
                 ->push($baseline)
