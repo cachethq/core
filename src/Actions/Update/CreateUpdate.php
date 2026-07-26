@@ -2,15 +2,16 @@
 
 namespace Cachet\Actions\Update;
 
+use Cachet\Actions\Incident\SyncIncidentStatus;
 use Cachet\Actions\Schedule\NotifyScheduleCompletedSubscribers;
 use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
-use Cachet\Enums\ComponentStatusEnum;
-use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class CreateUpdate
 {
@@ -18,6 +19,7 @@ class CreateUpdate
         private NotifyIncidentUpdateSubscribers $notifyIncidentUpdateSubscribers,
         private NotifyScheduleUpdateSubscribers $notifyScheduleUpdateSubscribers,
         private NotifyScheduleCompletedSubscribers $notifyScheduleCompletedSubscribers,
+        private SyncIncidentStatus $syncIncidentStatus,
     ) {
         //
     }
@@ -25,16 +27,20 @@ class CreateUpdate
     /**
      * Handle the action.
      */
-    public function handle(Incident|Schedule $resource, CreateIncidentUpdateRequestData|CreateScheduleUpdateRequestData $data): Update
+    public function handle(Incident|Schedule $resource, CreateIncidentUpdateRequestData|CreateScheduleUpdateRequestData $data, ?Authenticatable $user = null): Update
     {
-        $update = new Update(array_merge(['user_id' => auth()->id()], $data->except('completedAt')->toArray()));
+        $update = new Update(array_merge(
+            ['user_id' => $user?->getAuthIdentifier()],
+            $data->except('completedAt')->toArray()
+        ));
 
-        $resource->updates()->save($update);
+        DB::transaction(function () use ($resource, $update): void {
+            $resource->updates()->save($update);
 
-        if ($resource instanceof Incident && $data->status === IncidentStatusEnum::fixed) {
-            $resource->update(['status' => IncidentStatusEnum::fixed]);
-            $this->updateComponentsToOperational($resource);
-        }
+            if ($resource instanceof Incident) {
+                $this->syncIncidentStatus->handle($resource);
+            }
+        });
 
         $this->notifyIncidentUpdateSubscribers->handle($update);
 
@@ -72,17 +78,5 @@ class CreateUpdate
         }
 
         return false;
-    }
-
-    /**
-     * Set all linked components back to operational when an incident is fixed.
-     */
-    private function updateComponentsToOperational(Incident $incident): void
-    {
-        $incident->components()->each(function ($component) use ($incident) {
-            $incident->components()->updateExistingPivot($component->id, [
-                'component_status' => ComponentStatusEnum::operational,
-            ]);
-        });
     }
 }

@@ -102,6 +102,8 @@ it('keeps unpublished incidents out of the timeline', function () {
 });
 
 it('exposes unpublished incidents to the mcp server for dashboard management', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
     Incident::factory()->create(['name' => 'Published now']);
     Incident::factory()->scheduled()->create(['name' => 'Prescheduled']);
 
@@ -111,9 +113,23 @@ it('exposes unpublished incidents to the mcp server for dashboard management', f
 });
 
 it('exposes a single unpublished incident to the mcp server', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
     $incident = Incident::factory()->scheduled()->create(['name' => 'Prescheduled']);
 
     CachetServer::tool(GetIncident::class, ['id' => $incident->id])
         ->assertOk()
         ->assertSee('Prescheduled');
+});
+
+it('hides unpublished incidents from an mcp caller that cannot manage incidents', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.read']);
+
+    Incident::factory()->create(['name' => 'Published now']);
+    Incident::factory()->scheduled()->create(['name' => 'Prescheduled']);
+
+    CachetServer::tool(ListIncidents::class)
+        ->assertOk()
+        ->assertStructuredContent(fn (AssertableJson $json) => $json->has('data', 1)->etc())
+        ->assertDontSee('Prescheduled');
 });

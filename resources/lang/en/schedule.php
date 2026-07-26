@@ -42,6 +42,7 @@ return [
             'action_label' => 'Add component',
             'header' => 'Affected components',
             'component_label' => 'Component',
+            'status_label' => 'Status during maintenance',
         ],
     ],
     'add_update' => [

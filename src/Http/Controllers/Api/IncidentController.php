@@ -64,8 +64,8 @@ class IncidentController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $incidents = QueryBuilder::for(Incident::query()->with('updates')->visible($this->isAuthenticated())
-            ->when(! $this->tokenCan('incidents.manage'), fn (Builder $query) => $query->published()))
+        $incidents = QueryBuilder::for(Incident::query()->with('updates')
+            ->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage')))
             ->allowedIncludes($this->allowedIncludes())
             ->allowedFilters([
                 'name',

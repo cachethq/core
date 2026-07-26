@@ -11,6 +11,7 @@ use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
+use Cachet\QueryBuilders\ScheduleBuilder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -22,15 +23,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection as SupportCollection;
 
 /**
  * @property int $id
  * @property string $name
  * @property ?string $description
  * @property ?string $link
- * @property ?ComponentStatusEnum $status
+ * @property ComponentStatusEnum $status
  * @property ComponentStatusEnum $latest_status
  * @property-read ?Incident $latest_unresolved_incident
+ * @property-read ?Incident $impacting_incident
  * @property ?int $order
  * @property ?int $component_group_id
  * @property ?bool $checked
@@ -116,23 +119,44 @@ class Component extends Model implements Metable
     }
 
     /**
-     * Get the unresolved incidents for the component, newest first.
+     * Get the unresolved incidents publicly affecting the component, newest first.
+     *
+     * Embargoed and non-public incidents are excluded: an incident that nobody
+     * can read must not change what the status page shows.
      *
      * @return BelongsToMany<Incident, $this, IncidentComponent>
      */
     public function unresolvedIncidents(): BelongsToMany
     {
-        return $this->incidents()->unresolved()->latest();
+        return $this->incidents()->unresolved()->viewableBy(false)->latest();
+    }
+
+    /**
+     * Get the published maintenance windows currently in progress for the component.
+     *
+     * @return BelongsToMany<Schedule, $this, ScheduleComponent>
+     */
+    public function activeMaintenance(): BelongsToMany
+    {
+        $relation = $this->schedules()->published();
+
+        /** @var ScheduleBuilder $query */
+        $query = $relation->getQuery();
+
+        $query->inProgress();
+
+        return $relation;
     }
 
     /**
      * Get the schedules for the component.
      *
-     * @return BelongsToMany<Schedule, $this>
+     * @return BelongsToMany<Schedule, $this, ScheduleComponent>
      */
     public function schedules(): BelongsToMany
     {
         return $this->belongsToMany(Schedule::class, 'schedule_components')
+            ->using(ScheduleComponent::class)
             ->withTimestamps()
             ->withPivot('component_status');
     }
@@ -145,6 +169,16 @@ class Component extends Model implements Metable
     public function checks(): HasMany
     {
         return $this->hasMany(ComponentCheck::class);
+    }
+
+    /**
+     * Get the recorded changes to the component's baseline status.
+     *
+     * @return HasMany<ComponentStatusChange, $this>
+     */
+    public function statusChanges(): HasMany
+    {
+        return $this->hasMany(ComponentStatusChange::class);
     }
 
     /**
@@ -205,11 +239,112 @@ class Component extends Model implements Metable
     }
 
     /**
-     * Get the latest status for the component.
+     * Get the effective status for the component — what the status page shows.
+     *
+     * The `status` column is the baseline: what operators and monitoring assert
+     * about the component itself. Incidents and maintenance windows contribute
+     * impacts on top of it without ever writing to it, and the most severe of
+     * those wins. A maintenance window in progress replaces the baseline rather
+     * than competing with it, so expected downtime during the window does not
+     * surface as a real outage — an incident raised during it still does.
      */
     public function latestStatus(): Attribute
     {
-        return Attribute::get(fn () => $this->latest_unresolved_incident?->pivot->component_status ?? $this->status);
+        return Attribute::get(function (): ComponentStatusEnum {
+            $baseline = $this->activeMaintenanceImpact()
+                ?? $this->status;
+
+            return $this->activeIncidentImpacts()
+                ->push($baseline)
+                ->sortByDesc(fn (ComponentStatusEnum $status) => $status->severity())
+                ->first();
+        })->shouldCache();
+    }
+
+    /**
+     * Get the incident responsible for the component's effective status, if any.
+     *
+     * The most severe impact wins and the most recent breaks a tie. Null when
+     * no incident is responsible — the baseline or a maintenance window may
+     * outrank every impact — so the badge never links to an incident that
+     * contradicts the status it is displaying.
+     */
+    public function impactingIncident(): Attribute
+    {
+        return Attribute::get(function (): ?Incident {
+            $incident = $this->activeIncidents()
+                ->filter(fn (Incident $incident) => $incident->pivot->component_status !== null)
+                ->sortByDesc(fn (Incident $incident) => [
+                    $incident->pivot->component_status->severity(),
+                    $incident->created_at,
+                ])
+                ->first();
+
+            return $incident?->pivot->component_status === $this->latest_status ? $incident : null;
+        })->shouldCache();
+    }
+
+    /**
+     * Determine whether a published maintenance window is currently in progress.
+     */
+    public function isUnderMaintenance(): bool
+    {
+        if ($this->relationLoaded('activeMaintenance')) {
+            return $this->activeMaintenance->isNotEmpty();
+        }
+
+        return $this->activeMaintenance()->exists();
+    }
+
+    /**
+     * The status the component takes on while maintenance is in progress.
+     *
+     * Each window says what its components should look like while it runs, and
+     * the most severe of any overlapping windows wins. Null when no window is
+     * in progress, in which case the baseline stands.
+     */
+    protected function activeMaintenanceImpact(): ?ComponentStatusEnum
+    {
+        $schedules = $this->relationLoaded('activeMaintenance')
+            ? $this->activeMaintenance
+            : $this->activeMaintenance()->get();
+
+        if ($schedules->isEmpty()) {
+            return null;
+        }
+
+        return $schedules
+            ->map(fn (Schedule $schedule) => $schedule->pivot->component_status)
+            ->filter()
+            ->sortByDesc(fn (ComponentStatusEnum $status) => $status->severity())
+            ->first() ?? ComponentStatusEnum::under_maintenance;
+    }
+
+    /**
+     * The statuses imposed on this component by the incidents affecting it.
+     *
+     * @return SupportCollection<int, ComponentStatusEnum>
+     */
+    protected function activeIncidentImpacts(): SupportCollection
+    {
+        return $this->activeIncidents()
+            ->map(fn (Incident $incident) => $incident->pivot->component_status)
+            ->filter()
+            ->values();
+    }
+
+    /**
+     * The unresolved, publicly visible incidents affecting this component.
+     *
+     * Uses the eager-loaded relation when available to avoid a query per component.
+     *
+     * @return Collection<int, Incident>
+     */
+    protected function activeIncidents(): Collection
+    {
+        return $this->relationLoaded('unresolvedIncidents')
+            ? $this->unresolvedIncidents
+            : $this->unresolvedIncidents()->get();
     }
 
     /**
@@ -222,7 +357,7 @@ class Component extends Model implements Metable
             ResourceOrderColumnEnum::LastUpdated => $this->updated_at,
             ResourceOrderColumnEnum::Name => $this->name,
             ResourceOrderColumnEnum::Manual => $this->order,
-            default => $this->status->value,
+            default => $this->latest_status->severity(),
         };
     }
 

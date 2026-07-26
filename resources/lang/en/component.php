@@ -39,6 +39,12 @@ return [
         'under_maintenance' => 'Under maintenance',
         'unknown' => 'Unknown',
     ],
+    'status_source' => [
+        'manual' => 'Manual',
+        'monitor' => 'Monitoring',
+        'import' => 'Import',
+        'system' => 'System',
+    ],
     'overview' => [
         'operational_components_label' => 'Operational components',
         'operational_components_description' => 'Components that are fully operational.',

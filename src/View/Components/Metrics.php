@@ -80,7 +80,7 @@ class Metrics extends Component
             ])
             ->where('display_chart', true)
             ->where(fn (Builder $query) => $query->where('show_when_empty', true)->orWhereHas('metricPoints', fn (Builder $query) => $query->where('created_at', '>=', $startDate)))
-            ->orderBy('places')
+            ->orderBy('order')
             ->get();
     }
 }

@@ -2,8 +2,10 @@
 
 namespace Tests\Unit;
 
+use Cachet\Actions\Incident\SyncIncidentStatus;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
@@ -171,6 +173,7 @@ it('counts an incident with multiple updates once and resolves it by its latest 
 
     $incident = Incident::factory()->create([
         'status' => IncidentStatusEnum::investigating->value,
+        'visible' => ResourceVisibilityEnum::guest,
     ]);
     Update::factory()->forIncident($incident)->create([
         'status' => IncidentStatusEnum::identified->value,
@@ -178,6 +181,8 @@ it('counts an incident with multiple updates once and resolves it by its latest 
     Update::factory()->forIncident($incident)->create([
         'status' => IncidentStatusEnum::fixed->value,
     ]);
+
+    app(SyncIncidentStatus::class)->handle($incident);
 
     $incidents = (new Status)->incidents();
 

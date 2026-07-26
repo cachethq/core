@@ -122,3 +122,14 @@ protected function isAccessible(User $user, ?string $path = null): bool
 ## HTTP Requests
 
 - Never use the `request()` helper. Inject `Illuminate\Http\Request` into the controller method and read input from `$request` (e.g. `$request->integer('per_page', 15)`).
+
+## The Current User
+
+- Never call `auth()` inside a model or an action. Resolving the current user is the caller's job, and reaching for it deeper down couples domain code to an HTTP session it should know nothing about.
+- Models and actions that need a user accept one as a parameter, typed `?Authenticatable`.
+- Controllers, Filament pages, jobs, commands and views are the right places to resolve the user, using `Cachet::user()` where a request-bound guard is needed.
+
+## Transactions
+
+- Any action that writes more than once — a model plus its pivots, a change plus its audit record — wraps the writes in `DB::transaction()`, so a failure part-way through cannot leave orphaned or half-populated rows.
+- Events describing the completed change are dispatched after the transaction commits, never inside it.

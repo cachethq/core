@@ -70,7 +70,7 @@ final class CreateIncidentRequestData extends BaseData
             'component_id' => [Rule::exists('components', 'id')],
             'component_status' => ['nullable', Rule::enum(ComponentStatusEnum::class), 'required_with:component_id'],
             'components' => ['array'],
-            'components.*.id' => ['required', 'int', 'exists:components,id'],
+            'components.*.id' => ['required', 'int', 'distinct', 'exists:components,id'],
             'components.*.status' => ['required', 'int', Rule::enum(ComponentStatusEnum::class)],
             /**
              * Key/value metadata to store against the resource.

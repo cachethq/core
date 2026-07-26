@@ -3,6 +3,7 @@
 namespace Cachet\Mcp\Tools\Incidents;
 
 use Cachet\Concerns\ChecksApiAuthentication;
+use Cachet\Mcp\Concerns\GuardsMcpAbilities;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Cachet\Models\Incident;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
@@ -16,6 +17,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 class GetIncident extends Tool
 {
     use ChecksApiAuthentication;
+    use GuardsMcpAbilities;
     use PresentsResources;
 
     protected string $name = 'get_incident';
@@ -35,7 +37,7 @@ class GetIncident extends Tool
     public function handle(Request $request): Response|ResponseFactory
     {
         $incident = Incident::query()
-            ->visible($this->isAuthenticated())
+            ->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage'))
             ->with(['components', 'updates'])
             ->find($id = $request->integer('id'));
 

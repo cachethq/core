@@ -593,3 +593,21 @@ it('lists authenticated incidents to callers presenting a bearer token', functio
     $response->assertOk();
     $response->assertJsonCount(2, 'data');
 });
+
+it('rejects a duplicate component in the same incident', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $component = Component::factory()->create();
+
+    postJson('/status/api/incidents', [
+        'name' => 'Duplicated',
+        'message' => 'The same component twice.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'components' => [
+            ['id' => $component->id, 'status' => ComponentStatusEnum::major_outage->value],
+            ['id' => $component->id, 'status' => ComponentStatusEnum::partial_outage->value],
+        ],
+    ])->assertUnprocessable()->assertInvalid('components.1.id');
+
+    expect(Incident::query()->where('name', 'Duplicated')->exists())->toBeFalse();
+});

@@ -20,10 +20,11 @@ class UpdateSchedule
         }
 
         if ($data->components) {
-            $components = collect($data->components)->map(fn (ScheduleComponentRequestData $component) => [
-                'component_id' => $component->id,
-                'component_status' => $component->status,
-            ])->all();
+            $components = collect($data->components)
+                ->mapWithKeys(fn (ScheduleComponentRequestData $component) => [
+                    $component->id => ['component_status' => $component->status],
+                ])
+                ->all();
 
             $schedule->components()->sync($components);
         }

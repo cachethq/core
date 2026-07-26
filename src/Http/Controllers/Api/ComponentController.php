@@ -5,6 +5,7 @@ namespace Cachet\Http\Controllers\Api;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
+use Cachet\Cachet;
 use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Component\CreateComponentRequestData;
@@ -71,7 +72,7 @@ class ComponentController extends Controller
             'group',
             AllowedInclude::callback('incidents', function (BelongsToMany $query): void {
                 /** @var BelongsToMany<Incident, Component> $query */
-                $query->visible($this->isAuthenticated());
+                $query->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage'));
             }),
             'meta',
         ];
@@ -91,6 +92,7 @@ class ComponentController extends Controller
         $visibleGroups = ComponentGroup::query()->visible($this->isAuthenticated())->select('id');
 
         return Component::query()
+            ->with(['unresolvedIncidents', 'activeMaintenance'])
             ->unless($this->isAuthenticated(), fn (Builder $query) => $query->enabled())
             ->where(function ($query) use ($visibleGroups): void {
                 $query->whereNull('component_group_id')
@@ -130,11 +132,11 @@ class ComponentController extends Controller
     /**
      * Update Component
      */
-    public function update(UpdateComponentRequestData $data, Component $component, UpdateComponent $updateComponentAction)
+    public function update(Request $request, UpdateComponentRequestData $data, Component $component, UpdateComponent $updateComponentAction)
     {
         $this->guard('components.manage');
 
-        $updateComponentAction->handle($component, $data);
+        $updateComponentAction->handle($component, $data, Cachet::user($request));
 
         return ComponentResource::make($component->fresh());
     }

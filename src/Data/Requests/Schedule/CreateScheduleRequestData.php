@@ -50,7 +50,7 @@ final class CreateScheduleRequestData extends BaseData
             'published_at' => ['nullable', 'date'],
             'notifications' => ['boolean'],
             'components' => ['array'],
-            'components.*.id' => ['required', 'int', 'exists:components,id'],
+            'components.*.id' => ['required', 'int', 'distinct', 'exists:components,id'],
             'components.*.status' => ['required', 'int', Rule::enum(ComponentStatusEnum::class)],
             /**
              * Key/value metadata to store against the resource.

@@ -161,7 +161,7 @@ it('records an incident update', function () {
     expect($incident->updates()->count())->toBe(1);
 });
 
-it('resolves the incident and its components when recording a fixed update', function () {
+it('resolves the incident but keeps the impact it recorded when a fixed update lands', function () {
     Sanctum::actingAs(User::factory()->create(), ['incident-updates.manage']);
 
     $component = Component::factory()->create(['status' => ComponentStatusEnum::major_outage]);
@@ -175,7 +175,7 @@ it('resolves the incident and its components when recording a fixed update', fun
     ])->assertOk();
 
     expect($incident->fresh()->status)->toBe(IncidentStatusEnum::fixed)
-        ->and($incident->incidentComponents()->first()->component_status)->toBe(ComponentStatusEnum::operational);
+        ->and($incident->incidentComponents()->first()->component_status)->toBe(ComponentStatusEnum::major_outage);
 });
 
 it('edits an incident update', function () {
@@ -314,6 +314,7 @@ it('overlays the displayed component status while an incident is unresolved', fu
         'name' => 'API Outage',
         'status' => IncidentStatusEnum::identified->value,
         'message' => 'The API is down.',
+        'visible' => true,
         'components' => [
             ['id' => $component->id, 'status' => ComponentStatusEnum::major_outage->value],
         ],
@@ -324,6 +325,29 @@ it('overlays the displayed component status while an incident is unresolved', fu
         ->assertStructuredContent(fn (AssertableJson $json) => $json
             ->where('data.status.name', 'operational')
             ->where('data.latest_status.name', 'major_outage')
+            ->etc());
+});
+
+it('keeps an incident nobody can see out of the displayed component status', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+
+    CachetServer::tool(CreateIncident::class, [
+        'name' => 'Internal Outage',
+        'status' => IncidentStatusEnum::identified->value,
+        'message' => 'The API is down.',
+        'visible' => false,
+        'components' => [
+            ['id' => $component->id, 'status' => ComponentStatusEnum::major_outage->value],
+        ],
+    ])->assertOk();
+
+    CachetServer::tool(GetComponent::class, ['id' => $component->id])
+        ->assertOk()
+        ->assertStructuredContent(fn (AssertableJson $json) => $json
+            ->where('data.status.name', 'operational')
+            ->where('data.latest_status.name', 'operational')
             ->etc());
 });
 

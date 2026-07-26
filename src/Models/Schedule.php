@@ -38,6 +38,7 @@ use Illuminate\Support\Collection;
  * @property ?Carbon $deleted_at
  * @property Collection<int, Component> $components
  * @property Collection<int, Update> $updates
+ * @property-read ScheduleComponent|null $pivot
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Meta> $meta
  *
  * @method static ScheduleFactory factory($count = null, $state = [])
@@ -118,7 +119,7 @@ class Schedule extends Model implements Metable
                 $now = Carbon::now();
 
                 return match (true) {
-                    $this->scheduled_at->gte($now) => ScheduleStatusEnum::upcoming,
+                    $this->scheduled_at?->gt($now) === true => ScheduleStatusEnum::upcoming,
                     $this->completed_at === null,
                     $this->completed_at->gte($now) => ScheduleStatusEnum::in_progress,
                     default => ScheduleStatusEnum::complete,

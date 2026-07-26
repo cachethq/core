@@ -8,6 +8,7 @@ use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CreateIncident
@@ -30,23 +31,28 @@ class CreateIncident
             $data = $data->withMessage($this->parseTemplate($template, $data));
         }
 
-        return tap(Incident::create(array_merge(
-            ['guid' => Str::uuid()],
-            $data->except('components', 'meta')->toArray()
-        )), function (Incident $incident) use ($data) {
-            if ($data->components) {
-                $components = collect($data->components)->map(fn (IncidentComponentRequestData $component) => [
-                    'component_id' => $component->id,
-                    'component_status' => $component->status,
-                ])->all();
+        $incident = DB::transaction(function () use ($data): Incident {
+            return tap(Incident::create(array_merge(
+                ['guid' => Str::uuid()],
+                $data->except('components', 'meta')->toArray()
+            )), function (Incident $incident) use ($data) {
+                if ($data->components) {
+                    $components = collect($data->components)
+                        ->mapWithKeys(fn (IncidentComponentRequestData $component) => [
+                            $component->id => ['component_status' => $component->status],
+                        ])
+                        ->all();
 
-                $incident->components()->sync($components);
-            }
+                    $incident->components()->sync($components);
+                }
 
-            $incident->syncMeta($data->meta ?? []);
-
-            $this->notifyIncidentSubscribers->handle($incident);
+                $incident->syncMeta($data->meta ?? []);
+            });
         });
+
+        $this->notifyIncidentSubscribers->handle($incident);
+
+        return $incident;
     }
 
     /**

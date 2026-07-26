@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
@@ -596,6 +597,37 @@ it('does not include incidents hidden from guests on visible components', functi
     $response->assertJsonCount(1, 'included');
 });
 
+it('does not include incidents that are not yet published on visible components', function () {
+    $component = Component::factory()->enabled()->create();
+    $component->incidents()->attach(Incident::factory()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+    ]));
+    $component->incidents()->attach(Incident::factory()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+        'published_at' => now()->addHour(),
+    ]));
+
+    $response = getJson('/status/api/components/'.$component->id.'?include=incidents');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'included');
+});
+
+it('includes unpublished incidents on visible components for incident managers', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $component = Component::factory()->enabled()->create();
+    $component->incidents()->attach(Incident::factory()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+        'published_at' => now()->addHour(),
+    ]));
+
+    $response = getJson('/status/api/components/'.$component->id.'?include=incidents');
+
+    $response->assertOk();
+    $response->assertJsonCount(1, 'included');
+});
+
 it('lists components in authenticated groups to callers presenting a bearer token', function () {
     $user = User::factory()->create();
     $token = $user->createToken('api')->plainTextToken;
@@ -607,4 +639,22 @@ it('lists components in authenticated groups to callers presenting a bearer toke
 
     $response->assertOk();
     $response->assertJsonCount(1, 'data');
+});
+
+it('exposes the baseline status alongside the effective status', function () {
+    $component = Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::identified,
+        'visible' => ResourceVisibilityEnum::guest,
+    ]);
+
+    $incident->components()->attach($component->id, [
+        'component_status' => ComponentStatusEnum::major_outage,
+    ]);
+
+    getJson('/status/api/components/'.$component->id)
+        ->assertOk()
+        ->assertJsonPath('data.attributes.status.value', ComponentStatusEnum::operational->value)
+        ->assertJsonPath('data.attributes.latest_status.value', ComponentStatusEnum::major_outage->value);
 });

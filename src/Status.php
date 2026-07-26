@@ -8,8 +8,7 @@ use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Settings\AppSettings;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 
 class Status
 {
@@ -24,12 +23,12 @@ class Status
     {
         $components = $this->components();
 
-        if ($this->underMaintenance()) {
-            return SystemStatusEnum::under_maintenance;
-        }
-
         if ($this->majorOutage()) {
             return SystemStatusEnum::major_outage;
+        }
+
+        if ($this->underMaintenance()) {
+            return SystemStatusEnum::under_maintenance;
         }
 
         if ((int) $components->total - (int) $components->operational === 0) {
@@ -70,49 +69,79 @@ class Status
     }
 
     /**
-     * Get an overview of the components.
+     * Get an overview of the components, counted by their effective status.
      *
-     * @return object{total: int, operational: int, performance_issues: int, partial_outage: int, major_outage: int}
+     * Effective status is resolved per component so that incident impacts and
+     * maintenance windows reach the system status, rather than the banner
+     * disagreeing with the component list it sits above.
+     *
+     * @return object{total: int, operational: int, performance_issues: int, partial_outage: int, major_outage: int, under_maintenance: int}
      */
     public function components(): object
     {
-        return $this->components ??= Component::query()
-            ->toBase()
-            ->where('enabled', true)
-            ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when status = ? then 1 else 0 end) as operational', [ComponentStatusEnum::operational])
-            ->selectRaw('sum(case when status = ? then 1 else 0 end) as performance_issues', [ComponentStatusEnum::performance_issues])
-            ->selectRaw('sum(case when status = ? then 1 else 0 end) as partial_outage', [ComponentStatusEnum::partial_outage])
-            ->selectRaw('sum(case when status = ? then 1 else 0 end) as major_outage', [ComponentStatusEnum::major_outage])
-            ->selectRaw('sum(case when status = ? then 1 else 0 end) as under_maintenance', [ComponentStatusEnum::under_maintenance])
-            ->first();
+        return $this->components ??= $this->tally();
     }
 
     /**
-     * Get an overview of the incidents.
+     * Get an overview of the incidents visible to the public.
      *
      * @return object{total: int, resolved: int, unresolved: int}
      */
     public function incidents(): object
     {
         return $this->incidents ??= Incident::query()
-            ->published()
+            ->viewableBy(false)
             ->toBase()
             ->selectRaw('count(*) as total')
-            ->selectRaw('sum(case when ? in (incidents.status, coalesce(latest_update.status, ?)) then 1 else 0 end) as resolved', [IncidentStatusEnum::fixed->value, 0])
-            ->selectRaw('sum(case when ? not in (incidents.status, coalesce(latest_update.status, ?)) then 1 else 0 end) as unresolved', [IncidentStatusEnum::fixed->value, 0])
-            ->joinSub(function (Builder $query) {
-                $query
-                    ->select('iu1.updateable_id', 'iu1.status')
-                    ->from('updates', 'iu1')
-                    ->joinSub(function (Builder $query) {
-                        $query->select('updateable_id')
-                            ->selectRaw('max(id) as max_id')
-                            ->from('updates')
-                            ->where('updates.updateable_type', Relation::getMorphAlias(Incident::class))
-                            ->groupBy('updateable_id');
-                    }, 'iu2', 'iu1.id', '=', 'iu2.max_id');
-            }, 'latest_update', 'latest_update.updateable_id', '=', 'incidents.id', 'left')
+            ->selectRaw('coalesce(sum(case when status = ? then 1 else 0 end), 0) as resolved', [IncidentStatusEnum::fixed->value])
+            ->selectRaw('coalesce(sum(case when status is null or status <> ? then 1 else 0 end), 0) as unresolved', [IncidentStatusEnum::fixed->value])
             ->first();
+    }
+
+    /**
+     * Tally the enabled components by their effective status.
+     *
+     * The database counts the baseline, which is all that most components have.
+     * Only those actually carrying an impact — an unresolved incident or a
+     * maintenance window in progress — are loaded, and each is moved out of its
+     * baseline bucket and into its effective one.
+     *
+     * @return object{total: int, operational: int, performance_issues: int, partial_outage: int, major_outage: int, under_maintenance: int}
+     */
+    private function tally(): object
+    {
+        $counts = Component::query()
+            ->enabled()
+            ->toBase()
+            ->selectRaw('status, count(*) as aggregate')
+            ->groupBy('status')
+            ->pluck('aggregate', 'status');
+
+        $tally = collect(ComponentStatusEnum::cases())
+            ->mapWithKeys(fn (ComponentStatusEnum $status) => [
+                $status->name => (int) $counts->get($status->value, 0),
+            ]);
+
+        $total = $tally->sum();
+
+        Component::query()
+            ->enabled()
+            ->where(fn (Builder $query) => $query
+                ->whereHas('unresolvedIncidents')
+                ->orWhereHas('activeMaintenance'))
+            ->with(['unresolvedIncidents', 'activeMaintenance'])
+            ->each(function (Component $component) use (&$tally): void {
+                $baseline = $component->status;
+                $effective = $component->latest_status;
+
+                if ($baseline === $effective) {
+                    return;
+                }
+
+                $tally[$baseline->name] = $tally[$baseline->name] - 1;
+                $tally[$effective->name] = $tally[$effective->name] + 1;
+            });
+
+        return (object) [...$tally->all(), 'total' => $total];
     }
 }

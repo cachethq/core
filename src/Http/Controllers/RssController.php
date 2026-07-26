@@ -30,7 +30,7 @@ class RssController
                 'statusPageName' => $appSettings->name,
                 'statusAbout' => $appSettings->about,
                 'incidents' => Incident::query()
-                    ->guests()
+                    ->viewableBy(false)
                     ->with('updates')
                     ->when($appSettings->recent_incidents_only, function ($query) use ($appSettings) {
                         $query->where(function ($query) use ($appSettings) {

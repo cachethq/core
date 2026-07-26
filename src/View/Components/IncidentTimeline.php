@@ -85,8 +85,7 @@ class IncidentTimeline extends Component
                 'components',
                 'updates' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id'),
             ])
-            ->visible(auth()->check())
-            ->published()
+            ->viewableBy(auth()->check())
             ->when($this->appSettings->recent_incidents_only, function ($query) {
                 $query->where(function ($query) {
                     $query->whereDate(

@@ -5,6 +5,7 @@ use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
@@ -57,7 +58,7 @@ it('transitions parent incident status to fixed when incident update status is f
         ->status->toEqual(IncidentStatusEnum::fixed);
 });
 
-it('does not change parent incident status when incident update status is not fixed', function () {
+it('moves parent incident status to any status the update carries', function () {
     $incident = Incident::factory()->create([
         'status' => IncidentStatusEnum::investigating,
     ]);
@@ -70,12 +71,13 @@ it('does not change parent incident status when incident update status is not fi
     app(CreateUpdate::class)->handle($incident, $data);
 
     expect($incident->fresh())
-        ->status->toEqual(IncidentStatusEnum::investigating);
+        ->status->toEqual(IncidentStatusEnum::identified);
 });
 
-it('sets linked component status to operational when incident update status is fixed', function () {
+it('keeps the impact an incident recorded when its update resolves it', function () {
     $incident = Incident::factory()->create([
         'status' => IncidentStatusEnum::investigating,
+        'visible' => ResourceVisibilityEnum::guest,
     ]);
 
     $component = Component::factory()->create([
@@ -94,6 +96,8 @@ it('sets linked component status to operational when incident update status is f
     app(CreateUpdate::class)->handle($incident, $data);
 
     expect($incident->components()->first()->pivot->component_status)
+        ->toEqual(ComponentStatusEnum::major_outage)
+        ->and($component->fresh()->latest_status)
         ->toEqual(ComponentStatusEnum::operational);
 });
 
