@@ -41,7 +41,8 @@ it('can create an incident with a given status', function () {
     expect($incident)
         ->name->toBe($data->name)
         ->message->toBe($data->message)
-        ->status->toBe($data->status);
+        ->status->toBe($data->status)
+        ->baseline_status->toBe($data->status);
 
     Event::assertDispatched(IncidentCreated::class, fn ($event) => $event->incident->is($incident));
 });

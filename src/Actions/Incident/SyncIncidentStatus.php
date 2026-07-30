@@ -22,11 +22,9 @@ class SyncIncidentStatus
             ->orderByDesc('id')
             ->value('status');
 
-        if ($status === null) {
-            return $incident;
-        }
-
-        $status = $status instanceof IncidentStatusEnum ? $status : IncidentStatusEnum::from((int) $status);
+        $status = $status === null
+            ? $incident->baseline_status
+            : ($status instanceof IncidentStatusEnum ? $status : IncidentStatusEnum::from((int) $status));
 
         if ($incident->status !== $status) {
             $incident->update(['status' => $status]);

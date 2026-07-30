@@ -34,6 +34,7 @@ class CreateIncident
         $incident = DB::transaction(function () use ($data): Incident {
             return tap(Incident::create(array_merge(
                 ['guid' => Str::uuid()],
+                ['baseline_status' => $data->status],
                 $data->except('components', 'meta')->toArray()
             )), function (Incident $incident) use ($data) {
                 if ($data->components) {
