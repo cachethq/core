@@ -11,7 +11,9 @@ use Spatie\LaravelData\Attributes\Validation\Required;
 
 final class ThemeData extends BaseData
 {
-    public const GRAYS = ['slate', 'gray', 'zinc', 'neutral', 'stone'];
+    public const GRAYS = ['slate', 'gray', 'zinc', 'neutral', 'stone', 'mauve', 'olive', 'mist', 'taupe'];
+
+    private const DEFAULT_PAIRING = 'zinc';
 
     private const THEME_PAIRINGS = [
         'cachet' => 'zinc',
@@ -308,7 +310,7 @@ final class ThemeData extends BaseData
     protected function generate(): void
     {
         $accent = $this->themeSettings->accent;
-        if ($accent === 'cachet') {
+        if (! isset(self::THEMES[$accent])) {
             $primaryColor = FilamentColor::getColors()['cachet'];
 
             $theme = [
@@ -328,9 +330,9 @@ final class ThemeData extends BaseData
         }
 
         if ($this->themeSettings->accent_pairing) {
-            $pairing = self::THEME_PAIRINGS[$accent];
+            $pairing = self::matchPairing($accent);
         } else {
-            $pairing = $this->themeSettings->accent_content;
+            $pairing = $this->themeSettings->accent_content ?? self::matchPairing($accent);
         }
 
         $this->styles = $this->compileCss($theme, $pairing);
@@ -341,8 +343,7 @@ final class ThemeData extends BaseData
      */
     protected function compileCss(array $theme, string $pairing): string
     {
-        $pairingKey = ucwords($pairing);
-        $pairingColor = constant("Filament\Support\Colors\Color::{$pairingKey}");
+        $pairingColor = Color::all()[$pairing] ?? Color::all()[self::DEFAULT_PAIRING];
 
         $this->lightColors = [
             'accent' => $theme['light']['accent'],
@@ -381,10 +382,11 @@ final class ThemeData extends BaseData
     }
 
     /**
-     * Match the pairing for the given accent.
+     * Match the pairing for the given accent, falling back to a neutral gray
+     * for accents Cachet has no explicit pairing for.
      */
-    public static function matchPairing(string $accent): string
+    public static function matchPairing(?string $accent): string
     {
-        return self::THEME_PAIRINGS[$accent];
+        return self::THEME_PAIRINGS[$accent] ?? self::DEFAULT_PAIRING;
     }
 }
