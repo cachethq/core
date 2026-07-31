@@ -29,7 +29,7 @@ it('can render a twig template', function () {
 });
 
 it('can render a blade template', function () {
-    config()->set('cachet.incident_templates.allow_blade', true);
+    config()->set('cachet.renderers.blade', true);
 
     $template = IncidentTemplate::factory()->blade()->create([
         'template' => 'Hello, {{ $name }}!',
@@ -43,8 +43,8 @@ it('can render a blade template', function () {
         ->toBe('Hello, James Brooks!');
 });
 
-it('does not render a blade template when blade is not allowed', function () {
-    config()->set('cachet.incident_templates.allow_blade', false);
+it('does not render a blade template when the blade renderer is disabled', function () {
+    config()->set('cachet.renderers.blade', false);
 
     $template = IncidentTemplate::factory()->blade()->create([
         'template' => 'Hello, {{ $name }}!',

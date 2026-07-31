@@ -91,8 +91,8 @@ it('can create an incident template', function () {
     ]);
 });
 
-it('cannot create an incident template with the blade engine when blade is not allowed', function () {
-    config()->set('cachet.incident_templates.allow_blade', false);
+it('cannot create an incident template with the blade engine when the blade renderer is disabled', function () {
+    config()->set('cachet.renderers.blade', false);
 
     Sanctum::actingAs(User::factory()->create(), ['incident-templates.manage']);
 
@@ -107,8 +107,8 @@ it('cannot create an incident template with the blade engine when blade is not a
     $response->assertJsonValidationErrorFor('engine');
 });
 
-it('can create an incident template with the blade engine when blade is allowed', function () {
-    config()->set('cachet.incident_templates.allow_blade', true);
+it('can create an incident template with the blade engine when the blade renderer is enabled', function () {
+    config()->set('cachet.renderers.blade', true);
 
     Sanctum::actingAs(User::factory()->create(), ['incident-templates.manage']);
 
