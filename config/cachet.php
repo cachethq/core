@@ -269,6 +269,20 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet Incident Templates
+     |--------------------------------------------------------------------------
+     |
+     | Twig template bodies are rendered inside a sandbox. Blade template
+     | bodies are compiled to PHP and run with the permissions of the
+     | application, so they are only rendered when enabled here.
+     |
+     */
+    'incident_templates' => [
+        'allow_blade' => env('CACHET_ALLOW_BLADE_TEMPLATES', false),
+    ],
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Blog Feed
      |--------------------------------------------------------------------------
      |

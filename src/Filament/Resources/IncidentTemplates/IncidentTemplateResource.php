@@ -57,6 +57,7 @@ class IncidentTemplateResource extends Resource
                     Select::make('engine')
                         ->label(__('cachet::incident_template.form.engine_label'))
                         ->options(IncidentTemplateEngineEnum::class)
+                        ->disableOptionWhen(fn (string $value): bool => ! IncidentTemplateEngineEnum::from($value)->isAvailable())
                         ->default(IncidentTemplateEngineEnum::twig)
                         ->live()
                         ->required(),

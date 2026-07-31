@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Models\IncidentTemplate;
+use Twig\Sandbox\SecurityError;
 
 it('can fetch data', function () {
     $template = IncidentTemplate::factory()->create([
@@ -28,6 +29,8 @@ it('can render a twig template', function () {
 });
 
 it('can render a blade template', function () {
+    config()->set('cachet.incident_templates.allow_blade', true);
+
     $template = IncidentTemplate::factory()->blade()->create([
         'template' => 'Hello, {{ $name }}!',
     ]);
@@ -39,3 +42,26 @@ it('can render a blade template', function () {
     expect($output)
         ->toBe('Hello, James Brooks!');
 });
+
+it('does not render a blade template when blade is not allowed', function () {
+    config()->set('cachet.incident_templates.allow_blade', false);
+
+    $template = IncidentTemplate::factory()->blade()->create([
+        'template' => 'Hello, {{ $name }}!',
+    ]);
+
+    expect(fn () => $template->render(['name' => 'James Brooks']))
+        ->toThrow(RuntimeException::class);
+});
+
+it('does not let a twig template call php functions', function (string $body) {
+    $template = IncidentTemplate::factory()->twig()->create([
+        'template' => $body,
+    ]);
+
+    expect(fn () => $template->render(['name' => 'James Brooks']))
+        ->toThrow(SecurityError::class);
+})->with([
+    'callable filter' => ["{{ ['cachet']|map('strtoupper')|join }}"],
+    'template include' => ["{% include 'another-template' %}"],
+]);

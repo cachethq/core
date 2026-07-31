@@ -91,6 +91,37 @@ it('can create an incident template', function () {
     ]);
 });
 
+it('cannot create an incident template with the blade engine when blade is not allowed', function () {
+    config()->set('cachet.incident_templates.allow_blade', false);
+
+    Sanctum::actingAs(User::factory()->create(), ['incident-templates.manage']);
+
+    $response = postJson('/status/api/incident-templates', [
+        'name' => 'New Template',
+        'slug' => 'new-template',
+        'template' => 'Hello {{ $name }}',
+        'engine' => 'blade',
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrorFor('engine');
+});
+
+it('can create an incident template with the blade engine when blade is allowed', function () {
+    config()->set('cachet.incident_templates.allow_blade', true);
+
+    Sanctum::actingAs(User::factory()->create(), ['incident-templates.manage']);
+
+    $response = postJson('/status/api/incident-templates', [
+        'name' => 'New Template',
+        'slug' => 'new-template',
+        'template' => 'Hello {{ $name }}',
+        'engine' => 'blade',
+    ]);
+
+    $response->assertCreated();
+});
+
 it('cannot update an incident template when not authenticated', function () {
     $incidentTemplate = IncidentTemplate::factory()->create();
 
