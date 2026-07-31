@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
@@ -95,6 +96,17 @@ class Component extends Model implements Metable
     public function formattedDescription(): string
     {
         return Cachet::markdown($this->description, inline: true);
+    }
+
+    /**
+     * Get the link to render on the status page, which is only ever an http
+     * or https URL.
+     */
+    public function formattedLink(): ?string
+    {
+        return Str::isUrl((string) $this->link, ['http', 'https'])
+            ? $this->link
+            : null;
     }
 
     /**

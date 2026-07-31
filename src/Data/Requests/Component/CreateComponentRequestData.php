@@ -27,7 +27,7 @@ final class CreateComponentRequestData extends BaseData
             'name' => ['string', 'required', 'max:255'],
             'description' => ['string'],
             'status' => [Rule::enum(ComponentStatusEnum::class)],
-            'link' => ['string'],
+            'link' => ['string', 'url:http,https'],
             'order' => ['int', 'min:0'],
             'enabled' => ['boolean'],
             'component_group_id' => ['int', 'min:0', Rule::exists('component_groups', 'id')],
