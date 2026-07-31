@@ -252,6 +252,29 @@ it('can get a component with group', function () {
     $response->assertJsonFragment(['id' => $component->id]);
 });
 
+it('cannot create a component with a javascript link', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
+    $response = postJson('/status/api/components', [
+        'name' => 'Test',
+        'link' => 'javascript:alert(1)',
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrorFor('link');
+});
+
+it('can create a component with an http link', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
+    $response = postJson('/status/api/components', [
+        'name' => 'Test',
+        'link' => 'https://status.example.com/api',
+    ]);
+
+    $response->assertCreated();
+});
+
 it('cannot create a component when not authenticated', function () {
     $response = postJson('/status/api/components', [
         'name' => 'Test',

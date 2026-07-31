@@ -93,6 +93,29 @@ it('falls back to the default favicon when operational and dynamic favicons are 
         ->assertDontSee('image/svg+xml');
 });
 
+it('does not link a component to a javascript url', function () {
+    Component::factory()->create([
+        'name' => 'Scriptable API',
+        'link' => 'javascript:alert(1)',
+    ]);
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('Scriptable API')
+        ->assertDontSee('javascript:alert(1)', escape: false);
+});
+
+it('links a component to an http url', function () {
+    Component::factory()->create([
+        'name' => 'Linked API',
+        'link' => 'https://status.example.com/api',
+    ]);
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('href="https://status.example.com/api"', escape: false);
+});
+
 it('does not render raw html in component descriptions', function () {
     Component::factory()->create([
         'description' => 'The **primary** API <script>alert(1)</script>',
