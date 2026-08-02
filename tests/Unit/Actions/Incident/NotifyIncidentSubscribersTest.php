@@ -98,7 +98,7 @@ it('notifies component subscribers when an incident is created through the creat
         'name' => 'My Incident',
         'message' => 'This is an incident message.',
         'status' => IncidentStatusEnum::investigating,
-        'visible' => true,
+        'visible' => ResourceVisibilityEnum::guest,
         'notifications' => true,
         'components' => [
             ['id' => $component->id, 'status' => ComponentStatusEnum::major_outage->value],

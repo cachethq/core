@@ -3,6 +3,7 @@
 namespace Cachet\Actions\Subscriber;
 
 use Cachet\Models\Subscriber;
+use Illuminate\Support\Facades\DB;
 
 class CreateSubscriber
 {
@@ -11,19 +12,21 @@ class CreateSubscriber
      */
     public function handle(string $email, bool $global = true, array $components = [], bool $verified = false, ?array $meta = null): Subscriber
     {
-        $subscriber = Subscriber::firstOrCreate([
-            'email' => $email,
-        ], [
-            'global' => $global,
-            'email_verified_at' => $verified ? now() : null,
-        ]);
+        return DB::transaction(function () use ($email, $global, $components, $verified, $meta): Subscriber {
+            $subscriber = Subscriber::firstOrCreate([
+                'email' => $email,
+            ], [
+                'global' => $global,
+                'email_verified_at' => $verified ? now() : null,
+            ]);
 
-        $subscriber->components()->attach($components);
+            $subscriber->components()->attach($components);
 
-        if ($meta !== null) {
-            $subscriber->syncMeta($meta);
-        }
+            if ($meta !== null) {
+                $subscriber->syncMeta($meta);
+            }
 
-        return $subscriber;
+            return $subscriber;
+        });
     }
 }

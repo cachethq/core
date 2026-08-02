@@ -6,6 +6,7 @@ use Cachet\Actions\Incident\CreateIncident as CreateIncidentAction;
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Mcp\Concerns\GuardsMcpAbilities;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
@@ -37,7 +38,10 @@ class CreateIncident extends Tool
             'message' => $schema->string()->description('The incident message, in Markdown. Required unless template is given.'),
             'template' => $schema->string()->description('The slug of an incident template to render the message from.'),
             'template_vars' => $schema->object()->description('Variables passed to the incident template.'),
-            'visible' => $schema->boolean()->default(false)->description('Whether the incident is visible to guests.'),
+            'visible' => $schema->integer()
+                ->enum(array_column(ResourceVisibilityEnum::cases(), 'value'))
+                ->default(ResourceVisibilityEnum::authenticated->value)
+                ->description('Who the incident is visible to: 0 authenticated users only, 1 everyone, 2 hidden.'),
             'stickied' => $schema->boolean()->default(false)->description('Whether the incident is stickied to the top of the status page.'),
             'notifications' => $schema->boolean()->default(false)->description('Whether to notify verified subscribers.'),
             'occurred_at' => $schema->string()->description('When the incident occurred, as an ISO-8601 datetime. Defaults to now.'),

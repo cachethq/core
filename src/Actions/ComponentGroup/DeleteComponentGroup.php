@@ -3,6 +3,7 @@
 namespace Cachet\Actions\ComponentGroup;
 
 use Cachet\Models\ComponentGroup;
+use Illuminate\Support\Facades\DB;
 
 class DeleteComponentGroup
 {
@@ -11,8 +12,10 @@ class DeleteComponentGroup
      */
     public function handle(ComponentGroup $componentGroup): void
     {
-        $componentGroup->components()->update(['component_group_id' => null]);
+        DB::transaction(function () use ($componentGroup): void {
+            $componentGroup->components()->update(['component_group_id' => null]);
 
-        $componentGroup->delete();
+            $componentGroup->delete();
+        });
     }
 }

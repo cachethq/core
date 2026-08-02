@@ -7,6 +7,7 @@ use Cachet\Data\Requests\IncidentUpdate\EditIncidentUpdateRequestData;
 use Cachet\Data\Requests\ScheduleUpdate\EditScheduleUpdateRequestData;
 use Cachet\Models\Incident;
 use Cachet\Models\Update;
+use Illuminate\Support\Facades\DB;
 
 class EditUpdate
 {
@@ -21,13 +22,15 @@ class EditUpdate
     public function handle(Update $update, EditIncidentUpdateRequestData|EditScheduleUpdateRequestData $data): Update
     {
         return tap($update, function (Update $update) use ($data) {
-            $update->update($data->toArray());
+            DB::transaction(function () use ($update, $data): void {
+                $update->update($data->toArray());
 
-            $incident = $update->updateable;
+                $incident = $update->updateable;
 
-            if ($incident instanceof Incident) {
-                $this->syncIncidentStatus->handle($incident);
-            }
+                if ($incident instanceof Incident) {
+                    $this->syncIncidentStatus->handle($incident);
+                }
+            });
         });
     }
 }

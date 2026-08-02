@@ -229,3 +229,40 @@ it('cannot delete an schedule update from another schedule', function () {
         'updateable_id' => $scheduleUpdate->updateable_id,
     ]);
 });
+
+it('does not list updates of an unpublished schedule to guests', function () {
+    $schedule = Schedule::factory()->hasUpdates(2)->create(['published_at' => now()->addDay()]);
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates");
+
+    $response->assertNotFound();
+});
+
+it('does not show an update of an unpublished schedule to guests', function () {
+    $schedule = Schedule::factory()->hasUpdates(1)->create(['published_at' => now()->addDay()]);
+    $update = $schedule->updates()->first();
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates/{$update->id}");
+
+    $response->assertNotFound();
+});
+
+it('lists updates of an unpublished schedule with the manage ability', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $schedule = Schedule::factory()->hasUpdates(2)->create(['published_at' => now()->addDay()]);
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates");
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('lists updates of a published schedule to guests', function () {
+    $schedule = Schedule::factory()->hasUpdates(2)->create(['published_at' => now()->subDay()]);
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates");
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});

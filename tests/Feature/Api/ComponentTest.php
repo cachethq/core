@@ -681,3 +681,49 @@ it('exposes the baseline status alongside the effective status', function () {
         ->assertJsonPath('data.attributes.status.value', ComponentStatusEnum::operational->value)
         ->assertJsonPath('data.attributes.latest_status.value', ComponentStatusEnum::major_outage->value);
 });
+
+it('can clear a component\'s nullable fields via an update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
+    $componentGroup = ComponentGroup::factory()->create();
+    $component = Component::factory()->create([
+        'description' => 'A component.',
+        'link' => 'https://cachethq.io',
+        'component_group_id' => $componentGroup->id,
+    ]);
+
+    $response = putJson('/status/api/components/'.$component->id, [
+        'description' => null,
+        'link' => null,
+        'component_group_id' => null,
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('components', [
+        'id' => $component->id,
+        'description' => null,
+        'link' => null,
+        'component_group_id' => null,
+    ]);
+});
+
+it('leaves nullable fields untouched when they are omitted from an update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['components.manage']);
+
+    $component = Component::factory()->create([
+        'description' => 'A component.',
+        'link' => 'https://cachethq.io',
+    ]);
+
+    $response = putJson('/status/api/components/'.$component->id, [
+        'name' => 'Updated Component Name',
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('components', [
+        'id' => $component->id,
+        'name' => 'Updated Component Name',
+        'description' => 'A component.',
+        'link' => 'https://cachethq.io',
+    ]);
+});

@@ -28,3 +28,18 @@ it('detaches component subscriptions without deleting the components', function 
     expect($subscriber->fresh())->toBeNull()
         ->and(Component::query()->find($component->id))->not->toBeNull();
 });
+
+it('keeps the subscriptions when the delete fails part-way', function () {
+    $subscriber = Subscriber::factory()->hasComponents()->create();
+
+    Subscriber::deleted(fn () => throw new RuntimeException('boom'));
+
+    try {
+        app(UnsubscribeSubscriber::class)->handle($subscriber);
+    } catch (RuntimeException) {
+        //
+    }
+
+    $this->assertDatabaseHas('subscribers', ['id' => $subscriber->id]);
+    $this->assertDatabaseHas('subscriptions', ['subscriber_id' => $subscriber->id]);
+});

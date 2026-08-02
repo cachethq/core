@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Actions\Update\DeleteUpdate;
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
@@ -26,4 +27,26 @@ it('can delete a schedule update', function () {
         'updateable_type' => Relation::getMorphAlias(Schedule::class),
         'updateable_id' => $update->updateable_id,
     ]);
+});
+
+it('keeps the update when the incident status sync fails', function () {
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::watching]);
+    Update::factory()->forIncident($incident)->create([
+        'status' => IncidentStatusEnum::identified,
+        'created_at' => now()->subHour(),
+    ]);
+    $latest = Update::factory()->forIncident($incident)->create([
+        'status' => IncidentStatusEnum::watching,
+        'created_at' => now(),
+    ]);
+
+    Incident::updated(fn () => throw new RuntimeException('boom'));
+
+    try {
+        app(DeleteUpdate::class)->handle($latest);
+    } catch (RuntimeException) {
+        //
+    }
+
+    $this->assertDatabaseHas('updates', ['id' => $latest->id]);
 });

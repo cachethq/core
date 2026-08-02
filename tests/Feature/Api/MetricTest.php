@@ -420,3 +420,19 @@ it('lists authenticated metrics to callers presenting a bearer token', function 
     $response->assertOk();
     $response->assertJsonCount(2, 'data');
 });
+
+it('can clear a metric\'s description via an update', function () {
+    Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
+
+    $metric = Metric::factory()->create(['description' => 'A metric.']);
+
+    $response = putJson('/status/api/metrics/'.$metric->id, [
+        'description' => null,
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('metrics', [
+        'id' => $metric->id,
+        'description' => null,
+    ]);
+});

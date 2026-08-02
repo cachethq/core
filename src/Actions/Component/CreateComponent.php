@@ -4,6 +4,7 @@ namespace Cachet\Actions\Component;
 
 use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Models\Component;
+use Illuminate\Support\Facades\DB;
 
 class CreateComponent
 {
@@ -12,8 +13,10 @@ class CreateComponent
      */
     public function handle(CreateComponentRequestData $component): Component
     {
-        return tap(Component::create($component->except('meta')->toArray()), function (Component $model) use ($component) {
-            $model->syncMeta($component->meta ?? []);
+        return DB::transaction(function () use ($component): Component {
+            return tap(Component::create($component->except('meta')->toArray()), function (Component $model) use ($component) {
+                $model->syncMeta($component->meta ?? []);
+            });
         });
     }
 }

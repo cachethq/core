@@ -5,6 +5,7 @@ namespace Cachet\Data\Requests\Incident;
 use Cachet\Data\BaseData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -25,7 +26,7 @@ final class CreateIncidentRequestData extends BaseData
         public readonly ?string $message = null,
         #[RequiredWithout('message')]
         public readonly ?string $template = null,
-        public readonly bool $visible = false,
+        public readonly ResourceVisibilityEnum $visible = ResourceVisibilityEnum::authenticated,
         public readonly bool $stickied = false,
         public readonly bool $notifications = false,
         public readonly ?string $occurredAt = null,
@@ -48,7 +49,10 @@ final class CreateIncidentRequestData extends BaseData
             'message' => ['required_without:template', 'string'],
             'template' => ['required_without:message', 'string', Rule::exists('incident_templates', 'slug')],
             'status' => ['required', Rule::enum(IncidentStatusEnum::class)],
-            'visible' => ['boolean'],
+            /**
+             * Who the incident is visible to: 0 authenticated users only, 1 everyone, 2 hidden. Defaults to authenticated users only.
+             */
+            'visible' => [Rule::enum(ResourceVisibilityEnum::class)],
             'stickied' => ['boolean'],
             'notifications' => ['boolean'],
             /**

@@ -611,3 +611,80 @@ it('rejects a duplicate component in the same incident', function () {
 
     expect(Incident::query()->where('name', 'Duplicated')->exists())->toBeFalse();
 });
+
+it('can create a hidden incident', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $response = postJson('/status/api/incidents', [
+        'name' => 'Internal Incident',
+        'message' => 'Something went wrong.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'visible' => ResourceVisibilityEnum::hidden->value,
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('incidents', [
+        'name' => 'Internal Incident',
+        'visible' => ResourceVisibilityEnum::hidden->value,
+    ]);
+});
+
+it('rejects an invalid visibility value for an incident', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $response = postJson('/status/api/incidents', [
+        'name' => 'Internal Incident',
+        'message' => 'Something went wrong.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'visible' => 5,
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('visible');
+});
+
+it('maps a legacy boolean visibility onto the visibility enum', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $response = postJson('/status/api/incidents', [
+        'name' => 'Public Incident',
+        'message' => 'Something went wrong.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'visible' => true,
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('incidents', [
+        'name' => 'Public Incident',
+        'visible' => ResourceVisibilityEnum::guest->value,
+    ]);
+});
+
+it('can update an incident\'s visibility', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $incident = Incident::factory()->create(['visible' => ResourceVisibilityEnum::guest]);
+
+    $response = putJson('/status/api/incidents/'.$incident->id, [
+        'visible' => ResourceVisibilityEnum::hidden->value,
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('incidents', [
+        'id' => $incident->id,
+        'visible' => ResourceVisibilityEnum::hidden->value,
+    ]);
+});
+
+it('can clear an incident\'s publish date to publish it immediately', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $incident = Incident::factory()->create(['published_at' => now()->addDay()]);
+
+    $response = putJson('/status/api/incidents/'.$incident->id, [
+        'published_at' => null,
+    ]);
+
+    $response->assertOk();
+    expect($incident->fresh()->published_at)->toBeNull();
+});

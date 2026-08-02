@@ -29,7 +29,10 @@ final class CreateComponentGroupRequestData extends BaseData
         return [
             'name' => ['required', 'string', 'max:255'],
             'order' => ['int', 'min:0'],
-            'visible' => ['bool'],
+            /**
+             * Who the group is visible to: 0 authenticated users only, 1 everyone, 2 hidden.
+             */
+            'visible' => [Rule::enum(ResourceVisibilityEnum::class)],
             'collapsed' => [Rule::enum(ComponentGroupVisibilityEnum::class)],
             'order_column' => [Rule::enum(ResourceOrderColumnEnum::class)],
             'order_direction' => [

@@ -12,6 +12,7 @@ use Cachet\Data\Requests\ScheduleUpdate\EditScheduleUpdateRequestData;
 use Cachet\Http\Resources\Update as UpdateResource;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
+use Cachet\QueryBuilders\ScheduleBuilder;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -34,6 +35,8 @@ class ScheduleUpdateController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request, Schedule $schedule)
     {
+        $this->ensureScheduleVisible($schedule);
+
         $query = Update::query()
             ->where('updateable_id', $schedule->id)
             ->where('updateable_type', Relation::getMorphAlias(Schedule::class));
@@ -65,6 +68,8 @@ class ScheduleUpdateController extends Controller
      */
     public function show(Schedule $schedule, Update $update)
     {
+        $this->ensureScheduleVisible($schedule);
+
         $updateQuery = QueryBuilder::for(Update::class)
             ->allowedIncludes([
                 AllowedInclude::relationship('schedule', 'updateable'),
@@ -74,6 +79,24 @@ class ScheduleUpdateController extends Controller
         return UpdateResource::make($updateQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
+    }
+
+    /**
+     * Abort with a 404 when the parent schedule is not readable by the caller.
+     *
+     * An unpublished maintenance window must not leak its updates either, so
+     * publication is checked here on exactly the same terms as the schedule
+     * endpoints.
+     */
+    protected function ensureScheduleVisible(Schedule $schedule): void
+    {
+        abort_unless(
+            Schedule::query()
+                ->when(! $this->tokenCan('schedules.manage'), fn (ScheduleBuilder $query) => $query->published())
+                ->whereKey($schedule->getKey())
+                ->exists(),
+            Response::HTTP_NOT_FOUND,
+        );
     }
 
     /**

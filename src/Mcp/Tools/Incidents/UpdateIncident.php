@@ -5,6 +5,7 @@ namespace Cachet\Mcp\Tools\Incidents;
 use Cachet\Actions\Incident\UpdateIncident as UpdateIncidentAction;
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Mcp\Concerns\GuardsMcpAbilities;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Cachet\Models\Incident;
@@ -37,7 +38,9 @@ class UpdateIncident extends Tool
             'status' => $schema->integer()
                 ->enum(array_column(IncidentStatusEnum::cases(), 'value'))
                 ->description('The status: 0 unknown, 1 investigating, 2 identified, 3 watching, 4 fixed.'),
-            'visible' => $schema->boolean()->description('Whether the incident is visible to guests.'),
+            'visible' => $schema->integer()
+                ->enum(array_column(ResourceVisibilityEnum::cases(), 'value'))
+                ->description('Who the incident is visible to: 0 authenticated users only, 1 everyone, 2 hidden.'),
             'stickied' => $schema->boolean()->description('Whether the incident is stickied to the top of the status page.'),
             'notifications' => $schema->boolean()->description('Whether to notify verified subscribers.'),
             'occurred_at' => $schema->string()->description('When the incident occurred, as an ISO-8601 datetime.'),

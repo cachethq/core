@@ -2,6 +2,7 @@
 
 use Cachet\Actions\Subscriber\UpdateSubscriber;
 use Cachet\Models\Component;
+use Cachet\Models\Meta;
 use Cachet\Models\Subscriber;
 
 it('can update a subscriber\'s email address', function () {
@@ -64,4 +65,18 @@ it('can update a subscriber\'s component subscriptions', function () {
         ->components->toHaveCount(2)
         ->and($subscriber->components()->first())
         ->toBeInstanceOf(Component::class);
+});
+
+it('rolls the whole update back when a write fails part-way', function () {
+    $subscriber = Subscriber::factory()->create(['email' => 'james@alt-three.com']);
+
+    Meta::creating(fn () => throw new RuntimeException('boom'));
+
+    try {
+        app(UpdateSubscriber::class)->handle($subscriber, email: 'james@cachethq.io', meta: ['plan' => 'pro']);
+    } catch (RuntimeException) {
+        //
+    }
+
+    expect($subscriber->fresh()->email)->toBe('james@alt-three.com');
 });

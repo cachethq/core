@@ -3,6 +3,7 @@
 namespace Cachet\Actions\Metric;
 
 use Cachet\Models\Metric;
+use Illuminate\Support\Facades\DB;
 
 class DeleteMetric
 {
@@ -11,7 +12,9 @@ class DeleteMetric
      */
     public function handle(Metric $metric): void
     {
-        $metric->metricPoints()->delete();
-        $metric->delete();
+        DB::transaction(function () use ($metric): void {
+            $metric->metricPoints()->delete();
+            $metric->delete();
+        });
     }
 }

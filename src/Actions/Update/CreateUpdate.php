@@ -26,6 +26,11 @@ class CreateUpdate
 
     /**
      * Handle the action.
+     *
+     * A completion time carried by a schedule update is written in the same
+     * transaction as the update itself — quietly, since the update is the
+     * communication — so the window can never close without its update, or
+     * the other way around.
      */
     public function handle(Incident|Schedule $resource, CreateIncidentUpdateRequestData|CreateScheduleUpdateRequestData $data, ?Authenticatable $user = null): Update
     {
@@ -34,20 +39,24 @@ class CreateUpdate
             $data->except('completedAt')->toArray()
         ));
 
-        DB::transaction(function () use ($resource, $update): void {
+        DB::transaction(function () use ($resource, $update, $data): void {
             $resource->updates()->save($update);
 
             if ($resource instanceof Incident) {
                 $this->syncIncidentStatus->handle($resource);
+            }
+
+            if ($resource instanceof Schedule && $data instanceof CreateScheduleUpdateRequestData && $data->completedAt !== null) {
+                $resource->updateQuietly(['completed_at' => $data->completedAt]);
             }
         });
 
         $this->notifyIncidentUpdateSubscribers->handle($update);
 
         if ($resource instanceof Schedule) {
-            $completed = $this->completeSchedule($resource, $data);
-
-            if (! $completed) {
+            if ($this->scheduleCompleted($resource, $data)) {
+                $this->notifyScheduleCompletedSubscribers->handle($resource);
+            } else {
                 $this->notifyScheduleUpdateSubscribers->handle($update);
             }
         }
@@ -56,27 +65,14 @@ class CreateUpdate
     }
 
     /**
-     * Complete the schedule when the update provides a completion time.
-     *
-     * The window change is applied quietly — the update itself is the
-     * communication — and returns true when the schedule has actually
-     * completed, in which case the completion notification supersedes
-     * the update notification.
+     * Determine whether the update's completion time actually completed the
+     * schedule, in which case the completion notification supersedes the
+     * update notification.
      */
-    private function completeSchedule(Schedule $schedule, CreateIncidentUpdateRequestData|CreateScheduleUpdateRequestData $data): bool
+    private function scheduleCompleted(Schedule $schedule, CreateIncidentUpdateRequestData|CreateScheduleUpdateRequestData $data): bool
     {
-        if (! $data instanceof CreateScheduleUpdateRequestData || $data->completedAt === null) {
-            return false;
-        }
-
-        $schedule->updateQuietly(['completed_at' => $data->completedAt]);
-
-        if ($schedule->status === ScheduleStatusEnum::complete) {
-            $this->notifyScheduleCompletedSubscribers->handle($schedule);
-
-            return true;
-        }
-
-        return false;
+        return $data instanceof CreateScheduleUpdateRequestData
+            && $data->completedAt !== null
+            && $schedule->status === ScheduleStatusEnum::complete;
     }
 }

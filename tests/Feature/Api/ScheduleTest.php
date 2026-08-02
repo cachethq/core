@@ -553,3 +553,21 @@ it('does not reveal component groups hidden from guests through schedule include
     expect($included->firstWhere('id', (string) $component->id))->not->toBeNull()
         ->and($included->firstWhere('type', 'componentGroups'))->toBeNull();
 });
+
+it('can reopen a maintenance window by clearing its completion date', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $schedule = Schedule::factory()->create([
+        'scheduled_at' => now()->subDay(),
+        'completed_at' => now()->subHour(),
+    ]);
+
+    $response = putJson('/status/api/schedules/'.$schedule->id, [
+        'completed_at' => null,
+    ]);
+
+    $response->assertOk();
+    expect($schedule->fresh())
+        ->completed_at->toBeNull()
+        ->status->toBe(ScheduleStatusEnum::in_progress);
+});

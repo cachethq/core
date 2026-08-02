@@ -26,7 +26,7 @@ class CreateIncident
         if (isset($data->template)) {
             $template = IncidentTemplate::query()
                 ->where('slug', $data->template)
-                ->first();
+                ->firstOrFail();
 
             $data = $data->withMessage($this->parseTemplate($template, $data));
         }
@@ -65,7 +65,7 @@ class CreateIncident
                 'name' => $data->name,
                 'status' => $data->status,
                 'message' => $data->message ?? null,
-                'visible' => $data->visible,
+                'visible' => $data->visible->value,
                 'notify' => $data->notifications,
                 'stickied' => $data->stickied,
                 'occurred_at' => $data->occurredAt ?? Carbon::now(),

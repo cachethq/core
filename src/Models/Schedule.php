@@ -59,7 +59,10 @@ class Schedule extends Model implements Metable
     use SoftDeletes;
 
     /**
-     * Notify subscribers when the schedule transitions to complete, or when its window moves.
+     * Notify subscribers when the schedule transitions to complete, or when
+     * its window moves, and purge child rows once it is hard deleted. A
+     * soft-deleted schedule keeps its updates and component attachments for
+     * a restore.
      */
     protected static function booted(): void
     {
@@ -84,6 +87,15 @@ class Schedule extends Model implements Metable
                     $schedule->getOriginal('completed_at'),
                 );
             }
+        });
+
+        self::deleted(function (Schedule $schedule) {
+            if ($schedule->exists) {
+                return;
+            }
+
+            $schedule->updates()->delete();
+            $schedule->components()->detach();
         });
     }
 

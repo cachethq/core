@@ -4,6 +4,7 @@ use Cachet\Actions\Schedule\UpdateSchedule;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
+use Cachet\Models\Meta;
 use Cachet\Models\Schedule;
 
 it('can update a schedule', function () {
@@ -44,4 +45,21 @@ it('can update a schedule with components', function () {
         'component_id' => $componentB->id,
         'component_status' => ComponentStatusEnum::major_outage,
     ]);
+});
+
+it('rolls the whole update back when a write fails part-way', function () {
+    $schedule = Schedule::factory()->create(['name' => 'Original Name']);
+
+    Meta::creating(fn () => throw new RuntimeException('boom'));
+
+    try {
+        app(UpdateSchedule::class)->handle($schedule, UpdateScheduleRequestData::from([
+            'name' => 'Updated Name',
+            'meta' => ['cluster' => 'eu-west'],
+        ]));
+    } catch (RuntimeException) {
+        //
+    }
+
+    expect($schedule->fresh()->name)->toBe('Original Name');
 });

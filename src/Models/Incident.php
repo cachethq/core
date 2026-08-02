@@ -125,6 +125,15 @@ class Incident extends Model implements Metable
                 $model->published_notified_at = $model->freshTimestamp();
             }
         });
+
+        self::deleted(function (Incident $model) {
+            if ($model->exists) {
+                return;
+            }
+
+            $model->updates()->delete();
+            $model->components()->detach();
+        });
     }
 
     /**

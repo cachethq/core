@@ -3,6 +3,7 @@
 use Cachet\Actions\Subscriber\CreateSubscriber;
 use Cachet\Events\Subscribers\SubscriberCreated;
 use Cachet\Models\Component;
+use Cachet\Models\Meta;
 use Illuminate\Support\Facades\Event;
 
 it('can create a subscriber', function () {
@@ -63,4 +64,16 @@ it('can create a subscriber with components', function () {
         ->components->toHaveCount(2);
 
     Event::assertDispatched(SubscriberCreated::class);
+});
+
+it('creates nothing when a write fails part-way', function () {
+    Meta::creating(fn () => throw new RuntimeException('boom'));
+
+    try {
+        app(CreateSubscriber::class)->handle('james@alt-three.com', meta: ['plan' => 'pro']);
+    } catch (RuntimeException) {
+        //
+    }
+
+    $this->assertDatabaseCount('subscribers', 0);
 });
