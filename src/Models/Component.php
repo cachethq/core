@@ -91,6 +91,26 @@ class Component extends Model implements Metable
     ];
 
     /**
+     * Purge the component's links to other resources when it is removed.
+     *
+     * A soft-deleted component still exists, so it keeps its subscriptions
+     * and incident and schedule attachments for a restore; the rows are only
+     * purged once the component is hard deleted and gone from the database.
+     */
+    protected static function booted(): void
+    {
+        self::deleted(function (Component $component): void {
+            if ($component->exists) {
+                return;
+            }
+
+            $component->subscribers()->detach();
+            $component->incidents()->detach();
+            $component->schedules()->detach();
+        });
+    }
+
+    /**
      * Render the Markdown description.
      */
     public function formattedDescription(): string

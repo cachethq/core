@@ -3,6 +3,7 @@
 namespace Cachet\Actions\Component;
 
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Models\Component;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -23,9 +24,7 @@ class UpdateComponent
         DB::transaction(function () use ($component, $data, $user): void {
             $attributes = $data->except('meta', 'status')->toArray();
 
-            if ($data->status === null) {
-                $component->update($attributes);
-            } else {
+            if ($data->status instanceof ComponentStatusEnum) {
                 $this->changeComponentStatus->handle(
                     $component,
                     $data->status,
@@ -33,9 +32,11 @@ class UpdateComponent
                     $user,
                     attributes: $attributes,
                 );
+            } else {
+                $component->update($attributes);
             }
 
-            if ($data->meta !== null) {
+            if (is_array($data->meta)) {
                 $component->syncMeta($data->meta);
             }
         });

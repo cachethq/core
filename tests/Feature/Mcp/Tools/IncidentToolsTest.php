@@ -314,7 +314,7 @@ it('overlays the displayed component status while an incident is unresolved', fu
         'name' => 'API Outage',
         'status' => IncidentStatusEnum::identified->value,
         'message' => 'The API is down.',
-        'visible' => true,
+        'visible' => ResourceVisibilityEnum::guest->value,
         'components' => [
             ['id' => $component->id, 'status' => ComponentStatusEnum::major_outage->value],
         ],
@@ -337,7 +337,7 @@ it('keeps an incident nobody can see out of the displayed component status', fun
         'name' => 'Internal Outage',
         'status' => IncidentStatusEnum::identified->value,
         'message' => 'The API is down.',
-        'visible' => false,
+        'visible' => ResourceVisibilityEnum::authenticated->value,
         'components' => [
             ['id' => $component->id, 'status' => ComponentStatusEnum::major_outage->value],
         ],

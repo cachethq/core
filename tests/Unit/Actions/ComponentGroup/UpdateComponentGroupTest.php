@@ -5,6 +5,7 @@ use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
+use Cachet\Models\Meta;
 
 it('can update a component group with just a name', function () {
     $componentGroup = ComponentGroup::factory()->create();
@@ -62,4 +63,21 @@ it('can update a component group with components', function () {
     $this->assertDatabaseHas('components', [
         'component_group_id' => $componentGroup->id,
     ]);
+});
+
+it('rolls the whole update back when a write fails part-way', function () {
+    $componentGroup = ComponentGroup::factory()->create(['name' => 'Original Name']);
+
+    Meta::creating(fn () => throw new RuntimeException('boom'));
+
+    try {
+        app(UpdateComponentGroup::class)->handle($componentGroup, UpdateComponentGroupRequestData::from([
+            'name' => 'Updated Name',
+            'meta' => ['cluster' => 'eu-west'],
+        ]));
+    } catch (RuntimeException) {
+        //
+    }
+
+    expect($componentGroup->fresh()->name)->toBe('Original Name');
 });

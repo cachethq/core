@@ -9,6 +9,7 @@ use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
+use Cachet\Models\Update;
 
 it('can create an incident update', function () {
     $incident = Incident::factory()->create();
@@ -113,4 +114,22 @@ it('can create a schedule update', function () {
 
     expect($incidentUpdate)
         ->message->toBe($data->message);
+});
+
+it('persists nothing when the update cannot be saved', function () {
+    $schedule = Schedule::factory()->create(['completed_at' => null]);
+
+    Update::created(fn () => throw new RuntimeException('boom'));
+
+    try {
+        app(CreateUpdate::class)->handle($schedule, CreateScheduleUpdateRequestData::from([
+            'message' => 'Maintenance is complete.',
+            'completed_at' => now()->toDateTimeString(),
+        ]));
+    } catch (RuntimeException) {
+        //
+    }
+
+    $this->assertDatabaseCount('updates', 0);
+    expect($schedule->fresh()->completed_at)->toBeNull();
 });

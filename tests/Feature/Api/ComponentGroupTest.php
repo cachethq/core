@@ -566,3 +566,63 @@ it('lists authenticated component groups to callers presenting a bearer token', 
     $response->assertOk();
     $response->assertJsonCount(2, 'data');
 });
+
+it('can create a hidden component group', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'Internal Group',
+        'visible' => ResourceVisibilityEnum::hidden->value,
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('component_groups', [
+        'name' => 'Internal Group',
+        'visible' => ResourceVisibilityEnum::hidden->value,
+    ]);
+});
+
+it('rejects an invalid visibility value for a component group', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'Internal Group',
+        'visible' => 5,
+    ]);
+
+    $response->assertUnprocessable();
+    $response->assertJsonValidationErrors('visible');
+});
+
+it('maps a legacy boolean visibility onto the visibility enum', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $response = postJson('/status/api/component-groups', [
+        'name' => 'Public Group',
+        'visible' => true,
+    ]);
+
+    $response->assertCreated();
+    $this->assertDatabaseHas('component_groups', [
+        'name' => 'Public Group',
+        'visible' => ResourceVisibilityEnum::guest->value,
+    ]);
+});
+
+it('can update a component group\'s visibility', function () {
+    Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
+
+    $componentGroup = ComponentGroup::factory()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+    ]);
+
+    $response = putJson('/status/api/component-groups/'.$componentGroup->id, [
+        'visible' => ResourceVisibilityEnum::hidden->value,
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseHas('component_groups', [
+        'id' => $componentGroup->id,
+        'visible' => ResourceVisibilityEnum::hidden->value,
+    ]);
+});

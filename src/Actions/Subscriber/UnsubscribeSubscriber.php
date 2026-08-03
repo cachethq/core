@@ -3,6 +3,7 @@
 namespace Cachet\Actions\Subscriber;
 
 use Cachet\Models\Subscriber;
+use Illuminate\Support\Facades\DB;
 
 class UnsubscribeSubscriber
 {
@@ -13,8 +14,10 @@ class UnsubscribeSubscriber
      */
     public function handle(Subscriber $subscriber): void
     {
-        $subscriber->components()->detach();
+        DB::transaction(function () use ($subscriber): void {
+            $subscriber->components()->detach();
 
-        $subscriber->delete();
+            $subscriber->delete();
+        });
     }
 }

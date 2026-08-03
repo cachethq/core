@@ -4,6 +4,7 @@ namespace Cachet\Actions\Incident;
 
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Models\Incident;
+use Illuminate\Support\Facades\DB;
 
 class UpdateIncident
 {
@@ -12,11 +13,13 @@ class UpdateIncident
      */
     public function handle(Incident $incident, UpdateIncidentRequestData $data): Incident
     {
-        $incident->update($data->except('meta')->toArray());
+        DB::transaction(function () use ($incident, $data): void {
+            $incident->update($data->except('meta')->toArray());
 
-        if ($data->meta !== null) {
-            $incident->syncMeta($data->meta);
-        }
+            if (is_array($data->meta)) {
+                $incident->syncMeta($data->meta);
+            }
+        });
 
         return $incident->fresh();
     }

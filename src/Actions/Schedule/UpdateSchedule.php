@@ -5,6 +5,7 @@ namespace Cachet\Actions\Schedule;
 use Cachet\Data\Requests\Schedule\ScheduleComponentRequestData;
 use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Models\Schedule;
+use Illuminate\Support\Facades\DB;
 
 class UpdateSchedule
 {
@@ -13,21 +14,23 @@ class UpdateSchedule
      */
     public function handle(Schedule $schedule, UpdateScheduleRequestData $data): Schedule
     {
-        $schedule->update($data->except('components', 'meta')->toArray());
+        DB::transaction(function () use ($schedule, $data): void {
+            $schedule->update($data->except('components', 'meta')->toArray());
 
-        if ($data->meta !== null) {
-            $schedule->syncMeta($data->meta);
-        }
+            if (is_array($data->meta)) {
+                $schedule->syncMeta($data->meta);
+            }
 
-        if ($data->components) {
-            $components = collect($data->components)
-                ->mapWithKeys(fn (ScheduleComponentRequestData $component) => [
-                    $component->id => ['component_status' => $component->status],
-                ])
-                ->all();
+            if (is_array($data->components) && $data->components !== []) {
+                $components = collect($data->components)
+                    ->mapWithKeys(fn (ScheduleComponentRequestData $component) => [
+                        $component->id => ['component_status' => $component->status],
+                    ])
+                    ->all();
 
-            $schedule->components()->sync($components);
-        }
+                $schedule->components()->sync($components);
+            }
+        });
 
         // @todo Dispatch notification that maintenance was updated.
 

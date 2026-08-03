@@ -5,6 +5,7 @@ use Cachet\Data\Requests\ComponentGroup\CreateComponentGroupRequestData;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
+use Cachet\Models\Meta;
 
 it('can create a component group with just a name', function () {
     $data = [
@@ -59,4 +60,19 @@ it('can create a component group and add components', function () {
     $this->assertDatabaseHas('components', [
         'component_group_id' => $componentGroup->id,
     ]);
+});
+
+it('creates nothing when a write fails part-way', function () {
+    Meta::creating(fn () => throw new RuntimeException('boom'));
+
+    try {
+        app(CreateComponentGroup::class)->handle(CreateComponentGroupRequestData::from([
+            'name' => 'My Group',
+            'meta' => ['cluster' => 'eu-west'],
+        ]));
+    } catch (RuntimeException) {
+        //
+    }
+
+    $this->assertDatabaseCount('component_groups', 0);
 });

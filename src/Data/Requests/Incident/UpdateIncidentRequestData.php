@@ -2,25 +2,26 @@
 
 namespace Cachet\Data\Requests\Incident;
 
-use Cachet\Data\BaseData;
+use Cachet\Data\BaseUpdateData;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Optional;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
-final class UpdateIncidentRequestData extends BaseData
+final class UpdateIncidentRequestData extends BaseUpdateData
 {
     public function __construct(
-        public readonly Optional|string $name,
-        public readonly ?string $message = null,
-        public readonly ?IncidentStatusEnum $status = null,
-        public readonly ?bool $visible = null,
-        public readonly ?bool $stickied = null,
-        public readonly ?bool $notifications = null,
-        public readonly ?string $occurredAt = null,
-        public readonly ?string $publishedAt = null,
-        /** @var array<string, mixed>|null */
-        public readonly ?array $meta = null,
+        public readonly string|Optional $name = new Optional,
+        public readonly string|Optional $message = new Optional,
+        public readonly IncidentStatusEnum|Optional $status = new Optional,
+        public readonly ResourceVisibilityEnum|Optional $visible = new Optional,
+        public readonly bool|Optional $stickied = new Optional,
+        public readonly bool|Optional $notifications = new Optional,
+        public readonly string|Optional|null $occurredAt = new Optional,
+        public readonly string|Optional|null $publishedAt = new Optional,
+        /** @var array<string, mixed>|Optional|null */
+        public readonly array|Optional|null $meta = new Optional,
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -29,15 +30,18 @@ final class UpdateIncidentRequestData extends BaseData
             'name' => ['string', 'max:255'],
             'message' => ['string'],
             'status' => [Rule::enum(IncidentStatusEnum::class)],
-            'visible' => ['boolean'],
+            /**
+             * Who the incident is visible to: 0 authenticated users only, 1 everyone, 2 hidden.
+             */
+            'visible' => [Rule::enum(ResourceVisibilityEnum::class)],
             'stickied' => ['boolean'],
             'notifications' => ['boolean'],
             /**
-             * The date/time the incident occurred, e.g. "2023-11-07 05:31:56" or ISO 8601.
+             * The date/time the incident occurred, e.g. "2023-11-07 05:31:56" or ISO 8601. Send null to clear it.
              */
             'occurred_at' => ['nullable', 'date'],
             /**
-             * The date/time to publish the incident, e.g. "2023-11-07 05:31:56" or ISO 8601. While set in the future the incident is hidden from the status page and public API.
+             * The date/time to publish the incident, e.g. "2023-11-07 05:31:56" or ISO 8601. While set in the future the incident is hidden from the status page and public API. Send null to publish immediately.
              */
             'published_at' => ['nullable', 'date'],
             /**
@@ -49,10 +53,5 @@ final class UpdateIncidentRequestData extends BaseData
              */
             'meta' => ['nullable', 'array'],
         ];
-    }
-
-    public function toArray(): array
-    {
-        return parent::toArray();
     }
 }

@@ -7,6 +7,7 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Models\Component;
 use Cachet\Models\IncidentTemplate;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Event;
 
 beforeEach(function () {
@@ -116,3 +117,13 @@ it('attaches provided components to the incident', function () {
         ->toContain(ComponentStatusEnum::performance_issues)
         ->toContain(ComponentStatusEnum::partial_outage);
 });
+
+it('fails loudly when the incident template has gone missing', function () {
+    $data = CreateIncidentRequestData::factory()->withoutValidation()->from([
+        'name' => 'My Incident',
+        'template' => 'missing-template',
+        'status' => IncidentStatusEnum::investigating,
+    ]);
+
+    app(CreateIncident::class)->handle($data);
+})->throws(ModelNotFoundException::class);

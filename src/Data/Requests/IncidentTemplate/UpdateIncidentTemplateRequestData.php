@@ -10,12 +10,16 @@ use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class UpdateIncidentTemplateRequestData extends BaseData
 {
+    private readonly ?string $slug;
+
     public function __construct(
         public readonly ?string $name = null,
         public readonly ?string $template = null,
-        private readonly ?string $slug = null,
+        ?string $slug = null,
         public readonly ?IncidentTemplateEngineEnum $engine = null,
-    ) {}
+    ) {
+        $this->slug = $slug;
+    }
 
     public static function rules(ValidationContext $context): array
     {
@@ -27,15 +31,26 @@ final class UpdateIncidentTemplateRequestData extends BaseData
         ];
     }
 
-    public function slug(): string
+    /**
+     * The slug to store, or null when the payload gives no basis for one.
+     *
+     * An explicit slug always wins; otherwise a new name regenerates the
+     * slug. A payload with neither must leave the stored slug untouched
+     * rather than derive one from nothing.
+     */
+    public function slug(): ?string
     {
-        return $this->slug ?? Str::slug($this->name);
+        if ($this->slug !== null) {
+            return $this->slug;
+        }
+
+        return $this->name === null ? null : Str::slug($this->name);
     }
 
     public function toArray(): array
     {
-        return array_merge(parent::toArray(), [
-            'slug' => $this->slug(),
-        ]);
+        $slug = $this->slug();
+
+        return array_merge(parent::toArray(), $slug === null ? [] : ['slug' => $slug]);
     }
 }

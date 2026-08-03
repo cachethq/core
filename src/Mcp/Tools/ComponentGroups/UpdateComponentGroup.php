@@ -7,6 +7,7 @@ use Cachet\Data\Requests\ComponentGroup\UpdateComponentGroupRequestData;
 use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Enums\ResourceOrderDirectionEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Mcp\Concerns\GuardsMcpAbilities;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Cachet\Models\ComponentGroup;
@@ -36,7 +37,9 @@ class UpdateComponentGroup extends Tool
             'id' => $schema->integer()->required()->description('The component group ID.'),
             'name' => $schema->string()->max(255)->description('The name of the component group.'),
             'order' => $schema->integer()->min(0)->description('The display order of the component group.'),
-            'visible' => $schema->boolean()->description('Whether the component group is visible to guests.'),
+            'visible' => $schema->integer()
+                ->enum(array_column(ResourceVisibilityEnum::cases(), 'value'))
+                ->description('Who the group is visible to: 0 authenticated users only, 1 everyone, 2 hidden.'),
             'collapsed' => $schema->integer()
                 ->enum(array_column(ComponentGroupVisibilityEnum::cases(), 'value'))
                 ->description('Collapse behaviour: 0 expanded, 1 collapsed, 2 collapsed unless a component has an incident.'),

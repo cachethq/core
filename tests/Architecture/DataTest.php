@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Data\BaseData;
+use Cachet\Data\BaseUpdateData;
 use Cachet\Data\Casts\FlexibleDateTimeCast;
 use Spatie\LaravelData\Data;
 
@@ -10,7 +11,7 @@ test('data test')
     ->toExtend(BaseData::class)
     ->ignoring(FlexibleDateTimeCast::class)
     ->toBeFinal()
-    ->ignoring(BaseData::class);
+    ->ignoring([BaseData::class, BaseUpdateData::class]);
 
 test('data requests test')
     ->expect('Cachet\Data\Requests')
@@ -30,3 +31,9 @@ test('base data test')
     ->toHaveMethodsDocumented()
     ->toBeAbstract()
     ->toExtend(Data::class);
+
+test('base update data test')
+    ->expect(BaseUpdateData::class)
+    ->toHaveMethodsDocumented()
+    ->toBeAbstract()
+    ->toExtend(BaseData::class);
