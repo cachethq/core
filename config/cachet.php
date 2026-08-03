@@ -269,6 +269,21 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet Template Renderers
+     |--------------------------------------------------------------------------
+     |
+     | Configure which renderers a template body may be rendered with. Twig
+     | bodies are rendered inside a sandbox. Blade bodies are compiled to
+     | PHP and run with the permissions of the application, so the Blade
+     | renderer is only used when an installation enables it here.
+     |
+     */
+    'renderers' => [
+        'blade' => env('CACHET_BLADE_RENDERER', false),
+    ],
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Blog Feed
      |--------------------------------------------------------------------------
      |

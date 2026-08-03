@@ -12,6 +12,33 @@ enum IncidentTemplateEngineEnum: string implements HasColor, HasIcon, HasLabel
     case blade = 'blade';
     case twig = 'twig';
 
+    /**
+     * The engines whose renderer is available to a template.
+     *
+     * @return list<self>
+     */
+    public static function available(): array
+    {
+        return array_values(array_filter(
+            self::cases(),
+            fn (self $engine): bool => $engine->isAvailable(),
+        ));
+    }
+
+    /**
+     * Determine if the engine may be selected for a template.
+     *
+     * Blade template bodies compile to PHP, so the Blade renderer is only
+     * available when an installation enables cachet.renderers.blade.
+     */
+    public function isAvailable(): bool
+    {
+        return match ($this) {
+            self::blade => (bool) config('cachet.renderers.blade'),
+            self::twig => true,
+        };
+    }
+
     public function getColor(): array
     {
         return match ($this) {

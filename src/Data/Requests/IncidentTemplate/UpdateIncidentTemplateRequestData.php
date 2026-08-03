@@ -23,7 +23,7 @@ final class UpdateIncidentTemplateRequestData extends BaseData
             'name' => ['string', 'max:255'],
             'slug' => ['string'],
             'template' => ['string'],
-            'engine' => [Rule::enum(IncidentTemplateEngineEnum::class)],
+            'engine' => [Rule::enum(IncidentTemplateEngineEnum::class)->only(IncidentTemplateEngineEnum::available())],
         ];
     }
 

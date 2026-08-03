@@ -27,7 +27,7 @@ final class CreateIncidentTemplateRequestData extends BaseData
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['string'],
             'template' => ['required', 'string'],
-            'engine' => [Rule::enum(IncidentTemplateEngineEnum::class)],
+            'engine' => [Rule::enum(IncidentTemplateEngineEnum::class)->only(IncidentTemplateEngineEnum::available())],
         ];
     }
 

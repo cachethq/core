@@ -71,6 +71,8 @@ it('can create an incident with a twig template', function () {
 });
 
 it('can create an incident with a blade template', function () {
+    config()->set('cachet.renderers.blade', true);
+
     $template = IncidentTemplate::factory()->blade()->create([
         'slug' => 'my-template',
         'template' => 'This is a template: {{ $incident[\'name\'] }} foo: {{ $foo }}',
