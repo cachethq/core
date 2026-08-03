@@ -7,8 +7,8 @@
                 'font-semibold text-zinc-900 dark:text-zinc-100' => ! ($nested ?? false),
                 'text-zinc-600 dark:text-zinc-300' => $nested ?? false,
             ])>
-                @if($component->link)
-                    <a href="{{ $component->link }}" target="_blank" rel="nofollow noopener" class="before:absolute before:inset-0 before:content-['']">{{ $component->name }}</a>
+                @if($component->formattedLink())
+                    <a href="{{ $component->formattedLink() }}" target="_blank" rel="nofollow noopener" class="before:absolute before:inset-0 before:content-['']">{{ $component->name }}</a>
                 @else
                     {{ $component->name }}
                 @endif
