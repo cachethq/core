@@ -13,6 +13,7 @@ use Cachet\Filament\Resources\Incidents\Pages\EditIncident;
 use Cachet\Filament\Resources\Incidents\Pages\ListIncidents;
 use Cachet\Filament\Resources\Incidents\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
+use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Settings\MailSettings;
 use Cachet\Status;
@@ -89,7 +90,7 @@ class IncidentResource extends Resource
                             Select::make('component_id')
                                 ->preload()
                                 ->required()
-                                ->relationship('component', 'name')
+                                ->options(fn (): array => static::getComponentOptions())
                                 ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                 ->label(__('cachet::incident.form.add_component.component_label')),
                             ToggleButtons::make('component_status')
@@ -129,6 +130,28 @@ class IncidentResource extends Resource
                     ->columnSpan(1),
             ])
             ->columns(4);
+    }
+
+    /**
+     * Get components grouped by their component group for incident selection.
+     *
+     * @return array<string, array<int, string>>
+     */
+    protected static function getComponentOptions(): array
+    {
+        return Component::query()
+            ->with('group')
+            ->leftJoin('component_groups', 'components.component_group_id', '=', 'component_groups.id')
+            ->orderByRaw('component_groups.id is null')
+            ->orderBy('component_groups.order')
+            ->orderBy('component_groups.name')
+            ->orderBy('components.order')
+            ->orderBy('components.name')
+            ->select('components.*')
+            ->get()
+            ->groupBy(fn (Component $component): string => $component->group?->name ?? __('Ungrouped components'))
+            ->map(fn ($components): array => $components->pluck('name', 'id')->all())
+            ->all();
     }
 
     public static function table(Table $table): Table
