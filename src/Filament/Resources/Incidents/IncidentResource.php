@@ -14,6 +14,7 @@ use Cachet\Filament\Resources\Incidents\Pages\ListIncidents;
 use Cachet\Filament\Resources\Incidents\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Settings\MailSettings;
 use Cachet\Status;
@@ -149,7 +150,13 @@ class IncidentResource extends Resource
             ->orderBy('components.name')
             ->select('components.*')
             ->get()
-            ->groupBy(fn (Component $component): string => $component->group?->name ?? __('Ungrouped components'))
+            ->groupBy(function (Component $component): string {
+                $group = $component->group;
+
+                return $group instanceof ComponentGroup
+                    ? $group->name
+                    : __('Ungrouped components');
+            })
             ->map(fn ($components): array => $components->pluck('name', 'id')->all())
             ->all();
     }

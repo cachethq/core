@@ -111,6 +111,8 @@ class Component extends Model implements Metable
 
     /**
      * Get the group the component belongs to.
+     *
+     * @return BelongsTo<ComponentGroup, $this>
      */
     public function group(): BelongsTo
     {
