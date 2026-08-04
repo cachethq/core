@@ -30,7 +30,7 @@ return [
             'name' => 'Name',
             'status' => 'Status',
             'visible' => 'Visible',
-            'stickied' => 'Pin to Top',
+            'pinned' => 'Pin to Top',
             'occurred_at' => 'Occurred at',
             'published_at' => 'Published at',
             'notified_subscribers' => 'Notified subscribers',
