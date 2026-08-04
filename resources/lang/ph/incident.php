@@ -30,7 +30,7 @@ return [
             'name' => 'Pangalan',
             'status' => 'Kalagayan',
             'visible' => 'Nakikita',
-            'stickied' => 'Naka-sticky',
+            'stickied' => 'I-pin sa itaas',
             'occurred_at' => 'Nangyari noong',
             'published_at' => 'Nai-publish noong',
             'notified_subscribers' => 'Naabisuhan ang mga subscriber',
@@ -63,6 +63,7 @@ return [
         'user_label' => 'Gumagamit',
         'user_helper' => 'Ang gumagamit na nag-ulat ng insidente.',
         'notifications_label' => 'Abisuhan ang mga Subscriber?',
+        'pin_incident_label' => 'I-pin ang insidente sa itaas ng status page.',
         'stickied_label' => 'Gawing Sticky ang Insidente?',
         'guid_label' => 'Incident UUID',
         'add_component' => [

@@ -30,7 +30,7 @@ return [
             'name' => '이름',
             'status' => '상태',
             'visible' => '표시 여부',
-            'stickied' => '고정 여부',
+            'stickied' => '상단에 고정',
             'occurred_at' => '발생 시간',
             'published_at' => '게시 시간',
             'notified_subscribers' => '구독자 알림 여부',
@@ -63,6 +63,7 @@ return [
         'user_label' => '사용자',
         'user_helper' => '사고를 보고한 사용자입니다.',
         'notifications_label' => '구독자에게 알림을 보내시겠습니까?',
+        'pin_incident_label' => '상태 페이지 상단에 사고를 고정합니다.',
         'stickied_label' => '사고를 고정하시겠습니까?',
         'guid_label' => '사고 UUID',
         'add_component' => [
