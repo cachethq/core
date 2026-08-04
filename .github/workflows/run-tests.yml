@@ -22,7 +22,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.4
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: none
 
@@ -67,7 +67,7 @@ jobs:
             laravel: 11.x
             stability: prefer-stable
           # Dependency floor
-          - php: 8.3
+          - php: 8.4
             laravel: 11.x
             stability: prefer-lowest
           # PHP 8.5 (allowed failure)
@@ -116,9 +116,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3]
+        php: [8.4]
         laravel: [13.x, 12.x, 11.x]
         stability: [prefer-lowest, prefer-stable]
+        shard: [1/2, 2/2]
         include:
           # PHP 8.5 (allowed failure)
           - php: '8.5'
@@ -127,7 +128,7 @@ jobs:
             allow-failure: true
     continue-on-error: ${{ matrix.allow-failure || false }}
 
-    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - SQLite
+    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - SQLite - shard ${{ matrix.shard }}
 
     steps:
       - name: Checkout code
@@ -167,7 +168,7 @@ jobs:
         run: composer build
 
       - name: Execute tests
-        run: composer test
+        run: composer test:shard -- --shard=${{ matrix.shard }}
 
   mysql:
     runs-on: ubuntu-latest
@@ -193,18 +194,34 @@ jobs:
           - php: 8.4
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+          - php: 8.4
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
           # Dependency floor
-          - php: 8.3
+          - php: 8.4
             laravel: 11.x
             stability: prefer-lowest
+            shard: 1/2
+          - php: 8.4
+            laravel: 11.x
+            stability: prefer-lowest
+            shard: 2/2
           # PHP 8.5 (allowed failure)
           - php: '8.5'
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+            allow-failure: true
+          - php: '8.5'
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
             allow-failure: true
     continue-on-error: ${{ matrix.allow-failure || false }}
 
-    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - MySQL 8.0
+    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - MySQL 8.0 - shard ${{ matrix.shard }}
 
     steps:
       - name: Checkout code
@@ -244,7 +261,7 @@ jobs:
         run: composer build
 
       - name: Execute tests
-        run: composer test
+        run: composer test:shard -- --shard=${{ matrix.shard }}
         env:
           DB_CONNECTION: mysql
           DB_HOST: localhost
@@ -275,18 +292,34 @@ jobs:
           - php: 8.4
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+          - php: 8.4
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
           # Dependency floor
-          - php: 8.3
+          - php: 8.4
             laravel: 11.x
             stability: prefer-lowest
+            shard: 1/2
+          - php: 8.4
+            laravel: 11.x
+            stability: prefer-lowest
+            shard: 2/2
           # PHP 8.5 (allowed failure)
           - php: '8.5'
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+            allow-failure: true
+          - php: '8.5'
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
             allow-failure: true
     continue-on-error: ${{ matrix.allow-failure || false }}
 
-    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 15
+    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 15 - shard ${{ matrix.shard }}
 
     steps:
       - name: Checkout code
@@ -326,7 +359,7 @@ jobs:
         run: composer build
 
       - name: Execute tests
-        run: composer test
+        run: composer test:shard -- --shard=${{ matrix.shard }}
         env:
           DB_CONNECTION: pgsql
           DB_HOST: localhost
