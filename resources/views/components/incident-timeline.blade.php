@@ -32,6 +32,10 @@
     </div>
 
     <div class="flex w-full flex-col gap-8">
+        @if ($stickiedIncidents->isNotEmpty())
+            <x-cachet::incident :date="$from" :incidents="$stickiedIncidents" :with-date="false" />
+        @endif
+
         @forelse ($timeline as $date => $day)
             <x-cachet::incident :date="$date" :incidents="$day['incidents']" :schedules="$day['schedules']" />
         @empty
