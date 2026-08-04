@@ -38,7 +38,7 @@ class UpdateIncident extends Tool
                 ->enum(array_column(IncidentStatusEnum::cases(), 'value'))
                 ->description('The status: 0 unknown, 1 investigating, 2 identified, 3 watching, 4 fixed.'),
             'visible' => $schema->boolean()->description('Whether the incident is visible to guests.'),
-            'stickied' => $schema->boolean()->description('Whether the incident is stickied to the top of the status page.'),
+            'stickied' => $schema->boolean()->description('Whether the incident is pinned to the top of the status page.'),
             'notifications' => $schema->boolean()->description('Whether to notify verified subscribers.'),
             'occurred_at' => $schema->string()->description('When the incident occurred, as an ISO-8601 datetime.'),
             'published_at' => $schema->string()->description('When to publish the incident, as an ISO-8601 datetime. While set in the future the incident is hidden from the status page and public API.'),

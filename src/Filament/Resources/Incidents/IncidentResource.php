@@ -177,7 +177,7 @@ class IncidentResource extends Resource
                     ->sortable()
                     ->badge(),
                 IconColumn::make('stickied')
-                    ->label(__('cachet::incident.list.headers.stickied'))
+                    ->label(__('cachet::incident.list.headers.pinned'))
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->boolean(),
                 TextColumn::make('occurred_at')
