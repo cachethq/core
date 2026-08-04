@@ -1,0 +1,18 @@
+# Visit https://soloterm.com to learn more
+name: cachet-core
+icon: null
+processes:
+  PHP Server:
+    command: php -S 127.0.0.1:8000 -t public
+    working_dir: null
+    auto_start: true
+    auto_restart: true
+    restart_when_changed: []
+    env: {}
+  npm:dev:
+    command: npm run dev
+    working_dir: null
+    auto_start: true
+    auto_restart: false
+    restart_when_changed: []
+    env: {}
