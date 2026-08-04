@@ -9,6 +9,9 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+env:
+  GH_TOKEN: ${{ github.token }}
+
 jobs:
   build-assets:
     runs-on: ubuntu-latest
@@ -28,7 +31,7 @@ jobs:
 
       - name: Install PHP dependencies
         run: |
-          composer require "laravel/framework:13.x" --no-interaction --no-update
+          composer require "laravel/framework:13.x" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --prefer-dist --no-interaction
 
       - name: Setup Node
@@ -60,12 +63,9 @@ jobs:
           - php: 8.4
             laravel: 13.x
             stability: prefer-stable
-          - php: 8.4
-            laravel: 12.x
-            stability: prefer-stable
           # Dependency floor
           - php: 8.4
-            laravel: 12.x
+            laravel: 13.x
             stability: prefer-lowest
           # PHP 8.5 (allowed failure)
           - php: '8.5'
@@ -101,7 +101,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Run PHPStan
@@ -114,7 +114,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4]
-        laravel: [13.x, 12.x]
+        laravel: [13.x]
         stability: [prefer-lowest, prefer-stable]
         shard: [1/2, 2/2]
         include:
@@ -122,6 +122,12 @@ jobs:
           - php: '8.5'
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+            allow-failure: true
+          - php: '8.5'
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
             allow-failure: true
     continue-on-error: ${{ matrix.allow-failure || false }}
 
@@ -152,7 +158,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Download compiled assets
@@ -198,11 +204,11 @@ jobs:
             shard: 2/2
           # Dependency floor
           - php: 8.4
-            laravel: 12.x
+            laravel: 13.x
             stability: prefer-lowest
             shard: 1/2
           - php: 8.4
-            laravel: 12.x
+            laravel: 13.x
             stability: prefer-lowest
             shard: 2/2
           # PHP 8.5 (allowed failure)
@@ -245,7 +251,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Download compiled assets
@@ -296,11 +302,11 @@ jobs:
             shard: 2/2
           # Dependency floor
           - php: 8.4
-            laravel: 12.x
+            laravel: 13.x
             stability: prefer-lowest
             shard: 1/2
           - php: 8.4
-            laravel: 12.x
+            laravel: 13.x
             stability: prefer-lowest
             shard: 2/2
           # PHP 8.5 (allowed failure)
@@ -343,7 +349,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Download compiled assets

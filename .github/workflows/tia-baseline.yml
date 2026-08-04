@@ -8,6 +8,9 @@ on:
     - cron: '0 3 * * *'
   workflow_dispatch:
 
+env:
+  GH_TOKEN: ${{ github.token }}
+
 jobs:
   baseline:
     runs-on: ubuntu-latest
