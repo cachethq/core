@@ -31,6 +31,7 @@ class IncidentTimeline extends Component
         $endDate = $startDate->clone()->subDays($incidentDays);
 
         return view('cachet::components.incident-timeline', [
+            'stickiedIncidents' => $this->stickiedIncidents(),
             'timeline' => $this->timeline(
                 $startDate,
                 $endDate,
@@ -86,6 +87,7 @@ class IncidentTimeline extends Component
                 'updates' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id'),
             ])
             ->viewableBy(auth()->check())
+            ->where('stickied', false)
             ->when($this->appSettings->recent_incidents_only, function ($query) {
                 $query->where(function ($query) {
                     $query->whereDate(
@@ -118,6 +120,24 @@ class IncidentTimeline extends Component
             ->toBase()
             ->sortByDesc(fn (Incident $incident) => $incident->timestamp)
             ->groupBy(fn (Incident $incident) => $incident->timestamp->toDateString());
+    }
+
+    /**
+     * Fetch incidents pinned to the top of the timeline.
+     *
+     * @return Collection<int, Incident>
+     */
+    private function stickiedIncidents(): Collection
+    {
+        return Incident::query()
+            ->with([
+                'components',
+                'updates' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id'),
+            ])
+            ->viewableBy(auth()->check())
+            ->stickied()
+            ->get()
+            ->sortByDesc(fn (Incident $incident) => $incident->timestamp);
     }
 
     /**

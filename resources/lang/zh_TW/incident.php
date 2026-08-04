@@ -63,6 +63,7 @@ return [
         'user_label' => '用戶',
         'user_helper' => '報告事件的用戶。',
         'notifications_label' => '通知訂閱者？',
+        'pin_incident_label' => '將事件置頂到狀態頁面頂部。',
         'stickied_label' => '置頂事件？',
         'guid_label' => '事件 UUID',
         'add_component' => [

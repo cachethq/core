@@ -30,7 +30,7 @@ return [
             'name' => 'Nombre',
             'status' => 'Estado',
             'visible' => 'Visible',
-            'stickied' => 'Fijado',
+            'stickied' => 'Fijar arriba',
             'occurred_at' => 'Ocurrido el',
             'published_at' => 'Publicado el',
             'notified_subscribers' => 'Suscriptores notificados',
@@ -63,6 +63,7 @@ return [
         'user_label' => 'Usuario',
         'user_helper' => 'El usuario que reportó el incidente.',
         'notifications_label' => '¿Notificar a los suscriptores?',
+        'pin_incident_label' => 'Fijar el incidente en la parte superior de la página de estado.',
         'stickied_label' => '¿Incidente fijado?',
         'guid_label' => 'UUID del Incidente',
         'add_component' => [

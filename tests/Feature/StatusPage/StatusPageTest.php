@@ -2,6 +2,7 @@
 
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
+use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 
@@ -52,6 +53,24 @@ it('shows completed maintenance in the timeline instead of the maintenance block
     expect($response->viewData('schedules')->pluck('id'))->not->toContain($completed->id);
 
     $response->assertSee('Completed maintenance');
+});
+
+it('shows stickied incidents at the top of the timeline', function () {
+    Incident::factory()->create([
+        'name' => 'Pinned incident',
+        'stickied' => true,
+        'occurred_at' => now()->subMonths(2),
+    ]);
+    Incident::factory()->create([
+        'name' => 'Recent incident',
+        'occurred_at' => now(),
+    ]);
+
+    $response = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSeeInOrder(['Pinned incident', 'Recent incident']);
+
+    expect(substr_count($response->getContent(), 'Pinned incident'))->toBe(1);
 });
 
 it('does not render a dynamic favicon when the setting is disabled', function () {

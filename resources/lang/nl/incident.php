@@ -30,7 +30,7 @@ return [
             'name' => 'Naam',
             'status' => 'Toestand',
             'visible' => 'Zichtbaar',
-            'stickied' => 'Vastgepind',
+            'stickied' => 'Bovenaan vastpinnen',
             'occurred_at' => 'Voorgekomen op',
             'published_at' => 'Gepubliceerd op',
             'notified_subscribers' => 'Geïnformeerde abonnees',
@@ -63,6 +63,7 @@ return [
         'user_label' => 'Gebruiker',
         'user_helper' => 'Gebruiker die het incident heeft gemeld.',
         'notifications_label' => 'Abonnees op de hoogte stellen?',
+        'pin_incident_label' => 'Het incident bovenaan de statuspagina vastpinnen.',
         'stickied_label' => 'Pin-incident?',
         'guid_label' => 'Incident-UUID',
         'add_component' => [

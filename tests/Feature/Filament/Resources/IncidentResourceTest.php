@@ -6,6 +6,8 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\Incidents\Pages\CreateIncident;
 use Cachet\Filament\Resources\Incidents\Pages\EditIncident;
+use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\NewIncidentNotification;
@@ -69,4 +71,21 @@ it('notifies subscribers when creating an incident from the dashboard', function
         ->assertHasNoFormErrors();
 
     Notification::assertSentTo($subscriber, NewIncidentNotification::class);
+});
+
+it('groups component selections by component group when creating an incident', function () {
+    $firstGroup = ComponentGroup::factory()->create(['name' => 'First Group', 'order' => 1]);
+    $secondGroup = ComponentGroup::factory()->create(['name' => 'Second Group', 'order' => 2]);
+
+    Component::factory()->for($firstGroup, 'group')->create(['name' => 'Webservice']);
+    Component::factory()->for($secondGroup, 'group')->create(['name' => 'Webservice']);
+    Component::factory()->create(['name' => 'Ungrouped Service']);
+
+    livewire(CreateIncident::class)
+        ->fillForm([
+            'incidentComponents' => [['component_id' => null]],
+        ])
+        ->assertSeeInOrder(['First Group', 'Second Group', 'Ungrouped components'])
+        ->assertSee('Webservice')
+        ->assertSee('Ungrouped Service');
 });
