@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 /**
@@ -125,6 +126,9 @@ class Incident extends Model implements Metable
                 $model->published_notified_at = $model->freshTimestamp();
             }
         });
+
+        self::saved(fn () => self::forgetRssFeed());
+        self::deleted(fn () => self::forgetRssFeed());
     }
 
     /**
@@ -265,6 +269,15 @@ class Incident extends Model implements Metable
     protected function latestStatus(): Attribute
     {
         return Attribute::make(get: fn (): ?IncidentStatusEnum => $this->status);
+    }
+
+    /**
+     * Clear the cached RSS feed and its HTTP validators.
+     */
+    private static function forgetRssFeed(): void
+    {
+        Cache::forget('cachet::rss-feed');
+        Cache::forget('cachet::rss-feed-last-modified');
     }
 
     /**
