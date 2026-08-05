@@ -36,13 +36,18 @@ class CreateIncident
                 ['guid' => Str::uuid()],
                 $data->except('components', 'meta')->toArray()
             )), function (Incident $incident) use ($data) {
-                if ($data->components) {
-                    $components = collect($data->components)
-                        ->mapWithKeys(fn (IncidentComponentRequestData $component) => [
-                            $component->id => ['component_status' => $component->status],
-                        ])
-                        ->all();
+                $components = collect($data->components)
+                    ->mapWithKeys(fn (IncidentComponentRequestData $component) => [
+                        $component->id => ['component_status' => $component->status],
+                    ]);
 
+                if ($data->componentId !== null) {
+                    $components->put($data->componentId, [
+                        'component_status' => $data->componentStatus,
+                    ]);
+                }
+
+                if ($components->isNotEmpty()) {
                     $incident->components()->sync($components);
                 }
 
