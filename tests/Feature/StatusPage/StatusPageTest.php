@@ -5,10 +5,31 @@ use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Illuminate\Support\Str;
 
 it('renders the status page', function () {
     $this->get(route('cachet.status-page'))
         ->assertOk();
+});
+
+it('can hide the site name and about content without changing status page metadata', function () {
+    $settings = app(AppSettings::class);
+    $settings->name = 'Acme Status';
+    $settings->about = 'A private production system.';
+    $settings->show_site_name = false;
+    $settings->show_about = false;
+    $settings->save();
+
+    $response = $this->get(route('cachet.status-page'))->assertOk();
+    $body = Str::after($response->getContent(), '<body');
+
+    expect($body)
+        ->not->toContain('Acme Status')
+        ->not->toContain('A private production system.');
+
+    $response
+        ->assertSee('<title>Acme Status</title>', escape: false)
+        ->assertSee('<meta name="description" content="A private production system." />', escape: false);
 });
 
 it('renders the status page in the configured locale', function () {

@@ -27,6 +27,8 @@ class About extends Component
         return view('cachet::components.about', [
             'title' => $this->settings->name ?: config('cachet.title', 'Cachet'),
             'about' => Cachet::markdown(Str::of($this->settings->about)->trim()->toString()),
+            'showSiteName' => $this->settings->show_site_name,
+            'showAbout' => $this->settings->show_about,
         ]);
     }
 }

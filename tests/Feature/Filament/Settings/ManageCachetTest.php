@@ -31,6 +31,21 @@ it('saves the dynamic favicon setting', function () {
     expect(app(AppSettings::class)->refresh()->dynamic_favicon)->toBeTrue();
 });
 
+it('saves the status page title and about visibility settings', function () {
+    expect(app(AppSettings::class))
+        ->show_site_name->toBeFalse()
+        ->show_about->toBeTrue();
+
+    livewire(ManageCachet::class)
+        ->fillForm(['show_site_name' => true, 'show_about' => false])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect(app(AppSettings::class)->refresh())
+        ->show_site_name->toBeTrue()
+        ->show_about->toBeFalse();
+});
+
 it('saves the mcp settings', function () {
     expect(app(AppSettings::class))
         ->mcp_enabled->toBeFalse()
