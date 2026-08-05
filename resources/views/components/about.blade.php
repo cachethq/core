@@ -1,9 +1,11 @@
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_ABOUT_BEFORE) }}
 
 <div class="flex flex-col gap-3">
-    <h1 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-2xl">{{ $title }}</h1>
+    @if ($showSiteName)
+        <h1 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-2xl">{{ $title }}</h1>
+    @endif
 
-    @if ($about !== '')
+    @if ($showAbout && $about !== '')
         <div class="prose prose-zinc max-w-none dark:prose-invert
                     prose-headings:tracking-tight prose-headings:text-zinc-900 dark:prose-headings:text-zinc-100
                     prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-300

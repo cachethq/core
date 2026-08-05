@@ -3,9 +3,9 @@
 return [
     'manage_cachet' => [
         'site_name_label' => 'Site name',
-        'site_name_helper' => 'Displayed in the browser tab and across your status page.',
+        'site_name_helper' => 'Used in browser tabs and status page metadata.',
         'about_this_site_label' => 'About this site',
-        'about_this_site_helper' => 'A short Markdown introduction shown on the home page of your status page.',
+        'about_this_site_helper' => 'A short Markdown introduction for the home page of your status page.',
         'timezone_label' => 'Timezone',
         'timezone_other' => 'Other',
         'browser_default' => 'Browser default',
@@ -22,6 +22,10 @@ return [
             'support_cachet_helper' => 'Display a small link encouraging visitors to support Cachet\'s development.',
             'show_dashboard_link' => 'Show dashboard link',
             'show_dashboard_link_helper' => 'Show a link to the dashboard from the public status page.',
+            'show_site_name' => 'Show site name',
+            'show_site_name_helper' => 'Display the site name on the public status page.',
+            'show_about' => 'Show About this site',
+            'show_about_helper' => 'Display the About this site content on the public status page.',
             'display_graphs' => 'Display graphs',
             'display_graphs_helper' => 'Render metric charts on the status page.',
             'enable_external_dependencies' => 'Enable external dependencies',

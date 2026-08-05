@@ -12,6 +12,10 @@ class AppSettings extends Settings
 
     public ?string $about;
 
+    public bool $show_site_name = false;
+
+    public bool $show_about = true;
+
     public bool $show_support = true;
 
     public string $locale = 'en';

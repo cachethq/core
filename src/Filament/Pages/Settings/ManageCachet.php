@@ -94,6 +94,12 @@ class ManageCachet extends SettingsPage
                         Toggle::make('dashboard_login_link')
                             ->label(__('cachet::settings.manage_cachet.toggles.show_dashboard_link'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.show_dashboard_link_helper')),
+                        Toggle::make('show_site_name')
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_site_name'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.show_site_name_helper')),
+                        Toggle::make('show_about')
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_about'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.show_about_helper')),
                         Toggle::make('show_support')
                             ->label(__('cachet::settings.manage_cachet.toggles.support_cachet'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.support_cachet_helper')),
