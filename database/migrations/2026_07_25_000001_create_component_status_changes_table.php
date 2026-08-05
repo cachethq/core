@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('component_status_changes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('component_id');
+
+            if ($this->componentsTableUsesBigIntegerIds()) {
+                $table->unsignedBigInteger('component_id');
+            } else {
+                $table->unsignedInteger('component_id');
+            }
+
             $table->unsignedTinyInteger('old_status')->nullable();
             $table->unsignedTinyInteger('new_status');
             $table->string('source');
@@ -32,5 +38,18 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('component_status_changes');
+    }
+
+    /**
+     * Whether the components table keys its rows by big integers.
+     *
+     * components.id is an unsigned integer on fresh installations and on
+     * upgrades from 2.x, but a big integer on databases created by early 3.x
+     * builds. MySQL refuses a foreign key whose column type does not match
+     * the column it references, so component_id must mirror the parent.
+     */
+    private function componentsTableUsesBigIntegerIds(): bool
+    {
+        return in_array(Schema::getColumnType('components', 'id'), ['bigint', 'int8'], true);
     }
 };
