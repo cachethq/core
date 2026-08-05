@@ -18,6 +18,10 @@ class Status
 
     /**
      * Get the current system status as an enum.
+     *
+     * There is deliberately no dedicated system status for performance issues:
+     * components in a performance_issues (or partial_outage) state roll up to
+     * SystemStatusEnum::partial_outage, which is returned as the default below.
      */
     public function current(): SystemStatusEnum
     {

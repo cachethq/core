@@ -1,10 +1,6 @@
 <?php
 
 return [
-    'level' => [
-        'admin' => 'Administrateur',
-        'user' => 'Utilisateur',
-    ],
     'resource_label' => 'Utilisateur|Utilisateurs',
     'list' => [
         'headers' => [
