@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         /** @phpstan-ignore-next-line  argument.type */
-        tap(Schedule::create([
+        $documentationMaintenance = tap(Schedule::create([
             'name' => 'Documentation Maintenance',
             'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
             'scheduled_at' => now()->addHours(24),
@@ -79,7 +79,7 @@ EOF
         });
 
         /** @phpstan-ignore-next-line  argument.type */
-        tap(Schedule::create([
+        $databaseUpgrade = tap(Schedule::create([
             'name' => 'Database Server Upgrade',
             'message' => 'We upgraded our primary database servers to improve performance and reliability.',
             'scheduled_at' => now()->subHours(26),
@@ -136,6 +136,14 @@ EOF
             'link' => 'https://artisan.page',
             'status' => ComponentStatusEnum::operational,
             'checked' => true,
+        ]);
+
+        $documentationMaintenance->components()->attach($documentation, [
+            'component_status' => ComponentStatusEnum::performance_issues,
+        ]);
+
+        $databaseUpgrade->components()->attach($website, [
+            'component_status' => ComponentStatusEnum::partial_outage,
         ]);
 
         $metric = Metric::create([
