@@ -201,6 +201,18 @@ it('reports operational for a group without components', function () {
     expect($group->worstComponentStatus())->toBe(ComponentStatusEnum::operational);
 });
 
+it('counts each unresolved incident once across a group', function () {
+    $group = ComponentGroup::factory()->hasComponents(2)->create();
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+    $incident->components()->attach($group->components->pluck('id'));
+    $resolvedIncident = Incident::factory()->create(['status' => IncidentStatusEnum::fixed]);
+    $resolvedIncident->components()->attach($group->components->first());
+
+    $group->load('components.unresolvedIncidents');
+
+    expect($group->openIncidentCount())->toBe(1);
+});
+
 it('has meta', function () {
     $group = ComponentGroup::factory()->withMeta()->create();
 

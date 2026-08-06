@@ -106,6 +106,19 @@ class ComponentGroup extends Model implements Metable
     }
 
     /**
+     * Count the distinct unresolved incidents affecting this group.
+     */
+    public function openIncidentCount(): int
+    {
+        return $this->components
+            ->flatMap(fn (Component $component) => $component->relationLoaded('unresolvedIncidents')
+                ? $component->unresolvedIncidents
+                : $component->unresolvedIncidents()->get())
+            ->unique('id')
+            ->count();
+    }
+
+    /**
      * Determine whether an incident the given viewer can see is affecting the group.
      *
      * The eager-loaded count is only usable when it was scoped to the same

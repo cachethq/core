@@ -46,6 +46,8 @@ return [
             'mcp_protected_helper' => 'Require an API token for all MCP connections. When off, read-only tools are public and write tools still require an API token with the matching ability.',
             'dynamic_favicon' => 'Dynamic favicon',
             'dynamic_favicon_helper' => 'Update the favicon to reflect the current status of your systems.',
+            'show_component_group_status' => 'Show component group status',
+            'show_component_group_status_helper' => 'Display each group’s most severe component status on the public status page.',
         ],
         'display_settings_title' => 'Display settings',
         'api_settings_title' => 'API settings',

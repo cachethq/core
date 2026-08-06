@@ -52,6 +52,8 @@ class AppSettings extends Settings
 
     public bool $dynamic_favicon = false;
 
+    public bool $show_component_group_status = true;
+
     public static function group(): string
     {
         return 'app';
