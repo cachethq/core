@@ -2,6 +2,7 @@
 
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
@@ -30,6 +31,34 @@ it('can hide the site name and about content without changing status page metada
     $response
         ->assertSee('<title>Acme Status</title>', escape: false)
         ->assertSee('<meta name="description" content="A private production system." />', escape: false);
+});
+
+it('shows the site name once when it is enabled', function () {
+    $settings = app(AppSettings::class);
+    $settings->name = 'Acme Status';
+    $settings->show_site_name = true;
+    $settings->show_about = false;
+    $settings->save();
+
+    $response = $this->get(route('cachet.status-page'))->assertOk();
+    $body = Str::after($response->getContent(), '<body');
+
+    expect(substr_count($body, 'Acme Status'))->toBe(1);
+});
+
+it('uses a logical heading hierarchy for components', function () {
+    $group = ComponentGroup::factory()->create(['name' => 'Core services']);
+    Component::factory()->create(['name' => 'Public API']);
+    Component::factory()->create(['name' => 'Core API', 'component_group_id' => $group->id]);
+
+    $page = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->getContent();
+
+    expect($page)
+        ->toMatch('/<h2[^>]*>\s*Core services\s*<\\/h2>/')
+        ->toMatch('/<h3[^>]*>\s*Core API\s*<\\/h3>/')
+        ->toMatch('/<h2[^>]*>\s*Public API\s*<\\/h2>/');
 });
 
 it('renders the status page in the configured locale', function () {

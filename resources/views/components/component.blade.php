@@ -1,18 +1,24 @@
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_COMPONENTS_BEFORE) }}
-<li class="relative px-4 py-3 transition hover:bg-zinc-50/60 dark:hover:bg-white/[0.02] sm:px-6 sm:py-4">
-    <div class="flex items-center justify-between gap-3">
+<li class="relative px-4 py-4 transition hover:bg-zinc-50/60 dark:hover:bg-white/[0.02] sm:px-6 sm:py-5">
+    <div class="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
         <div class="flex min-w-0 items-center gap-1.5">
-            <h4 @class([
-                'truncate tracking-tight',
-                'font-semibold text-zinc-900 dark:text-zinc-100' => ! ($nested ?? false),
-                'text-zinc-600 dark:text-zinc-300' => $nested ?? false,
-            ])>
-                @if($component->formattedLink())
-                    <a href="{{ $component->formattedLink() }}" target="_blank" rel="nofollow noopener" class="before:absolute before:inset-0 before:content-['']">{{ $component->name }}</a>
-                @else
-                    {{ $component->name }}
-                @endif
-            </h4>
+            @if ($nested ?? false)
+                <h3 class="truncate tracking-tight text-zinc-600 dark:text-zinc-300">
+                    @if($component->formattedLink())
+                        <a href="{{ $component->formattedLink() }}" target="_blank" rel="nofollow noopener" class="before:absolute before:inset-0 before:content-['']">{{ $component->name }}</a>
+                    @else
+                        {{ $component->name }}
+                    @endif
+                </h3>
+            @else
+                <h2 class="truncate font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+                    @if($component->formattedLink())
+                        <a href="{{ $component->formattedLink() }}" target="_blank" rel="nofollow noopener" class="before:absolute before:inset-0 before:content-['']">{{ $component->name }}</a>
+                    @else
+                        {{ $component->name }}
+                    @endif
+                </h2>
+            @endif
 
             @if($component->description)
                 <div x-data x-popover class="relative flex shrink-0 items-center">
@@ -36,11 +42,11 @@
                  class="relative shrink-0">
                 <div x-ref="badgeAnchor">
                     @if ($component->impacting_incident)
-                        <a href="{{ route('cachet.status-page.incident', [$component->impacting_incident]) }}" class="inline-flex text-sm font-medium {{ $component->latest_status->getTextColorClasses() }}">
+                        <a href="{{ route('cachet.status-page.incident', [$component->impacting_incident]) }}" class="inline-flex text-sm font-semibold tracking-tight {{ $component->latest_status->getTextColorClasses() }}">
                             {{ $component->latest_status->getLabel() }}
                         </a>
                     @else
-                        <span class="text-sm font-medium {{ $component->latest_status->getTextColorClasses() }}">{{ $component->latest_status->getLabel() }}</span>
+                        <span class="text-sm font-semibold tracking-tight {{ $component->latest_status->getTextColorClasses() }}">{{ $component->latest_status->getLabel() }}</span>
                     @endif
                 </div>
 

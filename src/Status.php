@@ -8,6 +8,7 @@ use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Settings\AppSettings;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 
 class Status
@@ -100,6 +101,17 @@ class Status
             ->selectRaw('coalesce(sum(case when status = ? then 1 else 0 end), 0) as resolved', [IncidentStatusEnum::fixed->value])
             ->selectRaw('coalesce(sum(case when status is null or status <> ? then 1 else 0 end), 0) as unresolved', [IncidentStatusEnum::fixed->value])
             ->first();
+    }
+
+    /**
+     * Get the most recent update timestamp across enabled components.
+     */
+    public function lastUpdated(): ?CarbonInterface
+    {
+        return Component::query()
+            ->enabled()
+            ->latest('updated_at')
+            ->first(['updated_at'])?->updated_at;
     }
 
     /**
