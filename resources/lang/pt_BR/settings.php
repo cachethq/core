@@ -43,6 +43,8 @@ return [
             'api_protected_helper' => 'Exigir um token de API para todas as requisições, incluindo endpoints somente leitura.',
             'dynamic_favicon' => 'Favicon Dinâmico',
             'dynamic_favicon_helper' => 'Atualiza o favicon para refletir o status atual dos seus sistemas.',
+            'show_component_group_status' => 'Exibir status do grupo de componentes',
+            'show_component_group_status_helper' => 'Exibe o status mais grave dos componentes de cada grupo na página de status pública.',
         ],
         'display_settings_title' => 'Configurações de Exibição',
         'api_settings_title' => 'Configurações da API',

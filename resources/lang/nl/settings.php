@@ -43,6 +43,8 @@ return [
             'api_protected_helper' => 'Vereis een API-token voor alle API-verzoeken, inclusief alleen-lezen endpoints.',
             'dynamic_favicon' => 'Dynamische favicon',
             'dynamic_favicon_helper' => 'Werk de favicon bij zodat deze de huidige status van je systemen weergeeft.',
+            'show_component_group_status' => 'Status van componentgroep weergeven',
+            'show_component_group_status_helper' => 'Toon de ernstigste componentstatus van elke groep op de openbare statuspagina.',
         ],
         'display_settings_title' => 'Weergave-instellingen',
         'api_settings_title' => 'API-instellingen',

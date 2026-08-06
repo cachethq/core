@@ -43,6 +43,8 @@ return [
             'api_protected_helper' => 'Mangailangan ng API token para sa lahat ng API request, kabilang ang mga read-only na endpoint.',
             'dynamic_favicon' => 'Dynamic na Favicon',
             'dynamic_favicon_helper' => 'I-update ang favicon upang ipakita ang kasalukuyang status ng iyong mga sistema.',
+            'show_component_group_status' => 'Ipakita ang status ng pangkat ng component',
+            'show_component_group_status_helper' => 'Ipakita ang pinakamalubhang status ng component sa bawat pangkat sa pampublikong pahina ng status.',
         ],
         'display_settings_title' => 'Mga Setting ng Display',
         'api_settings_title' => 'Mga Setting ng API',
