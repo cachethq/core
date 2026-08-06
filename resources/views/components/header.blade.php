@@ -1,12 +1,11 @@
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_NAVIGATION_BEFORE) }}
-<header class="border-b border-zinc-900/10 bg-white/70 backdrop-blur dark:border-white/15 dark:bg-zinc-900/50">
+<header class="status-header">
     <div class="container mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <a href="{{ route('cachet.status-page') }}" class="inline-flex items-center transition hover:opacity-80">
             @if($appBanner)
                 <img src="{{ Storage::url($appBanner) }}" alt="{{ $siteName }}" class="h-8 w-auto" />
             @else
-                <x-cachet::logo class="hidden h-8 w-auto sm:block" />
-                <x-cachet::logomark class="h-8 w-auto sm:hidden" />
+                <x-cachet::logo class="h-8 w-auto" />
             @endif
         </a>
 

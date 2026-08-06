@@ -12,6 +12,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 use Cachet\Status;
+use Carbon\CarbonInterface;
 
 use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertTrue;
@@ -101,6 +102,23 @@ it('can fetch component overview', function () {
         ->partial_outage->toBe(1)
         ->major_outage->toBe(1)
         ->under_maintenance->toBe(1);
+});
+
+it('returns the most recent enabled component update timestamp', function () {
+    Component::factory()->create([
+        'enabled' => false,
+        'updated_at' => now(),
+    ]);
+    $component = Component::factory()->create([
+        'enabled' => true,
+        'updated_at' => now()->subMinute(),
+    ]);
+
+    $lastUpdated = (new Status)->lastUpdated();
+
+    expect($lastUpdated)
+        ->toBeInstanceOf(CarbonInterface::class)
+        ->toEqual($component->updated_at);
 });
 
 it('excludes disabled components from component overview', function () {
