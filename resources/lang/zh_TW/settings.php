@@ -43,6 +43,8 @@ return [
             'api_protected_helper' => '所有 API 請求(包括唯讀端點)都需要 API 權杖。',
             'dynamic_favicon' => '動態網站圖示',
             'dynamic_favicon_helper' => '根據系統目前狀態更新網站圖示。',
+            'show_component_group_status' => '顯示元件群組狀態',
+            'show_component_group_status_helper' => '在公開狀態頁面上顯示每個群組中最嚴重的元件狀態。',
         ],
         'display_settings_title' => '顯示設定',
         'api_settings_title' => 'API 設定',

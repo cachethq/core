@@ -43,6 +43,8 @@ return [
             'api_protected_helper' => "Exiger un jeton d\u{2019}API pour toutes les requ\u{00EA}tes, y compris les points de terminaison en lecture seule.",
             'dynamic_favicon' => 'Favicon dynamique',
             'dynamic_favicon_helper' => "Met \u{00E0} jour le favicon pour refl\u{00E9}ter l\u{2019}\u{00E9}tat actuel de vos syst\u{00E8}mes.",
+            'show_component_group_status' => 'Afficher l’état du groupe de composants',
+            'show_component_group_status_helper' => 'Affiche l’état le plus grave des composants de chaque groupe sur la page d’état publique.',
         ],
         'display_settings_title' => "Param\u{00E8}tres d\u{2019}affichage",
         'api_settings_title' => "Param\u{00E8}tres de l\u{2019}API",

@@ -31,6 +31,17 @@ it('saves the dynamic favicon setting', function () {
     expect(app(AppSettings::class)->refresh()->dynamic_favicon)->toBeTrue();
 });
 
+it('saves the component group status visibility setting', function () {
+    expect(app(AppSettings::class)->show_component_group_status)->toBeTrue();
+
+    livewire(ManageCachet::class)
+        ->fillForm(['show_component_group_status' => false])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect(app(AppSettings::class)->refresh()->show_component_group_status)->toBeFalse();
+});
+
 it('saves the status page title and about visibility settings', function () {
     expect(app(AppSettings::class))
         ->show_site_name->toBeFalse()
