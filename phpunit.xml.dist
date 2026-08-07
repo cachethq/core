@@ -12,6 +12,7 @@
     </include>
   </source>
   <php>
+    <ini name="memory_limit" value="512M"/>
     <env name="APP_KEY" value="AckfSECXIvnK5r28GVIWUAxmbBSjTsmF"/>
     <env name="NIGHTWATCH_ENABLED" value="false"/>
   </php>
