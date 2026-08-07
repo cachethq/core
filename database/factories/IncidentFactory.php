@@ -24,6 +24,7 @@ class IncidentFactory extends Factory
             'guid' => fake()->uuid(),
             'name' => fake()->sentence,
             'status' => IncidentStatusEnum::identified->value,
+            'baseline_status' => fn (array $attributes) => $attributes['status'] ?? IncidentStatusEnum::identified->value,
             'message' => fake()->paragraph,
         ];
     }

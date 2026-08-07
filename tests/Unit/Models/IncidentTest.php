@@ -87,7 +87,21 @@ it('syncs its status from the newest update when timestamps tie', function () {
 });
 
 it('falls back to its own status without updates', function () {
-    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+        'baseline_status' => IncidentStatusEnum::investigating,
+    ]);
 
     expect($incident->latestStatus)->toBe(IncidentStatusEnum::investigating);
+});
+
+it('falls back to its baseline status when the current status is empty', function () {
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+        'baseline_status' => IncidentStatusEnum::investigating,
+    ]);
+
+    $incident->updateQuietly(['status' => null]);
+
+    expect($incident->fresh()->latestStatus)->toBe(IncidentStatusEnum::investigating);
 });

@@ -2,6 +2,7 @@
 
 use Cachet\Actions\Incident\UpdateIncident;
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Models\Incident;
 
@@ -29,4 +30,19 @@ it('dispatches the IncidentUpdated event exactly once', function () {
 
     Event::assertDispatched(IncidentUpdated::class, fn (IncidentUpdated $event) => $event->incident->is($incident));
     Event::assertDispatchedTimes(IncidentUpdated::class, 1);
+});
+
+it('updates the incident baseline status when the status changes directly', function () {
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+        'baseline_status' => IncidentStatusEnum::investigating,
+    ]);
+
+    app(UpdateIncident::class)->handle($incident, UpdateIncidentRequestData::from([
+        'status' => IncidentStatusEnum::identified,
+    ]));
+
+    expect($incident->fresh())
+        ->status->toBe(IncidentStatusEnum::identified)
+        ->baseline_status->toBe(IncidentStatusEnum::identified);
 });
