@@ -117,7 +117,7 @@ EOF
             [
                 'name' => 'Cachet Documentation',
                 'description' => 'The Cachet docs, powered by Mintlify.',
-                'link' => 'https://docs.cachethq.io',
+                'link' => 'https://cachethq.io/docs',
                 'status' => ComponentStatusEnum::operational,
                 'checked' => true,
             ],

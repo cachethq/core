@@ -15,7 +15,7 @@ class Cachet
      *
      * @var string
      */
-    public const USER_AGENT = 'Cachet/3.0 (+https://docs.cachethq.io)';
+    public const USER_AGENT = 'Cachet/3.0 (+https://cachethq.io/docs)';
 
     /**
      * The Markdown mail theme used by Cachet's emails.
@@ -27,7 +27,7 @@ class Cachet
     /**
      * The user agent used by Cachet's webhooks.
      */
-    public const WEBHOOK_USER_AGENT = 'Cachet/3.0 Webhook (+https://docs.cachethq.io)';
+    public const WEBHOOK_USER_AGENT = 'Cachet/3.0 Webhook (+https://cachethq.io/docs)';
 
     /**
      * Get the current user using `cachet.guard`.

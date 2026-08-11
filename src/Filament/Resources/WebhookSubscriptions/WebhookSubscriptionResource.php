@@ -44,7 +44,7 @@ class WebhookSubscriptionResource extends Resource
             ->helperText(
                 TextWithLink::make(
                     text: __('cachet::webhook.form.secret_helper'),
-                    url: 'https://docs.cachethq.io/v3.x/guide/webhooks',
+                    url: 'https://cachethq.io/docs/v3.x/guide/webhooks',
                 )
             )
             ->password()

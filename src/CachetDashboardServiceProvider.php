@@ -78,7 +78,7 @@ class CachetDashboardServiceProvider extends PanelProvider
                     ->icon('cachet-component-performance-issues'),
                 NavigationItem::make()
                     ->label(fn (): string => __('cachet::navigation.resources.items.documentation'))
-                    ->url('https://docs.cachethq.io/?ref=cachet-dashboard')
+                    ->url('https://cachethq.io/docs/?ref=cachet-dashboard')
                     ->group(fn (): string => __('cachet::navigation.resources.label'))
                     ->icon('heroicon-o-book-open'),
                 NavigationItem::make()

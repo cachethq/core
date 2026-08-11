@@ -57,7 +57,7 @@ Cachet is built on:
 
 ## Development
 
-To get started developing Cachet, please check out the [Development Guide](https://docs.cachethq.io/v3.x/development).
+To get started developing Cachet, please check out the [Development Guide](https://cachethq.io/docs/v3.x/development).
 
 ### Dashboard Credentials
 
