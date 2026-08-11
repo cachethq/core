@@ -43,6 +43,8 @@ return [
             'api_protected_helper' => '읽기 전용 엔드포인트를 포함한 모든 API 요청에 API 토큰을 요구합니다.',
             'dynamic_favicon' => '동적 파비콘',
             'dynamic_favicon_helper' => '시스템의 현재 상태를 반영하도록 파비콘을 업데이트합니다.',
+            'show_component_group_status' => '구성 요소 그룹 상태 표시',
+            'show_component_group_status_helper' => '공개 상태 페이지에 각 그룹에서 가장 심각한 구성 요소 상태를 표시합니다.',
         ],
         'display_settings_title' => '표시 설정',
         'api_settings_title' => 'API 설정',

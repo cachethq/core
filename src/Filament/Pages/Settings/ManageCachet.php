@@ -115,6 +115,9 @@ class ManageCachet extends SettingsPage
                         Toggle::make('dynamic_favicon')
                             ->label(__('cachet::settings.manage_cachet.toggles.dynamic_favicon'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.dynamic_favicon_helper')),
+                        Toggle::make('show_component_group_status')
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_component_group_status'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.show_component_group_status_helper')),
                     ]),
 
                 Section::make(__('cachet::settings.manage_cachet.api_settings_title'))

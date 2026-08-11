@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
@@ -59,6 +60,30 @@ it('uses a logical heading hierarchy for components', function () {
         ->toMatch('/<h2[^>]*>\s*Core services\s*<\\/h2>/')
         ->toMatch('/<h3[^>]*>\s*Core API\s*<\\/h3>/')
         ->toMatch('/<h2[^>]*>\s*Public API\s*<\\/h2>/');
+});
+
+it('can hide component group statuses', function () {
+    $settings = app(AppSettings::class);
+    $settings->show_component_group_status = false;
+    $settings->save();
+
+    $group = ComponentGroup::factory()->create(['name' => 'Core services']);
+    $firstComponent = Component::factory()->create([
+        'component_group_id' => $group->id,
+        'status' => ComponentStatusEnum::major_outage,
+    ]);
+    $secondComponent = Component::factory()->create(['component_group_id' => $group->id]);
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+    $incident->components()->attach([$firstComponent->id, $secondComponent->id]);
+
+    $page = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->getContent();
+
+    expect($page)
+        ->toContain('Core services')
+        ->toContain('1 Incident')
+        ->not->toMatch('/Core services\s*<\\/h2>\s*<span[^>]*>\s*Major outage\s*<\\/span>/');
 });
 
 it('renders the status page in the configured locale', function () {

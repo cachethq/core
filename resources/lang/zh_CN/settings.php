@@ -43,6 +43,8 @@ return [
             'api_protected_helper' => '所有 API 请求(包括只读接口)都需要 API 令牌。',
             'dynamic_favicon' => '动态网站图标',
             'dynamic_favicon_helper' => '根据系统当前状态更新网站图标。',
+            'show_component_group_status' => '显示组件组状态',
+            'show_component_group_status_helper' => '在公开状态页面上显示每个组中最严重的组件状态。',
         ],
         'display_settings_title' => '显示设置',
         'api_settings_title' => 'API 设置',
