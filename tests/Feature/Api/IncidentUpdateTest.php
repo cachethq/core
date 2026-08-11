@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Actions\Incident\SyncIncidentStatus;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Incident;
@@ -230,6 +231,29 @@ it('can update an incident update', function () {
         'status' => $incidentUpdate->status,
         ...$data,
     ]);
+});
+
+it('can clear an incident update status and restore the incident baseline', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incident-updates.manage']);
+
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+        'baseline_status' => IncidentStatusEnum::investigating,
+    ]);
+
+    $incidentUpdate = $incident->updates()->create([
+        'status' => IncidentStatusEnum::identified,
+        'message' => 'We found the issue.',
+    ]);
+
+    app(SyncIncidentStatus::class)->handle($incident);
+
+    putJson("/status/api/incidents/{$incident->id}/updates/{$incidentUpdate->id}", [
+        'status' => null,
+    ])->assertOk();
+
+    expect($incident->fresh()->status)->toBe(IncidentStatusEnum::investigating)
+        ->and($incidentUpdate->fresh()->status)->toBeNull();
 });
 
 it('cannot delete an incident update if not authenticated', function () {

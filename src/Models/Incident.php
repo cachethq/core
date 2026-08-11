@@ -37,6 +37,7 @@ use Illuminate\Support\Str;
  * @property ?int $component_id
  * @property string $name
  * @property ?IncidentStatusEnum $status
+ * @property IncidentStatusEnum $baseline_status
  * @property string $message
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
@@ -80,6 +81,7 @@ class Incident extends Model implements Metable
     /** @var array<string, string> */
     protected $casts = [
         'status' => IncidentStatusEnum::class,
+        'baseline_status' => IncidentStatusEnum::class,
         'visible' => ResourceVisibilityEnum::class,
         'stickied' => 'bool',
         'scheduled_at' => 'datetime',
@@ -105,6 +107,7 @@ class Incident extends Model implements Metable
         'component_id',
         'name',
         'status',
+        'baseline_status',
         'visible',
         'stickied',
         'notifications',
@@ -120,6 +123,10 @@ class Incident extends Model implements Metable
 
         self::creating(function (Incident $model) {
             $model->guid = Str::uuid();
+
+            if ($model->baseline_status === null) {
+                $model->baseline_status = $model->status ?? IncidentStatusEnum::unknown;
+            }
 
             if ($model->published_at === null) {
                 $model->published_at = $model->freshTimestamp();
@@ -260,15 +267,15 @@ class Incident extends Model implements Metable
     /**
      * The incident's status.
      *
-     * Retained for backwards compatibility: the status column is canonical and
-     * is kept in step with the latest status-bearing update at write time, so
-     * this is simply an alias for it.
+     * Retained for backwards compatibility: the status column is the current
+     * status, while `baseline_status` stores what the incident should fall back
+     * to when its timeline no longer carries a status.
      *
      * @return Attribute<IncidentStatusEnum|null, never>
      */
     protected function latestStatus(): Attribute
     {
-        return Attribute::make(get: fn (): ?IncidentStatusEnum => $this->status);
+        return Attribute::make(get: fn (): ?IncidentStatusEnum => $this->status ?? $this->baseline_status);
     }
 
     /**
