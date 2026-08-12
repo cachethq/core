@@ -34,6 +34,16 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
         };
     }
 
+    public function getBadgeColor(): string
+    {
+        return match ($this) {
+            self::operational => 'brightgreen',
+            self::partial_outage => 'orange',
+            self::major_outage => 'red',
+            self::under_maintenance => 'orange',
+        };
+    }
+
     public function getIcon(): string
     {
         return match ($this) {

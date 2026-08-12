@@ -79,6 +79,18 @@ enum ComponentStatusEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
+    public function getBadgeColor(): string
+    {
+        return match ($this) {
+            self::operational => 'brightgreen',
+            self::performance_issues => 'yellow',
+            self::partial_outage => 'orange',
+            self::major_outage => 'red',
+            self::under_maintenance => 'orange',
+            self::unknown => 'lightgray',
+        };
+    }
+
     public function getColor(): array
     {
         return match ($this) {
