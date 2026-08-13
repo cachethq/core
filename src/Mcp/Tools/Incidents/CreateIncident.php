@@ -51,6 +51,7 @@ class CreateIncident extends Tool
                         ->description('The status to display for the component while the incident is unresolved: 1 operational, 2 performance issues, 3 partial outage, 4 major outage, 5 unknown, 6 under maintenance. The component\'s own status is left unchanged; the overlay is reflected in its latest_status and reverts when the incident is fixed. Use update_component to change a component\'s own status.'),
                 ]))
                 ->description('Affected components and the status to display for each while the incident is unresolved.'),
+            'tags' => $schema->array()->items($schema->string())->description('Tags to apply to the incident.'),
         ];
     }
 

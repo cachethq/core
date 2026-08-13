@@ -12,7 +12,11 @@ class UpdateMetric
      */
     public function handle(Metric $metric, UpdateMetricRequestData $data): Metric
     {
-        $metric->update($data->toArray());
+        $metric->update($data->except('tags')->toArray());
+
+        if ($data->tags !== null) {
+            $metric->syncTags($data->tags);
+        }
 
         return $metric->fresh();
     }

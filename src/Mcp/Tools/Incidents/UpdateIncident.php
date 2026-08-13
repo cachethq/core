@@ -32,6 +32,7 @@ class UpdateIncident extends Tool
     {
         return [
             'id' => $schema->integer()->required()->description('The incident ID.'),
+            'tags' => $schema->array()->items($schema->string())->description('Replace the incident tags.'),
             'name' => $schema->string()->max(255)->description('The name of the incident.'),
             'message' => $schema->string()->description('The incident message, in Markdown.'),
             'status' => $schema->integer()

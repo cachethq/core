@@ -28,8 +28,16 @@
                     <div x-popover:panel x-cloak x-transition.opacity x-anchor.right.offset.8="$refs.anchor" class="z-10 w-max max-w-sm rounded-md bg-zinc-900 px-3 py-2 text-xs font-medium text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-900">
                         <span class="pointer-events-none absolute -left-1 top-2 size-2 rotate-45 bg-zinc-900 dark:bg-zinc-100" aria-hidden="true"></span>
                         <p class="relative">{!! $component->formattedDescription() !!}</p>
-                    </div>
-                </div>
+        </div>
+
+        @if (app(\Cachet\Settings\AppSettings::class)->show_component_tags && $component->tags->isNotEmpty())
+            <div class="mt-2 flex flex-wrap gap-1.5">
+                @foreach ($component->tags as $tag)
+                    <span class="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">{{ $tag->name }}</span>
+                @endforeach
+            </div>
+        @endif
+    </div>
             @endif
         </div>
 

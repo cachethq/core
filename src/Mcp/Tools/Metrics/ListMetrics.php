@@ -31,6 +31,7 @@ class ListMetrics extends Tool
     {
         return [
             'name' => $schema->string()->description('Filter by partial metric name.'),
+            'tags' => $schema->array()->items($schema->string())->description('Return metrics with any of these tags.'),
             'per_page' => $schema->integer()->min(1)->max(100)->default(15),
             'page' => $schema->integer()->min(1)->default(1),
         ];
@@ -41,6 +42,7 @@ class ListMetrics extends Tool
         $metrics = Metric::query()
             ->visible($this->isAuthenticated())
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
+            ->when($request->filled('tags'), fn ($query) => $query->withAnyTags($request->array('tags')))
             ->orderBy('order')
             ->simplePaginate(perPage: $this->perPage($request), page: $this->page($request));
 
