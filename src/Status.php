@@ -12,6 +12,7 @@ use Cachet\Models\Update;
 use Cachet\Settings\AppSettings;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Date;
 
 class Status
@@ -117,12 +118,12 @@ class Status
             Incident::query()->viewableBy(false)->max('updated_at'),
             Schedule::query()->published()->max('updated_at'),
             Update::query()
-                ->whereHasMorph('updateable', [Incident::class, Schedule::class], function (Builder $query, string $type): void {
-                    match ($type) {
-                        Incident::class => $query->viewableBy(false),
-                        Schedule::class => $query->published(),
-                    };
-                })
+                ->where('updateable_type', Relation::getMorphAlias(Incident::class))
+                ->whereIn('updateable_id', Incident::query()->viewableBy(false)->select('id'))
+                ->max('updated_at'),
+            Update::query()
+                ->where('updateable_type', Relation::getMorphAlias(Schedule::class))
+                ->whereIn('updateable_id', Schedule::query()->published()->select('id'))
                 ->max('updated_at'),
         ])
             ->filter()
