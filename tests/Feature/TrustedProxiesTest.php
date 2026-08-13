@@ -11,6 +11,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TrustedProxiesTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        TrustProxies::flushState();
+
+        parent::tearDown();
+    }
+
     protected function trustAllProxies(Application $app): void
     {
         $app['config']->set('cachet.trusted_proxies', '*');
