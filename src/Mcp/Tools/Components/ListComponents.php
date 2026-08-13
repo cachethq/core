@@ -37,6 +37,7 @@ class ListComponents extends Tool
                 ->description('Filter by status: 1 operational, 2 performance issues, 3 partial outage, 4 major outage, 5 unknown, 6 under maintenance.'),
             'enabled' => $schema->boolean()->default(true)->description('Filter by enabled state. Disabled components are hidden by default and are only visible to authenticated callers.'),
             'component_group_id' => $schema->integer()->description('Filter by component group ID.'),
+            'tags' => $schema->array()->items($schema->string())->description('Return components with any of these tags.'),
             'per_page' => $schema->integer()->min(1)->max(100)->default(15),
             'page' => $schema->integer()->min(1)->default(1),
         ];
@@ -49,6 +50,7 @@ class ListComponents extends Tool
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->integer('status')))
             ->where('enabled', $request->boolean('enabled', true))
             ->when($request->filled('component_group_id'), fn ($query) => $query->where('component_group_id', $request->integer('component_group_id')))
+            ->when($request->filled('tags'), fn ($query) => $query->withAnyTags($request->array('tags')))
             ->orderBy('order')
             ->simplePaginate(perPage: $this->perPage($request), page: $this->page($request));
 

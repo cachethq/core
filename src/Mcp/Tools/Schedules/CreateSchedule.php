@@ -43,6 +43,7 @@ class CreateSchedule extends Tool
                         ->description('The status to show for the component during the window: 1 operational, 2 performance issues, 3 partial outage, 4 major outage, 5 unknown, 6 under maintenance.'),
                 ]))
                 ->description('Affected components and the status to show for each.'),
+            'tags' => $schema->array()->items($schema->string())->description('Tags to apply to the maintenance schedule.'),
         ];
     }
 

@@ -21,7 +21,7 @@ class UpdateComponent
     public function handle(Component $component, UpdateComponentRequestData $data, ?Authenticatable $user = null): Component
     {
         DB::transaction(function () use ($component, $data, $user): void {
-            $attributes = $data->except('meta', 'status')->toArray();
+            $attributes = $data->except('meta', 'status', 'tags')->toArray();
 
             if ($data->status === null) {
                 $component->update($attributes);
@@ -37,6 +37,10 @@ class UpdateComponent
 
             if ($data->meta !== null) {
                 $component->syncMeta($data->meta);
+            }
+
+            if ($data->tags !== null) {
+                $component->syncTags($data->tags);
             }
         });
 

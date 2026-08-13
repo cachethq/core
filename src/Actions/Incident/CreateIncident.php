@@ -34,7 +34,7 @@ class CreateIncident
         $incident = DB::transaction(function () use ($data): Incident {
             return tap(Incident::create(array_merge(
                 ['guid' => Str::uuid()],
-                $data->except('components', 'meta')->toArray()
+                $data->except('components', 'meta', 'tags')->toArray()
             )), function (Incident $incident) use ($data) {
                 $components = collect($data->components)
                     ->mapWithKeys(fn (IncidentComponentRequestData $component) => [
@@ -52,6 +52,7 @@ class CreateIncident
                 }
 
                 $incident->syncMeta($data->meta ?? []);
+                $incident->syncTags($data->tags);
             });
         });
 

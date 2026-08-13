@@ -48,6 +48,8 @@ return [
             'dynamic_favicon_helper' => 'Update the favicon to reflect the current status of your systems.',
             'show_component_group_status' => 'Show component group status',
             'show_component_group_status_helper' => 'Display each group’s most severe component status on the public status page.',
+            'show_component_tags' => 'Show component tags',
+            'show_component_tags_helper' => 'Display tags underneath component names on the public status page.',
         ],
         'display_settings_title' => 'Display settings',
         'api_settings_title' => 'API settings',

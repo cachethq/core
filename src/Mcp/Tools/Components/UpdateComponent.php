@@ -33,6 +33,7 @@ class UpdateComponent extends Tool
     {
         return [
             'id' => $schema->integer()->required()->description('The component ID.'),
+            'tags' => $schema->array()->items($schema->string())->description('Replace the component tags.'),
             'name' => $schema->string()->max(255)->description('The name of the component.'),
             'description' => $schema->string()->description('A description of the component.'),
             'status' => $schema->integer()

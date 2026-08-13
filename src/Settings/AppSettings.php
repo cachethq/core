@@ -54,6 +54,8 @@ class AppSettings extends Settings
 
     public bool $show_component_group_status = true;
 
+    public bool $show_component_tags = false;
+
     public static function group(): string
     {
         return 'app';
