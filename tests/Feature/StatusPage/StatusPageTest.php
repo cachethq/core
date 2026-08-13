@@ -14,6 +14,50 @@ it('renders the status page', function () {
         ->assertOk();
 });
 
+it('renders an SVG badge for the overall status page status', function () {
+    Component::factory()->create(['status' => ComponentStatusEnum::operational]);
+
+    $response = $this->get(route('cachet.status-page.badge'))
+        ->assertOk()
+        ->assertHeader('content-type', 'image/svg+xml; charset=UTF-8')
+        ->assertSee('<svg', escape: false)
+        ->assertSee('All systems are operational.');
+
+    expect($response->headers->get('cache-control'))
+        ->toContain('public')
+        ->toContain('max-age=60')
+        ->toContain('s-maxage=60');
+});
+
+it('renders an SVG badge for a public component', function () {
+    $component = Component::factory()->create([
+        'name' => 'Public API',
+        'status' => ComponentStatusEnum::major_outage,
+    ]);
+
+    $this->get(route('cachet.status-page.component.badge', $component))
+        ->assertOk()
+        ->assertHeader('content-type', 'image/svg+xml; charset=UTF-8')
+        ->assertSee('<svg', escape: false)
+        ->assertSee('Public API')
+        ->assertSee('Major outage');
+});
+
+it('does not render a badge for a component in a private group', function () {
+    $group = ComponentGroup::factory()->create(['visible' => 0]);
+    $component = Component::factory()->create(['component_group_id' => $group->id]);
+
+    $this->get(route('cachet.status-page.component.badge', $component))
+        ->assertNotFound();
+});
+
+it('does not render a badge for a disabled component', function () {
+    $component = Component::factory()->create(['enabled' => false]);
+
+    $this->get(route('cachet.status-page.component.badge', $component))
+        ->assertNotFound();
+});
+
 it('can hide the site name and about content without changing status page metadata', function () {
     $settings = app(AppSettings::class);
     $settings->name = 'Acme Status';
