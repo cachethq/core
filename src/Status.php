@@ -7,9 +7,12 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
+use Cachet\Models\Update;
 use Cachet\Settings\AppSettings;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Date;
 
 class Status
 {
@@ -104,14 +107,27 @@ class Status
     }
 
     /**
-     * Get the most recent update timestamp across enabled components.
+     * Get the most recent guest-visible activity timestamp across components,
+     * incidents, incident updates and schedules.
      */
     public function lastUpdated(): ?CarbonInterface
     {
-        return Component::query()
-            ->enabled()
-            ->latest('updated_at')
-            ->first(['updated_at'])?->updated_at;
+        return collect([
+            Component::query()->enabled()->max('updated_at'),
+            Incident::query()->viewableBy(false)->max('updated_at'),
+            Schedule::query()->published()->max('updated_at'),
+            Update::query()
+                ->whereHasMorph('updateable', [Incident::class, Schedule::class], function (Builder $query, string $type): void {
+                    match ($type) {
+                        Incident::class => $query->viewableBy(false),
+                        Schedule::class => $query->published(),
+                    };
+                })
+                ->max('updated_at'),
+        ])
+            ->filter()
+            ->map(fn ($timestamp): CarbonInterface => Date::parse($timestamp))
+            ->max();
     }
 
     /**
