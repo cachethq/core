@@ -121,6 +121,60 @@ it('returns the most recent enabled component update timestamp', function () {
         ->toEqual($component->updated_at);
 });
 
+it('considers incidents, incident updates and schedules when calculating the last updated timestamp', function () {
+    expect((new Status)->lastUpdated())->toBeNull();
+
+    Component::factory()->create([
+        'enabled' => true,
+        'updated_at' => now()->subWeek(),
+    ]);
+    $incident = Incident::factory()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+        'updated_at' => now()->subDay(),
+    ]);
+
+    expect((new Status)->lastUpdated())->toEqual($incident->updated_at);
+
+    $update = Update::factory()->forIncident($incident)->create([
+        'status' => null,
+        'created_at' => now()->subHour(),
+        'updated_at' => now()->subHour(),
+    ]);
+
+    expect((new Status)->lastUpdated())->toEqual($update->updated_at);
+
+    $schedule = Schedule::factory()->create([
+        'updated_at' => now()->subMinute(),
+    ]);
+
+    expect((new Status)->lastUpdated())->toEqual($schedule->updated_at);
+});
+
+it('ignores activity hidden from guests when calculating the last updated timestamp', function () {
+    $component = Component::factory()->create([
+        'enabled' => true,
+        'updated_at' => now()->subWeek(),
+    ]);
+    $hidden = Incident::factory()->create([
+        'visible' => ResourceVisibilityEnum::authenticated,
+        'updated_at' => now()->subMinute(),
+    ]);
+    Update::factory()->forIncident($hidden)->create([
+        'status' => null,
+        'created_at' => now()->subMinute(),
+        'updated_at' => now()->subMinute(),
+    ]);
+    Incident::factory()->scheduled()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+        'updated_at' => now()->subMinute(),
+    ]);
+    Schedule::factory()->scheduled()->create([
+        'updated_at' => now()->subMinute(),
+    ]);
+
+    expect((new Status)->lastUpdated())->toEqual($component->updated_at);
+});
+
 it('excludes disabled components from component overview', function () {
     Component::factory()->create([
         'status' => ComponentStatusEnum::operational->value,
