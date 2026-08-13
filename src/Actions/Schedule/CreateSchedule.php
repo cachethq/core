@@ -21,7 +21,7 @@ class CreateSchedule
     {
         /** @phpstan-ignore-next-line argument.type */
         $schedule = DB::transaction(function () use ($data): Schedule {
-            return tap(Schedule::create($data->except('components', 'meta')->toArray()), function (Schedule $schedule) use ($data) {
+            return tap(Schedule::create($data->except('components', 'meta', 'tags')->toArray()), function (Schedule $schedule) use ($data) {
                 if ($data->components) {
                     $components = collect($data->components)
                         ->mapWithKeys(fn (ScheduleComponentRequestData $component) => [
@@ -33,6 +33,7 @@ class CreateSchedule
                 }
 
                 $schedule->syncMeta($data->meta ?? []);
+                $schedule->syncTags($data->tags);
             });
         });
 

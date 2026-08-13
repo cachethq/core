@@ -37,6 +37,8 @@ final class CreateIncidentRequestData extends BaseData
         public readonly ?ComponentStatusEnum $componentStatus = null,
         #[DataCollectionOf(IncidentComponentRequestData::class)]
         public readonly ?array $components = null,
+        /** @var list<string> */
+        public readonly array $tags = [],
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -72,6 +74,8 @@ final class CreateIncidentRequestData extends BaseData
             'components' => ['array'],
             'components.*.id' => ['required', 'int', 'distinct', 'exists:components,id'],
             'components.*.status' => ['required', 'int', Rule::enum(ComponentStatusEnum::class)],
+            'tags' => ['array'],
+            'tags.*' => ['string', 'max:255'],
             /**
              * Key/value metadata to store against the resource.
              *
@@ -99,6 +103,7 @@ final class CreateIncidentRequestData extends BaseData
             componentId: $this->componentId,
             componentStatus: $this->componentStatus,
             components: $this->components,
+            tags: $this->tags,
             meta: $this->meta,
         );
     }

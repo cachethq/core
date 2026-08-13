@@ -82,6 +82,12 @@ class IncidentResource extends Resource
                         ->options(ResourceVisibilityEnum::class)
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
+                    Select::make('tags')
+                        ->relationship('tags', 'name')
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([TextInput::make('name')->required()->maxLength(255)]),
                     Repeater::make('incidentComponents')
                         ->visibleOn('create')
                         ->relationship()

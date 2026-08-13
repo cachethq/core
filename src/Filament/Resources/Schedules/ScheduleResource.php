@@ -67,6 +67,13 @@ class ScheduleResource extends Resource
                     MarkdownEditor::make('message')
                         ->label(__('cachet::schedule.form.message_label'))
                         ->columnSpanFull(),
+                    Select::make('tags')
+                        ->relationship('tags', 'name')
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([TextInput::make('name')->required()->maxLength(255)])
+                        ->columnSpanFull(),
                     Toggle::make('notifications')
                         ->label(__('cachet::schedule.form.notify_subscribers_label'))
                         ->helperText(__('cachet::schedule.form.notifications_helper'))

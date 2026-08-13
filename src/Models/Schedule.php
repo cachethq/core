@@ -6,6 +6,7 @@ use Cachet\Actions\Schedule\NotifyScheduleCompletedSubscribers;
 use Cachet\Actions\Schedule\NotifyScheduleRescheduledSubscribers;
 use Cachet\Cachet;
 use Cachet\Concerns\HasMeta;
+use Cachet\Concerns\HasTags;
 use Cachet\Concerns\Metable;
 use Cachet\Concerns\Publishable;
 use Cachet\Database\Factories\ScheduleFactory;
@@ -55,6 +56,7 @@ class Schedule extends Model implements Metable
     use HasFactory;
 
     use HasMeta;
+    use HasTags;
     use Publishable;
     use SoftDeletes;
 

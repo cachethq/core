@@ -10,6 +10,7 @@ use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Filters\MetaFilter;
+use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
@@ -52,6 +53,7 @@ class IncidentController extends Controller
             'updates',
             'user',
             'meta',
+            'tags',
         ];
     }
 
@@ -59,6 +61,7 @@ class IncidentController extends Controller
      * List Incidents
      */
     #[QueryParameter('filter[meta][key]', 'Filter by a metadata key/value pair.', example: 'eu-west')]
+    #[QueryParameter('filter[tags]', 'Filter by one or more comma-separated tags.', example: 'api,database')]
     #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
@@ -74,6 +77,7 @@ class IncidentController extends Controller
                 AllowedFilter::scope('occurs_before'),
                 AllowedFilter::scope('occurs_on'),
                 AllowedFilter::custom('meta', new MetaFilter),
+                AllowedFilter::custom('tags', new TagsFilter),
             ])
             ->allowedSorts(['name', 'status', 'id', 'created_at'])
             ->defaultSort('-created_at')

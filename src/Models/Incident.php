@@ -4,6 +4,7 @@ namespace Cachet\Models;
 
 use Cachet\Cachet;
 use Cachet\Concerns\HasMeta;
+use Cachet\Concerns\HasTags;
 use Cachet\Concerns\HasVisibility;
 use Cachet\Concerns\Metable;
 use Cachet\Concerns\Publishable;
@@ -73,6 +74,7 @@ class Incident extends Model implements Metable
     use HasFactory;
 
     use HasMeta;
+    use HasTags;
     use HasVisibility;
     use Publishable;
     use SoftDeletes;

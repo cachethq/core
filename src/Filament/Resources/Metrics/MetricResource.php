@@ -50,6 +50,13 @@ class MetricResource extends Resource
                         ->label(__('cachet::metric.form.description_label'))
                         ->maxLength(255)
                         ->columnSpanFull(),
+                    Select::make('tags')
+                        ->relationship('tags', 'name')
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([TextInput::make('name')->required()->maxLength(255)])
+                        ->columnSpanFull(),
                     ToggleButtons::make('default_view')
                         ->label(__('cachet::metric.form.default_view_label'))
                         ->options(MetricViewEnum::class)

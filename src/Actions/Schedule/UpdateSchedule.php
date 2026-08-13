@@ -13,10 +13,14 @@ class UpdateSchedule
      */
     public function handle(Schedule $schedule, UpdateScheduleRequestData $data): Schedule
     {
-        $schedule->update($data->except('components', 'meta')->toArray());
+        $schedule->update($data->except('components', 'meta', 'tags')->toArray());
 
         if ($data->meta !== null) {
             $schedule->syncMeta($data->meta);
+        }
+
+        if ($data->tags !== null) {
+            $schedule->syncTags($data->tags);
         }
 
         if ($data->components) {
