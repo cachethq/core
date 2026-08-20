@@ -9,6 +9,9 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+env:
+  GH_TOKEN: ${{ github.token }}
+
 jobs:
   build-assets:
     runs-on: ubuntu-latest
@@ -28,7 +31,7 @@ jobs:
 
       - name: Install PHP dependencies
         run: |
-          composer require "laravel/framework:13.x" --no-interaction --no-update
+          composer require "laravel/framework:13.x" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --prefer-dist --no-interaction
 
       - name: Setup Node
@@ -60,12 +63,9 @@ jobs:
           - php: 8.4
             laravel: 13.x
             stability: prefer-stable
-          - php: 8.4
-            laravel: 12.x
-            stability: prefer-stable
           # Dependency floor
-          - php: 8.3
-            laravel: 12.x
+          - php: 8.4
+            laravel: 13.x
             stability: prefer-lowest
           # PHP 8.5 (allowed failure)
           - php: '8.5'
@@ -101,7 +101,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Run PHPStan
@@ -113,18 +113,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [8.4, 8.3]
-        laravel: [13.x, 12.x]
+        php: [8.4]
+        laravel: [13.x]
         stability: [prefer-lowest, prefer-stable]
+        shard: [1/2, 2/2]
         include:
           # PHP 8.5 (allowed failure)
           - php: '8.5'
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+            allow-failure: true
+          - php: '8.5'
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
             allow-failure: true
     continue-on-error: ${{ matrix.allow-failure || false }}
 
-    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - SQLite
+    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - SQLite - shard ${{ matrix.shard }}
 
     steps:
       - name: Checkout code
@@ -151,7 +158,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Download compiled assets
@@ -164,7 +171,7 @@ jobs:
         run: composer build
 
       - name: Execute tests
-        run: composer test
+        run: composer test:shard -- --shard=${{ matrix.shard }}
 
   mysql:
     runs-on: ubuntu-latest
@@ -190,18 +197,34 @@ jobs:
           - php: 8.4
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+          - php: 8.4
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
           # Dependency floor
-          - php: 8.3
-            laravel: 12.x
+          - php: 8.4
+            laravel: 13.x
             stability: prefer-lowest
+            shard: 1/2
+          - php: 8.4
+            laravel: 13.x
+            stability: prefer-lowest
+            shard: 2/2
           # PHP 8.5 (allowed failure)
           - php: '8.5'
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+            allow-failure: true
+          - php: '8.5'
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
             allow-failure: true
     continue-on-error: ${{ matrix.allow-failure || false }}
 
-    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - MySQL 8.0
+    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - MySQL 8.0 - shard ${{ matrix.shard }}
 
     steps:
       - name: Checkout code
@@ -228,7 +251,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Download compiled assets
@@ -241,7 +264,7 @@ jobs:
         run: composer build
 
       - name: Execute tests
-        run: composer test
+        run: composer test:shard -- --shard=${{ matrix.shard }}
         env:
           DB_CONNECTION: mysql
           DB_HOST: localhost
@@ -272,18 +295,34 @@ jobs:
           - php: 8.4
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+          - php: 8.4
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
           # Dependency floor
-          - php: 8.3
-            laravel: 12.x
+          - php: 8.4
+            laravel: 13.x
             stability: prefer-lowest
+            shard: 1/2
+          - php: 8.4
+            laravel: 13.x
+            stability: prefer-lowest
+            shard: 2/2
           # PHP 8.5 (allowed failure)
           - php: '8.5'
             laravel: 13.x
             stability: prefer-stable
+            shard: 1/2
+            allow-failure: true
+          - php: '8.5'
+            laravel: 13.x
+            stability: prefer-stable
+            shard: 2/2
             allow-failure: true
     continue-on-error: ${{ matrix.allow-failure || false }}
 
-    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 15
+    name: Tests - P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - PostgreSQL 15 - shard ${{ matrix.shard }}
 
     steps:
       - name: Checkout code
@@ -310,7 +349,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:^11.0" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Download compiled assets
@@ -323,7 +362,7 @@ jobs:
         run: composer build
 
       - name: Execute tests
-        run: composer test
+        run: composer test:shard -- --shard=${{ matrix.shard }}
         env:
           DB_CONNECTION: pgsql
           DB_HOST: localhost
