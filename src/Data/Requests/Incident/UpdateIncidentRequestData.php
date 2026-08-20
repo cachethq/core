@@ -3,8 +3,11 @@
 namespace Cachet\Data\Requests\Incident;
 
 use Cachet\Data\BaseData;
+use Cachet\Data\Casts\FlexibleDateTimeCast;
 use Cachet\Enums\IncidentStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
+use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Optional;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
@@ -17,8 +20,10 @@ final class UpdateIncidentRequestData extends BaseData
         public readonly ?bool $visible = null,
         public readonly ?bool $stickied = null,
         public readonly ?bool $notifications = null,
-        public readonly ?string $occurredAt = null,
-        public readonly ?string $publishedAt = null,
+        #[WithCast(FlexibleDateTimeCast::class)]
+        public readonly ?Carbon $occurredAt = null,
+        #[WithCast(FlexibleDateTimeCast::class)]
+        public readonly ?Carbon $publishedAt = null,
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}

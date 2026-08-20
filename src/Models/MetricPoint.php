@@ -73,7 +73,7 @@ class MetricPoint extends Model
                 $timestamp = $createdAt->getTimestamp();
                 $timestamp = 30 * round($timestamp / 30);
 
-                return Carbon::createFromTimestamp($timestamp);
+                return Carbon::createFromTimestamp($timestamp, config('app.timezone'));
             }
         );
     }

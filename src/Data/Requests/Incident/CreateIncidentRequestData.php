@@ -3,15 +3,18 @@
 namespace Cachet\Data\Requests\Incident;
 
 use Cachet\Data\BaseData;
+use Cachet\Data\Casts\FlexibleDateTimeCast;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\Validation\Enum;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\RequiredWithout;
+use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateIncidentRequestData extends BaseData
@@ -28,8 +31,10 @@ final class CreateIncidentRequestData extends BaseData
         public readonly bool $visible = false,
         public readonly bool $stickied = false,
         public readonly bool $notifications = false,
-        public readonly ?string $occurredAt = null,
-        public readonly ?string $publishedAt = null,
+        #[WithCast(FlexibleDateTimeCast::class)]
+        public readonly ?Carbon $occurredAt = null,
+        #[WithCast(FlexibleDateTimeCast::class)]
+        public readonly ?Carbon $publishedAt = null,
         public readonly array $templateVars = [],
         #[Exists(Component::class, 'id')]
         public readonly ?int $componentId = null,
