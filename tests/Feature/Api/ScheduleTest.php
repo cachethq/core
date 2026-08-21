@@ -347,6 +347,31 @@ it('can create a schedule with ISO 8601 dates', function () {
     ]);
 });
 
+it('can create a schedule with ISO 8601 dates carrying a non-UTC offset', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $response = postJson('/status/api/schedules', [
+        'name' => 'New Scheduled Maintenance',
+        'message' => 'Something will go wrong.',
+        'scheduled_at' => '2033-11-07T05:31:56+05:30',
+        'completed_at' => '2033-11-08T05:31:56+05:30',
+    ]);
+
+    $response->assertCreated();
+    $response->assertJson([
+        'data' => [
+            'attributes' => [
+                'scheduled' => [
+                    'string' => '2033-11-07 00:01:56',
+                ],
+                'completed' => [
+                    'string' => '2033-11-08 00:01:56',
+                ],
+            ],
+        ],
+    ]);
+});
+
 it('responds with a JSON validation error when the Accept header is not set', function () {
     Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
 

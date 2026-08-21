@@ -12,14 +12,17 @@ use Spatie\LaravelData\Support\DataProperty;
 
 /**
  * Casts any date value accepted by the "date" validation rule, such as
- * "2023-11-07 05:31:56" or ISO 8601 ("2023-11-07T05:31:56Z"), to Carbon.
+ * "2023-11-07 05:31:56" or ISO 8601 ("2023-11-07T05:31:56Z"), to Carbon,
+ * normalized to the application timezone. Values carrying an explicit UTC
+ * offset are converted to the equivalent application-timezone instant;
+ * offset-less values are interpreted as application-timezone wall clock.
  */
 final class FlexibleDateTimeCast implements Cast
 {
     public function cast(DataProperty $property, mixed $value, array $properties, CreationContext $context): DateTimeInterface|Uncastable
     {
         if ($value instanceof DateTimeInterface) {
-            return Carbon::instance($value);
+            return Carbon::instance($value)->setTimezone(config('app.timezone'));
         }
 
         if (! is_string($value) && ! is_int($value) && ! is_float($value)) {
@@ -27,7 +30,7 @@ final class FlexibleDateTimeCast implements Cast
         }
 
         try {
-            return Carbon::parse($value);
+            return Carbon::parse($value)->setTimezone(config('app.timezone'));
         } catch (InvalidFormatException) {
             return Uncastable::create();
         }
