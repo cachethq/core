@@ -17,6 +17,7 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentTimezone;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -111,6 +112,12 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->path(Cachet::dashboardPath())
             ->bootUsing(function (): void {
                 Section::configureUsing(fn (Section $section) => $section->columnSpanFull());
+
+                FilamentTimezone::set(function (): ?string {
+                    $timezone = rescue(fn () => app(AppSettings::class)->timezone, null, report: false);
+
+                    return $timezone === '-' ? null : $timezone;
+                });
             });
     }
 }
