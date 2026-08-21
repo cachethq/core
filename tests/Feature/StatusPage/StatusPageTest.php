@@ -264,3 +264,47 @@ it('does not render raw html in component descriptions', function () {
         ->assertSee('<strong>primary</strong>', escape: false)
         ->assertDontSee('<script>alert(1)</script>', escape: false);
 });
+
+it('renders timestamps with the configured display timezone and timezone name', function () {
+    $occurredAt = now()->subDay()->startOfMinute();
+
+    Incident::factory()->create([
+        'name' => 'Timezone incident',
+        'occurred_at' => $occurredAt,
+    ]);
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee("timeZone: 'UTC'", escape: false)
+        ->assertSee("timeZoneName: 'short'", escape: false)
+        ->assertSee('datetime="'.$occurredAt->toW3cString().'"', escape: false);
+});
+
+it('omits the explicit timezone when the browser default sentinel is set', function () {
+    $settings = app(AppSettings::class);
+    $settings->timezone = '-';
+    $settings->save();
+
+    Incident::factory()->create([
+        'name' => 'Timezone incident',
+        'occurred_at' => now()->subDay()->startOfMinute(),
+    ]);
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee("timeZoneName: 'short'", escape: false)
+        ->assertDontSee("timeZone: '", escape: false);
+});
+
+it('shows the UTC instant in the timestamp tooltip', function () {
+    $occurredAt = now()->subDay()->startOfMinute();
+
+    Incident::factory()->create([
+        'name' => 'Timezone incident',
+        'occurred_at' => $occurredAt,
+    ]);
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee($occurredAt->format('Y-m-d H:i').' UTC');
+});

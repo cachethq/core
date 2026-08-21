@@ -41,7 +41,11 @@ class ManageLocalization extends SettingsPage
                     Select::make('timezone')
                         ->label(__('cachet::settings.manage_localization.timezone_label'))
                         ->helperText(__('cachet::settings.manage_localization.timezone_helper'))
-                        ->options(fn () => collect(timezone_identifiers_list())
+                        ->options(fn () => collect([
+                            __('cachet::settings.manage_cachet.timezone_other') => [
+                                '-' => __('cachet::settings.manage_cachet.browser_default'),
+                            ],
+                        ])->merge(collect(timezone_identifiers_list())
                             ->mapToGroups(
                                 fn ($timezone) => [
                                     Str::of($timezone)
@@ -49,7 +53,7 @@ class ManageLocalization extends SettingsPage
                                         ->toString() => [$timezone => $timezone],
                                 ]
                             )
-                            ->map(fn ($group) => $group->collapse()))
+                            ->map(fn ($group) => $group->collapse())))
                         ->required()
                         ->searchable()
                         ->suffixIcon('heroicon-o-globe-alt'),
