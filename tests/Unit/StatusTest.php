@@ -13,6 +13,7 @@ use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 use Cachet\Status;
 use Carbon\CarbonInterface;
+use Illuminate\Support\Facades\Cache;
 
 use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertTrue;
@@ -173,6 +174,30 @@ it('ignores activity hidden from guests when calculating the last updated timest
     ]);
 
     expect((new Status)->lastUpdated())->toEqual($component->updated_at);
+});
+
+it('caches the status aggregates and flushes them when status data changes', function () {
+    Component::factory()->create([
+        'enabled' => true,
+    ]);
+
+    $status = new Status;
+    $status->components();
+    $status->incidents();
+    $status->lastUpdated();
+
+    expect(Cache::has('cachet::status:components'))->toBeTrue()
+        ->and(Cache::has('cachet::status:incidents'))->toBeTrue()
+        ->and(Cache::has('cachet::status:last-updated'))->toBeTrue();
+
+    Component::factory()->create([
+        'enabled' => true,
+    ]);
+
+    expect(Cache::has('cachet::status:components'))->toBeFalse()
+        ->and(Cache::has('cachet::status:incidents'))->toBeFalse()
+        ->and(Cache::has('cachet::status:last-updated'))->toBeFalse()
+        ->and((int) (new Status)->components()->total)->toBe(2);
 });
 
 it('excludes disabled components from component overview', function () {
