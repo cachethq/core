@@ -12,6 +12,7 @@ use Cachet\Events\Components\ComponentCreated;
 use Cachet\Events\Components\ComponentDeleted;
 use Cachet\Events\Components\ComponentUpdated;
 use Cachet\QueryBuilders\ScheduleBuilder;
+use Cachet\Status;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -89,6 +90,15 @@ class Component extends Model implements Metable
         'deleted' => ComponentDeleted::class,
         'updated' => ComponentUpdated::class,
     ];
+
+    /**
+     * Keep the cached status-page aggregates in step with component changes.
+     */
+    protected static function booted(): void
+    {
+        static::saved(fn () => Status::flush());
+        static::deleted(fn () => Status::flush());
+    }
 
     /**
      * Render the Markdown description.
