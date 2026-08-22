@@ -1,4 +1,4 @@
-@component('cachet::mail.message')
+@component('cachet::mail.message', ['mailMessage' => $message ?? null])
 # {{ __('cachet::settings.manage_notifications.test_email_heading') }}
 
 {{ __('cachet::settings.manage_notifications.test_email_body', ['app' => $appName]) }}

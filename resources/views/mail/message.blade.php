@@ -4,12 +4,10 @@
 <tr>
 <td class="header">
 <a href="{{ route('cachet.status-page') }}" style="display: inline-block;">
-@if ($appBanner)
-<img src="{{ \Illuminate\Support\Facades\Storage::url($appBanner) }}" class="logo-banner" alt="{{ $appName }}">
-@else
-<img src="{{ asset('vendor/cachethq/cachet/logo.png') }}" class="logo" alt="{{ $appName }}">
+<img src="{{ $mailMessage ? $mailMessage->embed($appLogoAttachment) : $appLogoUrl }}" class="{{ $appBanner ? 'logo-banner' : 'logo' }}" alt="{{ $appName }}">
+@unless ($appBanner)
 <span class="header-name">{{ $appName }}</span>
-@endif
+@endunless
 </a>
 </td>
 </tr>

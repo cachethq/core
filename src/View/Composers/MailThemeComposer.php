@@ -5,6 +5,8 @@ namespace Cachet\View\Composers;
 use Cachet\Data\Cachet\ThemeData;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\ThemeSettings;
+use Illuminate\Mail\Attachment;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class MailThemeComposer
@@ -19,14 +21,39 @@ class MailThemeComposer
      */
     public function compose(View $view): void
     {
+        $appBanner = $this->themeSettings->app_banner;
+
         $view->with([
             'appName' => $this->appSettings->name ?? config('cachet.title'),
-            'appBanner' => $this->themeSettings->app_banner,
+            'appBanner' => $appBanner,
+            'appLogoAttachment' => $this->appLogoAttachment($appBanner),
+            'appLogoUrl' => $this->appLogoUrl($appBanner),
             'colors' => array_map(
                 static::hex(...),
                 (new ThemeData($this->themeSettings))->lightColors(),
             ),
         ]);
+    }
+
+    private function appLogoAttachment(?string $appBanner): Attachment
+    {
+        if (filled($appBanner)) {
+            return Attachment::fromStorageDisk(
+                (string) config('cachet.uploads.disk', 'public'),
+                $appBanner,
+            );
+        }
+
+        return Attachment::fromPath(CACHET_PATH.'public/logo.png');
+    }
+
+    private function appLogoUrl(?string $appBanner): string
+    {
+        if (filled($appBanner)) {
+            return Storage::disk((string) config('cachet.uploads.disk', 'public'))->url($appBanner);
+        }
+
+        return asset('vendor/cachethq/cachet/logo.png');
     }
 
     /**
