@@ -52,3 +52,27 @@ it('embeds the configured app logo', function () {
         ->and($logo->getContentType())->toBe('image/png')
         ->and($email->getHtmlBody())->toContain('src="cid:'.$logo->getContentId().'"');
 });
+
+it('embeds the default app logo when the configured logo cannot be read', function () {
+    Storage::fake('public');
+
+    $theme = app(ThemeSettings::class);
+    $theme->app_banner = 'missing-app-logo.png';
+    $theme->save();
+
+    config()->set('mail.mailers.array', ['transport' => 'array']);
+
+    $sentMessage = Mail::mailer('array')->to('subscriber@example.com')->send(new TestMail);
+    $email = $sentMessage?->getSymfonySentMessage()->getOriginalMessage();
+
+    expect($email)->toBeInstanceOf(Email::class)
+        ->and($email->getAttachments())->toHaveCount(1);
+
+    $logo = $email->getAttachments()[0];
+
+    expect($logo->getDisposition())->toBe('inline')
+        ->and($logo->getFilename())->toBe('logo.png')
+        ->and($logo->getContentType())->toBe('image/png')
+        ->and($email->getHtmlBody())->toContain('src="cid:'.$logo->getContentId().'"')
+        ->and($email->getHtmlBody())->toContain('class="header-name"');
+});
