@@ -40,7 +40,7 @@ return [
             'description' => 'Get an email whenever incidents are reported or maintenance is scheduled.',
             'consent' => 'We\'ll send you a confirmation email. You can unsubscribe at any time.',
             'back' => 'Back to status page',
-            'button_label' => 'Subscribe to updates',
+            'button_label' => 'Subscribe',
             'subscribed_heading' => 'Check your email',
             'subscribed_body' => 'If this email address isn\'t already subscribed, you\'ll receive an email with a link to confirm your subscription.',
             'verified_heading' => 'Subscription confirmed',

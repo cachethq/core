@@ -192,7 +192,7 @@ EOF
                 'message' => <<<'EOF'
 Our DNS provider has fixed the issue. We will continue to monitor the situation.
 
-For more information, please you can read our latest [blog post](https://blog.cachethq.io).
+For more information, read our latest [blog post](https://blog.cachethq.io).
 EOF
                 ,
                 'user_id' => $user->id,

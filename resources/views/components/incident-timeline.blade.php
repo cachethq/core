@@ -4,31 +4,34 @@
             {{ $recentIncidentsOnly ? __('cachet::incident.timeline.recent_incidents_header') : __('cachet::incident.timeline.past_incidents_header') }}
         </h2>
 
-        <div class="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400"
-            x-data="{ from: new Date(@js($from)), to: new Date(@js($to)) }">
-
-            <x-filament::input.wrapper disabled>
-                <x-filament::input
-                    type="date"
-                    wire:model="date"
-                    value="{{ $to }}"
-                    disabled
-                />
-            </x-filament::input.wrapper>
-            <span class="text-zinc-400 dark:text-zinc-500">&mdash;</span>
-            <x-filament::input.wrapper :disabled="$recentIncidentsOnly">
-                <x-filament::input
-                    type="date"
-                    wire:model="date"
-                    value="{{ $from }}"
-                    x-data="{ date: '{{ $from }}' }"
-                    x-model="date"
-                    x-init="$watch('date', value => window.location = '?from=' + date)"
-                    max="{{ now()->toDateString() }}"
-                    :disabled="$recentIncidentsOnly"
-                />
-            </x-filament::input.wrapper>
-        </div>
+        <fieldset aria-label="{{ __('cachet::incident.timeline.date_range_label') }}" class="grid grid-cols-2 gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+            <label class="flex flex-col gap-1">
+                <span class="text-xs font-medium">{{ __('cachet::incident.timeline.from_label') }}</span>
+                <x-filament::input.wrapper disabled>
+                    <x-filament::input
+                        type="date"
+                        wire:model="date"
+                        value="{{ $to }}"
+                        disabled
+                    />
+                </x-filament::input.wrapper>
+            </label>
+            <label class="flex flex-col gap-1">
+                <span class="text-xs font-medium">{{ __('cachet::incident.timeline.to_label') }}</span>
+                <x-filament::input.wrapper :disabled="$recentIncidentsOnly">
+                    <x-filament::input
+                        type="date"
+                        wire:model="date"
+                        value="{{ $from }}"
+                        x-data="{ date: '{{ $from }}' }"
+                        x-model="date"
+                        x-init="$watch('date', value => window.location = '?from=' + date)"
+                        max="{{ now()->toDateString() }}"
+                        :disabled="$recentIncidentsOnly"
+                    />
+                </x-filament::input.wrapper>
+            </label>
+        </fieldset>
     </div>
 
     <div class="flex w-full flex-col gap-8">

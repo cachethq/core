@@ -21,6 +21,7 @@ return [
         ],
     ],
     'last_updated' => 'Last updated :timestamp',
+    'description_label' => 'About :component',
     'view_details' => 'View details',
     'form' => [
         'name_label' => 'Name',

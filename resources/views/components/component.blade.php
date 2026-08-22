@@ -22,7 +22,7 @@
 
             @if($component->description)
                 <div x-data x-popover class="relative flex shrink-0 items-center">
-                    <button type="button" x-ref="anchor" x-popover:button class="flex items-center justify-center text-zinc-400 transition hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200">
+                    <button type="button" x-ref="anchor" x-popover:button aria-label="{{ __('cachet::component.description_label', ['component' => $component->name]) }}" class="flex size-10 items-center justify-center rounded-full text-zinc-400 transition hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200">
                         <x-heroicon-o-information-circle class="size-4" />
                     </button>
                     <div x-popover:panel x-cloak x-transition.opacity x-anchor.right.offset.8="$refs.anchor" class="z-10 w-max max-w-sm rounded-md bg-zinc-900 px-3 py-2 text-xs font-medium text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-900">
@@ -42,15 +42,17 @@
                  class="relative shrink-0">
                 <div x-ref="badgeAnchor">
                     @if ($component->impacting_incident)
-                        <a href="{{ route('cachet.status-page.incident', [$component->impacting_incident]) }}" class="inline-flex text-sm font-semibold tracking-tight {{ $component->latest_status->getTextColorClasses() }}">
+                        <a href="{{ route('cachet.status-page.incident', [$component->impacting_incident]) }}" aria-describedby="component-{{ $component->id }}-updated" class="inline-flex text-sm font-semibold tracking-tight {{ $component->latest_status->getTextColorClasses() }}">
                             {{ $component->latest_status->getLabel() }}
                         </a>
                     @else
-                        <span class="text-sm font-semibold tracking-tight {{ $component->latest_status->getTextColorClasses() }}">{{ $component->latest_status->getLabel() }}</span>
+                        <span tabindex="0" aria-describedby="component-{{ $component->id }}-updated" class="text-sm font-semibold tracking-tight {{ $component->latest_status->getTextColorClasses() }}">{{ $component->latest_status->getLabel() }}</span>
                     @endif
                 </div>
 
                 <div x-show="tooltipOpen"
+                     id="component-{{ $component->id }}-updated"
+                     role="tooltip"
                      x-cloak
                      x-transition.opacity
                      x-anchor.left.offset.8="$refs.badgeAnchor"
@@ -61,4 +63,4 @@
         @endunless
     </div>
 </li>
-{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_AFTER) }}
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_COMPONENTS_AFTER) }}

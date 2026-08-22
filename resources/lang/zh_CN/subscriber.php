@@ -31,4 +31,9 @@ return [
         'total_subscribers_label' => '总订阅者数',
         'verified_subscribers_description' => ':count 位已验证',
     ],
+    'status_page' => [
+        'subscribe' => [
+            'button_label' => '订阅',
+        ],
+    ],
 ];

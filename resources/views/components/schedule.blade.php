@@ -1,13 +1,24 @@
+@props([
+    'schedule',
+    'headingLevel' => 3,
+])
+
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_SCHEDULES_BEFORE) }}
 <li class="px-4 py-4 sm:px-6 sm:py-6" x-data="{ timestamp: new Date(@js($schedule->scheduled_at)) }">
     <div class="flex flex-col gap-3">
         <div class="flex flex-col-reverse items-start justify-between gap-3 sm:flex-row sm:items-center">
             <div class="flex flex-1 flex-col gap-1">
-                <h3 class="max-w-full break-words text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">
-                    <a href="{{ route('cachet.status-page.schedule', ['schedule' => $schedule]) }}" class="transition hover:text-accent-content">
+                @if ($headingLevel === 1)
+                    <h1 class="max-w-full break-words text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-2xl">
                         {{ $schedule->name }}
-                    </a>
-                </h3>
+                    </h1>
+                @else
+                    <h3 class="max-w-full break-words text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">
+                        <a href="{{ route('cachet.status-page.schedule', ['schedule' => $schedule]) }}" class="transition hover:text-accent-content">
+                            {{ $schedule->name }}
+                        </a>
+                    </h3>
+                @endif
                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
                     <x-cachet::timestamp :timestamp="$schedule->scheduled_at" />
                 </span>
