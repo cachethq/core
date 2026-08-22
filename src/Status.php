@@ -13,10 +13,22 @@ use Cachet\Settings\AppSettings;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Date;
 
 class Status
 {
+    /**
+     * How long a cached aggregate is served without being recalculated, in seconds.
+     */
+    private const CACHE_FRESH = 30;
+
+    /**
+     * How long a stale aggregate may still be served while it is recalculated
+     * in the background, in seconds.
+     */
+    private const CACHE_TTL = 60;
+
     protected ?object $components = null;
 
     protected ?object $incidents = null;
@@ -88,7 +100,11 @@ class Status
      */
     public function components(): object
     {
-        return $this->components ??= $this->tally();
+        return $this->components ??= Cache::flexible(
+            'cachet::status:components',
+            [self::CACHE_FRESH, self::CACHE_TTL],
+            fn (): object => $this->tally(),
+        );
     }
 
     /**
@@ -98,13 +114,17 @@ class Status
      */
     public function incidents(): object
     {
-        return $this->incidents ??= Incident::query()
-            ->viewableBy(false)
-            ->toBase()
-            ->selectRaw('count(*) as total')
-            ->selectRaw('coalesce(sum(case when status = ? then 1 else 0 end), 0) as resolved', [IncidentStatusEnum::fixed->value])
-            ->selectRaw('coalesce(sum(case when status is null or status <> ? then 1 else 0 end), 0) as unresolved', [IncidentStatusEnum::fixed->value])
-            ->first();
+        return $this->incidents ??= Cache::flexible(
+            'cachet::status:incidents',
+            [self::CACHE_FRESH, self::CACHE_TTL],
+            fn (): object => Incident::query()
+                ->viewableBy(false)
+                ->toBase()
+                ->selectRaw('count(*) as total')
+                ->selectRaw('coalesce(sum(case when status = ? then 1 else 0 end), 0) as resolved', [IncidentStatusEnum::fixed->value])
+                ->selectRaw('coalesce(sum(case when status is null or status <> ? then 1 else 0 end), 0) as unresolved', [IncidentStatusEnum::fixed->value])
+                ->first(),
+        );
     }
 
     /**
@@ -113,22 +133,36 @@ class Status
      */
     public function lastUpdated(): ?CarbonInterface
     {
-        return collect([
-            Component::query()->enabled()->max('updated_at'),
-            Incident::query()->viewableBy(false)->max('updated_at'),
-            Schedule::query()->published()->max('updated_at'),
-            Update::query()
-                ->where('updateable_type', Relation::getMorphAlias(Incident::class))
-                ->whereIn('updateable_id', Incident::query()->viewableBy(false)->select('id'))
-                ->max('updated_at'),
-            Update::query()
-                ->where('updateable_type', Relation::getMorphAlias(Schedule::class))
-                ->whereIn('updateable_id', Schedule::query()->published()->select('id'))
-                ->max('updated_at'),
-        ])
-            ->filter()
-            ->map(fn ($timestamp): CarbonInterface => Date::parse($timestamp))
-            ->max();
+        return Cache::flexible(
+            'cachet::status:last-updated',
+            [self::CACHE_FRESH, self::CACHE_TTL],
+            fn (): ?CarbonInterface => collect([
+                Component::query()->enabled()->max('updated_at'),
+                Incident::query()->viewableBy(false)->max('updated_at'),
+                Schedule::query()->published()->max('updated_at'),
+                Update::query()
+                    ->where('updateable_type', Relation::getMorphAlias(Incident::class))
+                    ->whereIn('updateable_id', Incident::query()->viewableBy(false)->select('id'))
+                    ->max('updated_at'),
+                Update::query()
+                    ->where('updateable_type', Relation::getMorphAlias(Schedule::class))
+                    ->whereIn('updateable_id', Schedule::query()->published()->select('id'))
+                    ->max('updated_at'),
+            ])
+                ->filter()
+                ->map(fn ($timestamp): CarbonInterface => Date::parse($timestamp))
+                ->max(),
+        );
+    }
+
+    /**
+     * Forget the cached aggregates so the next read recalculates them.
+     */
+    public static function flush(): void
+    {
+        Cache::forget('cachet::status:components');
+        Cache::forget('cachet::status:incidents');
+        Cache::forget('cachet::status:last-updated');
     }
 
     /**
