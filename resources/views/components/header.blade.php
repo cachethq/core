@@ -3,7 +3,7 @@
     <div class="container mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <a href="{{ route('cachet.status-page') }}" class="inline-flex items-center transition hover:opacity-80">
             @if($appBanner)
-                <img src="{{ Storage::url($appBanner) }}" alt="{{ $siteName }}" class="h-8 w-auto" />
+                <img src="{{ Storage::disk(config('cachet.uploads.disk', 'public'))->url($appBanner) }}" alt="{{ $siteName }}" class="h-8 w-auto" />
             @else
                 <x-cachet::logo class="h-8 w-auto" />
             @endif

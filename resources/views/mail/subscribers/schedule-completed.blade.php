@@ -1,4 +1,4 @@
-@component('cachet::mail.message', ['unsubscribeUrl' => $unsubscribeUrl])
+@component('cachet::mail.message', ['mailMessage' => $message ?? null, 'unsubscribeUrl' => $unsubscribeUrl])
 # {{ $schedule->name }}
 
 <p class="sub"><strong>{{ __('cachet::subscriber.mail.schedule_completed.completed_at') }}</strong> {{ $schedule->completed_at->toDayDateTimeString() }}</p>

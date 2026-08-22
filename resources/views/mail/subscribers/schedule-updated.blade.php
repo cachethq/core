@@ -1,4 +1,4 @@
-@component('cachet::mail.message', ['unsubscribeUrl' => $unsubscribeUrl])
+@component('cachet::mail.message', ['mailMessage' => $message ?? null, 'unsubscribeUrl' => $unsubscribeUrl])
 @php($window = $schedule->scheduled_at->toDayDateTimeString().($schedule->completed_at ? ' – '.$schedule->completed_at->toDayDateTimeString() : ''))
 # {{ $schedule->name }}
 

@@ -179,6 +179,24 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet Image Uploads
+     |--------------------------------------------------------------------------
+     |
+     | Configure where custom images are stored, their maximum size in
+     | kilobytes, and the MIME types that may be uploaded.
+     |
+     */
+    'uploads' => [
+        'disk' => env('CACHET_UPLOAD_DISK', 'public'),
+        'max_size' => (int) env('CACHET_UPLOAD_MAX_SIZE', 1024),
+        'image_mime_types' => array_values(array_filter(array_map(
+            'trim',
+            explode(',', (string) env('CACHET_UPLOAD_IMAGE_MIME_TYPES', 'image/jpeg,image/png,image/gif,image/webp')),
+        ))),
+    ],
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Migrations
      |--------------------------------------------------------------------------
      |
