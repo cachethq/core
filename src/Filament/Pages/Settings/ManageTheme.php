@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Pages\Settings;
 
+use Cachet\Cachet;
 use Cachet\Data\Cachet\ThemeData;
 use Cachet\Settings\ThemeSettings;
 use Filament\Forms\Components\FileUpload;
@@ -17,6 +18,11 @@ use Filament\Support\Facades\FilamentColor;
 class ManageTheme extends SettingsPage
 {
     protected static string $settings = ThemeSettings::class;
+
+    public static function canAccess(): bool
+    {
+        return Cachet::canAccessDashboardFeature('themes');
+    }
 
     public static function getNavigationGroup(): ?string
     {

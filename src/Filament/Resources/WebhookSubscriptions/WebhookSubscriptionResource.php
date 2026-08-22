@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Resources\WebhookSubscriptions;
 
+use Cachet\Cachet;
 use Cachet\Enums\WebhookEventEnum;
 use Cachet\Filament\Resources\WebhookSubscriptions\Pages\CreateWebhookSubscription;
 use Cachet\Filament\Resources\WebhookSubscriptions\Pages\EditWebhookSubscription;
@@ -26,6 +27,12 @@ use Filament\Tables\Table;
 class WebhookSubscriptionResource extends Resource
 {
     protected static ?string $model = WebhookSubscription::class;
+
+    public static function canAccess(): bool
+    {
+        return parent::canAccess()
+            && Cachet::canAccessDashboardFeature('webhooks');
+    }
 
     public static function getNavigationGroup(): ?string
     {
