@@ -9,6 +9,7 @@ export default defineConfig({
         'resources/css/cachet.css',
         'resources/css/dashboard/theme.css',
         'resources/js/cachet.js',
+        'resources/js/metrics.js',
       ],
       // publicDirectory: 'vendor/orchestra/testbench-core/laravel/public/vendor/cachethq',
       // buildDirectory: 'cachet',

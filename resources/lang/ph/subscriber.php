@@ -31,4 +31,9 @@ return [
         'total_subscribers_label' => 'Kabuuang mga Subscriber',
         'verified_subscribers_description' => ':count ang nakumpirma',
     ],
+    'status_page' => [
+        'subscribe' => [
+            'button_label' => 'Mag-subscribe',
+        ],
+    ],
 ];

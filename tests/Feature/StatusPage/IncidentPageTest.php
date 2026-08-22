@@ -35,3 +35,13 @@ it('does not render raw html in incident messages', function () {
         ->assertSee('<strong>investigating</strong>', escape: false)
         ->assertDontSee('<script>alert(1)</script>', escape: false);
 });
+
+it('uses the incident name as the page heading', function () {
+    $incident = Incident::factory()->create(['name' => 'API connectivity']);
+
+    $page = $this->get(route('cachet.status-page.incident', $incident))
+        ->assertOk()
+        ->getContent();
+
+    expect($page)->toMatch('/<h1[^>]*>\s*API connectivity\s*<\/h1>/');
+});

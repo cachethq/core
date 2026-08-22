@@ -4,6 +4,7 @@
     'incidents',
     'schedules' => [],
     'withDate' => true,
+    'headingLevel' => 3,
 ])
 
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENTS_BEFORE) }}
@@ -23,9 +24,15 @@
                 <div class="flex flex-col-reverse items-start justify-between gap-3 sm:flex-row sm:items-center">
                     <div class="flex flex-1 flex-col gap-1">
                         <div class="flex items-center gap-2">
-                            <h3 class="max-w-full break-words text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">
-                                <a href="{{ route('cachet.status-page.incident', $incident) }}" class="transition hover:text-accent-content">{{ $incident->name }}</a>
-                            </h3>
+                            @if ($headingLevel === 1)
+                                <h1 class="max-w-full break-words text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-2xl">
+                                    {{ $incident->name }}
+                                </h1>
+                            @else
+                                <h3 class="max-w-full break-words text-base font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-lg">
+                                    <a href="{{ route('cachet.status-page.incident', $incident) }}" class="transition hover:text-accent-content">{{ $incident->name }}</a>
+                                </h3>
+                            @endif
                             @auth
                                 <a href="{{ $incident->filamentDashboardEditUrl() }}"
                                    class="text-zinc-400 transition hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200"
@@ -60,7 +67,11 @@
                         @foreach ($incident->updates as $update)
                             <div class="relative py-5 sm:last:pb-6" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                                 <x-cachet::incident-update-status :status="$update->status" />
-                                <h3 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $update->status->getLabel() }}</h3>
+                                @if ($headingLevel === 1)
+                                    <h2 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $update->status->getLabel() }}</h2>
+                                @else
+                                    <h3 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $update->status->getLabel() }}</h3>
+                                @endif
                                 <span class="text-xs text-zinc-500 dark:text-zinc-400">
                                     <x-cachet::timestamp :timestamp="$update->created_at" />
                                 </span>
@@ -70,7 +81,11 @@
                         <div class="relative py-5 sm:last:pb-6" x-data="{ timestamp: new Date(@js($incident->timestamp)) }">
                             @php($reportStatus = $incident->updates->isEmpty() ? $incident->status : null)
                             <x-cachet::incident-update-status :status="$reportStatus ?? IncidentStatusEnum::unknown" />
-                            <h3 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $reportStatus?->getLabel() ?? __('Reported') }}</h3>
+                            @if ($headingLevel === 1)
+                                <h2 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $reportStatus?->getLabel() ?? __('Reported') }}</h2>
+                            @else
+                                <h3 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $reportStatus?->getLabel() ?? __('Reported') }}</h3>
+                            @endif
                             <span class="text-xs text-zinc-500 dark:text-zinc-400">
                                 <x-cachet::timestamp :timestamp="$incident->timestamp" />
                             </span>

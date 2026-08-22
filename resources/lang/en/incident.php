@@ -18,6 +18,9 @@ return [
         'past_incidents_header' => 'Past incidents',
         'recent_incidents_header' => 'Recent incidents',
         'no_incidents_reported_between' => 'No incidents reported between :from and :to',
+        'date_range_label' => 'Incident date range',
+        'from_label' => 'From',
+        'to_label' => 'To',
         'navigate' => [
             'previous' => 'Previous',
             'today' => 'Today',
