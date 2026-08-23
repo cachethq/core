@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Filament\Resources;
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\Incidents\Pages\CreateIncident;
@@ -88,4 +89,15 @@ it('groups component selections by component group when creating an incident', f
         ->assertSeeInOrder(['First Group', 'Second Group', 'Ungrouped components'])
         ->assertSee('Webservice')
         ->assertSee('Ungrouped Service');
+});
+
+it('excludes already attached components from the attach action options', function () {
+    $incident = Incident::factory()->create();
+    $attached = Component::factory()->create(['name' => 'Already Attached']);
+
+    $incident->components()->attach($attached->id, ['component_status' => ComponentStatusEnum::operational->value]);
+
+    $options = \Cachet\Filament\Resources\Incidents\IncidentResource::getComponentOptions($incident);
+
+    expect(collect($options)->flatten()->all())->not->toContain('Already Attached');
 });
