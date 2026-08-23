@@ -89,11 +89,11 @@ class IncidentResource extends Resource
                         ->addActionLabel(__('cachet::incident.form.add_component.action_label'))
                         ->schema([
                             Select::make('component_id')
+                                ->label(__('cachet::incident.form.add_component.component_label'))
                                 ->preload()
                                 ->required()
                                 ->options(fn (): array => static::getComponentOptions())
-                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                ->label(__('cachet::incident.form.add_component.component_label')),
+                                ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
                             ToggleButtons::make('component_status')
                                 ->label(__('cachet::incident.form.add_component.status_label'))
                                 ->inline()
@@ -138,9 +138,9 @@ class IncidentResource extends Resource
      *
      * @return array<string, array<int, string>>
      */
-    protected static function getComponentOptions(): array
+    public static function getComponentOptions(?Incident $excludeAttachedTo = null): array
     {
-        return Component::query()
+        $query = Component::query()
             ->with('group')
             ->leftJoin('component_groups', 'components.component_group_id', '=', 'component_groups.id')
             ->orderByRaw('component_groups.id is null')
@@ -148,7 +148,13 @@ class IncidentResource extends Resource
             ->orderBy('component_groups.name')
             ->orderBy('components.order')
             ->orderBy('components.name')
-            ->select('components.*')
+            ->select('components.*');
+
+        if ($excludeAttachedTo instanceof Incident) {
+            $query->whereNotIn('components.id', $excludeAttachedTo->components()->pluck('components.id'));
+        }
+
+        return $query
             ->get()
             ->groupBy(function (Component $component): string {
                 $group = $component->group;
