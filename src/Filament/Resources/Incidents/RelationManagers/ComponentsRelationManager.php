@@ -68,6 +68,7 @@ class ComponentsRelationManager extends RelationManager
                             ->placeholder(__('cachet::component.attach.placeholder'))
                             ->options(function (): array {
                                 $owner = $this->getOwnerRecord();
+
                                 return IncidentResource::getComponentOptions($owner instanceof Incident ? $owner : null);
                             })
                             ->searchable()
