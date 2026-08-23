@@ -161,7 +161,7 @@ class IncidentResource extends Resource
 
                 return $group instanceof ComponentGroup
                     ? $group->name
-                    : __('Ungrouped components');
+                    : __('cachet::component.list.ungrouped');
             })
             ->map(fn ($components): array => $components->pluck('name', 'id')->all())
             ->all();

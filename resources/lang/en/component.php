@@ -19,6 +19,11 @@ return [
             'heading' => 'Components',
             'description' => 'Components represent the various parts of your system that can affect the status of your status page.',
         ],
+        'ungrouped' => 'Ungrouped components',
+    ],
+    'attach' => [
+        'heading' => 'Attach components',
+        'placeholder' => 'Select components',
     ],
     'last_updated' => 'Last updated :timestamp',
     'view_details' => 'View details',
