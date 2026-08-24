@@ -4,6 +4,12 @@
     <div class="container mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 flex flex-col space-y-6">
         <x-cachet::status-bar />
 
+        <div class="flex flex-col gap-6">
+            <div class="flex w-full flex-col gap-14">
+                <x-cachet::incident :with-date="false" :date="$incident->timestamp" :incidents="[$incident]" :heading-level="1" />
+            </div>
+        </div>
+
         @if ($incident->components->isNotEmpty())
             <div class="group relative overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
                 <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
@@ -19,12 +25,6 @@
                 </ul>
             </div>
         @endif
-
-        <div class="flex flex-col gap-6">
-            <div class="flex flex-col gap-14 w-full">
-                <x-cachet::incident :with-date="false" :date="$incident->timestamp" :incidents="[$incident]" />
-            </div>
-        </div>
 
         <div class="flex justify-left">
             <div class="inline-flex items-center gap-0.5 rounded-lg bg-zinc-100 p-0.5 ring-1 ring-zinc-900/10 dark:bg-zinc-800/80 dark:ring-white/15">

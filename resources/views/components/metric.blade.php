@@ -6,7 +6,8 @@
 @use('\Cachet\Models\Metric')
 
 @if ($metric instanceof Metric)
-<div x-data="chart_{{ $metric->id }}"
+<div data-cachet-metric
+     x-data="chart_{{ $metric->id }}"
      class="group relative overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
     <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
 
@@ -20,7 +21,7 @@
 
                     @if($metric->description)
                         <div x-data x-popover class="flex shrink-0 items-center">
-                            <button type="button" x-ref="anchor" x-popover:button class="flex items-center justify-center rounded-full text-zinc-400 transition hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200">
+                            <button type="button" x-ref="anchor" x-popover:button aria-label="{{ __('cachet::metric.description_label', ['metric' => $metric->name]) }}" class="flex size-10 items-center justify-center rounded-full text-zinc-400 transition hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-200">
                                 <x-heroicon-o-information-circle class="size-4" />
                             </button>
                             <div x-popover:panel x-cloak x-transition.opacity x-anchor.right.offset.8="$refs.anchor" class="z-10 max-w-xs rounded-md bg-zinc-900 px-2.5 py-1.5 text-xs font-medium text-white shadow-lg dark:bg-zinc-100 dark:text-zinc-900">
@@ -42,20 +43,27 @@
                 @foreach ([MetricViewEnum::last_hour, MetricViewEnum::today, MetricViewEnum::week, MetricViewEnum::month] as $value)
                     <button type="button"
                             role="tab"
+                            id="metric-{{ $metric->id }}-period-{{ $value->value }}"
+                            aria-controls="metric-{{ $metric->id }}-chart"
                             x-on:click="period = {{ $value->value }}"
+                            x-on:keydown.arrow-right.prevent="focusPeriod((period + 1) % 4)"
+                            x-on:keydown.arrow-left.prevent="focusPeriod((period + 3) % 4)"
+                            x-on:keydown.home.prevent="focusPeriod(0)"
+                            x-on:keydown.end.prevent="focusPeriod(3)"
                             x-bind:aria-selected="period === {{ $value->value }} ? 'true' : 'false'"
+                            x-bind:tabindex="period === {{ $value->value }} ? 0 : -1"
                             x-bind:class="period === {{ $value->value }}
                                 ? 'bg-white text-zinc-900 shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-700 dark:text-white dark:ring-white/15'
                                 : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100'"
-                            class="rounded-md px-2.5 py-1 text-xs font-medium transition">
+                            class="min-h-9 rounded-md px-2.5 py-1 text-xs font-medium transition">
                         {{ $value->getLabel() }}
                     </button>
                 @endforeach
             </div>
         </div>
 
-        <div class="relative -mx-1 h-56 sm:h-64 lg:h-72">
-            <canvas x-ref="canvas" class="text-zinc-700 dark:text-zinc-200"></canvas>
+        <div id="metric-{{ $metric->id }}-chart" role="tabpanel" x-bind:aria-labelledby="'metric-{{ $metric->id }}-period-' + period" class="relative -mx-1 h-56 sm:h-64 lg:h-72">
+            <canvas x-ref="canvas" role="img" aria-label="{{ __('cachet::metric.chart_label', ['metric' => $metric->name]) }}" class="text-zinc-700 dark:text-zinc-200"></canvas>
         </div>
     </div>
 </div>
@@ -64,10 +72,20 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('chart_{{ $metric->id }}', () => ({
             metric: {{ Js::from($metric) }},
+            metricView: {{ Js::from([
+                'last_hour' => MetricViewEnum::last_hour->value,
+                'today' => MetricViewEnum::today->value,
+                'week' => MetricViewEnum::week->value,
+                'month' => MetricViewEnum::month->value,
+            ]) }},
             period: {{ Js::from($metric->default_view) }},
             points: [[], [], [], []],
             chart: null,
-            init,
+            focusPeriod(period) {
+                this.period = period
+                this.$nextTick(() => document.getElementById(`metric-{{ $metric->id }}-period-${period}`).focus())
+            },
+            init: window.cachetMetricChart,
         }))
     })
 </script>

@@ -2,11 +2,16 @@
 
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Facades\CachetView;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
+use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Cachet\View\RenderHook;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 it('renders the status page', function () {
@@ -104,6 +109,53 @@ it('uses a logical heading hierarchy for components', function () {
         ->toMatch('/<h2[^>]*>\s*Core services\s*<\\/h2>/')
         ->toMatch('/<h3[^>]*>\s*Core API\s*<\\/h3>/')
         ->toMatch('/<h2[^>]*>\s*Public API\s*<\\/h2>/');
+});
+
+it('renders the components after hook after each component', function () {
+    Component::factory()->create(['name' => 'Public API']);
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_COMPONENTS_AFTER, fn () => '<span>components-after-hook</span>');
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('components-after-hook');
+});
+
+it('gives status page controls accessible names', function () {
+    Component::factory()->create([
+        'name' => 'Public API',
+        'description' => 'The public API.',
+    ]);
+
+    $page = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('aria-label="'.__('cachet::component.description_label', ['component' => 'Public API']).'"', escape: false)
+        ->assertSee('aria-label="'.__('cachet::incident.timeline.date_range_label').'"', escape: false)
+        ->getContent();
+
+    expect($page)
+        ->toMatch('/<label[^>]*>.*'.__('cachet::incident.timeline.from_label').'.*<input[^>]*type="date"/s')
+        ->toMatch('/<label[^>]*>.*'.__('cachet::incident.timeline.to_label').'.*<input[^>]*type="date"/s');
+});
+
+it('marks the page for conditional metrics loading only when a metric chart exists', function () {
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertDontSee('data-cachet-metric', escape: false);
+
+    Metric::factory()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+        'display_chart' => true,
+        'show_when_empty' => true,
+    ]);
+    Cache::forget('cachet::metrics.guests');
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('data-cachet-metric', escape: false)
+        ->assertSee('x-on:keydown.arrow-right.prevent', escape: false)
+        ->assertSee('x-on:keydown.arrow-left.prevent', escape: false)
+        ->assertSee('x-on:keydown.home.prevent', escape: false)
+        ->assertSee('x-on:keydown.end.prevent', escape: false);
 });
 
 it('can hide component group statuses', function () {
