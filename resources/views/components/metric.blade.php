@@ -6,11 +6,8 @@
 @use('\Cachet\Models\Metric')
 
 @if ($metric instanceof Metric)
-@once
-    @vite('resources/js/metrics.js', 'vendor/cachethq/cachet/build')
-@endonce
-
-<div x-data="chart_{{ $metric->id }}"
+<div data-cachet-metric
+     x-data="chart_{{ $metric->id }}"
      class="group relative overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
     <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
 
@@ -49,6 +46,10 @@
                             id="metric-{{ $metric->id }}-period-{{ $value->value }}"
                             aria-controls="metric-{{ $metric->id }}-chart"
                             x-on:click="period = {{ $value->value }}"
+                            x-on:keydown.arrow-right.prevent="focusPeriod((period + 1) % 4)"
+                            x-on:keydown.arrow-left.prevent="focusPeriod((period + 3) % 4)"
+                            x-on:keydown.home.prevent="focusPeriod(0)"
+                            x-on:keydown.end.prevent="focusPeriod(3)"
                             x-bind:aria-selected="period === {{ $value->value }} ? 'true' : 'false'"
                             x-bind:tabindex="period === {{ $value->value }} ? 0 : -1"
                             x-bind:class="period === {{ $value->value }}
@@ -80,6 +81,10 @@
             period: {{ Js::from($metric->default_view) }},
             points: [[], [], [], []],
             chart: null,
+            focusPeriod(period) {
+                this.period = period
+                this.$nextTick(() => document.getElementById(`metric-{{ $metric->id }}-period-${period}`).focus())
+            },
             init: window.cachetMetricChart,
         }))
     })

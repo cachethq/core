@@ -18,15 +18,18 @@
     "isEntry": true
   },
   "resources/js/cachet.js": {
-    "file": "assets/cachet-CHF_99gt.js",
+    "file": "assets/cachet-CCLiwWgX.js",
     "name": "cachet",
     "src": "resources/js/cachet.js",
-    "isEntry": true
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/js/metrics.js"
+    ]
   },
   "resources/js/metrics.js": {
     "file": "assets/metrics-DzddGFQc.js",
     "name": "metrics",
     "src": "resources/js/metrics.js",
-    "isEntry": true
+    "isDynamicEntry": true
   }
 }

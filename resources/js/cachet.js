@@ -12,8 +12,12 @@ Alpine.plugin(Ui)
 
 window.Alpine = Alpine
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => Alpine.start())
-} else {
+async function startAlpine() {
+    if (document.querySelector('[data-cachet-metric]')) {
+        await import('./metrics.js')
+    }
+
     Alpine.start()
 }
+
+document.addEventListener('DOMContentLoaded', startAlpine, { once: true })

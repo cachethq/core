@@ -137,10 +137,10 @@ it('gives status page controls accessible names', function () {
         ->toMatch('/<label[^>]*>.*'.__('cachet::incident.timeline.to_label').'.*<input[^>]*type="date"/s');
 });
 
-it('loads the metrics bundle only when a metric chart exists', function () {
+it('marks the page for conditional metrics loading only when a metric chart exists', function () {
     $this->get(route('cachet.status-page'))
         ->assertOk()
-        ->assertDontSee('assets/metrics-', escape: false);
+        ->assertDontSee('data-cachet-metric', escape: false);
 
     Metric::factory()->create([
         'visible' => ResourceVisibilityEnum::guest,
@@ -151,7 +151,11 @@ it('loads the metrics bundle only when a metric chart exists', function () {
 
     $this->get(route('cachet.status-page'))
         ->assertOk()
-        ->assertSee('assets/metrics-', escape: false);
+        ->assertSee('data-cachet-metric', escape: false)
+        ->assertSee('x-on:keydown.arrow-right.prevent', escape: false)
+        ->assertSee('x-on:keydown.arrow-left.prevent', escape: false)
+        ->assertSee('x-on:keydown.home.prevent', escape: false)
+        ->assertSee('x-on:keydown.end.prevent', escape: false);
 });
 
 it('can hide component group statuses', function () {
