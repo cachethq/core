@@ -2,6 +2,8 @@
 
 namespace Cachet\Database\Seeders;
 
+use Cachet\Concerns\RecordsMetricObservations;
+use Cachet\Data\Metrics\MetricObservation;
 use Cachet\Models\Metric;
 use DateTimeInterface;
 use Illuminate\Database\Seeder;
@@ -16,7 +18,7 @@ class DemoMetricSeeder extends Seeder
     /**
      * Push a fresh metric point onto the demo metric, if it still exists.
      */
-    public function run(): void
+    public function run(RecordsMetricObservations $recorder): void
     {
         $metric = Metric::query()->where('name', self::METRIC_NAME)->first();
 
@@ -24,9 +26,13 @@ class DemoMetricSeeder extends Seeder
             return;
         }
 
-        $metric->metricPoints()->create([
-            'value' => self::valueAt(now()),
-        ]);
+        $recordedAt = now();
+
+        $recorder->record($metric, new MetricObservation(
+            value: self::valueAt($recordedAt),
+            recordedAt: $recordedAt,
+            source: 'cachet-demo',
+        ));
     }
 
     /**
