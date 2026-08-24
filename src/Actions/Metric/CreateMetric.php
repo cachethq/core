@@ -12,6 +12,6 @@ class CreateMetric
      */
     public function handle(CreateMetricRequestData $data): Metric
     {
-        return Metric::create($data->toArray());
+        return tap(Metric::create($data->except('tags')->toArray()), fn (Metric $metric) => $metric->syncTags($data->tags));
     }
 }

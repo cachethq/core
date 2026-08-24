@@ -31,6 +31,14 @@
                     </div>
                 </div>
             @endif
+
+            @if (app(\Cachet\Settings\AppSettings::class)->show_component_tags && $component->tags->isNotEmpty())
+                <div class="mt-2 flex flex-wrap gap-1.5">
+                    @foreach ($component->tags as $tag)
+                        <span class="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">{{ $tag->name }}</span>
+                    @endforeach
+                </div>
+            @endif
         </div>
 
         @unless ($hideStatus ?? false)

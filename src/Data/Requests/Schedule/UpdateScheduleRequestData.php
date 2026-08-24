@@ -24,6 +24,8 @@ final class UpdateScheduleRequestData extends BaseData
         public readonly ?Carbon $publishedAt = null,
         #[DataCollectionOf(ScheduleComponentRequestData::class)]
         public readonly ?array $components = null,
+        /** @var list<string>|null */
+        public readonly ?array $tags = null,
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -48,6 +50,8 @@ final class UpdateScheduleRequestData extends BaseData
             'components' => ['array'],
             'components.*.id' => ['required', 'int', 'distinct', 'exists:components,id'],
             'components.*.status' => ['required', Rule::enum(ComponentStatusEnum::class)],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'max:255'],
             /**
              * Key/value metadata to store against the resource.
              *

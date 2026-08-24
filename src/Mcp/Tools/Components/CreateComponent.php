@@ -37,6 +37,7 @@ class CreateComponent extends Tool
             'order' => $schema->integer()->min(0)->description('The display order of the component.'),
             'enabled' => $schema->boolean()->default(true),
             'component_group_id' => $schema->integer()->description('The ID of the component group this component belongs to.'),
+            'tags' => $schema->array()->items($schema->string())->description('Tags to apply to the component.'),
         ];
     }
 

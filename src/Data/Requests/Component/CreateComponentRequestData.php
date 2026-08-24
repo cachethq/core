@@ -17,6 +17,8 @@ final class CreateComponentRequestData extends BaseData
         public readonly ?int $order = null,
         public readonly bool $enabled = true,
         public readonly ?int $componentGroupId = null,
+        /** @var list<string> */
+        public readonly array $tags = [],
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -31,6 +33,8 @@ final class CreateComponentRequestData extends BaseData
             'order' => ['int', 'min:0'],
             'enabled' => ['boolean'],
             'component_group_id' => ['int', 'min:0', Rule::exists('component_groups', 'id')],
+            'tags' => ['array'],
+            'tags.*' => ['string', 'max:255'],
             /**
              * Key/value metadata to store against the resource.
              *

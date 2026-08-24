@@ -32,6 +32,7 @@ class UpdateSchedule extends Tool
     {
         return [
             'id' => $schema->integer()->required()->description('The schedule ID.'),
+            'tags' => $schema->array()->items($schema->string())->description('Replace the maintenance schedule tags.'),
             'name' => $schema->string()->max(255)->description('The name of the maintenance schedule.'),
             'message' => $schema->string()->description('The schedule message, in Markdown.'),
             'scheduled_at' => $schema->string()->description('When the maintenance starts, as an ISO-8601 or Y-m-d H:i:s datetime.'),

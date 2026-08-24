@@ -4,6 +4,7 @@ namespace Cachet\Models;
 
 use Cachet\Cachet;
 use Cachet\Concerns\HasMeta;
+use Cachet\Concerns\HasTags;
 use Cachet\Concerns\Metable;
 use Cachet\Database\Factories\ComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
@@ -61,6 +62,7 @@ class Component extends Model implements Metable
     use HasFactory;
 
     use HasMeta;
+    use HasTags;
     use SoftDeletes;
 
     /** @var array<string, string> */
