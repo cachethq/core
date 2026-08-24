@@ -43,7 +43,7 @@
     },
     "require-dev": {
         "dedoc/scramble": "^0.12|^0.13",
-        "larastan/larastan": "^3.4",
+        "larastan/larastan": "^3.10",
         "laravel/boost": "^2.0",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.24",
@@ -110,9 +110,9 @@
         "test:lint": [
             "pint --test"
         ],
-        "test:unit": "pest --parallel --processes=4 --ci --compact",
-        "test:shard": "pest --parallel --processes=4 --ci --compact",
-        "test:shards": "pest --parallel --processes=4 --ci --update-shards",
+        "test:unit": "pest --parallel --processes=4 --ci --compact --no-tia",
+        "test:shard": "pest --parallel --processes=4 --ci --compact --no-tia",
+        "test:shards": "pest --parallel --processes=4 --ci --update-shards --no-tia",
         "test": [
             "@test:unit"
         ]

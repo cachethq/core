@@ -35,7 +35,7 @@ jobs:
         run: composer build
 
       - name: Record TIA baseline
-        run: vendor/bin/pest --parallel --processes=4 --ci --tia --fresh
+        run: vendor/bin/pest --parallel --processes=4 --ci --tia --coverage --fresh
 
       - name: Resolve TIA baseline path
         id: baseline
