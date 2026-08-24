@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\BulkDeleteResources;
 use Cachet\Actions\IncidentTemplate\CreateIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\DeleteIncidentTemplate;
 use Cachet\Actions\IncidentTemplate\UpdateIncidentTemplate;
@@ -77,11 +78,24 @@ class IncidentTemplateController extends Controller
     /**
      * Delete Incident Template
      */
-    public function destroy(IncidentTemplate $incidentTemplate)
+    public function destroy(IncidentTemplate $incidentTemplate, DeleteIncidentTemplate $deleteIncidentTemplateAction)
     {
         $this->guard('incident-templates.delete');
 
-        app(DeleteIncidentTemplate::class)->handle($incidentTemplate);
+        $deleteIncidentTemplateAction->handle($incidentTemplate);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Delete Incident Templates
+     */
+    #[QueryParameter('ids', 'Comma-separated incident template IDs to delete.', required: true, type: 'string', example: '1,2,3')]
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteIncidentTemplate $deleteIncidentTemplateAction)
+    {
+        $this->guard('incident-templates.delete');
+
+        $bulkDeleteResources->handle($request, IncidentTemplate::class, fn (IncidentTemplate $incidentTemplate) => $deleteIncidentTemplateAction->handle($incidentTemplate));
 
         return response()->noContent();
     }

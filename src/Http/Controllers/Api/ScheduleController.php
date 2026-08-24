@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\BulkDeleteResources;
 use Cachet\Actions\Schedule\CreateSchedule;
 use Cachet\Actions\Schedule\DeleteSchedule;
 use Cachet\Actions\Schedule\UpdateSchedule;
@@ -130,6 +131,19 @@ class ScheduleController extends Controller
         $this->guard('schedules.delete');
 
         $deleteScheduleAction->handle($schedule);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Delete Schedules
+     */
+    #[QueryParameter('ids', 'Comma-separated schedule IDs to delete.', required: true, type: 'string', example: '1,2,3')]
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteSchedule $deleteScheduleAction)
+    {
+        $this->guard('schedules.delete');
+
+        $bulkDeleteResources->handle($request, Schedule::class, fn (Schedule $schedule) => $deleteScheduleAction->handle($schedule));
 
         return response()->noContent();
     }

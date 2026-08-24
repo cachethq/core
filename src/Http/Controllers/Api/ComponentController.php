@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\BulkDeleteResources;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
@@ -152,6 +153,19 @@ class ComponentController extends Controller
         // @todo re-calculate existing component orders?
 
         $deleteComponentAction->handle($component);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Delete Components
+     */
+    #[QueryParameter('ids', 'Comma-separated component IDs to delete.', required: true, type: 'string', example: '1,2,3')]
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteComponent $deleteComponentAction)
+    {
+        $this->guard('components.delete');
+
+        $bulkDeleteResources->handle($request, Component::class, fn (Component $component) => $deleteComponentAction->handle($component));
 
         return response()->noContent();
     }

@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\BulkDeleteResources;
 use Cachet\Actions\Incident\CreateIncident;
 use Cachet\Actions\Incident\DeleteIncident;
 use Cachet\Actions\Incident\UpdateIncident;
@@ -130,6 +131,19 @@ class IncidentController extends Controller
         $this->guard('incidents.delete');
 
         $deleteIncidentAction->handle($incident);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Delete Incidents
+     */
+    #[QueryParameter('ids', 'Comma-separated incident IDs to delete.', required: true, type: 'string', example: '1,2,3')]
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteIncident $deleteIncidentAction)
+    {
+        $this->guard('incidents.delete');
+
+        $bulkDeleteResources->handle($request, Incident::class, fn (Incident $incident) => $deleteIncidentAction->handle($incident));
 
         return response()->noContent();
     }

@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\BulkDeleteResources;
 use Cachet\Actions\Metric\CreateMetric;
 use Cachet\Actions\Metric\DeleteMetric;
 use Cachet\Actions\Metric\UpdateMetric;
@@ -102,6 +103,19 @@ class MetricController extends Controller
         $this->guard('metrics.delete');
 
         $deleteMetricAction->handle($metric);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Delete Metrics
+     */
+    #[QueryParameter('ids', 'Comma-separated metric IDs to delete.', required: true, type: 'string', example: '1,2,3')]
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteMetric $deleteMetricAction)
+    {
+        $this->guard('metrics.delete');
+
+        $bulkDeleteResources->handle($request, Metric::class, fn (Metric $metric) => $deleteMetricAction->handle($metric));
 
         return response()->noContent();
     }
