@@ -227,7 +227,7 @@ a.fi-wi-stats-overview-stat:hover {
 .fi-input-wrp {
     border: 1px solid var(--cachet-border);
     background: var(--cachet-surface-solid);
-    filter: drop-shadow(0 1px 1px rgb(15 23 42 / 4%));
+    box-shadow: 0 1px 1px rgb(15 23 42 / 4%);
 }
 
 .dark .fi-input-wrp {
