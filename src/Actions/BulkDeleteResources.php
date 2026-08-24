@@ -13,8 +13,10 @@ class BulkDeleteResources
     /**
      * Delete every requested model atomically after validating that all exist.
      *
-     * @param  class-string<Model>  $modelClass
-     * @param  Closure(Model): void  $deleteResource
+     * @template TModel of Model
+     *
+     * @param  class-string<TModel>  $modelClass
+     * @param  Closure(TModel): void  $deleteResource
      */
     public function handle(Request $request, string $modelClass, Closure $deleteResource): void
     {
@@ -26,7 +28,7 @@ class BulkDeleteResources
         $ids = array_values(array_unique(array_map('intval', explode(',', $validated['ids']))));
 
         DB::transaction(function () use ($ids, $modelClass, $deleteResource): void {
-            /** @var Model $model */
+            /** @var TModel $model */
             $model = new $modelClass;
             $resources = $model->newQuery()->whereKey($ids)->lockForUpdate()->get();
             $missingIds = array_values(array_diff($ids, $resources->modelKeys()));
