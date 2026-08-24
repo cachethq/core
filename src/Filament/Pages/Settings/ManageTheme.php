@@ -38,13 +38,14 @@ class ManageTheme extends SettingsPage
     {
         return $schema
             ->components([
-                Section::make()->columns(2)->schema([
+                Section::make(__('cachet::settings.manage_theme.app_banner_label'))->columns(2)->schema([
                     FileUpload::make('app_banner')
                         ->acceptedFileTypes((array) config('cachet.uploads.image_mime_types'))
                         ->maxSize((int) config('cachet.uploads.max_size'))
                         ->preventFilePathTampering()
                         ->imageEditor()
                         ->label(__('cachet::settings.manage_theme.app_banner_label'))
+                        ->hiddenLabel()
                         ->helperText(__('cachet::settings.manage_theme.app_banner_helper'))
                         ->disk((string) config('cachet.uploads.disk'))
                         ->columnSpanFull(),

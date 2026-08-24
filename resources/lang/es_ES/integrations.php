@@ -2,6 +2,8 @@
 
 return [
     'oh_dear' => [
+        'status_page_section_title' => 'Página de estado de Oh Dear',
+        'import_options_section_title' => 'Opciones de importación',
         'import_feed_button' => 'Importar Fuente',
         'status_page_url_label' => 'URL de la Página de Estado de Oh Dear',
         'status_page_url_helper' => 'Introduce la URL de tu página de estado de Oh Dear (ej. https://status.example.com).',

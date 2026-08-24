@@ -35,7 +35,10 @@ return [
         'component_group_label' => 'Component group',
         'link_label' => 'Link',
         'link_helper' => 'An optional link to the component.',
-        'checked_label' => 'Whether to periodically check the component.',
+        'availability_section_title' => 'Availability',
+        'enabled_label' => 'Enabled',
+        'checked_label' => 'Monitoring',
+        'checked_helper' => 'Periodically check this component and record its availability.',
     ],
     'status' => [
         'operational' => 'Operational',

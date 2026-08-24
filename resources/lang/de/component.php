@@ -27,6 +27,10 @@ return [
         'component_group_label' => 'Komponentengruppe',
         'link_label' => 'Link',
         'link_helper' => 'Ein optionaler Link zur Komponente',
+        'availability_section_title' => 'Verfügbarkeit',
+        'enabled_label' => 'Aktiviert',
+        'checked_label' => 'Überwachung',
+        'checked_helper' => 'Diese Komponente regelmäßig prüfen und ihre Verfügbarkeit erfassen.',
     ],
     'status' => [
         'operational' => 'Funktionsfähig',

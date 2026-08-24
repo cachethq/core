@@ -2,6 +2,8 @@
 
 return [
     'resource_label' => '用戶|用戶',
+    'profile_information_title' => '個人資料資訊',
+    'security_section_title' => '密碼與安全性',
     'list' => [
         'headers' => [
             'name' => '名稱',

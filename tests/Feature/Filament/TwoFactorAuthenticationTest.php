@@ -10,6 +10,7 @@ use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\OneTimeCodeInput;
 use Filament\Schemas\Components\Image;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard;
 use Illuminate\Support\Facades\DB;
 use Workbench\App\User;
@@ -73,6 +74,33 @@ it('shows the two factor authentication section on the profile page', function (
     $this->get(EditProfile::getUrl())
         ->assertOk()
         ->assertSee(__('filament-panels::auth/pages/edit-profile.multi_factor_authentication.label'));
+});
+
+it('uses the two factor authentication label as the section heading', function () {
+    $section = livewire(EditProfile::class)
+        ->instance()
+        ->getMultiFactorAuthenticationContentComponent();
+
+    expect($section)->toBeInstanceOf(Section::class)
+        ->and($section->getHeading())->toBe(__('filament-panels::auth/pages/edit-profile.multi_factor_authentication.label'))
+        ->and($section->getLabel())->toBeNull();
+});
+
+it('groups profile fields into account and security sections', function () {
+    livewire(EditProfile::class)
+        ->assertSee(__('cachet::user.profile_information_title'))
+        ->assertSee(__('cachet::user.security_section_title'));
+});
+
+it('requires the current password when changing the password', function () {
+    livewire(EditProfile::class)
+        ->fillForm([
+            'password' => 'a-secure-new-password',
+            'passwordConfirmation' => 'a-secure-new-password',
+        ])
+        ->assertSchemaComponentVisible('currentPassword')
+        ->call('save')
+        ->assertHasFormErrors(['currentPassword' => 'required']);
 });
 
 it('encrypts the app authentication secret and recovery codes', function () {

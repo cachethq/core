@@ -2,41 +2,324 @@
 
 @source '../../../resources/views/filament';
 
+/*
+ * Cachet dashboard theme
+ *
+ * The public website and status page share a quiet zinc canvas, bordered white
+ * surfaces, a vivid green accent, and restrained depth. These styles apply the
+ * same visual language to Filament without replacing any of its components or
+ * interaction states.
+ */
+
+:root {
+    --cachet-ui-font:
+        ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --cachet-heading-font: var(--cachet-ui-font);
+    --cachet-canvas: #f7f9f8;
+    --cachet-surface: rgb(255 255 255 / 88%);
+    --cachet-surface-solid: #ffffff;
+    --cachet-border: rgb(24 24 27 / 9%);
+    --cachet-border-strong: rgb(24 24 27 / 13%);
+    --cachet-shadow: 0 16px 40px -32px rgb(15 23 42 / 42%);
+    --cachet-shadow-elevated: 0 24px 64px -32px rgb(15 23 42 / 38%);
+}
+
+:root.dark {
+    --cachet-canvas: #090d0b;
+    --cachet-surface: rgb(24 24 27 / 82%);
+    --cachet-surface-solid: #18181b;
+    --cachet-border: rgb(255 255 255 / 8%);
+    --cachet-border-strong: rgb(255 255 255 / 12%);
+    --cachet-shadow: 0 18px 42px -30px rgb(0 0 0 / 80%);
+    --cachet-shadow-elevated: 0 28px 72px -32px rgb(0 0 0 / 92%);
+}
+
+/* Application shell */
+.fi-body {
+    font-family: var(--cachet-ui-font);
+    background-color: var(--cachet-canvas);
+    background-image:
+        radial-gradient(circle at 96% 2%, rgb(4 193 71 / 9%), transparent 28rem),
+        radial-gradient(circle at 48% 100%, rgb(4 193 71 / 4%), transparent 32rem);
+    background-attachment: fixed;
+}
+
+.dark .fi-body {
+    background-image:
+        radial-gradient(circle at 96% 2%, rgb(4 193 71 / 10%), transparent 30rem),
+        radial-gradient(circle at 48% 100%, rgb(4 193 71 / 4%), transparent 34rem);
+}
+
+.fi-main {
+    @apply py-8 lg:py-10;
+}
+
+.fi-page,
+.fi-page-main {
+    @apply gap-y-8;
+}
+
+.fi-header-heading {
+    @apply text-2xl font-semibold tracking-tight sm:text-3xl;
+
+    font-family: var(--cachet-heading-font);
+}
+
+.fi-header-subheading {
+    @apply text-gray-500 dark:text-gray-400;
+}
+
+.fi-breadcrumbs-item-label {
+    @apply font-medium;
+}
+
+/* Navigation */
+.fi-sidebar {
+    border-inline-end: 1px solid var(--cachet-border);
+    background: rgb(255 255 255 / 82%);
+    box-shadow: 12px 0 36px -34px rgb(15 23 42 / 55%);
+    backdrop-filter: blur(18px);
+}
+
+.dark .fi-sidebar {
+    background: rgb(12 17 14 / 88%);
+    box-shadow: 12px 0 40px -30px rgb(0 0 0 / 90%);
+}
+
+.fi-sidebar-header {
+    border-bottom: 1px solid var(--cachet-border);
+}
+
+.fi-sidebar-nav {
+    @apply gap-y-8 px-5 py-6;
+}
+
+.fi-sidebar-nav-groups {
+    @apply gap-y-7;
+}
+
+.fi-sidebar-group-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.fi-sidebar-item-btn {
+    @apply min-h-10 rounded-lg px-3;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background: color-mix(in srgb, var(--primary-50) 82%, white);
+    box-shadow: inset 0 0 0 1px rgb(4 193 71 / 11%);
+}
+
+.dark .fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    background: rgb(4 193 71 / 10%);
+    box-shadow: inset 0 0 0 1px rgb(4 193 71 / 16%);
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn::before {
+    position: absolute;
+    inset-block: 0.625rem;
+    inset-inline-start: 0;
+    width: 0.1875rem;
+    border-radius: 9999px;
+    background: var(--primary-500);
+    content: '';
+}
+
+.fi-sidebar-item:not(.fi-active) > .fi-sidebar-item-btn:hover,
+.fi-sidebar-group-dropdown-trigger-btn:hover {
+    background: rgb(24 24 27 / 4%);
+}
+
+.dark .fi-sidebar-item:not(.fi-active) > .fi-sidebar-item-btn:hover,
+.dark .fi-sidebar-group-dropdown-trigger-btn:hover {
+    background: rgb(255 255 255 / 5%);
+}
+
+.fi-topbar {
+    border-bottom: 1px solid var(--cachet-border);
+    background: rgb(255 255 255 / 76%);
+    box-shadow: none;
+    backdrop-filter: blur(18px);
+}
+
+.dark .fi-topbar {
+    background: rgb(9 13 11 / 78%);
+}
+
+/* Surfaces */
+.fi-section:not(.fi-section-not-contained),
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat,
+.fi-tabs:not(.fi-contained) {
+    border: 1px solid var(--cachet-border);
+    border-radius: 1rem;
+    background: var(--cachet-surface);
+    backdrop-filter: blur(12px);
+}
+
+.fi-section:not(.fi-section-not-contained),
+.fi-ta-ctn,
+.fi-tabs:not(.fi-contained) {
+    box-shadow: var(--cachet-shadow);
+}
+
+.fi-wi-stats-overview-stat {
+    filter: drop-shadow(0 8px 16px rgb(15 23 42 / 7%));
+}
+
+.dark .fi-wi-stats-overview-stat {
+    filter: drop-shadow(0 10px 20px rgb(0 0 0 / 24%));
+}
+
+a.fi-wi-stats-overview-stat:hover {
+    border-color: var(--cachet-border-strong);
+}
+
+.fi-section:not(.fi-section-not-contained) {
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+}
+
+.fi-wi-stats-overview-stat {
+    transition:
+        border-color 150ms ease,
+        filter 150ms ease;
+}
+
+.fi-section:not(.fi-section-not-contained) > .fi-section-header,
+.fi-ta-header {
+    background: linear-gradient(180deg, rgb(255 255 255 / 44%), transparent);
+}
+
+.dark .fi-section:not(.fi-section-not-contained) > .fi-section-header,
+.dark .fi-ta-header {
+    background: linear-gradient(180deg, rgb(255 255 255 / 2.5%), transparent);
+}
+
+.fi-section-header-heading,
+.fi-ta-header-heading {
+    @apply tracking-tight;
+
+    font-family: var(--cachet-heading-font);
+}
+
+.fi-wi-stats-overview-stat-value {
+    @apply tracking-tight;
+
+    font-family: var(--cachet-heading-font);
+}
+
+.fi-ta-row:hover {
+    background: rgb(4 193 71 / 2.5%);
+}
+
+.dark .fi-ta-row:hover {
+    background: rgb(4 193 71 / 4%);
+}
+
+/* Controls and overlays */
+.fi-input-wrp {
+    border: 1px solid var(--cachet-border);
+    background: var(--cachet-surface-solid);
+    filter: drop-shadow(0 1px 1px rgb(15 23 42 / 4%));
+}
+
+.dark .fi-input-wrp {
+    background: rgb(255 255 255 / 5%);
+}
+
+.fi-btn {
+    @apply rounded-lg font-semibold;
+}
+
+.fi-btn.fi-color-primary:not(.fi-outlined) {
+    filter:
+        drop-shadow(0 1px 1px rgb(1 86 26 / 24%))
+        drop-shadow(0 4px 6px rgb(4 193 71 / 18%));
+}
+
+.fi-btn.fi-color-primary:not(.fi-outlined):hover {
+    filter:
+        drop-shadow(0 1px 1px rgb(1 86 26 / 28%))
+        drop-shadow(0 5px 8px rgb(4 193 71 / 22%));
+}
+
+.fi-tabs-item.fi-active {
+    background: rgb(4 193 71 / 8%);
+    box-shadow: inset 0 0 0 1px rgb(4 193 71 / 10%);
+}
+
+.dark .fi-tabs-item.fi-active {
+    background: rgb(4 193 71 / 10%);
+    box-shadow: inset 0 0 0 1px rgb(4 193 71 / 14%);
+}
+
+.fi-dropdown-panel,
+.fi-modal-window,
+.fi-notification {
+    border: 1px solid var(--cachet-border);
+    border-radius: 1rem;
+    background: var(--cachet-surface-solid);
+    box-shadow: var(--cachet-shadow-elevated);
+}
+
+.fi-badge {
+    @apply rounded-full;
+}
+
+/* Authentication, password reset, and MFA pages */
+.fi-simple-layout {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--cachet-canvas);
+    background-image:
+        radial-gradient(circle at 50% -10%, rgb(4 193 71 / 16%), transparent 30rem),
+        linear-gradient(rgb(24 24 27 / 3%) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(24 24 27 / 3%) 1px, transparent 1px);
+    background-size: auto, 3.75rem 3.75rem, 3.75rem 3.75rem;
+}
+
+.dark .fi-simple-layout {
+    background-image:
+        radial-gradient(circle at 50% -10%, rgb(4 193 71 / 15%), transparent 32rem),
+        linear-gradient(rgb(255 255 255 / 3%) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 3%) 1px, transparent 1px);
+}
+
+.fi-simple-main {
+    border: 1px solid var(--cachet-border);
+    border-radius: 1.25rem;
+    background: var(--cachet-surface);
+    box-shadow: var(--cachet-shadow-elevated);
+    backdrop-filter: blur(18px);
+}
+
+.fi-simple-header-heading {
+    @apply font-semibold tracking-tight;
+
+    font-family: var(--cachet-heading-font);
+}
+
+.fi-modal-heading,
+.fi-notification-title {
+    font-family: var(--cachet-heading-font);
+}
+
 .theme-swatch {
     @apply inline-flex w-4 h-4 rounded-full mr-2 bg-[var(--swatch)];
 }
 
-/*
- * Stretch the one-time code input (2FA set up and login challenge) to the full
- * width of the form, spreading the six digit boxes evenly. The characters are
- * typed into a hidden overlaid input, so its letter spacing and padding are
- * recalculated with container query units to keep each digit centred in its box.
- * The pitch math assumes Filament's default code length of six digits.
- */
+/* Stretch Filament's current one-time code inputs across the available width. */
 .fi-one-time-code-input-ctn {
-    --otp-gap: 0.5rem;
-    --otp-pitch: calc((100cqw + var(--otp-gap)) / 6);
+    @apply w-full gap-2;
 
-    container-type: inline-size;
-    display: flex;
-    gap: var(--otp-gap);
-
-    & > .fi-one-time-code-input-digit-field {
-        flex: 1 1 0%;
-
-        /* Filament thickens the active digit's border from 1px to 2px, which
-         * makes the boxes shift as focus moves. Keep the border at 1px and
-         * draw the second pixel with an inset ring instead. */
-        &.fi-active {
-            @apply border shadow-[inset_0_0_0_1px_var(--color-primary-600)] dark:shadow-[inset_0_0_0_1px_var(--color-primary-500)];
-        }
+    & > .fi-one-time-code-input-digit {
+        @apply min-w-0 flex-1;
     }
-}
-
-input[type='text'].fi-one-time-code-input {
-    font-size: 1.25rem;
-    letter-spacing: calc(var(--otp-pitch) - 1ch);
-    padding-inline: 0;
-    padding-left: calc((var(--otp-pitch) - var(--otp-gap) - 1ch) / 2);
-    right: calc(1ch - var(--otp-pitch));
 }

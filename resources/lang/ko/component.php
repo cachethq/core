@@ -27,6 +27,10 @@ return [
         'component_group_label' => '구성 요소 그룹',
         'link_label' => '링크',
         'link_helper' => '구성 요소에 대한 선택적 링크입니다.',
+        'availability_section_title' => '가용성',
+        'enabled_label' => '활성화',
+        'checked_label' => '모니터링',
+        'checked_helper' => '이 구성 요소를 주기적으로 확인하고 가용성을 기록합니다.',
     ],
     'status' => [
         'operational' => '정상 작동 중',

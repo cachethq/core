@@ -33,6 +33,7 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ScheduleResource extends Resource
 {
@@ -60,10 +61,6 @@ class ScheduleResource extends Resource
                         ->label(__('cachet::schedule.form.completed_at_label'))
                         ->helperText(__('cachet::schedule.form.completed_at_helper'))
                         ->native(false), // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
-                    DateTimePicker::make('published_at')
-                        ->label(__('cachet::schedule.form.published_at_label'))
-                        ->helperText(__('cachet::schedule.form.published_at_helper'))
-                        ->native(false), // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
                     MarkdownEditor::make('message')
                         ->label(__('cachet::schedule.form.message_label'))
                         ->columnSpanFull(),
@@ -73,11 +70,6 @@ class ScheduleResource extends Resource
                         ->searchable()
                         ->preload()
                         ->createOptionForm([TextInput::make('name')->required()->maxLength(255)])
-                        ->columnSpanFull(),
-                    Toggle::make('notifications')
-                        ->label(__('cachet::schedule.form.notify_subscribers_label'))
-                        ->helperText(__('cachet::schedule.form.notifications_helper'))
-                        ->visible(fn (): bool => app(MailSettings::class)->allow_subscribers)
                         ->columnSpanFull(),
                     Repeater::make('scheduleComponents')
                         ->visibleOn('create')
@@ -99,11 +91,24 @@ class ScheduleResource extends Resource
                         ])
                         ->label(__('cachet::schedule.form.add_component.header'))
                         ->columnSpanFull(),
+                ])->columnSpan(3),
+                Section::make()->schema([
+                    DateTimePicker::make('published_at')
+                        ->label(__('cachet::schedule.form.published_at_label'))
+                        ->helperText(__('cachet::schedule.form.published_at_helper'))
+                        ->native(false), // Fixes #288 (Filament DateTimePicker does not display time selection on Firefox)
+                    Toggle::make('notifications')
+                        ->label(__('cachet::schedule.form.notify_subscribers_label'))
+                        ->helperText(__('cachet::schedule.form.notifications_helper'))
+                        ->visible(fn (): bool => app(MailSettings::class)->allow_subscribers),
+                ])->columnSpan(1),
+                Section::make()->schema([
                     KeyValue::make('meta')
                         ->label(__('cachet::schedule.form.meta_label'))
                         ->columnSpanFull(),
-                ]),
-            ]);
+                ])->columnSpanFull(),
+            ])
+            ->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -116,13 +121,16 @@ class ScheduleResource extends Resource
                 TextColumn::make('status')
                     ->label(__('cachet::schedule.list.headers.status'))
                     ->badge()
-                    ->sortable(),
+                    ->sortable(query: fn (Builder $query, string $direction): Builder => $query->orderByRaw(
+                        "case when scheduled_at > current_timestamp then ? when completed_at is null or completed_at >= current_timestamp then ? else ? end {$direction}",
+                        [
+                            ScheduleStatusEnum::upcoming->value,
+                            ScheduleStatusEnum::in_progress->value,
+                            ScheduleStatusEnum::complete->value,
+                        ],
+                    )),
                 TextColumn::make('scheduled_at')
                     ->label(__('cachet::schedule.list.headers.scheduled_at'))
-                    ->dateTime()
-                    ->sortable(),
-                TextColumn::make('completed_at')
-                    ->label(__('cachet::schedule.list.headers.completed_at'))
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('published_at')
@@ -131,6 +139,10 @@ class ScheduleResource extends Resource
                     ->placeholder(__('cachet::schedule.list.published_now'))
                     ->badge()
                     ->color(fn (Schedule $record): string => $record->isPublished() ? 'success' : 'warning')
+                    ->sortable(),
+                TextColumn::make('completed_at')
+                    ->label(__('cachet::schedule.list.headers.completed_at'))
+                    ->dateTime()
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->label(__('cachet::schedule.list.headers.created_at'))

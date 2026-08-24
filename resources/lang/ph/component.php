@@ -27,6 +27,10 @@ return [
         'component_group_label' => 'Grupo ng Komponent',
         'link_label' => 'Link',
         'link_helper' => 'Isang opsyonal na link papunta sa komponent.',
+        'availability_section_title' => 'Availability',
+        'enabled_label' => 'Naka-enable',
+        'checked_label' => 'Pagsubaybay',
+        'checked_helper' => 'Pana-panahong suriin ang komponent na ito at itala ang availability nito.',
     ],
     'status' => [
         'operational' => 'Gumagana',

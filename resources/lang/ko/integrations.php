@@ -2,6 +2,8 @@
 
 return [
     'oh_dear' => [
+        'status_page_section_title' => 'Oh Dear 상태 페이지',
+        'import_options_section_title' => '가져오기 옵션',
         'import_feed_button' => '피드 가져오기',
         'status_page_url_label' => 'Oh Dear 상태 페이지 URL',
         'status_page_url_helper' => 'Oh Dear 상태 페이지의 URL을 입력하세요 (예: https://status.example.com).',

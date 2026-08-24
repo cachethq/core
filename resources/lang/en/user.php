@@ -2,6 +2,8 @@
 
 return [
     'resource_label' => 'User|Users',
+    'profile_information_title' => 'Profile information',
+    'security_section_title' => 'Password and security',
     'list' => [
         'headers' => [
             'name' => 'Name',

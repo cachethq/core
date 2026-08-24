@@ -5,6 +5,7 @@ namespace Cachet\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
+use Filament\Support\Icons\Heroicon;
 
 enum ComponentGroupVisibilityEnum: int implements HasColor, HasIcon, HasLabel
 {
@@ -21,12 +22,12 @@ enum ComponentGroupVisibilityEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getIcon(): string
+    public function getIcon(): Heroicon
     {
         return match ($this) {
-            self::expanded => 'heroicon-o-chevron-down',
-            self::collapsed => 'heroicon-o-chevron-up',
-            self::collapsed_unless_incident => 'heroicon-o-chevron-up-down',
+            self::expanded => Heroicon::OutlinedChevronDown,
+            self::collapsed => Heroicon::OutlinedChevronUp,
+            self::collapsed_unless_incident => Heroicon::OutlinedChevronUpDown,
         };
     }
 

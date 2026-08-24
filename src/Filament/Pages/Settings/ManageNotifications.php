@@ -10,9 +10,13 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Facades\Mail;
 use Throwable;
 
@@ -40,11 +44,19 @@ class ManageNotifications extends SettingsPage
                     ->schema([
                         Toggle::make('allow_subscribers')
                             ->label(__('cachet::settings.manage_notifications.allow_subscribers_label'))
-                            ->helperText(__('cachet::settings.manage_notifications.allow_subscribers_helper')),
+                            ->helperText(__('cachet::settings.manage_notifications.allow_subscribers_helper'))
+                            ->live()
+                            ->afterStateUpdated(function (Set $set, bool $state): void {
+                                if (! $state) {
+                                    $set('notify_long_running_incidents', false);
+                                }
+                            }),
                     ]),
 
                 Section::make(__('cachet::settings.manage_notifications.long_running_section_title'))
+                    ->key('long-running-incidents')
                     ->description(__('cachet::settings.manage_notifications.long_running_section_description'))
+                    ->visible(fn (Get $get): bool => $get('allow_subscribers') === true)
                     ->columns(2)
                     ->schema([
                         Toggle::make('notify_long_running_incidents')
@@ -76,55 +88,57 @@ class ManageNotifications extends SettingsPage
                                 'log' => __('cachet::settings.manage_notifications.mailers.log'),
                             ])
                             ->nullable()
-                            ->reactive(),
+                            ->live(),
 
-                        TextInput::make('host')
-                            ->label(__('cachet::settings.manage_notifications.host_label'))
-                            ->maxLength(255)
-                            ->required(fn (Get $get): bool => $get('mailer') === 'smtp')
-                            ->visible(fn (Get $get): bool => $get('mailer') === 'smtp'),
+                        Grid::make(2)
+                            ->visible(fn (Get $get): bool => $get('mailer') === 'smtp')
+                            ->schema([
+                                TextInput::make('host')
+                                    ->label(__('cachet::settings.manage_notifications.host_label'))
+                                    ->maxLength(255)
+                                    ->required(fn (Get $get): bool => $get('mailer') === 'smtp'),
 
-                        TextInput::make('port')
-                            ->label(__('cachet::settings.manage_notifications.port_label'))
-                            ->numeric()
-                            ->minValue(1)
-                            ->maxValue(65535)
-                            ->placeholder('587')
-                            ->nullable()
-                            ->visible(fn (Get $get): bool => $get('mailer') === 'smtp'),
+                                TextInput::make('port')
+                                    ->label(__('cachet::settings.manage_notifications.port_label'))
+                                    ->numeric()
+                                    ->minValue(1)
+                                    ->maxValue(65535)
+                                    ->placeholder('587')
+                                    ->nullable(),
 
-                        TextInput::make('username')
-                            ->label(__('cachet::settings.manage_notifications.username_label'))
-                            ->maxLength(255)
-                            ->nullable()
-                            ->autocomplete(false)
-                            ->visible(fn (Get $get): bool => $get('mailer') === 'smtp'),
+                                TextInput::make('username')
+                                    ->label(__('cachet::settings.manage_notifications.username_label'))
+                                    ->maxLength(255)
+                                    ->nullable()
+                                    ->autocomplete(false),
 
-                        TextInput::make('password')
-                            ->label(__('cachet::settings.manage_notifications.password_label'))
-                            ->password()
-                            ->revealable()
-                            ->maxLength(255)
-                            ->nullable()
-                            ->autocomplete(false)
-                            ->visible(fn (Get $get): bool => $get('mailer') === 'smtp'),
-                    ]),
+                                TextInput::make('password')
+                                    ->label(__('cachet::settings.manage_notifications.password_label'))
+                                    ->password()
+                                    ->revealable()
+                                    ->maxLength(255)
+                                    ->nullable()
+                                    ->autocomplete(false),
+                            ])
+                            ->columnSpanFull(),
 
-                Section::make(__('cachet::settings.manage_notifications.from_section_title'))
-                    ->columns(2)
-                    ->schema([
-                        TextInput::make('from_address')
-                            ->label(__('cachet::settings.manage_notifications.from_address_label'))
-                            ->helperText(__('cachet::settings.manage_notifications.from_address_helper'))
-                            ->email()
-                            ->maxLength(255)
-                            ->required(fn (Get $get): bool => filled($get('mailer'))),
+                        Fieldset::make(__('cachet::settings.manage_notifications.from_section_title'))
+                            ->columns(2)
+                            ->schema([
+                                TextInput::make('from_address')
+                                    ->label(__('cachet::settings.manage_notifications.from_address_label'))
+                                    ->helperText(__('cachet::settings.manage_notifications.from_address_helper'))
+                                    ->email()
+                                    ->maxLength(255)
+                                    ->required(fn (Get $get): bool => filled($get('mailer'))),
 
-                        TextInput::make('from_name')
-                            ->label(__('cachet::settings.manage_notifications.from_name_label'))
-                            ->helperText(__('cachet::settings.manage_notifications.from_name_helper'))
-                            ->maxLength(255)
-                            ->nullable(),
+                                TextInput::make('from_name')
+                                    ->label(__('cachet::settings.manage_notifications.from_name_label'))
+                                    ->helperText(__('cachet::settings.manage_notifications.from_name_helper'))
+                                    ->maxLength(255)
+                                    ->nullable(),
+                            ])
+                            ->columnSpanFull(),
                     ]),
             ]);
     }
@@ -137,7 +151,7 @@ class ManageNotifications extends SettingsPage
         return [
             Action::make('sendTestEmail')
                 ->label(__('cachet::settings.manage_notifications.test_email_label'))
-                ->icon('heroicon-o-envelope')
+                ->icon(Heroicon::OutlinedEnvelope)
                 ->action(fn () => $this->sendTestEmail()),
         ];
     }

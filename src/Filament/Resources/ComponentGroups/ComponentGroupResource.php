@@ -22,6 +22,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\GridDirection;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -29,7 +31,7 @@ class ComponentGroupResource extends Resource
 {
     protected static ?string $model = ComponentGroup::class;
 
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     public static function form(Schema $schema): Schema
     {
@@ -42,40 +44,54 @@ class ComponentGroupResource extends Resource
                         ->maxLength(255)
                         ->columnSpanFull()
                         ->autocomplete(false),
-                    ToggleButtons::make('visible')
-                        ->label(__('cachet::component_group.form.visible_label'))
-                        ->inline()
-                        ->options(ResourceVisibilityEnum::class)
-                        ->default(ResourceVisibilityEnum::guest)
-                        ->required()
-                        ->columnSpanFull(),
-                    ToggleButtons::make('collapsed')
-                        ->label(__('cachet::component_group.form.collapsed_label'))
-                        ->required()
-                        ->inline()
-                        ->options(ComponentGroupVisibilityEnum::class)
-                        ->default(ComponentGroupVisibilityEnum::expanded->value)
-                        ->columnSpanFull(),
-                ]),
-                Section::make()->schema([
                     Select::make('order_column')
                         ->label(__('cachet::component_group.form.order_column_label'))
                         ->options(ResourceOrderColumnEnum::class)
                         ->default(ResourceOrderColumnEnum::Manual->value)
                         ->required()
-                        ->live(),
+                        ->live()
+                        ->columnSpan(fn (Get $get): int => self::orderColumnRequiresDirection($get('order_column')) ? 1 : 2),
                     Select::make('order_direction')
                         ->label(__('cachet::component_group.form.order_direction'))
                         ->options(ResourceOrderDirectionEnum::class)
-                        ->required(fn (Get $get) => $get('order_column') !== ResourceOrderColumnEnum::Manual->value)
-                        ->visible(fn (Get $get) => $get('order_column') !== ResourceOrderColumnEnum::Manual->value),
-                ]),
+                        ->required(fn (Get $get): bool => self::orderColumnRequiresDirection($get('order_column')))
+                        ->visible(fn (Get $get): bool => self::orderColumnRequiresDirection($get('order_column'))),
+                ])->columnSpan(2),
+                Section::make()->schema([
+                    ToggleButtons::make('visible')
+                        ->label(__('cachet::component_group.form.visible_label'))
+                        ->options(ResourceVisibilityEnum::class)
+                        ->columns([
+                            'default' => 1,
+                            'sm' => 3,
+                            'lg' => 1,
+                        ])
+                        ->gridDirection(GridDirection::Row)
+                        ->default(ResourceVisibilityEnum::guest)
+                        ->required(),
+                    Select::make('collapsed')
+                        ->label(__('cachet::component_group.form.collapsed_label'))
+                        ->required()
+                        ->options(ComponentGroupVisibilityEnum::class)
+                        ->default(ComponentGroupVisibilityEnum::expanded->value),
+                ])->columnSpan(1),
                 Section::make()->schema([
                     KeyValue::make('meta')
                         ->label(__('cachet::component_group.form.meta_label'))
                         ->columnSpanFull(),
-                ]),
-            ]);
+                ])->columnSpanFull(),
+            ])
+            ->columns(3);
+    }
+
+    private static function orderColumnRequiresDirection(mixed $orderColumn): bool
+    {
+        if (is_string($orderColumn)) {
+            $orderColumn = ResourceOrderColumnEnum::tryFrom($orderColumn);
+        }
+
+        return $orderColumn instanceof ResourceOrderColumnEnum
+            && in_array($orderColumn, ResourceOrderColumnEnum::requiresDirection(), strict: true);
     }
 
     public static function table(Table $table): Table
@@ -95,9 +111,9 @@ class ComponentGroupResource extends Resource
                     ->sortable(),
                 TextColumn::make('order_column')
                     ->icon(fn ($record) => match (true) {
-                        $record->order_column === ResourceOrderColumnEnum::Manual => 'heroicon-o-chevron-up-down',
-                        $record->order_direction === ResourceOrderDirectionEnum::Asc => 'heroicon-o-arrow-up',
-                        $record->order_direction === ResourceOrderDirectionEnum::Desc => 'heroicon-o-arrow-down',
+                        $record->order_column === ResourceOrderColumnEnum::Manual => Heroicon::OutlinedChevronUpDown,
+                        $record->order_direction === ResourceOrderDirectionEnum::Asc => Heroicon::OutlinedArrowUp,
+                        $record->order_direction === ResourceOrderDirectionEnum::Desc => Heroicon::OutlinedArrowDown,
                         default => null,
                     })
                     ->label(__('cachet::component_group.list.headers.order_column'))

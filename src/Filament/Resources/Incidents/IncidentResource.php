@@ -35,6 +35,8 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\GridDirection;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
@@ -53,11 +55,12 @@ class IncidentResource extends Resource
     {
         return $schema
             ->components([
-                Section::make()->schema([
+                Section::make()->columns(2)->schema([
                     TextInput::make('name')
                         ->label(__('cachet::incident.form.name_label'))
                         ->required()
                         ->maxLength(255)
+                        ->columnSpanFull()
                         ->autocomplete(false),
                     ToggleButtons::make('status')
                         ->label(__('cachet::incident.form.status_label'))
@@ -76,12 +79,6 @@ class IncidentResource extends Resource
                         ->label(__('cachet::incident.form.published_at_label'))
                         ->helperText(__('cachet::incident.form.published_at_helper'))
                         ->native(false),
-                    ToggleButtons::make('visible')
-                        ->label(__('cachet::incident.form.visible_label'))
-                        ->inline()
-                        ->options(ResourceVisibilityEnum::class)
-                        ->default(ResourceVisibilityEnum::guest)
-                        ->required(),
                     Select::make('tags')
                         ->relationship('tags', 'name')
                         ->multiple()
@@ -106,13 +103,22 @@ class IncidentResource extends Resource
                                 ->options(ComponentStatusEnum::class)
                                 ->required(),
                         ])
-                        ->label(__('cachet::incident.form.add_component.header')),
-                    KeyValue::make('meta')
-                        ->label(__('cachet::incident.form.meta_label'))
+                        ->label(__('cachet::incident.form.add_component.header'))
                         ->columnSpanFull(),
                 ])
                     ->columnSpan(3),
                 Section::make()->schema([
+                    ToggleButtons::make('visible')
+                        ->label(__('cachet::incident.form.visible_label'))
+                        ->options(ResourceVisibilityEnum::class)
+                        ->columns([
+                            'default' => 1,
+                            'sm' => 3,
+                            'lg' => 1,
+                        ])
+                        ->gridDirection(GridDirection::Row)
+                        ->default(ResourceVisibilityEnum::guest)
+                        ->required(),
                     Select::make('user_id')
                         ->label(__('User'))
                         ->helperText(__('cachet::incident.form.user_helper'))
@@ -135,6 +141,11 @@ class IncidentResource extends Resource
                         ->columnSpanFull(),
                 ])
                     ->columnSpan(1),
+                Section::make()->schema([
+                    KeyValue::make('meta')
+                        ->label(__('cachet::incident.form.meta_label'))
+                        ->columnSpanFull(),
+                ])->columnSpanFull(),
             ])
             ->columns(4);
     }
@@ -182,7 +193,7 @@ class IncidentResource extends Resource
                     ->searchable(),
                 TextColumn::make('latest_status')
                     ->label(__('cachet::incident.list.headers.status'))
-                    ->sortable()
+                    ->sortable(['status'])
                     ->badge(),
                 TextColumn::make('visible')
                     ->label(__('cachet::incident.list.headers.visible'))
@@ -211,7 +222,7 @@ class IncidentResource extends Resource
                     ->label(__('cachet::incident.list.headers.created_at'))
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->label(__('cachet::incident.list.headers.updated_at'))
                     ->dateTime()
@@ -237,7 +248,7 @@ class IncidentResource extends Resource
             ->recordActions([
                 static::recordUpdateAction(),
                 Action::make('view-incident')
-                    ->icon('heroicon-o-eye')
+                    ->icon(Heroicon::OutlinedEye)
                     ->url(fn (Incident $record): string => route('cachet.status-page.incident', $record))
                     ->label(__('cachet::incident.list.actions.view_incident')),
                 EditAction::make(),
@@ -248,6 +259,9 @@ class IncidentResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ])
+            ->defaultSort(fn (Builder $query): Builder => $query
+                ->orderByRaw('case when status = ? then 1 else 0 end', [IncidentStatusEnum::fixed->value])
+                ->orderByDesc('occurred_at'))
             ->emptyStateHeading(__('cachet::incident.list.empty_state.heading'))
             ->emptyStateDescription(__('cachet::incident.list.empty_state.description'));
     }

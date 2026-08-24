@@ -6,6 +6,7 @@ use Cachet\Filament\Concerns\InteractsWithMeta;
 use Cachet\Filament\Resources\Schedules\ScheduleResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Icons\Heroicon;
 
 class EditSchedule extends EditRecord
 {
@@ -18,7 +19,7 @@ class EditSchedule extends EditRecord
         return [
             ScheduleResource::recordUpdateAction()
                 ->label(__('cachet::schedule.add_update.new_update_label'))
-                ->icon('heroicon-o-plus'),
+                ->icon(Heroicon::OutlinedPlus),
             DeleteAction::make(),
         ];
     }

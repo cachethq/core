@@ -25,6 +25,16 @@ beforeEach(function () {
     ]);
 });
 
+it('hides the duplicate banner field label beneath the section heading', function () {
+    livewire(ManageTheme::class)
+        ->assertSchemaComponentExists(
+            'app_banner',
+            'form',
+            fn (FileUpload $field): bool => $field->isLabelHidden()
+                && $field->getLabel() === __('cachet::settings.manage_theme.app_banner_label'),
+        );
+});
+
 it('configures app logo upload validation', function () {
     livewire(ManageTheme::class)
         ->assertFormFieldExists('app_banner', function (FileUpload $field): bool {

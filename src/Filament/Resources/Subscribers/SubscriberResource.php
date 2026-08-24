@@ -49,6 +49,8 @@ class SubscriberResource extends Resource
                     //                Forms\Components\TextInput::make('phone_number')
                     //                    ->tel(),
                     //                Forms\Components\TextInput::make('slack_webhook_url'),
+                ]),
+                Section::make()->schema([
                     KeyValue::make('meta')
                         ->label(__('cachet::subscriber.form.meta_label'))
                         ->columnSpanFull(),
