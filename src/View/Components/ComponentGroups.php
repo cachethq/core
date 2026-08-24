@@ -20,7 +20,7 @@ class ComponentGroups extends ViewComponent
                 ->enabled()
                 ->whereNull('component_group_id')
                 ->orderBy('order')
-                ->with(['unresolvedIncidents', 'activeMaintenance'])
+                ->with(['unresolvedIncidents', 'activeMaintenance', 'tags'])
                 ->withCount(['incidents' => fn ($query) => $query->unresolved()->viewableBy(false)])
                 ->get(),
         ]);
@@ -36,6 +36,7 @@ class ComponentGroups extends ViewComponent
                 'components' => fn ($query) => $query->enabled()->orderBy('order')->withCount(['incidents' => fn ($query) => $query->unresolved()->viewableBy(false)]),
                 'components.unresolvedIncidents',
                 'components.activeMaintenance',
+                'components.tags',
             ])
             ->visible(auth()->check())
             ->orderBy('order')

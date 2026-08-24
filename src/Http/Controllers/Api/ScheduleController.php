@@ -13,6 +13,7 @@ use Cachet\Data\Requests\Schedule\UpdateScheduleRequestData;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Filters\MetaFilter;
 use Cachet\Filters\ScheduleStatusFilter;
+use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
@@ -55,6 +56,7 @@ class ScheduleController extends Controller
             'updates',
             'user',
             'meta',
+            'tags',
         ];
     }
 
@@ -64,6 +66,7 @@ class ScheduleController extends Controller
     #[QueryParameter('filter[name]', 'Filter the resources by name.', example: 'api')]
     #[QueryParameter('filter[status]', 'Filter the resources by status.', type: ScheduleStatusEnum::class)]
     #[QueryParameter('filter[meta][key]', 'Filter by a metadata key/value pair.', example: 'eu-west')]
+    #[QueryParameter('filter[tags]', 'Filter by one or more comma-separated tags.', example: 'api,database')]
     #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
@@ -76,6 +79,7 @@ class ScheduleController extends Controller
                 'name',
                 AllowedFilter::custom('status', new ScheduleStatusFilter),
                 AllowedFilter::custom('meta', new MetaFilter),
+                AllowedFilter::custom('tags', new TagsFilter),
             ])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));

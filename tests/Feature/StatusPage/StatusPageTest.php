@@ -182,6 +182,17 @@ it('can hide component group statuses', function () {
         ->not->toMatch('/Core services\s*<\\/h2>\s*<span[^>]*>\s*Major outage\s*<\\/span>/');
 });
 
+it('can display component tags', function () {
+    $component = Component::factory()->create(['description' => null]);
+    $component->syncTags(['API']);
+
+    $settings = app(AppSettings::class);
+    $settings->show_component_tags = true;
+    $settings->save();
+
+    $this->get(route('cachet.status-page'))->assertSee('API');
+});
+
 it('renders the status page in the configured locale', function () {
     $settings = app(AppSettings::class);
     $settings->locale = 'de';

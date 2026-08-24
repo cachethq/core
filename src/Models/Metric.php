@@ -2,6 +2,7 @@
 
 namespace Cachet\Models;
 
+use Cachet\Concerns\HasTags;
 use Cachet\Concerns\HasVisibility;
 use Cachet\Database\Factories\MetricFactory;
 use Cachet\Enums\MetricTypeEnum;
@@ -42,6 +43,7 @@ class Metric extends Model
     /** @use HasFactory<MetricFactory> */
     use HasFactory;
 
+    use HasTags;
     use HasVisibility;
 
     /** @var array<string, string> */

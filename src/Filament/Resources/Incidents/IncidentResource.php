@@ -79,6 +79,12 @@ class IncidentResource extends Resource
                         ->label(__('cachet::incident.form.published_at_label'))
                         ->helperText(__('cachet::incident.form.published_at_helper'))
                         ->native(false),
+                    Select::make('tags')
+                        ->relationship('tags', 'name')
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([TextInput::make('name')->required()->maxLength(255)]),
                     Repeater::make('incidentComponents')
                         ->visibleOn('create')
                         ->relationship()

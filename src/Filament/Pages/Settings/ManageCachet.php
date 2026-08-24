@@ -118,6 +118,9 @@ class ManageCachet extends SettingsPage
                         Toggle::make('show_component_group_status')
                             ->label(__('cachet::settings.manage_cachet.toggles.show_component_group_status'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.show_component_group_status_helper')),
+                        Toggle::make('show_component_tags')
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_component_tags'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.show_component_tags_helper')),
                     ]),
 
                 Section::make(__('cachet::settings.manage_cachet.api_settings_title'))

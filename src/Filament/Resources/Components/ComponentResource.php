@@ -56,6 +56,12 @@ class ComponentResource extends Resource
                         ->searchable()
                         ->preload()
                         ->label(__('cachet::component.form.component_group_label')),
+                    Select::make('tags')
+                        ->relationship('tags', 'name')
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([TextInput::make('name')->required()->maxLength(255)]),
                     TextInput::make('link')
                         ->label(__('cachet::component.form.link_label'))
                         ->url()
@@ -101,6 +107,10 @@ class ComponentResource extends Resource
                 TextColumn::make('group.name')
                     ->label(__('cachet::component.list.headers.group'))
                     ->sortable(),
+                TextColumn::make('tags.name')
+                    ->badge()
+                    ->separator(',')
+                    ->toggleable(),
                 IconColumn::make('enabled')
                     ->label(__('cachet::component.list.headers.enabled'))
                     ->boolean()

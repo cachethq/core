@@ -56,6 +56,7 @@ class Incident extends JsonApiResource
             'components' => fn () => Component::collection($this->components),
             'updates' => fn () => Update::collection($this->updates),
             'user' => fn () => User::make($this->user),
+            'tags' => fn () => Tag::collection($this->tags),
         ];
     }
 }

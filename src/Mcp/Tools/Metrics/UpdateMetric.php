@@ -31,6 +31,7 @@ class UpdateMetric extends Tool
     {
         return [
             'id' => $schema->integer()->required()->description('The metric ID.'),
+            'tags' => $schema->array()->items($schema->string())->description('Replace the metric tags.'),
             'name' => $schema->string()->max(255)->description('The name of the metric.'),
             'suffix' => $schema->string()->max(255)->description('The suffix shown after the metric value, such as ms or %.'),
             'description' => $schema->string()->description('A description of the metric.'),

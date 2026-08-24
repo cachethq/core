@@ -38,6 +38,7 @@ class CreateMetric extends Tool
             'display_chart' => $schema->boolean()->description('Whether to render a chart for the metric on the status page.'),
             'threshold' => $schema->integer()->min(0)->max(60)->description('The number of minutes between plotted points. Must be a factor of sixty.'),
             'places' => $schema->integer()->description('The number of decimal places shown for values.'),
+            'tags' => $schema->array()->items($schema->string())->description('Tags to apply to the metric.'),
         ];
     }
 

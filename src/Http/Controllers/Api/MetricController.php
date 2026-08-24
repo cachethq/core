@@ -11,6 +11,7 @@ use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Metric\CreateMetricRequestData;
 use Cachet\Data\Requests\Metric\UpdateMetricRequestData;
 use Cachet\Enums\MetricTypeEnum;
+use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Metric as MetricResource;
 use Cachet\Models\Metric;
 use Dedoc\Scramble\Attributes\Group;
@@ -20,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Number;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\AllowedInclude;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -34,6 +36,7 @@ class MetricController extends Controller
      */
     #[QueryParameter('filter[name]', 'Filter by name.', example: 'metric name')]
     #[QueryParameter('filter[calc_type]', 'Filter by calculation type.', type: MetricTypeEnum::class)]
+    #[QueryParameter('filter[tags]', 'Filter by one or more comma-separated tags.', example: 'api,database')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
@@ -47,8 +50,9 @@ class MetricController extends Controller
         $metrics = QueryBuilder::for($query)
             ->allowedIncludes([
                 AllowedInclude::relationship('points', 'metricPoints'),
+                'tags',
             ])
-            ->allowedFilters(['name', 'calc_type'])
+            ->allowedFilters(['name', 'calc_type', AllowedFilter::custom('tags', new TagsFilter)])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
@@ -75,6 +79,7 @@ class MetricController extends Controller
         $metricQuery = QueryBuilder::for(Metric::query()->visible($this->isAuthenticated()))
             ->allowedIncludes([
                 AllowedInclude::relationship('points', 'metricPoints'),
+                'tags',
             ])
             ->findOrFail($metric->id);
 
