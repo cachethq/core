@@ -31,6 +31,16 @@ it('filters resources by any supplied tag', function (): void {
         ->toContain($api->id, $database->id);
 });
 
+it('reuses tags regardless of casing across separate syncs', function (): void {
+    $first = Component::factory()->create();
+    $second = Component::factory()->create();
+
+    $first->syncTags(['API']);
+    $second->syncTags(['api']);
+
+    expect($second->fresh()->tags->sole()->id)->toBe($first->fresh()->tags->sole()->id);
+});
+
 it('filters components by tags through the API', function (): void {
     $api = Component::factory()->create(['name' => 'Public API']);
     $api->syncTags(['API']);

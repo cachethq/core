@@ -28,10 +28,10 @@ trait HasTags
             ->unique(fn (string $name): string => mb_strtolower($name))
             ->values();
 
-        $this->tags()->sync($names->map(fn (string $name): int => Tag::query()
-            ->where('slug', Str::slug($name))
-            ->firstOrCreate(['name' => $name])
-            ->id));
+        $this->tags()->sync($names->map(fn (string $name): int => Tag::query()->firstOrCreate(
+            ['slug' => Str::slug($name)],
+            ['name' => $name],
+        )->id));
     }
 
     /**
