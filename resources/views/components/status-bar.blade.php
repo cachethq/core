@@ -9,7 +9,12 @@
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3" role="status" aria-live="polite">
         <div class="flex items-center gap-3">
         <span class="status-summary__icon text-custom-800 dark:text-custom-200">
-            @svg($status->getIcon(), 'size-5 shrink-0 text-custom-800 dark:text-custom-200')
+            {{ \Filament\Support\generate_icon_html(
+                $status->getIcon(),
+                attributes: new \Illuminate\View\ComponentAttributeBag([
+                    'class' => 'size-5 shrink-0 text-custom-800 dark:text-custom-200',
+                ]),
+            ) }}
         </span>
             @if ($isHeading)
                 <h1 class="text-base font-semibold tracking-tight text-custom-800 dark:text-custom-200">{{ $status->getLabel() }}</h1>
