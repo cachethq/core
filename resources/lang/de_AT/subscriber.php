@@ -31,4 +31,9 @@ return [
         'total_subscribers_label' => 'Abonnenten insgesamt',
         'verified_subscribers_description' => ':count verifiziert',
     ],
+    'status_page' => [
+        'subscribe' => [
+            'button_label' => 'Abonnieren',
+        ],
+    ],
 ];

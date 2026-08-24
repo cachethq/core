@@ -40,12 +40,14 @@ class ManageTheme extends SettingsPage
             ->components([
                 Section::make(__('cachet::settings.manage_theme.app_banner_label'))->columns(2)->schema([
                     FileUpload::make('app_banner')
-                        ->image()
+                        ->acceptedFileTypes((array) config('cachet.uploads.image_mime_types'))
+                        ->maxSize((int) config('cachet.uploads.max_size'))
+                        ->preventFilePathTampering()
                         ->imageEditor()
                         ->label(__('cachet::settings.manage_theme.app_banner_label'))
                         ->hiddenLabel()
                         ->helperText(__('cachet::settings.manage_theme.app_banner_helper'))
-                        ->disk('public')
+                        ->disk((string) config('cachet.uploads.disk'))
                         ->columnSpanFull(),
                 ]),
 

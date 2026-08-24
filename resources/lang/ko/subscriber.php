@@ -31,4 +31,9 @@ return [
         'total_subscribers_label' => '총 구독자 수',
         'verified_subscribers_description' => ':count명 인증됨',
     ],
+    'status_page' => [
+        'subscribe' => [
+            'button_label' => '구독',
+        ],
+    ],
 ];

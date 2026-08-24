@@ -34,6 +34,8 @@ class ScheduleUpdateController extends Controller
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request, Schedule $schedule)
     {
+        $this->ensureScheduleVisible($schedule);
+
         $query = Update::query()
             ->where('updateable_id', $schedule->id)
             ->where('updateable_type', Relation::getMorphAlias(Schedule::class));
@@ -65,6 +67,8 @@ class ScheduleUpdateController extends Controller
      */
     public function show(Schedule $schedule, Update $update)
     {
+        $this->ensureScheduleVisible($schedule);
+
         $updateQuery = QueryBuilder::for(Update::class)
             ->allowedIncludes([
                 AllowedInclude::relationship('schedule', 'updateable'),
@@ -74,6 +78,20 @@ class ScheduleUpdateController extends Controller
         return UpdateResource::make($updateQuery)
             ->response()
             ->setStatusCode(Response::HTTP_OK);
+    }
+
+    /**
+     * Abort with a 404 when the parent schedule is not readable by the caller.
+     *
+     * An unpublished schedule must not leak its updates either, so publication
+     * is checked here on exactly the same terms as the schedule endpoints.
+     */
+    protected function ensureScheduleVisible(Schedule $schedule): void
+    {
+        abort_unless(
+            $schedule->isPublished() || $this->tokenCan('schedules.manage'),
+            Response::HTTP_NOT_FOUND,
+        );
     }
 
     /**

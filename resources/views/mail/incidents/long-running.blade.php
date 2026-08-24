@@ -1,4 +1,4 @@
-@component('cachet::mail.message')
+@component('cachet::mail.message', ['mailMessage' => $message ?? null])
 # {{ __('cachet::incident.mail.long_running.heading') }}
 
 <p class="sub"><strong>{{ $incident->name }}</strong> &middot; {{ $incident->status->getLabel() }}</p>

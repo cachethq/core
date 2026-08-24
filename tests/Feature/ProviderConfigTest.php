@@ -16,3 +16,15 @@ it('registers the package schedules by default', function () {
 
     expect($commands->filter(fn (string $command) => str_contains($command, 'cachet:beacon')))->not->toBeEmpty();
 });
+
+it('configures safe image upload defaults', function () {
+    expect(config('cachet.uploads'))
+        ->disk->toBe('public')
+        ->max_size->toBe(1024)
+        ->image_mime_types->toBe([
+            'image/jpeg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+        ]);
+});

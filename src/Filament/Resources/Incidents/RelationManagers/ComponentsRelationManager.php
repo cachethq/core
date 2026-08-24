@@ -3,6 +3,8 @@
 namespace Cachet\Filament\Resources\Incidents\RelationManagers;
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Filament\Resources\Incidents\IncidentResource;
+use Cachet\Models\Incident;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
@@ -23,7 +25,7 @@ class ComponentsRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('Components');
+        return trans_choice('cachet::component.resource_label', 2);
     }
 
     public function form(Schema $schema): Schema
@@ -31,9 +33,9 @@ class ComponentsRelationManager extends RelationManager
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->label(__('Name')),
+                    ->label(__('cachet::component.form.name_label')),
                 ToggleButtons::make('component_status')
-                    ->label(__('Status'))
+                    ->label(__('cachet::component.form.status_label'))
                     ->inline()
                     ->options(ComponentStatusEnum::class)
                     ->required(),
@@ -44,13 +46,13 @@ class ComponentsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
-            ->modelLabel(__('Component'))
-            ->pluralModelLabel(__('Components'))
+            ->modelLabel(trans_choice('cachet::component.resource_label', 1))
+            ->pluralModelLabel(trans_choice('cachet::component.resource_label', 2))
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('Name')),
+                    ->label(__('cachet::component.list.headers.name')),
                 TextColumn::make('component_status')
-                    ->label(__('Status'))
+                    ->label(__('cachet::component.list.headers.status'))
                     ->badge()
                     ->sortable(),
             ])
@@ -59,19 +61,26 @@ class ComponentsRelationManager extends RelationManager
             ])
             ->headerActions([
                 AttachAction::make()
-                    ->form(fn (AttachAction $action): array => [
-                        $action->getRecordSelect(),
+                    ->modalHeading(__('cachet::component.attach.heading'))
+                    ->form(fn (): array => [
+                        Select::make('recordId')
+                            ->label(trans_choice('cachet::component.resource_label', 2))
+                            ->placeholder(__('cachet::component.attach.placeholder'))
+                            ->options(function (): array {
+                                $owner = $this->getOwnerRecord();
+
+                                return IncidentResource::getComponentOptions($owner instanceof Incident ? $owner : null);
+                            })
+                            ->searchable()
+                            ->multiple()
+                            ->required(),
                         ToggleButtons::make('component_status')
-                            ->label(__('Status'))
+                            ->label(__('cachet::component.form.status_label'))
                             ->inline()
                             ->columnSpanFull()
                             ->options(ComponentStatusEnum::class)
                             ->required(),
                     ])
-                    ->preloadRecordSelect()
-                    ->recordSelect(
-                        fn (Select $select) => $select->placeholder(__('Select a component')),
-                    )
                     ->multiple(),
             ])
             ->recordActions([

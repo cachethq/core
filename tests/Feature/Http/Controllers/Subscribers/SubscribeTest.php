@@ -7,6 +7,7 @@ use Cachet\Models\Subscriber;
 use Cachet\Notifications\VerifySubscriberEmail;
 use Cachet\Settings\MailSettings;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 
@@ -28,8 +29,26 @@ it('shows the subscribe page', function () {
 it('shows the subscribe button on the status page', function () {
     get(route('cachet.status-page'))
         ->assertOk()
-        ->assertSee(route('cachet.subscribers.create'));
+        ->assertSee(route('cachet.subscribers.create'))
+        ->assertSee(__('cachet::subscriber.status_page.subscribe.button_label'));
 });
+
+it('uses a short localized subscribe label', function (string $locale, string $label) {
+    expect(Lang::get('cachet::subscriber.status_page.subscribe.button_label', locale: $locale))->toBe($label);
+})->with([
+    'German' => ['de', 'Abonnieren'],
+    'Austrian German' => ['de_AT', 'Abonnieren'],
+    'Swiss German' => ['de_CH', 'Abonnieren'],
+    'English' => ['en', 'Subscribe'],
+    'Spanish' => ['es_ES', 'Suscribirse'],
+    'French' => ['fr', 'S’abonner'],
+    'Korean' => ['ko', '구독'],
+    'Dutch' => ['nl', 'Abonneren'],
+    'Filipino' => ['ph', 'Mag-subscribe'],
+    'Brazilian Portuguese' => ['pt_BR', 'Inscrever-se'],
+    'Simplified Chinese' => ['zh_CN', '订阅'],
+    'Traditional Chinese' => ['zh_TW', '訂閱'],
+]);
 
 it('hides the subscribe page and button when subscriptions are not allowed', function () {
     $settings = app(MailSettings::class);
