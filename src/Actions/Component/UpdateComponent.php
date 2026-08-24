@@ -3,31 +3,46 @@
 namespace Cachet\Actions\Component;
 
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
-use Cachet\Events\Components\ComponentStatusWasChanged;
+use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Models\Component;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class UpdateComponent
 {
+    public function __construct(private ChangeComponentStatus $changeComponentStatus)
+    {
+        //
+    }
+
     /**
      * Handle the action.
      */
-    public function handle(Component $component, UpdateComponentRequestData $data): Component
+    public function handle(Component $component, UpdateComponentRequestData $data, ?Authenticatable $user = null): Component
     {
-        $oldStatus = $component->status;
+        DB::transaction(function () use ($component, $data, $user): void {
+            $attributes = $data->except('meta', 'status', 'tags')->toArray();
 
-        $component->update($data->except('meta')->toArray());
+            if ($data->status === null) {
+                $component->update($attributes);
+            } else {
+                $this->changeComponentStatus->handle(
+                    $component,
+                    $data->status,
+                    ComponentStatusSourceEnum::Manual,
+                    $user,
+                    attributes: $attributes,
+                );
+            }
 
-        if ($data->meta !== null) {
-            $component->syncMeta($data->meta);
-        }
+            if ($data->meta !== null) {
+                $component->syncMeta($data->meta);
+            }
 
-        if ($component->wasChanged('status')) {
-            ComponentStatusWasChanged::dispatch(
-                $component,
-                $oldStatus,
-                $component->status
-            );
-        }
+            if ($data->tags !== null) {
+                $component->syncTags($data->tags);
+            }
+        });
 
         return $component->fresh();
     }

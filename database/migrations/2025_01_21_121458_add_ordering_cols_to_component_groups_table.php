@@ -15,7 +15,11 @@ return new class extends Migration
     {
         Schema::table('component_groups', function (Blueprint $table) {
             $table->string('order_column')->nullable()->after('order');
-            $table->char('order_direction', 4)->nullable()->after('order_column');
+            if (DB::getDriverName() === 'pgsql') {
+                $table->string('order_direction', 4)->nullable()->after('order_column');
+            } else {
+                $table->char('order_direction', 4)->nullable()->after('order_column');
+            }
         });
 
         DB::table('component_groups')->update(['order_column' => ResourceOrderColumnEnum::Manual->value]);

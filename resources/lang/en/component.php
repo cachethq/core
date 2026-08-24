@@ -19,8 +19,14 @@ return [
             'heading' => 'Components',
             'description' => 'Components represent the various parts of your system that can affect the status of your status page.',
         ],
+        'ungrouped' => 'Ungrouped components',
+    ],
+    'attach' => [
+        'heading' => 'Attach components',
+        'placeholder' => 'Select components',
     ],
     'last_updated' => 'Last updated :timestamp',
+    'description_label' => 'About :component',
     'view_details' => 'View details',
     'form' => [
         'name_label' => 'Name',
@@ -29,7 +35,10 @@ return [
         'component_group_label' => 'Component group',
         'link_label' => 'Link',
         'link_helper' => 'An optional link to the component.',
-        'checked_label' => 'Whether to periodically check the component.',
+        'availability_section_title' => 'Availability',
+        'enabled_label' => 'Enabled',
+        'checked_label' => 'Monitoring',
+        'checked_helper' => 'Periodically check this component and record its availability.',
     ],
     'status' => [
         'operational' => 'Operational',
@@ -38,6 +47,12 @@ return [
         'major_outage' => 'Major outage',
         'under_maintenance' => 'Under maintenance',
         'unknown' => 'Unknown',
+    ],
+    'status_source' => [
+        'manual' => 'Manual',
+        'monitor' => 'Monitoring',
+        'import' => 'Import',
+        'system' => 'System',
     ],
     'overview' => [
         'operational_components_label' => 'Operational components',

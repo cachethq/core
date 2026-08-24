@@ -6,6 +6,7 @@ use Filament\Support\Colors\Color;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
+use Filament\Support\Icons\Heroicon;
 
 enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
 {
@@ -34,10 +35,20 @@ enum SystemStatusEnum implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getIcon(): string
+    public function getBadgeColor(): string
     {
         return match ($this) {
-            self::operational => 'heroicon-m-check-circle',
+            self::operational => 'brightgreen',
+            self::partial_outage => 'orange',
+            self::major_outage => 'red',
+            self::under_maintenance => 'orange',
+        };
+    }
+
+    public function getIcon(): string|Heroicon
+    {
+        return match ($this) {
+            self::operational => Heroicon::CheckCircle,
             self::partial_outage => 'cachet-component-partial-outage',
             self::major_outage => 'cachet-component-major-outage',
             self::under_maintenance => 'cachet-component-under-maintenance',

@@ -5,7 +5,6 @@ namespace Cachet\Data\Requests\Schedule;
 use Cachet\Data\BaseData;
 use Cachet\Data\Casts\FlexibleDateTimeCast;
 use Cachet\Enums\ComponentStatusEnum;
-use Cachet\Enums\ScheduleStatusEnum;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -17,7 +16,6 @@ final class UpdateScheduleRequestData extends BaseData
     public function __construct(
         public readonly ?string $name = null,
         public readonly ?string $message = null,
-        public readonly ?ScheduleStatusEnum $status = null,
         #[WithCast(FlexibleDateTimeCast::class)]
         public readonly ?Carbon $scheduledAt = null,
         #[WithCast(FlexibleDateTimeCast::class)]
@@ -26,6 +24,8 @@ final class UpdateScheduleRequestData extends BaseData
         public readonly ?Carbon $publishedAt = null,
         #[DataCollectionOf(ScheduleComponentRequestData::class)]
         public readonly ?array $components = null,
+        /** @var list<string>|null */
+        public readonly ?array $tags = null,
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -48,8 +48,10 @@ final class UpdateScheduleRequestData extends BaseData
              */
             'published_at' => ['nullable', 'date'],
             'components' => ['array'],
-            'components.*.id' => ['required', 'int', 'exists:components,id'],
+            'components.*.id' => ['required', 'int', 'distinct', 'exists:components,id'],
             'components.*.status' => ['required', Rule::enum(ComponentStatusEnum::class)],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'max:255'],
             /**
              * Key/value metadata to store against the resource.
              *

@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use Cachet\Http\Middleware\RedirectIfAuthenticated;
+use Closure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -10,12 +11,15 @@ use Illuminate\Support\Str;
 
 class Cachet
 {
+    /** @var array<string, Closure(): bool> */
+    private static array $dashboardFeatureAuthorizers = [];
+
     /**
      * The user agent used by Cachet.
      *
      * @var string
      */
-    public const USER_AGENT = 'Cachet/3.0 (+https://docs.cachethq.io)';
+    public const USER_AGENT = 'Cachet/3.0 (+https://cachethq.io/docs)';
 
     /**
      * The Markdown mail theme used by Cachet's emails.
@@ -27,7 +31,7 @@ class Cachet
     /**
      * The user agent used by Cachet's webhooks.
      */
-    public const WEBHOOK_USER_AGENT = 'Cachet/3.0 Webhook (+https://docs.cachethq.io)';
+    public const WEBHOOK_USER_AGENT = 'Cachet/3.0 Webhook (+https://cachethq.io/docs)';
 
     /**
      * Get the current user using `cachet.guard`.
@@ -125,5 +129,20 @@ class Cachet
     public static function demoMode(): bool
     {
         return (bool) config('cachet.demo_mode');
+    }
+
+    /**
+     * Let a host application control access to optional dashboard surfaces.
+     * Features are accessible by default, preserving standalone Cachet's
+     * behaviour when no host-level entitlement system is installed.
+     */
+    public static function authorizeDashboardFeatureUsing(string $feature, Closure $authorizer): void
+    {
+        self::$dashboardFeatureAuthorizers[$feature] = $authorizer;
+    }
+
+    public static function canAccessDashboardFeature(string $feature): bool
+    {
+        return (self::$dashboardFeatureAuthorizers[$feature] ?? fn (): bool => true)();
     }
 }

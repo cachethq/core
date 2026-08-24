@@ -3,8 +3,11 @@
 namespace Cachet\Data\Requests\Incident;
 
 use Cachet\Data\BaseData;
+use Cachet\Data\Casts\FlexibleDateTimeCast;
 use Cachet\Enums\IncidentStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
+use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Optional;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
@@ -17,8 +20,12 @@ final class UpdateIncidentRequestData extends BaseData
         public readonly ?bool $visible = null,
         public readonly ?bool $stickied = null,
         public readonly ?bool $notifications = null,
-        public readonly ?string $occurredAt = null,
-        public readonly ?string $publishedAt = null,
+        #[WithCast(FlexibleDateTimeCast::class)]
+        public readonly ?Carbon $occurredAt = null,
+        #[WithCast(FlexibleDateTimeCast::class)]
+        public readonly ?Carbon $publishedAt = null,
+        /** @var list<string>|null */
+        public readonly ?array $tags = null,
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -40,6 +47,8 @@ final class UpdateIncidentRequestData extends BaseData
              * The date/time to publish the incident, e.g. "2023-11-07 05:31:56" or ISO 8601. While set in the future the incident is hidden from the status page and public API.
              */
             'published_at' => ['nullable', 'date'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'max:255'],
             /**
              * Key/value metadata to store against the resource.
              *

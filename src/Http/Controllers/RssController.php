@@ -4,6 +4,7 @@ namespace Cachet\Http\Controllers;
 
 use Cachet\Models\Incident;
 use Cachet\Settings\AppSettings;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -23,15 +24,15 @@ class RssController
     /**
      * Returns the RSS feed of all incidents.
      */
-    public function __invoke(AppSettings $appSettings): Response
+    public function __invoke(Request $request, AppSettings $appSettings): Response
     {
         $feed = Cache::remember('cachet::rss-feed', self::CACHE_TTL, function () use ($appSettings) {
             return view('cachet::rss', [
                 'statusPageName' => $appSettings->name,
                 'statusAbout' => $appSettings->about,
                 'incidents' => Incident::query()
-                    ->guests()
-                    ->with('updates')
+                    ->viewableBy(false)
+                    ->with(['updates' => fn ($query) => $query->orderBy('created_at')->orderBy('id')])
                     ->when($appSettings->recent_incidents_only, function ($query) use ($appSettings) {
                         $query->where(function ($query) use ($appSettings) {
                             $query->whereDate(
@@ -53,6 +54,17 @@ class RssController
             ])->render();
         });
 
-        return response($feed)->header('Content-Type', 'application/rss+xml');
+        $lastModified = Cache::remember('cachet::rss-feed-last-modified', self::CACHE_TTL, fn () => now());
+
+        $response = response($feed)
+            ->header('Content-Type', 'application/rss+xml; charset=UTF-8')
+            ->setEtag(hash('sha256', $feed))
+            ->setLastModified($lastModified)
+            ->setPublic()
+            ->setMaxAge(self::CACHE_TTL);
+
+        $response->isNotModified($request);
+
+        return $response;
     }
 }

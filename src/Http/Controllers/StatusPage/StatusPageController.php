@@ -34,7 +34,7 @@ class StatusPageController
      */
     public function show(Incident $incident): View
     {
-        abort_if(! $incident->isPublished() && ! auth()->check(), 404);
+        abort_unless($incident->isViewableBy(auth()->check(), includeUnpublished: auth()->check()), 404);
 
         return view('cachet::status-page.incident', [
             'incident' => $incident->loadMissing([

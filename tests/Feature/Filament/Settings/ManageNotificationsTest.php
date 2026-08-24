@@ -56,6 +56,19 @@ it('saves the allow subscribers setting', function () {
     expect(app(MailSettings::class)->refresh()->allow_subscribers)->toBeTrue();
 });
 
+it('only shows long-running incident settings when subscriptions are allowed', function () {
+    livewire(ManageNotifications::class)
+        ->fillForm(['allow_subscribers' => false])
+        ->assertSchemaComponentHidden('long-running-incidents')
+        ->fillForm([
+            'allow_subscribers' => true,
+            'notify_long_running_incidents' => true,
+        ])
+        ->assertSchemaComponentVisible('long-running-incidents')
+        ->fillForm(['allow_subscribers' => false])
+        ->assertFormSet(['notify_long_running_incidents' => false]);
+});
+
 it('hides the subscribers resource from navigation until subscriptions are allowed', function () {
     expect(SubscriberResource::shouldRegisterNavigation())->toBeFalse();
 

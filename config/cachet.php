@@ -179,6 +179,24 @@ return [
 
     /*
      |--------------------------------------------------------------------------
+     | Cachet Image Uploads
+     |--------------------------------------------------------------------------
+     |
+     | Configure where custom images are stored, their maximum size in
+     | kilobytes, and the MIME types that may be uploaded.
+     |
+     */
+    'uploads' => [
+        'disk' => env('CACHET_UPLOAD_DISK', 'public'),
+        'max_size' => (int) env('CACHET_UPLOAD_MAX_SIZE', 1024),
+        'image_mime_types' => array_values(array_filter(array_map(
+            'trim',
+            explode(',', (string) env('CACHET_UPLOAD_IMAGE_MIME_TYPES', 'image/jpeg,image/png,image/gif,image/webp')),
+        ))),
+    ],
+
+    /*
+     |--------------------------------------------------------------------------
      | Cachet Migrations
      |--------------------------------------------------------------------------
      |
@@ -289,6 +307,21 @@ return [
      |
      */
     'demo_mode' => env('CACHET_DEMO_MODE', false),
+
+    /*
+     |--------------------------------------------------------------------------
+     | Cachet Template Renderers
+     |--------------------------------------------------------------------------
+     |
+     | Configure which renderers a template body may be rendered with. Twig
+     | bodies are rendered inside a sandbox. Blade bodies are compiled to
+     | PHP and run with the permissions of the application, so the Blade
+     | renderer is only used when an installation enables it here.
+     |
+     */
+    'renderers' => [
+        'blade' => env('CACHET_BLADE_RENDERER', false),
+    ],
 
     /*
      |--------------------------------------------------------------------------

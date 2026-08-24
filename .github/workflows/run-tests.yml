@@ -22,19 +22,19 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.3
+          php-version: 8.4
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: none
 
       - name: Install PHP dependencies
         run: |
-          composer require "laravel/framework:11.x" --no-interaction --no-update
+          composer require "laravel/framework:13.x" --no-interaction --no-update
           composer update --prefer-dist --no-interaction
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
       - name: Install frontend dependencies
@@ -63,12 +63,9 @@ jobs:
           - php: 8.4
             laravel: 12.x
             stability: prefer-stable
-          - php: 8.4
-            laravel: 11.x
-            stability: prefer-stable
           # Dependency floor
           - php: 8.3
-            laravel: 11.x
+            laravel: 12.x
             stability: prefer-lowest
           # PHP 8.5 (allowed failure)
           - php: '8.5'
@@ -117,7 +114,7 @@ jobs:
       fail-fast: false
       matrix:
         php: [8.4, 8.3]
-        laravel: [13.x, 12.x, 11.x]
+        laravel: [13.x, 12.x]
         stability: [prefer-lowest, prefer-stable]
         include:
           # PHP 8.5 (allowed failure)
@@ -195,7 +192,7 @@ jobs:
             stability: prefer-stable
           # Dependency floor
           - php: 8.3
-            laravel: 11.x
+            laravel: 12.x
             stability: prefer-lowest
           # PHP 8.5 (allowed failure)
           - php: '8.5'
@@ -277,7 +274,7 @@ jobs:
             stability: prefer-stable
           # Dependency floor
           - php: 8.3
-            laravel: 11.x
+            laravel: 12.x
             stability: prefer-lowest
           # PHP 8.5 (allowed failure)
           - php: '8.5'

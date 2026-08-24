@@ -2,7 +2,11 @@
 
 namespace Cachet\Filament\Resources\Components\RelationManagers;
 
+use Cachet\Actions\Component\ChangeComponentStatus;
+use Cachet\Cachet;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ComponentStatusSourceEnum;
+use Cachet\Models\Component;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
@@ -17,6 +21,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 class ComponentsRelationManager extends RelationManager
 {
@@ -77,7 +82,26 @@ class ComponentsRelationManager extends RelationManager
                 CreateAction::make(),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->using(function (Component $record, array $data): Component {
+                        $status = Arr::pull($data, 'status');
+
+                        if ($status === null) {
+                            $record->update($data);
+
+                            return $record;
+                        }
+
+                        return app(ChangeComponentStatus::class)->handle(
+                            component: $record,
+                            status: $status instanceof ComponentStatusEnum
+                                ? $status
+                                : ComponentStatusEnum::from((int) $status),
+                            source: ComponentStatusSourceEnum::Manual,
+                            causer: Cachet::user(),
+                            attributes: $data,
+                        );
+                    }),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

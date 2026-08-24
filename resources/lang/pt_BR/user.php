@@ -1,11 +1,9 @@
 <?php
 
 return [
-    'level' => [
-        'admin' => 'Administrador',
-        'user' => 'Usuário',
-    ],
     'resource_label' => 'Usuário|Usuários',
+    'profile_information_title' => 'Informações do perfil',
+    'security_section_title' => 'Senha e segurança',
     'list' => [
         'headers' => [
             'name' => 'Nome',

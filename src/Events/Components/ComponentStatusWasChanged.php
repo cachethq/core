@@ -4,6 +4,7 @@ namespace Cachet\Events\Components;
 
 use Cachet\Concerns\SendsWebhook;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\Component;
 use Illuminate\Broadcasting\Channel;
@@ -19,8 +20,12 @@ class ComponentStatusWasChanged
     /**
      * Create a new event instance.
      */
-    public function __construct(public Component $component, public ComponentStatusEnum $oldStatus, public ComponentStatusEnum $newStatus)
-    {
+    public function __construct(
+        public Component $component,
+        public ?ComponentStatusEnum $oldStatus,
+        public ComponentStatusEnum $newStatus,
+        public ComponentStatusSourceEnum $source = ComponentStatusSourceEnum::Manual,
+    ) {
         //
     }
 
@@ -40,8 +45,9 @@ class ComponentStatusWasChanged
     {
         return [
             'component_id' => $this->component->getKey(),
-            'old_status' => $this->oldStatus->value,
+            'old_status' => $this->oldStatus?->value,
             'new_status' => $this->newStatus->value,
+            'source' => $this->source->value,
         ];
     }
 

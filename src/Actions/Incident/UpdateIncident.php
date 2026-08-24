@@ -12,10 +12,14 @@ class UpdateIncident
      */
     public function handle(Incident $incident, UpdateIncidentRequestData $data): Incident
     {
-        $incident->update($data->except('meta')->toArray());
+        $incident->update($data->except('meta', 'tags')->toArray());
 
         if ($data->meta !== null) {
             $incident->syncMeta($data->meta);
+        }
+
+        if ($data->tags !== null) {
+            $incident->syncTags($data->tags);
         }
 
         return $incident->fresh();

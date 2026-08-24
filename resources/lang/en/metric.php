@@ -46,6 +46,8 @@ return [
     ],
     'sum_label' => 'Sum',
     'average_label' => 'Average',
+    'description_label' => 'About :metric',
+    'chart_label' => ':metric chart',
     'view_labels' => [
         'last_hour' => 'Last hour',
         'today' => 'Today',

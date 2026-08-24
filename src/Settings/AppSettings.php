@@ -12,6 +12,10 @@ class AppSettings extends Settings
 
     public ?string $about;
 
+    public bool $show_site_name = false;
+
+    public bool $show_about = true;
+
     public bool $show_support = true;
 
     public string $locale = 'en';
@@ -47,6 +51,10 @@ class AppSettings extends Settings
     public bool $mcp_protected = true;
 
     public bool $dynamic_favicon = false;
+
+    public bool $show_component_group_status = true;
+
+    public bool $show_component_tags = false;
 
     public static function group(): string
     {

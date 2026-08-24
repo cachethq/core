@@ -2,6 +2,8 @@
 
 return [
     'oh_dear' => [
+        'status_page_section_title' => 'Oh Dear status page',
+        'import_options_section_title' => 'Mga opsyon sa pag-import',
         'import_feed_button' => 'I-import ang Feed',
         'status_page_url_label' => 'URL ng Oh Dear Status Page',
         'status_page_url_helper' => 'Ilagay ang URL ng iyong Oh Dear status page (hal. https://status.example.com).',

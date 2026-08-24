@@ -229,3 +229,52 @@ it('cannot delete an schedule update from another schedule', function () {
         'updateable_id' => $scheduleUpdate->updateable_id,
     ]);
 });
+
+it('does not list updates of an unpublished schedule', function () {
+    $schedule = Schedule::factory()->hasUpdates(2)->create(['published_at' => now()->addYear()]);
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates");
+
+    $response->assertNotFound();
+});
+
+it('does not show an update of an unpublished schedule', function () {
+    $schedule = Schedule::factory()->hasUpdates(1)->create(['published_at' => now()->addYear()]);
+    $update = $schedule->updates()->first();
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates/{$update->id}");
+
+    $response->assertNotFound();
+});
+
+it('lists updates of an unpublished schedule to a token that can manage schedules', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $schedule = Schedule::factory()->hasUpdates(2)->create(['published_at' => now()->addYear()]);
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates");
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});
+
+it('shows an update of an unpublished schedule to a token that can manage schedules', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $schedule = Schedule::factory()->hasUpdates(1)->create(['published_at' => now()->addYear()]);
+    $update = $schedule->updates()->first();
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates/{$update->id}");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.attributes.id', $update->id);
+});
+
+it('does not hide updates of a schedule published in the past', function () {
+    $schedule = Schedule::factory()->hasUpdates(2)->create(['published_at' => now()->subDay()]);
+
+    $response = getJson("/status/api/schedules/{$schedule->id}/updates");
+
+    $response->assertOk();
+    $response->assertJsonCount(2, 'data');
+});

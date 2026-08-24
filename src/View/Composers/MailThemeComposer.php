@@ -5,7 +5,10 @@ namespace Cachet\View\Composers;
 use Cachet\Data\Cachet\ThemeData;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\ThemeSettings;
+use Illuminate\Mail\Attachment;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Throwable;
 
 class MailThemeComposer
 {
@@ -19,14 +22,65 @@ class MailThemeComposer
      */
     public function compose(View $view): void
     {
+        $appLogo = $this->appLogo($this->themeSettings->app_banner);
+
         $view->with([
             'appName' => $this->appSettings->name ?? config('cachet.title'),
-            'appBanner' => $this->themeSettings->app_banner,
+            'appBanner' => $appLogo['banner'],
+            'appLogoAttachment' => $appLogo['attachment'],
+            'appLogoUrl' => $appLogo['url'],
             'colors' => array_map(
                 static::hex(...),
                 (new ThemeData($this->themeSettings))->lightColors(),
             ),
         ]);
+    }
+
+    /**
+     * @return array{banner: ?string, attachment: Attachment, url: string}
+     */
+    private function appLogo(?string $appBanner): array
+    {
+        if (blank($appBanner)) {
+            return $this->defaultAppLogo();
+        }
+
+        try {
+            $disk = Storage::disk((string) config('cachet.uploads.disk', 'public'));
+            $contents = $disk->get($appBanner);
+            $mimeType = $disk->mimeType($appBanner);
+
+            if (! is_string($contents) || ! is_string($mimeType) || ! str_contains($mimeType, '/')) {
+                return $this->defaultAppLogo();
+            }
+
+            $url = $disk->url($appBanner);
+        } catch (Throwable $exception) {
+            report($exception);
+
+            return $this->defaultAppLogo();
+        }
+
+        return [
+            'banner' => $appBanner,
+            'attachment' => Attachment::fromData(
+                static fn (): string => $contents,
+                basename($appBanner),
+            )->withMime($mimeType),
+            'url' => $url,
+        ];
+    }
+
+    /**
+     * @return array{banner: null, attachment: Attachment, url: string}
+     */
+    private function defaultAppLogo(): array
+    {
+        return [
+            'banner' => null,
+            'attachment' => Attachment::fromPath(CACHET_PATH.'public/logo.png'),
+            'url' => asset('vendor/cachethq/cachet/logo.png'),
+        ];
     }
 
     /**

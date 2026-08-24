@@ -19,4 +19,17 @@ enum ExternalProviderEnum: string
             },
         };
     }
+
+    /**
+     * Match the status to the Cachet component status.
+     */
+    public function componentStatus(mixed $status): ComponentStatusEnum
+    {
+        return match ($this) {
+            self::OhDear => match ($status) {
+                'up' => ComponentStatusEnum::operational,
+                default => ComponentStatusEnum::partial_outage,
+            },
+        };
+    }
 }

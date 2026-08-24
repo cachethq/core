@@ -17,6 +17,8 @@ final class UpdateComponentRequestData extends BaseData
         public readonly ?int $order = null,
         public readonly ?bool $enabled = null,
         public readonly ?int $componentGroupId = null,
+        /** @var list<string>|null */
+        public readonly ?array $tags = null,
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -27,10 +29,12 @@ final class UpdateComponentRequestData extends BaseData
             'name' => ['string', 'max:255'],
             'description' => ['string'],
             'status' => [Rule::enum(ComponentStatusEnum::class)],
-            'link' => ['string'],
+            'link' => ['string', 'url:http,https'],
             'order' => ['int', 'min:0'],
             'component_group_id' => ['int', 'min:0', Rule::exists('component_groups', 'id')],
             'enabled' => ['boolean'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['string', 'max:255'],
             /**
              * Key/value metadata to store against the resource.
              *

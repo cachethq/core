@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         /** @phpstan-ignore-next-line  argument.type */
-        tap(Schedule::create([
+        $documentationMaintenance = tap(Schedule::create([
             'name' => 'Documentation Maintenance',
             'message' => 'We will be conducting maintenance on our documentation servers. You may experience degraded performance during this time.',
             'scheduled_at' => now()->addHours(24),
@@ -79,7 +79,7 @@ EOF
         });
 
         /** @phpstan-ignore-next-line  argument.type */
-        tap(Schedule::create([
+        $databaseUpgrade = tap(Schedule::create([
             'name' => 'Database Server Upgrade',
             'message' => 'We upgraded our primary database servers to improve performance and reliability.',
             'scheduled_at' => now()->subHours(26),
@@ -117,7 +117,7 @@ EOF
             [
                 'name' => 'Cachet Documentation',
                 'description' => 'The Cachet docs, powered by Mintlify.',
-                'link' => 'https://docs.cachethq.io',
+                'link' => 'https://cachethq.io/docs',
                 'status' => ComponentStatusEnum::operational,
                 'checked' => true,
             ],
@@ -136,6 +136,14 @@ EOF
             'link' => 'https://artisan.page',
             'status' => ComponentStatusEnum::operational,
             'checked' => true,
+        ]);
+
+        $documentationMaintenance->components()->attach($documentation, [
+            'component_status' => ComponentStatusEnum::performance_issues,
+        ]);
+
+        $databaseUpgrade->components()->attach($website, [
+            'component_status' => ComponentStatusEnum::partial_outage,
         ]);
 
         $metric = Metric::create([
@@ -184,7 +192,7 @@ EOF
                 'message' => <<<'EOF'
 Our DNS provider has fixed the issue. We will continue to monitor the situation.
 
-For more information, please you can read our latest [blog post](https://blog.cachethq.io).
+For more information, read our latest [blog post](https://blog.cachethq.io).
 EOF
                 ,
                 'user_id' => $user->id,

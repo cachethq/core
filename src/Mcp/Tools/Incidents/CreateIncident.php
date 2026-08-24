@@ -38,7 +38,7 @@ class CreateIncident extends Tool
             'template' => $schema->string()->description('The slug of an incident template to render the message from.'),
             'template_vars' => $schema->object()->description('Variables passed to the incident template.'),
             'visible' => $schema->boolean()->default(false)->description('Whether the incident is visible to guests.'),
-            'stickied' => $schema->boolean()->default(false)->description('Whether the incident is stickied to the top of the status page.'),
+            'stickied' => $schema->boolean()->default(false)->description('Whether the incident is pinned to the top of the status page.'),
             'notifications' => $schema->boolean()->default(false)->description('Whether to notify verified subscribers.'),
             'occurred_at' => $schema->string()->description('When the incident occurred, as an ISO-8601 datetime. Defaults to now.'),
             'published_at' => $schema->string()->description('When to publish the incident, as an ISO-8601 datetime. While set in the future the incident is hidden from the status page and public API. Defaults to published immediately.'),
@@ -51,6 +51,7 @@ class CreateIncident extends Tool
                         ->description('The status to display for the component while the incident is unresolved: 1 operational, 2 performance issues, 3 partial outage, 4 major outage, 5 unknown, 6 under maintenance. The component\'s own status is left unchanged; the overlay is reflected in its latest_status and reverts when the incident is fixed. Use update_component to change a component\'s own status.'),
                 ]))
                 ->description('Affected components and the status to display for each while the incident is unresolved.'),
+            'tags' => $schema->array()->items($schema->string())->description('Tags to apply to the incident.'),
         ];
     }
 

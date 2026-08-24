@@ -17,6 +17,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
@@ -27,7 +28,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
-    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
     public static function canAccess(): bool
     {
@@ -49,6 +50,25 @@ class UserResource extends Resource
         }
 
         return Response::deny();
+    }
+
+    public static function getDeleteAuthorizationResponse(Model $record): Response
+    {
+        $response = parent::getDeleteAuthorizationResponse($record);
+
+        if ($response->denied()) {
+            return $response;
+        }
+
+        if (! $record instanceof User || auth()->user()->is($record)) {
+            return Response::deny();
+        }
+
+        if ($record->isAdmin() && static::getModel()::query()->where('is_admin', true)->count() <= 1) {
+            return Response::deny();
+        }
+
+        return $response;
     }
 
     public static function form(Schema $schema): Schema
@@ -113,13 +133,13 @@ class UserResource extends Resource
                     ->label(__('cachet::user.list.headers.email'))
                     ->searchable(),
 
-                TextColumn::make('email_verified_at')
-                    ->label(__('cachet::user.list.headers.email_verified_at'))
-                    ->dateTime(),
-
                 ToggleColumn::make('is_admin')
                     ->disabled(fn (User $record) => auth()->user()->is($record))
                     ->label(__('cachet::user.list.headers.is_admin')),
+
+                TextColumn::make('email_verified_at')
+                    ->label(__('cachet::user.list.headers.email_verified_at'))
+                    ->dateTime(),
             ])
             ->filters([
                 //
@@ -128,12 +148,12 @@ class UserResource extends Resource
                 EditAction::make(),
                 Action::make('verify-email')
                     ->label(__('cachet::user.list.actions.verify_email'))
-                    ->icon('heroicon-o-check-badge')
+                    ->icon(Heroicon::OutlinedCheckBadge)
                     ->disabled(fn (User $record): bool => $record->hasVerifiedEmail())
                     ->action(fn (Builder $query, User $record) => $record->sendEmailVerificationNotification()),
                 Action::make('reset-two-factor')
                     ->label(__('cachet::user.list.actions.reset_two_factor'))
-                    ->icon('heroicon-o-shield-exclamation')
+                    ->icon(Heroicon::OutlinedShieldExclamation)
                     ->requiresConfirmation()
                     ->modalDescription(__('cachet::user.list.actions.reset_two_factor_confirmation'))
                     ->visible(fn (User $record): bool => filled($record->getAppAuthenticationSecret()))
@@ -147,7 +167,8 @@ class UserResource extends Resource
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->authorizeIndividualRecords(),
                 ]),
             ]);
     }

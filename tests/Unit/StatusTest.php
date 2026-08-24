@@ -2,14 +2,17 @@
 
 namespace Tests\Unit;
 
+use Cachet\Actions\Incident\SyncIncidentStatus;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 use Cachet\Status;
+use Carbon\CarbonInterface;
 
 use function PHPUnit\Framework\assertFalse;
 use function PHPUnit\Framework\assertTrue;
@@ -101,6 +104,23 @@ it('can fetch component overview', function () {
         ->under_maintenance->toBe(1);
 });
 
+it('returns the most recent enabled component update timestamp', function () {
+    Component::factory()->create([
+        'enabled' => false,
+        'updated_at' => now(),
+    ]);
+    $component = Component::factory()->create([
+        'enabled' => true,
+        'updated_at' => now()->subMinute(),
+    ]);
+
+    $lastUpdated = (new Status)->lastUpdated();
+
+    expect($lastUpdated)
+        ->toBeInstanceOf(CarbonInterface::class)
+        ->toEqual($component->updated_at);
+});
+
 it('excludes disabled components from component overview', function () {
     Component::factory()->create([
         'status' => ComponentStatusEnum::operational->value,
@@ -171,6 +191,7 @@ it('counts an incident with multiple updates once and resolves it by its latest 
 
     $incident = Incident::factory()->create([
         'status' => IncidentStatusEnum::investigating->value,
+        'visible' => ResourceVisibilityEnum::guest,
     ]);
     Update::factory()->forIncident($incident)->create([
         'status' => IncidentStatusEnum::identified->value,
@@ -178,6 +199,8 @@ it('counts an incident with multiple updates once and resolves it by its latest 
     Update::factory()->forIncident($incident)->create([
         'status' => IncidentStatusEnum::fixed->value,
     ]);
+
+    app(SyncIncidentStatus::class)->handle($incident);
 
     $incidents = (new Status)->incidents();
 

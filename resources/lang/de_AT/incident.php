@@ -30,7 +30,7 @@ return [
             'name' => 'Name',
             'status' => 'Status',
             'visible' => 'Sichtbar',
-            'stickied' => 'Angeheftet',
+            'pinned' => 'Oben anheften',
             'occurred_at' => 'Aufgetreten am',
             'published_at' => 'Veröffentlicht am',
             'notified_subscribers' => 'Benachrichtigte Abonnenten',
@@ -63,7 +63,7 @@ return [
         'user_label' => 'Benutzer',
         'user_helper' => 'Benutzer, welcher den Vorfall gemeldet hat.',
         'notifications_label' => 'Abonnenten benachrichtigen?',
-        'stickied_label' => 'Vorfall anheften?',
+        'pin_incident_label' => 'Vorfall oben auf der Statusseite anheften.',
         'guid_label' => 'Vorfall-UUID',
         'add_component' => [
             'action_label' => 'Komponente hinzufügen',

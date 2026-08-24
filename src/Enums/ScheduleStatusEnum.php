@@ -25,13 +25,12 @@ enum ScheduleStatusEnum: int implements HasColor, HasIcon, HasLabel
     }
 
     /**
-     * Get the statuses that are in upcoming.
+     * Get the statuses that are upcoming.
      */
     public static function upcoming(): array
     {
         return [
             self::upcoming->value,
-            self::in_progress->value,
         ];
     }
 

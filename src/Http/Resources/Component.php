@@ -17,8 +17,12 @@ class Component extends JsonApiResource
             'link' => $this->link,
             'order' => $this->order,
             'status' => [
-                'human' => $this->status?->getLabel(),
-                'value' => $this->status?->value,
+                'human' => $this->status->getLabel(),
+                'value' => $this->status->value,
+            ],
+            'latest_status' => [
+                'human' => $this->latest_status->getLabel(),
+                'value' => $this->latest_status->value,
             ],
             'enabled' => $this->enabled,
             'meta' => $this->when(
@@ -49,6 +53,7 @@ class Component extends JsonApiResource
         return [
             'group' => fn () => ComponentGroup::make($this->group),
             'incidents' => fn () => Incident::collection($this->incidents),
+            'tags' => fn () => Tag::collection($this->tags),
         ];
     }
 }

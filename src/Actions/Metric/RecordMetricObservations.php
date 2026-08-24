@@ -105,7 +105,10 @@ class RecordMetricObservations implements RecordsMetricObservations
      */
     private function bucketFor(CarbonInterface $timestamp, int $width): CarbonInterface
     {
-        return Carbon::createFromTimestamp(intdiv($timestamp->getTimestamp(), $width) * $width);
+        return Carbon::createFromTimestamp(
+            intdiv($timestamp->getTimestamp(), $width) * $width,
+            config('app.timezone'),
+        );
     }
 
     /**

@@ -20,6 +20,8 @@ final class CreateMetricRequestData extends BaseData
         public readonly ?int $threshold = null,
         public readonly ?int $places = null,
         public readonly ?int $componentId = null,
+        /** @var list<string> */
+        public readonly array $tags = [],
     ) {}
 
     public static function rules(ValidationContext $context): array
@@ -33,11 +35,9 @@ final class CreateMetricRequestData extends BaseData
             'display_chart' => ['nullable', 'boolean'],
             'threshold' => ['int', 'min:0', 'max:60', new FactorOfSixty],
             'places' => ['int', 'min:0', 'max:4'],
-            /**
-             * The component to display this metric alongside. Display only:
-             * a metric never affects a component's status.
-             */
             'component_id' => ['nullable', 'integer', 'exists:components,id'],
+            'tags' => ['array'],
+            'tags.*' => ['string', 'max:255'],
         ];
     }
 }

@@ -12,6 +12,7 @@ use Cachet\Enums\ResourceOrderColumnEnum;
 use Cachet\Enums\ResourceOrderDirectionEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -84,11 +85,11 @@ class ComponentGroup extends Model implements Metable
         };
     }
 
-    public function isExpanded(): bool
+    public function isExpanded(?Authenticatable $user = null): bool
     {
         return match ($this->collapsed) {
             ComponentGroupVisibilityEnum::collapsed => false,
-            ComponentGroupVisibilityEnum::collapsed_unless_incident => $this->hasActiveIncident(),
+            ComponentGroupVisibilityEnum::collapsed_unless_incident => $this->hasActiveIncident($user),
             ComponentGroupVisibilityEnum::expanded => true,
         };
     }
@@ -99,21 +100,42 @@ class ComponentGroup extends Model implements Metable
     public function worstComponentStatus(): ComponentStatusEnum
     {
         return $this->components
-            ->map(fn (Component $component) => ($component->incidents_count ?? 0) > 0
-                ? $component->latest_status
-                : $component->status)
+            ->map(fn (Component $component) => $component->latest_status)
             ->sortByDesc(fn (ComponentStatusEnum $status) => $status->severity())
             ->first() ?? ComponentStatusEnum::operational;
     }
 
-    public function hasActiveIncident(): bool
+    /**
+     * Count the distinct unresolved incidents affecting this group.
+     */
+    public function openIncidentCount(): int
     {
-        if ($this->components->every(fn (Component $component) => $component->hasAttribute('incidents_count'))) {
+        return $this->components
+            ->flatMap(fn (Component $component) => $component->relationLoaded('unresolvedIncidents')
+                ? $component->unresolvedIncidents
+                : $component->unresolvedIncidents()->get())
+            ->unique('id')
+            ->count();
+    }
+
+    /**
+     * Determine whether an incident the given viewer can see is affecting the group.
+     *
+     * The eager-loaded count is only usable when it was scoped to the same
+     * viewer; anything else is answered with a query, so both paths agree.
+     */
+    public function hasActiveIncident(?Authenticatable $user = null): bool
+    {
+        $countsMatchViewer = $user === null
+            && $this->components->every(fn (Component $component) => $component->hasAttribute('incidents_count'));
+
+        if ($countsMatchViewer) {
             return $this->components->contains(fn (Component $component) => $component->incidents_count > 0);
         }
 
         return Incident::query()
             ->unresolved()
+            ->viewableBy($user !== null)
             ->whereHas('components', fn ($query) => $query->whereIn('components.id', $this->components->pluck('id')))
             ->exists();
     }

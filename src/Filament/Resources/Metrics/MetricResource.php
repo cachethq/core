@@ -20,6 +20,7 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\GridDirection;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -49,6 +50,13 @@ class MetricResource extends Resource
                     MarkdownEditor::make('description')
                         ->label(__('cachet::metric.form.description_label'))
                         ->maxLength(255)
+                        ->columnSpanFull(),
+                    Select::make('tags')
+                        ->relationship('tags', 'name')
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([TextInput::make('name')->required()->maxLength(255)])
                         ->columnSpanFull(),
                     ToggleButtons::make('default_view')
                         ->label(__('cachet::metric.form.default_view_label'))
@@ -90,8 +98,13 @@ class MetricResource extends Resource
                 Section::make()->schema([
                     ToggleButtons::make('visible')
                         ->label(__('cachet::metric.form.visible_label'))
-                        ->inline()
                         ->options(ResourceVisibilityEnum::class)
+                        ->columns([
+                            'default' => 1,
+                            'sm' => 3,
+                            'lg' => 1,
+                        ])
+                        ->gridDirection(GridDirection::Row)
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
                     Toggle::make('display_chart')
@@ -114,6 +127,16 @@ class MetricResource extends Resource
                 TextColumn::make('name')
                     ->label(__('cachet::metric.list.headers.name'))
                     ->searchable(),
+                TextColumn::make('visible')
+                    ->label(__('cachet::metric.list.headers.visible'))
+                    ->badge()
+                    ->sortable(),
+                TextColumn::make('points_count')
+                    ->label(__('cachet::metric.list.headers.points_count'))
+                    ->counts('metricPoints'),
+                IconColumn::make('display_chart')
+                    ->label(__('cachet::metric.list.headers.display_chart'))
+                    ->boolean(),
                 TextColumn::make('suffix')
                     ->label(__('cachet::metric.list.headers.suffix'))
                     ->fontFamily('mono')
@@ -127,10 +150,8 @@ class MetricResource extends Resource
                 TextColumn::make('calc_type')
                     ->label(__('cachet::metric.list.headers.calc_type'))
                     ->badge()
-                    ->sortable(),
-                IconColumn::make('display_chart')
-                    ->label(__('cachet::metric.list.headers.display_chart'))
-                    ->boolean(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('places')
                     ->label(__('cachet::metric.list.headers.places'))
                     ->numeric()
@@ -138,7 +159,8 @@ class MetricResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('default_view')
                     ->label(__('cachet::metric.list.headers.default_view'))
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('threshold')
                     ->label(__('cachet::metric.list.headers.threshold'))
                     ->numeric()
@@ -153,13 +175,6 @@ class MetricResource extends Resource
                     ->label(__('cachet::metric.list.headers.component'))
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('visible')
-                    ->label(__('cachet::metric.list.headers.visible'))
-                    ->badge()
-                    ->sortable(),
-                TextColumn::make('points_count')
-                    ->label(__('cachet::metric.list.headers.points_count'))
-                    ->counts('metricPoints'),
                 TextColumn::make('created_at')
                     ->label(__('cachet::metric.list.headers.created_at'))
                     ->dateTime()

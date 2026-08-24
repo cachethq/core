@@ -358,6 +358,32 @@ it('can create an incident with components', function () {
     expect($response->json('data.relationships.components.data'))->toHaveCount(2);
 });
 
+it('can create an incident with a legacy component payload', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $component = Component::factory()->create();
+
+    $response = postJson('/status/api/incidents?include=components', [
+        'name' => 'Incident With Legacy Component',
+        'message' => 'Something went wrong.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'component_id' => $component->id,
+        'component_status' => ComponentStatusEnum::major_outage->value,
+    ]);
+
+    $response->assertCreated();
+
+    $incident = Incident::where('name', 'Incident With Legacy Component')->firstOrFail();
+
+    $this->assertDatabaseHas('incident_components', [
+        'incident_id' => $incident->id,
+        'component_id' => $component->id,
+        'component_status' => ComponentStatusEnum::major_outage->value,
+    ]);
+
+    expect($response->json('data.relationships.components.data'))->toHaveCount(1);
+});
+
 it('cannot create an incident with a template that does not exist', function () {
     Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
 
@@ -592,4 +618,22 @@ it('lists authenticated incidents to callers presenting a bearer token', functio
 
     $response->assertOk();
     $response->assertJsonCount(2, 'data');
+});
+
+it('rejects a duplicate component in the same incident', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $component = Component::factory()->create();
+
+    postJson('/status/api/incidents', [
+        'name' => 'Duplicated',
+        'message' => 'The same component twice.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'components' => [
+            ['id' => $component->id, 'status' => ComponentStatusEnum::major_outage->value],
+            ['id' => $component->id, 'status' => ComponentStatusEnum::partial_outage->value],
+        ],
+    ])->assertUnprocessable()->assertInvalid('components.1.id');
+
+    expect(Incident::query()->where('name', 'Duplicated')->exists())->toBeFalse();
 });

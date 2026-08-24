@@ -8,6 +8,7 @@ use Cachet\Http\Middleware\AuthenticateSession;
 use Cachet\Http\Middleware\SetAppLocale;
 use Cachet\Settings\AppSettings;
 use Filament\FontProviders\LocalFontProvider;
+use Filament\Forms\Components\Toggle;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -17,6 +18,9 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentTimezone;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -29,15 +33,11 @@ class CachetDashboardServiceProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $enableExternalDependencies = ! $this->app->runningInConsole()
-            && rescue(fn () => app(AppSettings::class)->enable_external_dependencies, false, report: false);
-
         return $panel
             ->id('cachet')
-            ->when(
-                $enableExternalDependencies,
-                fn ($panel) => $panel->font('switzer', 'https://fonts.cdnfonts.com/css/switzer'),
-                fn ($panel) => $panel->font('ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" ', provider: LocalFontProvider::class),
+            ->font(
+                'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+                provider: LocalFontProvider::class,
             )
             ->default()
             ->login()
@@ -48,6 +48,7 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->profile(EditProfile::class)
             ->brandLogo(fn () => view('cachet::filament.brand-logo'))
             ->brandLogoHeight('2rem')
+            ->sidebarCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::generateV3Palette('rgb(4, 193, 71)'),
                 'purple' => Color::Purple,
@@ -78,9 +79,9 @@ class CachetDashboardServiceProvider extends PanelProvider
                     ->icon('cachet-component-performance-issues'),
                 NavigationItem::make()
                     ->label(fn (): string => __('cachet::navigation.resources.items.documentation'))
-                    ->url('https://docs.cachethq.io/?ref=cachet-dashboard')
+                    ->url('https://cachethq.io/docs/?ref=cachet-dashboard')
                     ->group(fn (): string => __('cachet::navigation.resources.label'))
-                    ->icon('heroicon-o-book-open'),
+                    ->icon(Heroicon::OutlinedBookOpen),
                 NavigationItem::make()
                     ->label(fn (): string => __('cachet::navigation.resources.items.discord'))
                     ->url('https://discord.gg/gUv2qySfCU')
@@ -90,7 +91,7 @@ class CachetDashboardServiceProvider extends PanelProvider
                     ->label(fn (): string => __('cachet::navigation.resources.items.sponsor'))
                     ->url('https://github.com/sponsors/cachethq')
                     ->group(fn (): string => __('cachet::navigation.resources.label'))
-                    ->icon('heroicon-o-heart'),
+                    ->icon(Heroicon::OutlinedHeart),
             ])
             ->renderHook(PanelsRenderHook::GLOBAL_SEARCH_AFTER, fn () => view('cachet::filament.widgets.add-incident-button'))
             ->middleware([
@@ -111,6 +112,18 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->path(Cachet::dashboardPath())
             ->bootUsing(function (): void {
                 Section::configureUsing(fn (Section $section) => $section->columnSpanFull());
+                Toggle::configureUsing(fn (Toggle $toggle) => $toggle
+                    ->onIcon(Heroicon::Check)
+                    ->offIcon(Heroicon::XMark));
+                ToggleColumn::configureUsing(fn (ToggleColumn $toggle) => $toggle
+                    ->onIcon(Heroicon::Check)
+                    ->offIcon(Heroicon::XMark));
+
+                FilamentTimezone::set(function (): ?string {
+                    $timezone = rescue(fn () => app(AppSettings::class)->timezone, null, report: false);
+
+                    return $timezone === '-' ? null : $timezone;
+                });
             });
     }
 }

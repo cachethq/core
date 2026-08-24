@@ -1,4 +1,4 @@
-@component('cachet::mail.message', ['unsubscribeUrl' => $unsubscribeUrl])
+@component('cachet::mail.message', ['mailMessage' => $message ?? null, 'unsubscribeUrl' => $unsubscribeUrl])
 # {{ __('cachet::subscriber.mail.verify.heading') }}
 
 {{ __('cachet::subscriber.mail.verify.body', ['app' => $appName]) }}

@@ -38,3 +38,13 @@ it('links to schedules from the status page', function () {
 it('returns not found for a missing schedule', function () {
     get(route('cachet.status-page.schedule', ['schedule' => 999]))->assertNotFound();
 });
+
+it('uses the maintenance name as the page heading', function () {
+    $schedule = Schedule::factory()->create(['name' => 'Database maintenance']);
+
+    $page = get(route('cachet.status-page.schedule', ['schedule' => $schedule]))
+        ->assertOk()
+        ->getContent();
+
+    expect($page)->toMatch('/<h1[^>]*>\s*Database maintenance\s*<\/h1>/');
+});

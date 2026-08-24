@@ -5,7 +5,6 @@ namespace Cachet\Data\Requests\Schedule;
 use Cachet\Data\BaseData;
 use Cachet\Data\Casts\FlexibleDateTimeCast;
 use Cachet\Enums\ComponentStatusEnum;
-use Cachet\Enums\ScheduleStatusEnum;
 use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -23,10 +22,11 @@ final class CreateScheduleRequestData extends BaseData
         public readonly ?Carbon $completedAt = null,
         #[WithCast(FlexibleDateTimeCast::class)]
         public readonly ?Carbon $publishedAt = null,
-        public readonly ?ScheduleStatusEnum $status = null,
         public readonly bool $notifications = false,
         #[DataCollectionOf(ScheduleComponentRequestData::class)]
         public readonly ?array $components = null,
+        /** @var list<string> */
+        public readonly array $tags = [],
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -50,8 +50,10 @@ final class CreateScheduleRequestData extends BaseData
             'published_at' => ['nullable', 'date'],
             'notifications' => ['boolean'],
             'components' => ['array'],
-            'components.*.id' => ['required', 'int', 'exists:components,id'],
+            'components.*.id' => ['required', 'int', 'distinct', 'exists:components,id'],
             'components.*.status' => ['required', 'int', Rule::enum(ComponentStatusEnum::class)],
+            'tags' => ['array'],
+            'tags.*' => ['string', 'max:255'],
             /**
              * Key/value metadata to store against the resource.
              *

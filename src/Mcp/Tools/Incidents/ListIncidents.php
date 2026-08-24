@@ -4,6 +4,7 @@ namespace Cachet\Mcp\Tools\Incidents;
 
 use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Mcp\Concerns\GuardsMcpAbilities;
 use Cachet\Mcp\Concerns\InteractsWithPagination;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Cachet\Models\Incident;
@@ -18,6 +19,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 class ListIncidents extends Tool
 {
     use ChecksApiAuthentication;
+    use GuardsMcpAbilities;
     use InteractsWithPagination;
     use PresentsResources;
 
@@ -35,6 +37,7 @@ class ListIncidents extends Tool
             'status' => $schema->integer()
                 ->enum(array_column(IncidentStatusEnum::cases(), 'value'))
                 ->description('Filter by status: 0 unknown, 1 investigating, 2 identified, 3 watching, 4 fixed.'),
+            'tags' => $schema->array()->items($schema->string())->description('Return incidents with any of these tags.'),
             'per_page' => $schema->integer()->min(1)->max(100)->default(15),
             'page' => $schema->integer()->min(1)->default(1),
         ];
@@ -43,9 +46,11 @@ class ListIncidents extends Tool
     public function handle(Request $request): ResponseFactory
     {
         $incidents = Incident::query()
-            ->visible($this->isAuthenticated())
+            ->with('tags')
+            ->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage'))
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->integer('status')))
+            ->when($request->filled('tags'), fn ($query) => $query->withAnyTags($request->array('tags')))
             ->latest()
             ->simplePaginate(perPage: $this->perPage($request), page: $this->page($request));
 

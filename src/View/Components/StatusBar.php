@@ -12,8 +12,10 @@ class StatusBar extends ViewComponent
     /**
      * Create a new component instance.
      */
-    public function __construct(protected readonly Status $status)
-    {
+    public function __construct(
+        protected readonly Status $status,
+        public readonly bool $isHeading = false,
+    ) {
         //
     }
 
@@ -24,6 +26,7 @@ class StatusBar extends ViewComponent
     {
         return view('cachet::components.status-bar', [
             'status' => $this->status->current(),
+            'lastUpdated' => $this->status->lastUpdated(),
         ]);
     }
 }

@@ -2,15 +2,18 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\BulkDeleteResources;
 use Cachet\Actions\Component\CreateComponent;
 use Cachet\Actions\Component\DeleteComponent;
 use Cachet\Actions\Component\UpdateComponent;
+use Cachet\Cachet;
 use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Component\CreateComponentRequestData;
 use Cachet\Data\Requests\Component\UpdateComponentRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Filters\MetaFilter;
+use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
@@ -41,6 +44,7 @@ class ComponentController extends Controller
     #[QueryParameter('filter[name]', 'Filter by name.', example: 'My Component')]
     #[QueryParameter('filter[enabled]', 'Filter by enabled status.', type: 'bool', example: '1')]
     #[QueryParameter('filter[meta][key]', 'Filter by a metadata key/value pair.', example: 'eu-west')]
+    #[QueryParameter('filter[tags]', 'Filter by one or more comma-separated tags.', example: 'api,database')]
     #[QueryParameter('include', 'Include related data (group, incidents, meta).', example: 'meta')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
@@ -53,6 +57,7 @@ class ComponentController extends Controller
                 AllowedFilter::exact('status'),
                 AllowedFilter::exact('enabled')->default(true),
                 AllowedFilter::custom('meta', new MetaFilter),
+                AllowedFilter::custom('tags', new TagsFilter),
             ])
             ->allowedSorts(['name', 'order', 'id'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
@@ -71,9 +76,10 @@ class ComponentController extends Controller
             'group',
             AllowedInclude::callback('incidents', function (BelongsToMany $query): void {
                 /** @var BelongsToMany<Incident, Component> $query */
-                $query->visible($this->isAuthenticated());
+                $query->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage'));
             }),
             'meta',
+            'tags',
         ];
     }
 
@@ -91,6 +97,7 @@ class ComponentController extends Controller
         $visibleGroups = ComponentGroup::query()->visible($this->isAuthenticated())->select('id');
 
         return Component::query()
+            ->with(['unresolvedIncidents', 'activeMaintenance'])
             ->unless($this->isAuthenticated(), fn (Builder $query) => $query->enabled())
             ->where(function ($query) use ($visibleGroups): void {
                 $query->whereNull('component_group_id')
@@ -130,11 +137,11 @@ class ComponentController extends Controller
     /**
      * Update Component
      */
-    public function update(UpdateComponentRequestData $data, Component $component, UpdateComponent $updateComponentAction)
+    public function update(Request $request, UpdateComponentRequestData $data, Component $component, UpdateComponent $updateComponentAction)
     {
         $this->guard('components.manage');
 
-        $updateComponentAction->handle($component, $data);
+        $updateComponentAction->handle($component, $data, Cachet::user($request));
 
         return ComponentResource::make($component->fresh());
     }
@@ -150,6 +157,19 @@ class ComponentController extends Controller
         // @todo re-calculate existing component orders?
 
         $deleteComponentAction->handle($component);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Delete Components
+     */
+    #[QueryParameter('ids', 'Comma-separated component IDs to delete.', required: true, type: 'string', example: '1,2,3')]
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteComponent $deleteComponentAction): Response
+    {
+        $this->guard('components.delete');
+
+        $bulkDeleteResources->handle($request, Component::class, fn (Component $component) => $deleteComponentAction->handle($component));
 
         return response()->noContent();
     }

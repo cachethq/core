@@ -30,7 +30,7 @@ return [
             'name' => 'Nom',
             'status' => 'Statut',
             'visible' => 'Visible',
-            'stickied' => 'Épinglé',
+            'pinned' => 'Épingler en haut',
             'occurred_at' => 'Survenu le',
             'published_at' => 'Publié le',
             'notified_subscribers' => 'Abonnés notifiés',
@@ -63,7 +63,7 @@ return [
         'user_label' => 'Utilisateur',
         'user_helper' => 'L’utilisateur ayant signalé l’incident.',
         'notifications_label' => 'Notifier les abonnés ?',
-        'stickied_label' => 'Incident épinglé ?',
+        'pin_incident_label' => 'Épingler l’incident en haut de la page d’état.',
         'guid_label' => 'UUID de l’incident',
         'add_component' => [
             'action_label' => 'Ajouter un composant',

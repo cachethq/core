@@ -30,7 +30,7 @@ return [
             'name' => '名称',
             'status' => '状态',
             'visible' => '可见',
-            'stickied' => '置顶',
+            'pinned' => '置顶',
             'occurred_at' => '发生时间',
             'published_at' => '发布时间',
             'notified_subscribers' => '已通知的订阅者',
@@ -63,7 +63,7 @@ return [
         'user_label' => '用户',
         'user_helper' => '报告事件的用户。',
         'notifications_label' => '通知订阅者？',
-        'stickied_label' => '置顶事件？',
+        'pin_incident_label' => '将事件置顶到状态页面顶部。',
         'guid_label' => '事件 UUID',
         'add_component' => [
             'action_label' => '添加组件',

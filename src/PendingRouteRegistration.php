@@ -6,6 +6,8 @@ use Cachet\Http\Controllers\Auth\VerifyEmailController;
 use Cachet\Http\Controllers\HealthController;
 use Cachet\Http\Controllers\RssController;
 use Cachet\Http\Controllers\Setup\SetupController;
+use Cachet\Http\Controllers\StatusPage\ComponentBadgeController;
+use Cachet\Http\Controllers\StatusPage\StatusBadgeController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
 use Cachet\Http\Controllers\Subscribers\SubscriberController;
 use Cachet\Http\Controllers\Subscribers\UnsubscribeSubscriberController;
@@ -36,6 +38,8 @@ class PendingRouteRegistration
                 $router->get('/', [StatusPageController::class, 'index'])->name('status-page');
                 $router->get('/incidents/{incident:guid}', [StatusPageController::class, 'show'])->name('status-page.incident');
                 $router->get('/schedules/{schedule}', [StatusPageController::class, 'schedule'])->name('status-page.schedule');
+                $router->get('/badge.svg', StatusBadgeController::class)->name('status-page.badge');
+                $router->get('/components/{component}/badge.svg', ComponentBadgeController::class)->name('status-page.component.badge');
 
                 $router->get('/setup', [SetupController::class, 'index'])->name('setup.index');
                 $router->post('/setup', [SetupController::class, 'store'])->name('setup.store');

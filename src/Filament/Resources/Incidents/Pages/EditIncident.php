@@ -6,6 +6,7 @@ use Cachet\Filament\Concerns\InteractsWithMeta;
 use Cachet\Filament\Resources\Incidents\IncidentResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Icons\Heroicon;
 
 class EditIncident extends EditRecord
 {
@@ -18,7 +19,7 @@ class EditIncident extends EditRecord
         return [
             IncidentResource::recordUpdateAction()
                 ->label(__('cachet::incident.record_update.new_update_label'))
-                ->icon('heroicon-o-plus'),
+                ->icon(Heroicon::OutlinedPlus),
             DeleteAction::make(),
         ];
     }

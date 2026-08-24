@@ -9,6 +9,7 @@ use Cachet\Mcp\Tools\Metrics\DeleteMetric;
 use Cachet\Mcp\Tools\Metrics\GetMetric;
 use Cachet\Mcp\Tools\Metrics\ListMetrics;
 use Cachet\Mcp\Tools\Metrics\UpdateMetric;
+use Cachet\Models\Component;
 use Cachet\Models\Metric;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
@@ -41,25 +42,38 @@ it('returns an error for an unknown metric', function () {
 it('creates a metric', function () {
     Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
 
+    $component = Component::factory()->create();
+
     CachetServer::tool(CreateMetric::class, [
         'name' => 'API Latency',
         'suffix' => 'ms',
+        'component_id' => $component->id,
     ])->assertOk()->assertSee('API Latency');
 
-    assertDatabaseHas('metrics', ['name' => 'API Latency']);
+    assertDatabaseHas('metrics', [
+        'name' => 'API Latency',
+        'component_id' => $component->id,
+    ]);
 });
 
 it('updates a metric', function () {
     Sanctum::actingAs(User::factory()->create(), ['metrics.manage']);
 
     $metric = Metric::factory()->create(['suffix' => 'ms']);
+    $component = Component::factory()->create();
 
     CachetServer::tool(UpdateMetric::class, [
         'id' => $metric->id,
         'suffix' => 'seconds',
+        'component_id' => $component->id,
+        'tags' => ['api', 'latency'],
     ])->assertOk();
 
-    expect($metric->fresh()->suffix)->toBe('seconds');
+    $metric->refresh();
+
+    expect($metric->suffix)->toBe('seconds')
+        ->and($metric->component_id)->toBe($component->id)
+        ->and($metric->tags()->pluck('name')->all())->toBe(['api', 'latency']);
 });
 
 it('deletes a metric', function () {

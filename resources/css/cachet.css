@@ -75,3 +75,102 @@
         display: none !important;
     }
 }
+
+@layer components {
+  .status-header {
+    border-bottom: 1px solid rgb(24 24 27 / 10%);
+    background: rgb(255 255 255 / 70%);
+    backdrop-filter: blur(12px);
+  }
+
+  .status-overview {
+    overflow: hidden;
+    border: 1px solid rgb(24 24 27 / 12%);
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 92%);
+    box-shadow: 0 12px 28px -24px rgb(24 39 30 / 36%);
+  }
+
+  .status-overview__masthead {
+    display: flex;
+    min-height: 3.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid rgb(24 24 27 / 10%);
+  }
+
+  .status-overview__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .status-summary {
+    padding: 1.25rem;
+    border-bottom: 1px solid rgb(24 24 27 / 10%);
+    background: linear-gradient(
+      115deg,
+      color-mix(in srgb, var(--color-100) 76%, white),
+      color-mix(in srgb, var(--color-200) 62%, white)
+    );
+  }
+
+  .status-summary__icon {
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: color-mix(in srgb, currentColor 10%, transparent);
+  }
+
+  .status-overview .status-components {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .status-overview .status-components > ul > :last-child,
+  .status-overview .status-components > ul > :last-child > *:last-child {
+    border-bottom: 0;
+  }
+
+  @media (min-width: 640px) {
+    .status-overview__masthead,
+    .status-summary {
+      padding-right: 1.5rem;
+      padding-left: 1.5rem;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .status-header {
+      border-color: rgb(255 255 255 / 14%);
+      background: rgb(24 24 27 / 66%);
+    }
+
+    .status-overview {
+      border-color: rgb(255 255 255 / 14%);
+      background: rgb(24 24 27 / 76%);
+      box-shadow: 0 12px 28px -24px rgb(0 0 0 / 60%);
+    }
+
+    .status-overview__masthead,
+    .status-summary {
+      border-color: rgb(255 255 255 / 14%);
+    }
+
+    .status-summary {
+      background: linear-gradient(
+        115deg,
+        color-mix(in srgb, var(--color-400) 20%, rgb(24 24 27)),
+        color-mix(in srgb, var(--color-400) 34%, rgb(24 24 27))
+      );
+    }
+  }
+}

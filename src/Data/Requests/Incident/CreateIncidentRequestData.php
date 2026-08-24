@@ -3,15 +3,18 @@
 namespace Cachet\Data\Requests\Incident;
 
 use Cachet\Data\BaseData;
+use Cachet\Data\Casts\FlexibleDateTimeCast;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Attributes\Validation\Enum;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\RequiredWithout;
+use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Support\Validation\ValidationContext;
 
 final class CreateIncidentRequestData extends BaseData
@@ -28,8 +31,10 @@ final class CreateIncidentRequestData extends BaseData
         public readonly bool $visible = false,
         public readonly bool $stickied = false,
         public readonly bool $notifications = false,
-        public readonly ?string $occurredAt = null,
-        public readonly ?string $publishedAt = null,
+        #[WithCast(FlexibleDateTimeCast::class)]
+        public readonly ?Carbon $occurredAt = null,
+        #[WithCast(FlexibleDateTimeCast::class)]
+        public readonly ?Carbon $publishedAt = null,
         public readonly array $templateVars = [],
         #[Exists(Component::class, 'id')]
         public readonly ?int $componentId = null,
@@ -37,6 +42,8 @@ final class CreateIncidentRequestData extends BaseData
         public readonly ?ComponentStatusEnum $componentStatus = null,
         #[DataCollectionOf(IncidentComponentRequestData::class)]
         public readonly ?array $components = null,
+        /** @var list<string> */
+        public readonly array $tags = [],
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -70,8 +77,10 @@ final class CreateIncidentRequestData extends BaseData
             'component_id' => [Rule::exists('components', 'id')],
             'component_status' => ['nullable', Rule::enum(ComponentStatusEnum::class), 'required_with:component_id'],
             'components' => ['array'],
-            'components.*.id' => ['required', 'int', 'exists:components,id'],
+            'components.*.id' => ['required', 'int', 'distinct', 'exists:components,id'],
             'components.*.status' => ['required', 'int', Rule::enum(ComponentStatusEnum::class)],
+            'tags' => ['array'],
+            'tags.*' => ['string', 'max:255'],
             /**
              * Key/value metadata to store against the resource.
              *
@@ -99,6 +108,7 @@ final class CreateIncidentRequestData extends BaseData
             componentId: $this->componentId,
             componentStatus: $this->componentStatus,
             components: $this->components,
+            tags: $this->tags,
             meta: $this->meta,
         );
     }

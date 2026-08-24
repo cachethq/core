@@ -32,7 +32,7 @@ class ManageCachet extends SettingsPage
     {
         return $schema
             ->components([
-                Section::make()->columns(2)->schema([
+                Section::make(__('cachet::settings.manage_cachet.general_settings_title'))->columns(2)->schema([
                     TextInput::make('name')
                         ->label(__('cachet::settings.manage_cachet.site_name_label'))
                         ->helperText(__('cachet::settings.manage_cachet.site_name_helper'))
@@ -43,7 +43,7 @@ class ManageCachet extends SettingsPage
                         ->columnSpanFull(),
                 ]),
 
-                Section::make()->columns(3)->schema([
+                Section::make(__('cachet::settings.manage_cachet.incident_settings_title'))->columns(3)->schema([
                     TextInput::make('incident_days')
                         ->numeric()
                         ->label(__('cachet::settings.manage_cachet.incident_days_label'))
@@ -94,6 +94,12 @@ class ManageCachet extends SettingsPage
                         Toggle::make('dashboard_login_link')
                             ->label(__('cachet::settings.manage_cachet.toggles.show_dashboard_link'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.show_dashboard_link_helper')),
+                        Toggle::make('show_site_name')
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_site_name'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.show_site_name_helper')),
+                        Toggle::make('show_about')
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_about'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.show_about_helper')),
                         Toggle::make('show_support')
                             ->label(__('cachet::settings.manage_cachet.toggles.support_cachet'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.support_cachet_helper')),
@@ -109,6 +115,12 @@ class ManageCachet extends SettingsPage
                         Toggle::make('dynamic_favicon')
                             ->label(__('cachet::settings.manage_cachet.toggles.dynamic_favicon'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.dynamic_favicon_helper')),
+                        Toggle::make('show_component_group_status')
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_component_group_status'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.show_component_group_status_helper')),
+                        Toggle::make('show_component_tags')
+                            ->label(__('cachet::settings.manage_cachet.toggles.show_component_tags'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.show_component_tags_helper')),
                     ]),
 
                 Section::make(__('cachet::settings.manage_cachet.api_settings_title'))

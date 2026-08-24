@@ -367,6 +367,20 @@ it('exposes the order column and direction in the resource', function () {
     ]);
 });
 
+it('exposes an ascending order direction in the resource', function () {
+    $componentGroup = ComponentGroup::factory()
+        ->orderedBy(ResourceOrderColumnEnum::Name, ResourceOrderDirectionEnum::Asc)
+        ->create();
+
+    $response = getJson('/status/api/component-groups/'.$componentGroup->id);
+
+    $response->assertOk();
+    $response->assertJsonFragment([
+        'order_column' => ResourceOrderColumnEnum::Name->value,
+        'order_direction' => ResourceOrderDirectionEnum::Asc->value,
+    ]);
+});
+
 it('can create a component group with a manual order column', function () {
     Sanctum::actingAs(User::factory()->create(), ['component-groups.manage']);
 

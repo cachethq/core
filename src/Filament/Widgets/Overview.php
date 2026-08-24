@@ -2,6 +2,9 @@
 
 namespace Cachet\Filament\Widgets;
 
+use Cachet\Filament\Resources\Components\ComponentResource;
+use Cachet\Filament\Resources\Incidents\IncidentResource;
+use Cachet\Filament\Resources\Subscribers\SubscriberResource;
 use Cachet\Models\Incident;
 use Cachet\Models\Subscriber;
 use Cachet\Status;
@@ -33,13 +36,15 @@ class Overview extends BaseWidget
                 ->chart($this->dailyCounts('incidents'))
                 ->icon('cachet-incident')
                 ->chartColor($openIncidents > 0 ? 'danger' : 'success')
-                ->color($openIncidents > 0 ? 'danger' : 'success'),
+                ->color($openIncidents > 0 ? 'danger' : 'success')
+                ->url(IncidentResource::getUrl('index')),
 
             Stat::make('operational_components', "{$operationalComponents} / {$totalComponents}")
                 ->label(__('cachet::component.overview.operational_components_label'))
                 ->description(__('cachet::component.overview.operational_components_description'))
                 ->icon('cachet-components')
-                ->color($allOperational ? 'success' : 'warning'),
+                ->color($allOperational ? 'success' : 'warning')
+                ->url(ComponentResource::getUrl('index')),
 
             Stat::make('total_subscribers', Subscriber::count())
                 ->label(__('cachet::subscriber.overview.total_subscribers_label'))
@@ -49,7 +54,8 @@ class Overview extends BaseWidget
                 ->chart($this->dailyCounts('subscribers'))
                 ->icon('cachet-subscribers')
                 ->chartColor('info')
-                ->color('gray'),
+                ->color('gray')
+                ->url(SubscriberResource::getUrl('index')),
         ];
     }
 
@@ -60,12 +66,18 @@ class Overview extends BaseWidget
      */
     protected function dailyCounts(string $table): array
     {
-        return DB::table($table)
-            ->selectRaw('count(*) as total')
-            ->where('created_at', '>=', now()->subDays(30))
+        $today = now()->startOfDay();
+        $startDate = $today->copy()->subDays(29);
+
+        $totalsByDate = DB::table($table)
+            ->selectRaw('date(created_at) as date, count(*) as total')
+            ->whereBetween('created_at', [$startDate, $today->copy()->endOfDay()])
             ->groupByRaw('date(created_at)')
             ->orderByRaw('date(created_at)')
-            ->pluck('total')
+            ->pluck('total', 'date');
+
+        return collect(range(29, 0))
+            ->map(fn (int $daysAgo): int => (int) ($totalsByDate[$today->copy()->subDays($daysAgo)->toDateString()] ?? 0))
             ->all();
     }
 }

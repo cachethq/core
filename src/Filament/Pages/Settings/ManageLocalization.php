@@ -7,6 +7,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
 
 class ManageLocalization extends SettingsPage
@@ -36,12 +37,16 @@ class ManageLocalization extends SettingsPage
                                 'en' => 'English',
                             ])
                         )->searchable()
-                        ->suffixIcon('heroicon-o-language'),
+                        ->suffixIcon(Heroicon::OutlinedLanguage),
 
                     Select::make('timezone')
                         ->label(__('cachet::settings.manage_localization.timezone_label'))
                         ->helperText(__('cachet::settings.manage_localization.timezone_helper'))
-                        ->options(fn () => collect(timezone_identifiers_list())
+                        ->options(fn () => collect([
+                            __('cachet::settings.manage_cachet.timezone_other') => [
+                                '-' => __('cachet::settings.manage_cachet.browser_default'),
+                            ],
+                        ])->merge(collect(timezone_identifiers_list())
                             ->mapToGroups(
                                 fn ($timezone) => [
                                     Str::of($timezone)
@@ -49,10 +54,10 @@ class ManageLocalization extends SettingsPage
                                         ->toString() => [$timezone => $timezone],
                                 ]
                             )
-                            ->map(fn ($group) => $group->collapse()))
+                            ->map(fn ($group) => $group->collapse())))
                         ->required()
                         ->searchable()
-                        ->suffixIcon('heroicon-o-globe-alt'),
+                        ->suffixIcon(Heroicon::OutlinedGlobeAlt),
 
                     Toggle::make('show_timezone')
                         ->label(__('cachet::settings.manage_localization.toggles.show_timezone'))

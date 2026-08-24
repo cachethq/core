@@ -14,13 +14,17 @@ use Cachet\Http\Controllers\Api\StatusController;
 use Cachet\Http\Controllers\Api\SubscriberController;
 use Illuminate\Support\Facades\Route;
 
-Route::apiResources([
+$bulkDeletableResources = [
     'components' => ComponentController::class,
     'component-groups' => ComponentGroupController::class,
     'incidents' => IncidentController::class,
     'incident-templates' => IncidentTemplateController::class,
     'metrics' => MetricController::class,
     'schedules' => ScheduleController::class,
+];
+
+Route::apiResources([
+    ...$bulkDeletableResources,
 ], ['except' => ['store', 'update', 'destroy']]);
 
 Route::apiResource('incidents.updates', IncidentUpdateController::class, [
@@ -39,14 +43,13 @@ Route::apiResource('metrics.points', MetricPointController::class, [
     ->parameter('points', 'metricPoint')
     ->scoped();
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () use ($bulkDeletableResources) {
+    foreach ($bulkDeletableResources as $resource => $controller) {
+        Route::delete($resource, [$controller, 'destroyMany']);
+    }
+
     Route::apiResources([
-        'components' => ComponentController::class,
-        'component-groups' => ComponentGroupController::class,
-        'incidents' => IncidentController::class,
-        'incident-templates' => IncidentTemplateController::class,
-        'metrics' => MetricController::class,
-        'schedules' => ScheduleController::class,
+        ...$bulkDeletableResources,
     ], ['except' => ['index', 'show']]);
 
     Route::apiResource('incidents.updates', IncidentUpdateController::class, [

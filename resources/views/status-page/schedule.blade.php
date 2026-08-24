@@ -8,7 +8,7 @@
             <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
 
             <ul class="divide-y divide-zinc-900/10 dark:divide-white/15">
-                <x-cachet::schedule :schedule="$schedule" />
+                <x-cachet::schedule :schedule="$schedule" :heading-level="1" />
             </ul>
         </div>
 

@@ -4,6 +4,7 @@ namespace Cachet;
 
 use BladeUI\Icons\Factory;
 use Cachet\Actions\Metric\RecordMetricObservations;
+use Cachet\Badger\BadgerServiceProvider;
 use Cachet\Commands\AssetsCommand;
 use Cachet\Commands\CheckComponentsCommand;
 use Cachet\Commands\MakeUserCommand;
@@ -42,6 +43,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
+use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
@@ -67,6 +69,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->app->singleton(Cachet::class);
         $this->app->singleton(ViewManager::class);
         $this->app->scoped(Status::class);
+        $this->app->register(BadgerServiceProvider::class);
 
         $this->app->bind(RecordsMetricObservations::class, RecordMetricObservations::class);
 
@@ -87,6 +90,18 @@ class CachetCoreServiceProvider extends ServiceProvider
     }
 
     /**
+     * Configure Laravel to respect forwarded request headers from Cachet's trusted proxies.
+     */
+    private function configureTrustedProxies(): void
+    {
+        $trustedProxies = config('cachet.trusted_proxies');
+
+        if ($trustedProxies) {
+            TrustProxies::at($trustedProxies);
+        }
+    }
+
+    /**
      * Bootstrap any application services.
      */
     public function boot(): void
@@ -94,6 +109,8 @@ class CachetCoreServiceProvider extends ServiceProvider
         if (! $this->app->configurationIsCached()) {
             $this->mergeConfigFrom(__DIR__.'/../config/cachet.php', 'cachet');
         }
+
+        $this->configureTrustedProxies();
 
         Route::middlewareGroup('cachet', config('cachet.middleware', []));
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));

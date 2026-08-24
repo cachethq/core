@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @template TUser of Authenticatable
@@ -46,6 +47,12 @@ class Update extends Model
         'user_id',
     ];
 
+    protected static function booted(): void
+    {
+        static::saved(fn (Update $update) => $update->forgetRssFeed());
+        static::deleted(fn (Update $update) => $update->forgetRssFeed());
+    }
+
     /**
      * Get the resource that the update belongs to.
      */
@@ -68,6 +75,17 @@ class Update extends Model
     public function formattedMessage(): string
     {
         return Cachet::markdown($this->message);
+    }
+
+    /**
+     * Clear the RSS feed when an incident update changes its content.
+     */
+    private function forgetRssFeed(): void
+    {
+        if ($this->updateable instanceof Incident) {
+            Cache::forget('cachet::rss-feed');
+            Cache::forget('cachet::rss-feed-last-modified');
+        }
     }
 
     /**

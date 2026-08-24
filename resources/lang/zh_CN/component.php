@@ -27,6 +27,10 @@ return [
         'component_group_label' => '组件组',
         'link_label' => '链接',
         'link_helper' => '可选的组件链接。',
+        'availability_section_title' => '可用性',
+        'enabled_label' => '已启用',
+        'checked_label' => '监控',
+        'checked_helper' => '定期检查此组件并记录其可用性。',
     ],
     'status' => [
         'operational' => '正常运行',

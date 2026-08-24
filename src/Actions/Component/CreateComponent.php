@@ -12,8 +12,9 @@ class CreateComponent
      */
     public function handle(CreateComponentRequestData $component): Component
     {
-        return tap(Component::create($component->except('meta')->toArray()), function (Component $model) use ($component) {
+        return tap(Component::create($component->except('meta', 'tags')->toArray()), function (Component $model) use ($component) {
             $model->syncMeta($component->meta ?? []);
+            $model->syncTags($component->tags);
         });
     }
 }

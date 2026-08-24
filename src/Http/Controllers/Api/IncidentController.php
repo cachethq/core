@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\BulkDeleteResources;
 use Cachet\Actions\Incident\CreateIncident;
 use Cachet\Actions\Incident\DeleteIncident;
 use Cachet\Actions\Incident\UpdateIncident;
@@ -10,6 +11,7 @@ use Cachet\Concerns\GuardsApiAbilities;
 use Cachet\Data\Requests\Incident\CreateIncidentRequestData;
 use Cachet\Data\Requests\Incident\UpdateIncidentRequestData;
 use Cachet\Filters\MetaFilter;
+use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Incident as IncidentResource;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
@@ -52,6 +54,7 @@ class IncidentController extends Controller
             'updates',
             'user',
             'meta',
+            'tags',
         ];
     }
 
@@ -59,13 +62,14 @@ class IncidentController extends Controller
      * List Incidents
      */
     #[QueryParameter('filter[meta][key]', 'Filter by a metadata key/value pair.', example: 'eu-west')]
+    #[QueryParameter('filter[tags]', 'Filter by one or more comma-separated tags.', example: 'api,database')]
     #[QueryParameter('include', 'Include related data (components, components.group, updates, user, meta).', example: 'meta')]
     #[QueryParameter('per_page', 'How many items to show per page.', type: 'int', default: 15, example: 20)]
     #[QueryParameter('page', 'Which page to show.', type: 'int', example: 2)]
     public function index(Request $request)
     {
-        $incidents = QueryBuilder::for(Incident::query()->with('updates')->visible($this->isAuthenticated())
-            ->when(! $this->tokenCan('incidents.manage'), fn (Builder $query) => $query->published()))
+        $incidents = QueryBuilder::for(Incident::query()->with('updates')
+            ->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage')))
             ->allowedIncludes($this->allowedIncludes())
             ->allowedFilters([
                 'name',
@@ -74,6 +78,7 @@ class IncidentController extends Controller
                 AllowedFilter::scope('occurs_before'),
                 AllowedFilter::scope('occurs_on'),
                 AllowedFilter::custom('meta', new MetaFilter),
+                AllowedFilter::custom('tags', new TagsFilter),
             ])
             ->allowedSorts(['name', 'status', 'id', 'created_at'])
             ->defaultSort('-created_at')
@@ -130,6 +135,19 @@ class IncidentController extends Controller
         $this->guard('incidents.delete');
 
         $deleteIncidentAction->handle($incident);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Delete Incidents
+     */
+    #[QueryParameter('ids', 'Comma-separated incident IDs to delete.', required: true, type: 'string', example: '1,2,3')]
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteIncident $deleteIncidentAction): Response
+    {
+        $this->guard('incidents.delete');
+
+        $bulkDeleteResources->handle($request, Incident::class, fn (Incident $incident) => $deleteIncidentAction->handle($incident));
 
         return response()->noContent();
     }

@@ -141,6 +141,38 @@ Stick to the existing structure. Do not invent new top-level directories.
     - `phpstan` type definitions (e.g., `/** @var array<string, int> $items */`).
     - Deprecation notices.
 
+## 11. Communication
+
+- Use the fewest possible words in comments, commit messages, and user replies. Choose every word carefully and be direct.
+- Avoid praise, superlatives, and reflexive agreement. State the facts plainly.
+
+## 12. Code Design
+
+- Extract recurring, meaningful, or specification-defined values into descriptive constants or enums. Keep self-explanatory, one-off values inline.
+- Reduce indentation. Avoid the Arrow Anti-Pattern with early returns and `continue` statements.
+- Keep function names under 30 characters.
+- Separate logical code blocks with blank lines.
+- Add a brief comment explaining what a new or modified block does and why. Include an example when useful. Propose ASCII diagrams for complete systems.
+- Keep members private unless external access is required by the design. Treat visibility changes as breaking design changes. Get explicit user approval before changing a member from private to internal or public.
+- Program to levels of abstraction. Encapsulate low-level mechanics in a dedicated driver or abstraction layer and expose domain-level APIs.
+- Enforce layered boundaries. A layer may communicate directly only with the layer immediately below it. Never bypass an intermediate service or abstraction layer.
+- Always use braces for control structures, including one-line `if` statements.
+- Do not modify unrelated code. Do not add comments to blocks you did not create or change. Minimize changed lines.
+
+## 13. Commit Messages
+
+1. Separate the subject from the body with one blank line.
+2. Limit the subject to 50 characters; 72 is the hard limit.
+3. Capitalize the subject's first letter.
+4. Do not end the subject with a period.
+5. Use the imperative mood. It must complete: "If applied, this commit will ..."
+6. Wrap body text manually at 72 characters.
+7. Explain what and why in the body, not how.
+
+## 14. Bug Fixes
+
+- Write the test first when fixing a bug. Observe it fail, implement the fix, then observe it pass.
+
 ---
 
 _Generated for AI Agents interacting with Cachet Core._

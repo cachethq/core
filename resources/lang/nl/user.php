@@ -1,11 +1,9 @@
 <?php
 
 return [
-    'level' => [
-        'admin' => 'Beheerder',
-        'user' => 'Gebruiker',
-    ],
     'resource_label' => 'Gebruiker|Gebruikers',
+    'profile_information_title' => 'Profielgegevens',
+    'security_section_title' => 'Wachtwoord en beveiliging',
     'list' => [
         'headers' => [
             'name' => 'Naam',

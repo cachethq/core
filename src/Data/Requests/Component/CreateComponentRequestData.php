@@ -12,11 +12,13 @@ final class CreateComponentRequestData extends BaseData
     public function __construct(
         public readonly string $name,
         public readonly ?string $description = null,
-        public readonly ?ComponentStatusEnum $status = null,
+        public readonly ComponentStatusEnum $status = ComponentStatusEnum::unknown,
         public readonly ?string $link = null,
         public readonly ?int $order = null,
         public readonly bool $enabled = true,
         public readonly ?int $componentGroupId = null,
+        /** @var list<string> */
+        public readonly array $tags = [],
         /** @var array<string, mixed>|null */
         public readonly ?array $meta = null,
     ) {}
@@ -27,10 +29,12 @@ final class CreateComponentRequestData extends BaseData
             'name' => ['string', 'required', 'max:255'],
             'description' => ['string'],
             'status' => [Rule::enum(ComponentStatusEnum::class)],
-            'link' => ['string'],
+            'link' => ['string', 'url:http,https'],
             'order' => ['int', 'min:0'],
             'enabled' => ['boolean'],
             'component_group_id' => ['int', 'min:0', Rule::exists('component_groups', 'id')],
+            'tags' => ['array'],
+            'tags.*' => ['string', 'max:255'],
             /**
              * Key/value metadata to store against the resource.
              *

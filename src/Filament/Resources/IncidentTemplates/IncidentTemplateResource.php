@@ -34,15 +34,23 @@ class IncidentTemplateResource extends Resource
     {
         return $schema
             ->components([
-                Section::make()->columns(2)->schema([
+                Section::make()->columns(4)->schema([
                     TextInput::make('name')
                         ->label(__('cachet::incident_template.form.name_label'))
                         ->required()
                         ->live(onBlur: true)
                         ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state)))
+                        ->columnSpan(2)
                         ->autocomplete(false),
                     TextInput::make('slug')
                         ->label(__('cachet::incident_template.form.slug_label'))
+                        ->required(),
+                    Select::make('engine')
+                        ->label(__('cachet::incident_template.form.engine_label'))
+                        ->options(IncidentTemplateEngineEnum::class)
+                        ->disableOptionWhen(fn (string $value): bool => ! IncidentTemplateEngineEnum::from($value)->isAvailable())
+                        ->default(IncidentTemplateEngineEnum::twig)
+                        ->live()
                         ->required(),
                     Textarea::make('template')
                         ->label(__('cachet::incident_template.form.template_label'))
@@ -54,12 +62,6 @@ class IncidentTemplateResource extends Resource
                         ->required()
                         ->rows(8)
                         ->columnSpanFull(),
-                    Select::make('engine')
-                        ->label(__('cachet::incident_template.form.engine_label'))
-                        ->options(IncidentTemplateEngineEnum::class)
-                        ->default(IncidentTemplateEngineEnum::twig)
-                        ->live()
-                        ->required(),
                 ]),
             ]);
     }

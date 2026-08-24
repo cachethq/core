@@ -31,4 +31,9 @@ return [
         'total_subscribers_label' => '總訂閱者數',
         'verified_subscribers_description' => ':count 位已驗證',
     ],
+    'status_page' => [
+        'subscribe' => [
+            'button_label' => '訂閱',
+        ],
+    ],
 ];

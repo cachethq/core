@@ -1,11 +1,9 @@
 <?php
 
 return [
-    'level' => [
-        'admin' => '관리자',
-        'user' => '사용자',
-    ],
     'resource_label' => '사용자|사용자',
+    'profile_information_title' => '프로필 정보',
+    'security_section_title' => '비밀번호 및 보안',
     'list' => [
         'headers' => [
             'name' => '이름',

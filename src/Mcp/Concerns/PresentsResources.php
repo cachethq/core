@@ -46,6 +46,7 @@ trait PresentsResources
             'order' => $component->order,
             'enabled' => $component->enabled,
             'component_group_id' => $component->component_group_id,
+            'tags' => $component->tags->pluck('name')->all(),
             'created_at' => $component->created_at?->toIso8601String(),
             'updated_at' => $component->updated_at?->toIso8601String(),
         ];
@@ -84,6 +85,7 @@ trait PresentsResources
             'message' => $incident->message,
             'visible' => $this->presentEnum($incident->visible),
             'stickied' => $incident->stickied,
+            'tags' => $incident->tags->pluck('name')->all(),
             'occurred_at' => $incident->occurred_at?->toIso8601String(),
             'published_at' => $incident->published_at?->toIso8601String(),
             'created_at' => $incident->created_at?->toIso8601String(),
@@ -139,6 +141,7 @@ trait PresentsResources
             'scheduled_at' => $schedule->scheduled_at?->toIso8601String(),
             'completed_at' => $schedule->completed_at?->toIso8601String(),
             'published_at' => $schedule->published_at?->toIso8601String(),
+            'tags' => $schedule->tags->pluck('name')->all(),
             'created_at' => $schedule->created_at?->toIso8601String(),
             'updated_at' => $schedule->updated_at?->toIso8601String(),
         ], $schedule->relationLoaded('components') ? [
@@ -166,6 +169,7 @@ trait PresentsResources
             'visible' => $this->presentEnum($metric->visible),
             'order' => $metric->order,
             'component_id' => $metric->component_id,
+            'tags' => $metric->tags->pluck('name')->all(),
             'created_at' => $metric->created_at?->toIso8601String(),
             'updated_at' => $metric->updated_at?->toIso8601String(),
         ], $metric->relationLoaded('metricPoints') ? [

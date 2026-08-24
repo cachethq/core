@@ -62,7 +62,7 @@ class OhDear extends Page
     {
         return $schema
             ->components([
-                Section::make()->schema([
+                Section::make(__('cachet::integrations.oh_dear.status_page_section_title'))->schema([
                     TextInput::make('url')
                         ->label(__('cachet::integrations.oh_dear.status_page_url_label'))
                         ->placeholder('https://status.example.com')
@@ -70,7 +70,9 @@ class OhDear extends Page
                         ->required()
                         ->suffix('/json')
                         ->helperText(__('cachet::integrations.oh_dear.status_page_url_helper')),
+                ]),
 
+                Section::make(__('cachet::integrations.oh_dear.import_options_section_title'))->schema([
                     Toggle::make('import_sites')
                         ->label(__('cachet::integrations.oh_dear.import_sites_as_components_label'))
                         ->helperText(__('cachet::integrations.oh_dear.import_sites_as_components_helper'))

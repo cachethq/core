@@ -2,8 +2,10 @@
 
 namespace Cachet\Jobs;
 
+use Cachet\Actions\Component\ChangeComponentStatus;
 use Cachet\Cachet;
 use Cachet\Data\Checks\CheckResult;
+use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Models\Component;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,6 +30,11 @@ class CheckComponent implements ShouldQueue
 
     /**
      * Execute the job.
+     *
+     * The check is always recorded, but the component's baseline status is left
+     * alone while a maintenance window is in progress: downtime is expected
+     * then, and reporting it as an outage is exactly what the window exists to
+     * prevent.
      */
     public function handle(): void
     {
@@ -59,9 +66,17 @@ class CheckComponent implements ShouldQueue
             'checked_at' => $checkedAt,
         ]);
 
-        $this->component->update([
-            'status' => $result->status,
-            'checked_at' => $checkedAt,
-        ]);
+        if ($this->component->isUnderMaintenance()) {
+            $this->component->update(['checked_at' => $checkedAt]);
+
+            return;
+        }
+
+        app(ChangeComponentStatus::class)->handle(
+            $this->component,
+            $result->status,
+            ComponentStatusSourceEnum::Monitor,
+            attributes: ['checked_at' => $checkedAt],
+        );
     }
 }

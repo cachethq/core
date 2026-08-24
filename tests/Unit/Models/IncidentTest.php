@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Actions\Incident\SyncIncidentStatus;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
@@ -67,7 +68,7 @@ it('can scope to unresolved incidents', function () {
         ->and(Incident::unresolved()->count())->toBe(3);
 });
 
-it('resolves the latest status from the newest update when timestamps tie', function () {
+it('syncs its status from the newest update when timestamps tie', function () {
     $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
 
     $timestamp = now()->startOfMinute();
@@ -78,7 +79,11 @@ it('resolves the latest status from the newest update when timestamps tie', func
         $incident->updates()->save($update);
     }
 
-    expect($incident->fresh()->latestStatus)->toBe(IncidentStatusEnum::watching);
+    app(SyncIncidentStatus::class)->handle($incident);
+
+    expect($incident->fresh())
+        ->status->toBe(IncidentStatusEnum::watching)
+        ->latestStatus->toBe(IncidentStatusEnum::watching);
 });
 
 it('falls back to its own status without updates', function () {

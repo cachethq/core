@@ -1,11 +1,9 @@
 <?php
 
 return [
-    'level' => [
-        'admin' => '管理员',
-        'user' => '用户',
-    ],
     'resource_label' => '用户|用户',
+    'profile_information_title' => '个人资料信息',
+    'security_section_title' => '密码和安全',
     'list' => [
         'headers' => [
             'name' => '名称',

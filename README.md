@@ -43,7 +43,7 @@ Cachet 3.x is currently in development and is not yet completely ready for produ
 - [x] Localization
 - [x] Status Page Customization
 - [x] Meta
-- [ ] Tags
+- [x] Tags
 - [x] User Management
 
 ## Stack
@@ -57,7 +57,7 @@ Cachet is built on:
 
 ## Development
 
-To get started developing Cachet, please check out the [Development Guide](https://docs.cachethq.io/v3.x/development).
+To get started developing Cachet, please check out the [Development Guide](https://cachethq.io/docs/v3.x/development).
 
 ### Dashboard Credentials
 

@@ -39,6 +39,7 @@ class ComponentResource extends Resource
                         ->label(__('cachet::component.form.name_label'))
                         ->required()
                         ->maxLength(255)
+                        ->columnSpanFull()
                         ->autocomplete(false),
                     ToggleButtons::make('status')
                         ->label(__('cachet::component.form.status_label'))
@@ -55,21 +56,35 @@ class ComponentResource extends Resource
                         ->searchable()
                         ->preload()
                         ->label(__('cachet::component.form.component_group_label')),
+                    Select::make('tags')
+                        ->relationship('tags', 'name')
+                        ->multiple()
+                        ->searchable()
+                        ->preload()
+                        ->createOptionForm([TextInput::make('name')->required()->maxLength(255)]),
                     TextInput::make('link')
                         ->label(__('cachet::component.form.link_label'))
                         ->url()
-                        ->label(__('cachet::component.form.link_helper')),
-                    Toggle::make('checked')
-                        ->label(__('cachet::component.form.checked_label')),
-                ]),
+                        ->helperText(__('cachet::component.form.link_helper')),
+                ])->columnSpan(3),
 
-                Section::make()->columns(2)->schema([
+                Section::make(__('cachet::component.form.availability_section_title'))->schema([
+                    Toggle::make('enabled')
+                        ->label(__('cachet::component.form.enabled_label'))
+                        ->default(true),
+                    Toggle::make('checked')
+                        ->label(__('cachet::component.form.checked_label'))
+                        ->helperText(__('cachet::component.form.checked_helper')),
+                ])
+                    ->key('availability')
+                    ->columnSpan(1),
+
+                Section::make()->schema([
                     KeyValue::make('meta')
                         ->columnSpanFull(),
-                    Toggle::make('enabled')
-                        ->required(),
-                ]),
-            ]);
+                ])->columnSpanFull(),
+            ])
+            ->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -92,6 +107,10 @@ class ComponentResource extends Resource
                 TextColumn::make('group.name')
                     ->label(__('cachet::component.list.headers.group'))
                     ->sortable(),
+                TextColumn::make('tags.name')
+                    ->badge()
+                    ->separator(',')
+                    ->toggleable(),
                 IconColumn::make('enabled')
                     ->label(__('cachet::component.list.headers.enabled'))
                     ->boolean()
@@ -109,7 +128,7 @@ class ComponentResource extends Resource
                     ->label(__('cachet::component.list.headers.checked_at'))
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: false),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->label(__('cachet::component.list.headers.updated_at'))
                     ->dateTime()

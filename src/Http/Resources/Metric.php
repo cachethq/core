@@ -40,6 +40,7 @@ class Metric extends JsonApiResource
         return [
             'points' => fn () => MetricPoint::collection($this->includedMetricPoints),
             'component' => fn () => Component::make($this->component),
+            'tags' => fn () => Tag::collection($this->tags),
         ];
     }
 }
