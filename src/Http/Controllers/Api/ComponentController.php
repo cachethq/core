@@ -161,7 +161,7 @@ class ComponentController extends Controller
      * Delete Components
      */
     #[QueryParameter('ids', 'Comma-separated component IDs to delete.', required: true, type: 'string', example: '1,2,3')]
-    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteComponent $deleteComponentAction)
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteComponent $deleteComponentAction): Response
     {
         $this->guard('components.delete');
 

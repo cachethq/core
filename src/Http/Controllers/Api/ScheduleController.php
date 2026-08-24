@@ -139,7 +139,7 @@ class ScheduleController extends Controller
      * Delete Schedules
      */
     #[QueryParameter('ids', 'Comma-separated schedule IDs to delete.', required: true, type: 'string', example: '1,2,3')]
-    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteSchedule $deleteScheduleAction)
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteSchedule $deleteScheduleAction): Response
     {
         $this->guard('schedules.delete');
 

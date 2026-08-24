@@ -111,7 +111,7 @@ class MetricController extends Controller
      * Delete Metrics
      */
     #[QueryParameter('ids', 'Comma-separated metric IDs to delete.', required: true, type: 'string', example: '1,2,3')]
-    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteMetric $deleteMetricAction)
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteMetric $deleteMetricAction): Response
     {
         $this->guard('metrics.delete');
 

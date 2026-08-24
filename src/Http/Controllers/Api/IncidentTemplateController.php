@@ -91,7 +91,7 @@ class IncidentTemplateController extends Controller
      * Delete Incident Templates
      */
     #[QueryParameter('ids', 'Comma-separated incident template IDs to delete.', required: true, type: 'string', example: '1,2,3')]
-    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteIncidentTemplate $deleteIncidentTemplateAction)
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteIncidentTemplate $deleteIncidentTemplateAction): Response
     {
         $this->guard('incident-templates.delete');
 

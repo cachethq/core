@@ -126,7 +126,7 @@ class ComponentGroupController extends Controller
      * Delete Component Groups
      */
     #[QueryParameter('ids', 'Comma-separated component group IDs to delete.', required: true, type: 'string', example: '1,2,3')]
-    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteComponentGroup $deleteComponentGroupAction)
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteComponentGroup $deleteComponentGroupAction): Response
     {
         $this->guard('component-groups.delete');
 

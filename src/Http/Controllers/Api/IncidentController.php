@@ -139,7 +139,7 @@ class IncidentController extends Controller
      * Delete Incidents
      */
     #[QueryParameter('ids', 'Comma-separated incident IDs to delete.', required: true, type: 'string', example: '1,2,3')]
-    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteIncident $deleteIncidentAction)
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteIncident $deleteIncidentAction): Response
     {
         $this->guard('incidents.delete');
 
