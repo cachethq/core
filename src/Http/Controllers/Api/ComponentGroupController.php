@@ -2,6 +2,7 @@
 
 namespace Cachet\Http\Controllers\Api;
 
+use Cachet\Actions\BulkDeleteResources;
 use Cachet\Actions\ComponentGroup\CreateComponentGroup;
 use Cachet\Actions\ComponentGroup\DeleteComponentGroup;
 use Cachet\Actions\ComponentGroup\UpdateComponentGroup;
@@ -117,6 +118,19 @@ class ComponentGroupController extends Controller
     {
         $this->guard('component-groups.delete');
         $deleteComponentGroupAction->handle($componentGroup);
+
+        return response()->noContent();
+    }
+
+    /**
+     * Delete Component Groups
+     */
+    #[QueryParameter('ids', 'Comma-separated component group IDs to delete.', required: true, type: 'string', example: '1,2,3')]
+    public function destroyMany(Request $request, BulkDeleteResources $bulkDeleteResources, DeleteComponentGroup $deleteComponentGroupAction): Response
+    {
+        $this->guard('component-groups.delete');
+
+        $bulkDeleteResources->handle($request, ComponentGroup::class, fn (ComponentGroup $componentGroup) => $deleteComponentGroupAction->handle($componentGroup));
 
         return response()->noContent();
     }
