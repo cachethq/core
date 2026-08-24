@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@source not '../../public/build';
 @import '../../vendor/filament/support/resources/css/index.css';
 
 @plugin '@tailwindcss/forms';
