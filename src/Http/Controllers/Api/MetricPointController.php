@@ -51,7 +51,9 @@ class MetricPointController extends Controller
 
         // Every point on this page belongs to the metric we already have, and
         // each one reads its calculation type back off it.
-        $points->through(fn (MetricPoint $point) => $point->setRelation('metric', $metric));
+        foreach ($points as $point) {
+            $point->setRelation('metric', $metric);
+        }
 
         return MetricPointResource::collection($points);
     }
