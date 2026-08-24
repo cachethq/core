@@ -18,6 +18,15 @@ beforeEach(function () {
     actingAs(User::factory()->create(['is_admin' => true]));
 });
 
+it('groups component availability controls with concise labels', function () {
+    livewire(CreateComponent::class)
+        ->assertSchemaComponentVisible('availability')
+        ->assertSee(__('cachet::component.form.availability_section_title'))
+        ->assertSee(__('cachet::component.form.enabled_label'))
+        ->assertSee(__('cachet::component.form.checked_label'))
+        ->assertSee(__('cachet::component.form.checked_helper'));
+});
+
 it('stores meta as key/value pairs when creating a component from the dashboard', function () {
     livewire(CreateComponent::class)
         ->fillForm([

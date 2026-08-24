@@ -66,7 +66,7 @@ class WebhookSubscriptionResource extends Resource
     {
         return $schema
             ->components([
-                Section::make()->schema([
+                Section::make()->columns(2)->schema([
                     TextInput::make('url')
                         ->label(__('cachet::webhook.form.url_label'))
                         ->helperText(__('cachet::webhook.form.url_helper'))
@@ -103,15 +103,14 @@ class WebhookSubscriptionResource extends Resource
                         ->inline()
                         ->reactive()
                         ->columnSpanFull(),
-                    Section::make()->columns(2)->schema([
-                        CheckboxList::make('selected_events')
-                            ->label(__('cachet::webhook.form.events_label'))
-                            ->options(WebhookEventEnum::class)
-                            ->columnSpanFull(),
-                    ])
+                    CheckboxList::make('selected_events')
+                        ->label(__('cachet::webhook.form.events_label'))
+                        ->options(WebhookEventEnum::class)
+                        ->columns(2)
+                        ->columnSpanFull()
                         ->visible(fn (Get $get) => ! $get('send_all_events')),
-                ])->columnSpan(4),
-            ])->columns(4);
+                ]),
+            ]);
     }
 
     public static function table(Table $table): Table

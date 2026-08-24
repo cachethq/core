@@ -68,10 +68,15 @@ class UpdatesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title')
+            ->recordTitleAttribute('message')
             ->modelLabel(__('Update'))
             ->pluralModelLabel(__('Updates'))
             ->columns([
+                TextColumn::make('message')
+                    ->label(__('Message'))
+                    ->searchable()
+                    ->limit(80)
+                    ->wrap(),
                 TextColumn::make('status')
                     ->label(__('Status'))
                     ->badge()
@@ -83,14 +88,14 @@ class UpdatesRelationManager extends RelationManager
                 TextColumn::make('created_at')
                     ->label(__('Created at'))
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),
                 TextColumn::make('updated_at')
                     ->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('status')
                     ->label(__('Status'))

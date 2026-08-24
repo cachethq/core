@@ -2,6 +2,8 @@
 
 return [
     'resource_label' => 'User|Users',
+    'profile_information_title' => 'Impormasyon ng profile',
+    'security_section_title' => 'Password at seguridad',
     'list' => [
         'headers' => [
             'name' => 'Pangalan',

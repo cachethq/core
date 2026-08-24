@@ -6,6 +6,8 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Resources\Incidents\Pages\CreateIncident;
 use Cachet\Filament\Resources\Incidents\Pages\EditIncident;
+use Cachet\Filament\Resources\Incidents\Pages\ListIncidents;
+use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
@@ -88,4 +90,51 @@ it('groups component selections by component group when creating an incident', f
         ->assertSeeInOrder(['First Group', 'Second Group', 'Ungrouped components'])
         ->assertSee('Webservice')
         ->assertSee('Ungrouped Service');
+});
+
+it('sorts incidents by their canonical status column', function () {
+    $fixed = Incident::factory()->create(['status' => IncidentStatusEnum::fixed]);
+    $investigating = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+
+    livewire(ListIncidents::class)
+        ->sortTable('latest_status')
+        ->assertCanSeeTableRecords([$investigating, $fixed], inOrder: true);
+});
+
+it('prioritizes unresolved incidents and then the most recent occurrence', function () {
+    $recentFixed = Incident::factory()->create([
+        'status' => IncidentStatusEnum::fixed,
+        'occurred_at' => now(),
+    ]);
+    $olderInvestigating = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+        'occurred_at' => now()->subDay(),
+    ]);
+    $recentIdentified = Incident::factory()->create([
+        'status' => IncidentStatusEnum::identified,
+        'occurred_at' => now()->subHour(),
+    ]);
+
+    livewire(ListIncidents::class)
+        ->assertCanSeeTableRecords([
+            $recentIdentified,
+            $olderInvestigating,
+            $recentFixed,
+        ], inOrder: true);
+});
+
+it('shows the update message as the primary update information', function () {
+    $incident = Incident::factory()->create();
+    $update = $incident->updates()->create([
+        'message' => 'We have identified the source of the outage.',
+        'status' => IncidentStatusEnum::identified,
+        'user_id' => auth()->id(),
+    ]);
+
+    livewire(UpdatesRelationManager::class, [
+        'ownerRecord' => $incident,
+        'pageClass' => EditIncident::class,
+    ])
+        ->assertTableColumnExists('message')
+        ->assertTableColumnStateSet('message', $update->message, $update);
 });

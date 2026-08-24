@@ -15,6 +15,10 @@ it('feed smoke test', function () {
     $component->assertSuccessful();
 });
 
+it('loads with the dashboard instead of using Livewire lazy hydration', function () {
+    expect(Feed::isLazy())->toBeFalse();
+});
+
 it('renders posts from the feed', function () {
     Http::fake([
         '*' => Http::response(<<<'XML'

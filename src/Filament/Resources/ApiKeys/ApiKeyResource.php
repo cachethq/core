@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -46,13 +47,12 @@ class ApiKeyResource extends Resource
     {
         return $schema
             ->components([
-                Section::make()->schema([
+                Section::make()->columns(2)->schema([
                     TextInput::make('name')
                         ->label(__('cachet::api_key.form.name_label'))
                         ->required()
                         ->unique('api_keys', 'name')
                         ->maxLength(255)
-                        ->columnSpanFull()
                         ->autofocus()
                         ->autocomplete(false),
                     DatePicker::make('expires_at')
@@ -67,9 +67,10 @@ class ApiKeyResource extends Resource
                         ->hint(__('cachet::api_key.form.abilities_hint'))
                         ->hintColor('warning')
                         ->options(self::getAbilities())
-                        ->columns(3),
-                ])->columnSpan(4),
-            ])->columns(4);
+                        ->columns(3)
+                        ->columnSpanFull(),
+                ]),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -84,16 +85,16 @@ class ApiKeyResource extends Resource
                     ->color('gray')
                     ->badge()
                     ->limitList(3),
-                TextColumn::make('created_at')
-                    ->label(__('cachet::api_key.list.headers.created_at'))
-                    ->dateTime()
-                    ->sortable(),
                 TextColumn::make('expires_at')
                     ->label(__('cachet::api_key.list.headers.expires_at'))
                     ->sortable()
                     ->color(fn (PersonalAccessToken $record) => $record->expires_at ? null : 'gray')
                     ->badge(fn (PersonalAccessToken $record) => ! $record->expires_at)
                     ->getStateUsing(fn (PersonalAccessToken $record) => $record->expires_at?->format($table->getDefaultDateDisplayFormat()) ?? 'N/A'),
+                TextColumn::make('created_at')
+                    ->label(__('cachet::api_key.list.headers.created_at'))
+                    ->dateTime()
+                    ->sortable(),
                 TextColumn::make('updated_at')
                     ->label(__('cachet::api_key.list.headers.updated_at'))
                     ->dateTime()
@@ -116,7 +117,7 @@ class ApiKeyResource extends Resource
                     ->deselectRecordsAfterCompletion()
                     ->requiresConfirmation()
                     ->color('danger')
-                    ->icon('heroicon-o-trash'),
+                    ->icon(Heroicon::OutlinedTrash),
             ]);
     }
 

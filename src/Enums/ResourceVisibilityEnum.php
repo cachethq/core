@@ -5,6 +5,7 @@ namespace Cachet\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
+use Filament\Support\Icons\Heroicon;
 
 enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
 {
@@ -22,12 +23,12 @@ enum ResourceVisibilityEnum: int implements HasColor, HasIcon, HasLabel
         return [self::authenticated, self::guest];
     }
 
-    public function getIcon(): string
+    public function getIcon(): Heroicon
     {
         return match ($this) {
-            self::authenticated => 'heroicon-o-lock-closed',
-            self::guest => 'heroicon-o-eye',
-            self::hidden => 'heroicon-o-eye-slash',
+            self::authenticated => Heroicon::OutlinedLockClosed,
+            self::guest => Heroicon::OutlinedEye,
+            self::hidden => Heroicon::OutlinedEyeSlash,
         };
     }
 

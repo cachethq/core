@@ -25,7 +25,7 @@ class ManageCustomization extends SettingsPage
     {
         return $schema
             ->components([
-                Section::make()->columns(1)->schema([
+                Section::make(__('cachet::settings.manage_customization.html_section_title'))->columns(1)->schema([
                     Textarea::make('header')
                         ->label(__('cachet::settings.manage_customization.header_label'))
                         ->helperText(__('cachet::settings.manage_customization.header_helper'))
@@ -37,7 +37,7 @@ class ManageCustomization extends SettingsPage
                         ->rows(8)
                         ->extraAttributes(['class' => 'font-mono']),
                 ]),
-                Section::make()->columns(1)->schema([
+                Section::make(__('cachet::settings.manage_customization.stylesheet_section_title'))->columns(1)->schema([
                     Textarea::make('stylesheet')
                         ->label(__('cachet::settings.manage_customization.stylesheet_label'))
                         ->helperText(__('cachet::settings.manage_customization.stylesheet_helper'))

@@ -1,4 +1,4 @@
-<x-filament::widget>
+<x-filament-widgets::widget>
     <x-filament::section :heading="__('cachet::cachet.feed.section_heading')">
         <div class="relative">
             <ul role="list" class="gap-4 flex flex-col">
@@ -25,5 +25,4 @@
             </ul>
         </div>
     </x-filament::section>
-</x-filament::widget>
-
+</x-filament-widgets::widget>

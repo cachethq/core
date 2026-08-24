@@ -38,11 +38,12 @@ class ManageTheme extends SettingsPage
     {
         return $schema
             ->components([
-                Section::make()->columns(2)->schema([
+                Section::make(__('cachet::settings.manage_theme.app_banner_label'))->columns(2)->schema([
                     FileUpload::make('app_banner')
                         ->image()
                         ->imageEditor()
                         ->label(__('cachet::settings.manage_theme.app_banner_label'))
+                        ->hiddenLabel()
                         ->helperText(__('cachet::settings.manage_theme.app_banner_helper'))
                         ->disk('public')
                         ->columnSpanFull(),

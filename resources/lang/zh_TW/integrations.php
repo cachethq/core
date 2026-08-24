@@ -2,6 +2,8 @@
 
 return [
     'oh_dear' => [
+        'status_page_section_title' => 'Oh Dear 狀態頁面',
+        'import_options_section_title' => '匯入選項',
         'import_feed_button' => '導入訂閱源',
         'status_page_url_label' => 'Oh Dear 狀態頁面 URL',
         'status_page_url_helper' => '輸入你的 Oh Dear 狀態頁面的 URL（例如 https://status.example.com）。',

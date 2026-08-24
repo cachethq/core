@@ -27,6 +27,10 @@ return [
         'component_group_label' => 'Grupo de Componentes',
         'link_label' => 'Link',
         'link_helper' => 'Um link opcional para o componente.',
+        'availability_section_title' => 'Disponibilidade',
+        'enabled_label' => 'Ativo',
+        'checked_label' => 'Monitoramento',
+        'checked_helper' => 'Verifique este componente periodicamente e registre sua disponibilidade.',
     ],
     'status' => [
         'operational' => 'Operacional',

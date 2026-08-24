@@ -5,6 +5,7 @@ namespace Cachet\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
+use Filament\Support\Icons\Heroicon;
 
 enum MetricViewEnum: int implements HasColor, HasIcon, HasLabel
 {
@@ -23,13 +24,13 @@ enum MetricViewEnum: int implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getIcon(): string
+    public function getIcon(): string|Heroicon
     {
         return match ($this) {
             self::last_hour => 'cachet-metrics',
-            self::today => 'heroicon-m-clock',
-            self::week => 'heroicon-m-calendar',
-            self::month => 'heroicon-m-calendar-days',
+            self::today => Heroicon::Clock,
+            self::week => Heroicon::Calendar,
+            self::month => Heroicon::CalendarDays,
         };
     }
 

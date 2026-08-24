@@ -27,6 +27,10 @@ return [
         'component_group_label' => 'Componentgroep',
         'link_label' => 'Link',
         'link_helper' => 'Een optionele link naar het onderdeel',
+        'availability_section_title' => 'Beschikbaarheid',
+        'enabled_label' => 'Ingeschakeld',
+        'checked_label' => 'Monitoring',
+        'checked_helper' => 'Controleer dit onderdeel periodiek en registreer de beschikbaarheid.',
     ],
     'status' => [
         'operational' => 'Functioneel',

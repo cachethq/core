@@ -20,6 +20,12 @@ it('renders the manage cachet page', function () {
     $this->get(ManageCachet::getUrl())->assertOk();
 });
 
+it('renders headings for each settings section', function () {
+    livewire(ManageCachet::class)
+        ->assertSee(__('cachet::settings.manage_cachet.general_settings_title'))
+        ->assertSee(__('cachet::settings.manage_cachet.incident_settings_title'));
+});
+
 it('saves the dynamic favicon setting', function () {
     expect(app(AppSettings::class)->dynamic_favicon)->toBeFalse();
 

@@ -2,6 +2,8 @@
 
 return [
     'oh_dear' => [
+        'status_page_section_title' => 'Oh Dear status page',
+        'import_options_section_title' => 'Import options',
         'import_feed_button' => 'Import feed',
         'status_page_url_label' => 'Oh Dear status page URL',
         'status_page_url_helper' => 'Enter the URL of your Oh Dear status page (e.g. https://status.example.com).',
