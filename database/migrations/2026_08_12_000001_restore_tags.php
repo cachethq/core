@@ -1,6 +1,7 @@
 <?php
 
 use Cachet\Models\Component;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +29,12 @@ return new class extends Migration
             });
         }
 
+        $componentMorphAlias = Relation::getMorphAlias(Component::class);
+
+        DB::table('taggables')
+            ->where('taggable_type', 'components')
+            ->update(['taggable_type' => $componentMorphAlias]);
+
         DB::table('taggables')
             ->select('tag_id', 'taggable_id', 'taggable_type')
             ->groupBy('tag_id', 'taggable_id', 'taggable_type')
@@ -53,15 +60,12 @@ return new class extends Migration
             $table->unique(['tag_id', 'taggable_id', 'taggable_type']);
         });
 
-        DB::table('taggables')
-            ->where('taggable_type', 'components')
-            ->update(['taggable_type' => Component::class]);
     }
 
     public function down(): void
     {
         DB::table('taggables')
-            ->where('taggable_type', Component::class)
+            ->where('taggable_type', Relation::getMorphAlias(Component::class))
             ->update(['taggable_type' => 'components']);
     }
 };

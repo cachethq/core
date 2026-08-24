@@ -183,7 +183,7 @@ it('can hide component group statuses', function () {
 });
 
 it('can display component tags', function () {
-    $component = Component::factory()->create();
+    $component = Component::factory()->create(['description' => null]);
     $component->syncTags(['API']);
 
     $settings = app(AppSettings::class);

@@ -46,6 +46,7 @@ class ListComponents extends Tool
     public function handle(Request $request): ResponseFactory
     {
         $components = $this->visibleComponents()
+            ->with('tags')
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->integer('status')))
             ->where('enabled', $request->boolean('enabled', true))

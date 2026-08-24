@@ -38,6 +38,7 @@ class ListSchedules extends Tool
     public function handle(Request $request): ResponseFactory
     {
         $schedules = Schedule::query()
+            ->with('tags')
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->when($request->filled('tags'), fn ($query) => $query->withAnyTags($request->array('tags')))
             ->orderByDesc('scheduled_at')

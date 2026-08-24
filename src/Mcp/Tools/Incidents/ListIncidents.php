@@ -46,6 +46,7 @@ class ListIncidents extends Tool
     public function handle(Request $request): ResponseFactory
     {
         $incidents = Incident::query()
+            ->with('tags')
             ->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage'))
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->when($request->filled('status'), fn ($query) => $query->where('status', $request->integer('status')))

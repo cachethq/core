@@ -40,6 +40,7 @@ class ListMetrics extends Tool
     public function handle(Request $request): ResponseFactory
     {
         $metrics = Metric::query()
+            ->with('tags')
             ->visible($this->isAuthenticated())
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->when($request->filled('tags'), fn ($query) => $query->withAnyTags($request->array('tags')))
