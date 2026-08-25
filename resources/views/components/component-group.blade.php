@@ -12,16 +12,21 @@
             {{ $componentGroup->name }}
         </h2>
 
-        @if ($showComponentGroupStatus)
-            @php($groupStatus = $componentGroup->worstComponentStatus())
-            <span class="shrink-0 text-sm font-semibold tracking-tight {{ $groupStatus->getTextColorClasses() }}">
-                {{ $groupStatus->getLabel() }}
-            </span>
-        @else
-            <span class="shrink-0 text-sm font-semibold tracking-tight text-zinc-600 dark:text-zinc-300">
-                {{ trans_choice('cachet::component_group.incident_count', $componentGroup->openIncidentCount()) }}
-            </span>
-        @endif
+        @php($groupStatus = $componentGroup->worstComponentStatus())
+        @php($openIncidentCount = $componentGroup->openIncidentCount())
+        @php($showGroupStatusLabel = $showComponentGroupStatus || $openIncidentCount === 0)
+        <span class="flex shrink-0 items-center gap-2 text-sm font-semibold tracking-tight {{ $groupStatus->getTextColorClasses() }}">
+            @if ($showGroupStatusLabel)
+                <span>{{ $groupStatus->getLabel() }}</span>
+            @endif
+
+            @if ($openIncidentCount > 0)
+                @if ($showGroupStatusLabel)
+                    <span aria-hidden="true" class="text-zinc-400 dark:text-zinc-500">&middot;</span>
+                @endif
+                <span>{{ trans_choice('cachet::component_group.incident_count', $openIncidentCount) }}</span>
+            @endif
+        </span>
     </button>
 
     <div x-disclosure:panel x-collapse class="border-t border-zinc-900/10 dark:border-white/15">

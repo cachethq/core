@@ -179,7 +179,80 @@ it('can hide component group statuses', function () {
     expect($page)
         ->toContain('Core services')
         ->toContain('1 Incident')
-        ->not->toMatch('/Core services\s*<\\/h2>\s*<span[^>]*>\s*Major outage\s*<\\/span>/');
+        ->not->toMatch('/Core services\s*<\\/h2>\s*<span[^>]*>\s*<span>Major outage<\\/span>/');
+});
+
+it('shows the component group status alongside the open incident count', function () {
+    $group = ComponentGroup::factory()->create(['name' => 'Core services']);
+    $component = Component::factory()->create([
+        'component_group_id' => $group->id,
+        'status' => ComponentStatusEnum::major_outage,
+    ]);
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+    $incident->components()->attach($component->id);
+
+    $page = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->getContent();
+
+    expect($page)
+        ->toContain('Core services')
+        ->toMatch('/Core services\s*<\\/h2>\s*<span[^>]*>\s*<span>Major outage<\\/span>\s*<span[^>]*>&middot;<\\/span>\s*<span>1 Incident<\\/span>/');
+});
+
+it('does not show a zero incident count on component groups', function () {
+    ComponentGroup::factory()
+        ->has(Component::factory(['status' => ComponentStatusEnum::operational]))
+        ->create(['name' => 'Core services']);
+
+    $page = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->getContent();
+
+    expect($page)
+        ->toContain('Core services')
+        ->toContain('Operational')
+        ->not->toContain('0 Incident');
+});
+
+it('falls back to the group status when statuses are hidden and there are no open incidents', function () {
+    $settings = app(AppSettings::class);
+    $settings->show_component_group_status = false;
+    $settings->save();
+
+    ComponentGroup::factory()
+        ->has(Component::factory(['status' => ComponentStatusEnum::operational]))
+        ->create(['name' => 'Core services']);
+
+    $page = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->getContent();
+
+    expect($page)
+        ->toMatch('/Core services\s*<\\/h2>\s*<span[^>]*>\s*<span>Operational<\\/span>/')
+        ->not->toContain('0 Incident');
+});
+
+it('colours the incident count by the worst component status when group statuses are hidden', function () {
+    $settings = app(AppSettings::class);
+    $settings->show_component_group_status = false;
+    $settings->save();
+
+    $group = ComponentGroup::factory()->create(['name' => 'Core services']);
+    $component = Component::factory()->create([
+        'component_group_id' => $group->id,
+        'status' => ComponentStatusEnum::major_outage,
+    ]);
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+    $incident->components()->attach($component->id);
+
+    $page = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->getContent();
+
+    expect($page)
+        ->toMatch('/<span class="[^"]*'.preg_quote(ComponentStatusEnum::major_outage->getTextColorClasses(), '/').'[^"]*">\s*<span>1 Incident<\/span>/')
+        ->not->toMatch('/Core services\s*<\\/h2>\s*<span[^>]*>\s*<span>Major outage<\\/span>/');
 });
 
 it('can display component tags', function () {
