@@ -1,6 +1,6 @@
 {
   "resources/css/cachet.css": {
-    "file": "assets/cachet-D5GIyK51.css",
+    "file": "assets/cachet-Ck_Tb6p8.css",
     "name": "cachet",
     "names": [
       "cachet.css"
@@ -18,7 +18,7 @@
     "isEntry": true
   },
   "resources/js/cachet.js": {
-    "file": "assets/cachet-2UijlQXg.js",
+    "file": "assets/cachet-CCLiwWgX.js",
     "name": "cachet",
     "src": "resources/js/cachet.js",
     "isEntry": true,
@@ -27,7 +27,7 @@
     ]
   },
   "resources/js/metrics.js": {
-    "file": "assets/metrics-DIhk1J3k.js",
+    "file": "assets/metrics-DzddGFQc.js",
     "name": "metrics",
     "src": "resources/js/metrics.js",
     "isDynamicEntry": true
