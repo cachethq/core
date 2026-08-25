@@ -28,6 +28,10 @@ class RenderHook
 
     const STATUS_PAGE_INCIDENTS_BEFORE = 'cachet::status-page.incidents.before';
 
+    const STATUS_PAGE_INCIDENT_TIMELINE_AFTER = 'cachet::status-page.incident-timeline.after';
+
+    const STATUS_PAGE_INCIDENT_TIMELINE_BEFORE = 'cachet::status-page.incident-timeline.before';
+
     const STATUS_PAGE_SCHEDULES_AFTER = 'cachet::status-page.schedules.after';
 
     const STATUS_PAGE_SCHEDULES_BEFORE = 'cachet::status-page.schedules.before';
@@ -38,9 +42,17 @@ class RenderHook
 
     const STATUS_PAGE_SUBSCRIBE_BEFORE = 'cachet::status-page.subscribe.before';
 
+    const STATUS_PAGE_UNSUBSCRIBE_AFTER = 'cachet::status-page.unsubscribe.after';
+
+    const STATUS_PAGE_UNSUBSCRIBE_BEFORE = 'cachet::status-page.unsubscribe.before';
+
     const STATUS_PAGE_METRICS_AFTER = 'cachet::status-page.metrics.after';
 
     const STATUS_PAGE_METRICS_BEFORE = 'cachet::status-page.metrics.before';
+
+    const STATUS_PAGE_STATUS_SUMMARY_AFTER = 'cachet::status-page.status-summary.after';
+
+    const STATUS_PAGE_STATUS_SUMMARY_BEFORE = 'cachet::status-page.status-summary.before';
 
     const FOOTER = 'cachet::footer';
 }

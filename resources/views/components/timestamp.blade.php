@@ -1,12 +1,14 @@
-<span x-data="{ tooltipOpen: false, timestamp: new Date(@js($timestamp)) }"
+<span data-component="timestamp"
+      x-data="{ tooltipOpen: false, timestamp: new Date(@js($timestamp)) }"
       @mouseenter="tooltipOpen = true"
       @mouseleave="tooltipOpen = false"
       @focusin="tooltipOpen = true"
       @focusout="tooltipOpen = false"
       class="relative inline-flex">
-    <time x-ref="anchor" datetime="{{ $timestamp->toW3cString() }}" x-text="timestamp.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
+    <time data-slot="value" x-ref="anchor" datetime="{{ $timestamp->toW3cString() }}" x-text="timestamp.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZoneName: 'short'@if($appSettings->timezone !== '-'), timeZone: '{{ $appSettings->timezone }}'@endif })"></time>
 
-    <div x-show="tooltipOpen"
+    <div data-slot="tooltip"
+         x-show="tooltipOpen"
          x-cloak
          x-transition.opacity
          x-anchor.top.offset.8="$refs.anchor"

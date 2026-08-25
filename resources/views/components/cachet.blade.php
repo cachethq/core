@@ -47,7 +47,7 @@
             {!! $cachet_css !!}
         </style>
     </head>
-    <body class="flex min-h-screen flex-col items-stretch antialiased">
+    <body data-page="{{ $page }}" class="flex min-h-screen flex-col items-stretch antialiased">
         {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_BODY_BEFORE) }}
         {{ $slot }}
 
