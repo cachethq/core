@@ -23,7 +23,8 @@ class Cachet extends Component
         private readonly ThemeSettings $themeSettings,
         private readonly Status $status,
         private ?string $title = null,
-        private ?string $description = null
+        private ?string $description = null,
+        private string $page = 'status',
     ) {
         if ($this->title) {
             $this->title .= ' - '.($this->appSettings->name ?: config('cachet.title'));
@@ -54,6 +55,7 @@ class Cachet extends Component
             'refresh_rate' => $this->appSettings->refresh_rate,
             'theme' => new ThemeData($this->themeSettings),
             'favicon' => $this->favicon(),
+            'page' => $this->page,
         ]);
     }
 

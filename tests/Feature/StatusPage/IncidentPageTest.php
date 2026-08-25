@@ -45,3 +45,25 @@ it('uses the incident name as the page heading', function () {
 
     expect($page)->toMatch('/<h1[^>]*>\s*API connectivity\s*<\/h1>/');
 });
+
+it('renders stable incident page attributes', function () {
+    $component = Component::factory()->create();
+    $incident = Incident::factory()->create();
+    $incident->components()->attach($component, [
+        'component_status' => ComponentStatusEnum::performance_issues->value,
+    ]);
+
+    $this->get(route('cachet.status-page.incident', $incident))
+        ->assertOk()
+        ->assertSee('data-page="incident"', escape: false)
+        ->assertSee('data-component="affected-components"', escape: false)
+        ->assertSee('data-component="incident"', escape: false)
+        ->assertSee('data-component="incident-update"', escape: false)
+        ->assertSee('data-component="incident-update-status"', escape: false)
+        ->assertSee('data-component="badge"', escape: false)
+        ->assertSee('data-component="timestamp"', escape: false)
+        ->assertSee('data-component="page-navigation"', escape: false)
+        ->assertSee('data-slot="main"', escape: false)
+        ->assertSee('data-slot="indicator"', escape: false)
+        ->assertSee('data-slot="message"', escape: false);
+});

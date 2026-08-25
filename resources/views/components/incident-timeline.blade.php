@@ -1,10 +1,11 @@
-<div class="flex flex-col gap-4">
-    <div class="flex flex-col justify-between gap-3 md:flex-row md:items-center md:gap-0">
-        <h2 class="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENT_TIMELINE_BEFORE) }}
+<section data-component="incident-timeline" class="flex flex-col gap-4">
+    <div data-slot="header" class="flex flex-col justify-between gap-3 md:flex-row md:items-center md:gap-0">
+        <h2 data-slot="title" class="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
             {{ $recentIncidentsOnly ? __('cachet::incident.timeline.recent_incidents_header') : __('cachet::incident.timeline.past_incidents_header') }}
         </h2>
 
-        <fieldset aria-label="{{ __('cachet::incident.timeline.date_range_label') }}" class="grid grid-cols-2 gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+        <fieldset data-slot="filters" aria-label="{{ __('cachet::incident.timeline.date_range_label') }}" class="grid grid-cols-2 gap-3 text-sm text-zinc-500 dark:text-zinc-400">
             <label class="flex flex-col gap-1">
                 <span class="text-xs font-medium">{{ __('cachet::incident.timeline.from_label') }}</span>
                 <x-filament::input.wrapper disabled>
@@ -34,7 +35,7 @@
         </fieldset>
     </div>
 
-    <div class="flex w-full flex-col gap-8">
+    <div data-slot="list" class="flex w-full flex-col gap-8">
         @if ($stickiedIncidents->isNotEmpty())
             <x-cachet::incident :date="$from" :incidents="$stickiedIncidents" :with-date="false" />
         @endif
@@ -42,14 +43,14 @@
         @forelse ($timeline as $date => $day)
             <x-cachet::incident :date="$date" :incidents="$day['incidents']" :schedules="$day['schedules']" />
         @empty
-            <p class="text-sm text-zinc-500 dark:text-zinc-400">
+            <p data-slot="empty" class="text-sm text-zinc-500 dark:text-zinc-400">
                 {{ __('cachet::incident.timeline.no_incidents_reported_between', ['from' => $from, 'to' => $to]) }}
             </p>
         @endforelse
     </div>
 
     @if ($canPageBackward || $canPageForward)
-        <div class="flex justify-center">
+        <nav data-slot="navigation" class="flex justify-center">
             <div class="inline-flex items-center gap-0.5 rounded-lg bg-zinc-100 p-0.5 ring-1 ring-zinc-900/10 dark:bg-zinc-800/80 dark:ring-white/15">
                 @if ($canPageBackward)
                     <a href="{{ route('cachet.status-page', ['from' => $nextPeriodFrom]) }}"
@@ -72,6 +73,7 @@
                     </a>
                 @endif
             </div>
-        </div>
+        </nav>
     @endif
-</div>
+</section>
+{{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENT_TIMELINE_AFTER) }}

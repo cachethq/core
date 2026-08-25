@@ -1,13 +1,13 @@
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_ABOUT_BEFORE) }}
 
 @if ($showSiteName || ($showAbout && $about !== ''))
-    <div class="flex flex-col gap-3">
+    <section data-component="about" class="flex flex-col gap-3">
         @if ($showSiteName)
-            <h1 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-2xl">{{ $title }}</h1>
+            <h1 data-slot="title" class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-2xl">{{ $title }}</h1>
         @endif
 
         @if ($showAbout && $about !== '')
-            <div class="prose prose-zinc max-w-none dark:prose-invert
+            <div data-slot="description" class="prose prose-zinc max-w-none dark:prose-invert
                         prose-headings:tracking-tight prose-headings:text-zinc-900 dark:prose-headings:text-zinc-100
                         prose-p:leading-relaxed prose-p:text-zinc-600 dark:prose-p:text-zinc-300
                         prose-a:font-medium prose-a:text-accent-content prose-a:underline prose-a:underline-offset-2
@@ -16,7 +16,7 @@
                 {!! $about !!}
             </div>
         @endif
-    </div>
+    </section>
 @endif
 
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_ABOUT_AFTER) }}

@@ -3,9 +3,11 @@
 namespace Tests\Feature\Http\Controllers\Subscribers;
 
 use Cachet\Events\Subscribers\SubscriberVerified;
+use Cachet\Facades\CachetView;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\VerifySubscriberEmail;
 use Cachet\Settings\MailSettings;
+use Cachet\View\RenderHook;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Notification;
@@ -23,7 +25,9 @@ beforeEach(function () {
 it('shows the subscribe page', function () {
     get(route('cachet.subscribers.create'))
         ->assertOk()
-        ->assertSee(__('cachet::subscriber.status_page.subscribe.heading'));
+        ->assertSee(__('cachet::subscriber.status_page.subscribe.heading'))
+        ->assertSee('data-page="subscribe"', escape: false)
+        ->assertSee('data-component="subscribe"', escape: false);
 });
 
 it('shows the subscribe button on the status page', function () {
@@ -179,9 +183,25 @@ it('asks for confirmation before unsubscribing', function () {
     get($subscriber->unsubscribeUrl())
         ->assertOk()
         ->assertSee(__('cachet::subscriber.status_page.unsubscribe.heading'))
-        ->assertSee($subscriber->email);
+        ->assertSee($subscriber->email)
+        ->assertSee('data-page="unsubscribe"', escape: false)
+        ->assertSee('data-component="unsubscribe"', escape: false);
 
     expect($subscriber->fresh())->not->toBeNull();
+});
+
+it('renders unsubscribe hooks around the confirmation', function () {
+    $subscriber = Subscriber::factory()->verified()->create();
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_UNSUBSCRIBE_BEFORE, fn () => '<span>unsubscribe-before-hook</span>');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_UNSUBSCRIBE_AFTER, fn () => '<span>unsubscribe-after-hook</span>');
+
+    get($subscriber->unsubscribeUrl())
+        ->assertOk()
+        ->assertSeeInOrder([
+            'unsubscribe-before-hook',
+            'data-slot="content"',
+            'unsubscribe-after-hook',
+        ], escape: false);
 });
 
 it('unsubscribes a subscriber once confirmed', function () {

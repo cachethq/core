@@ -48,3 +48,22 @@ it('uses the maintenance name as the page heading', function () {
 
     expect($page)->toMatch('/<h1[^>]*>\s*Database maintenance\s*<\/h1>/');
 });
+
+it('renders stable maintenance page attributes', function () {
+    $schedule = Schedule::factory()->create();
+    $schedule->updates()->save(new Update([
+        'message' => 'Maintenance is underway.',
+        'status' => IncidentStatusEnum::unknown,
+    ]));
+
+    get(route('cachet.status-page.schedule', ['schedule' => $schedule]))
+        ->assertOk()
+        ->assertSee('data-page="schedule"', escape: false)
+        ->assertSee('data-component="schedule"', escape: false)
+        ->assertSee('data-component="schedule-update"', escape: false)
+        ->assertSee('data-component="badge"', escape: false)
+        ->assertSee('data-component="timestamp"', escape: false)
+        ->assertSee('data-component="page-navigation"', escape: false)
+        ->assertSee('data-slot="main"', escape: false)
+        ->assertSee('data-slot="message"', escape: false);
+});
