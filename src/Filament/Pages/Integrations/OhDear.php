@@ -3,6 +3,7 @@
 namespace Cachet\Filament\Pages\Integrations;
 
 use Cachet\Actions\Integrations\ImportOhDearFeed;
+use Cachet\Actions\Integrations\ResolvePublicUrl;
 use Cachet\Cachet;
 use Cachet\Filament\Resources\ComponentGroups\ComponentGroupResource;
 use Cachet\Models\Component;
@@ -17,6 +18,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
+use InvalidArgumentException;
 
 /**
  * @property Schema $form
@@ -100,16 +102,27 @@ class OhDear extends Page
     /**
      * Import the OhDear feed.
      */
-    public function importFeed(ImportOhDearFeed $importOhDearFeedAction): void
+    public function importFeed(ImportOhDearFeed $importOhDearFeedAction, ResolvePublicUrl $resolvePublicUrlAction): void
     {
         $this->validate();
 
         try {
-            $ohDear = Http::baseUrl(rtrim($this->url))
+            $resolvedUrl = $resolvePublicUrlAction->handle($this->url);
+
+            $ohDear = Http::withOptions([
+                'allow_redirects' => false,
+                'curl' => [\CURLOPT_RESOLVE => [$resolvedUrl->curlResolve()]],
+            ])
+                ->connectTimeout(5)
+                ->timeout(10)
                 ->withUserAgent(Cachet::USER_AGENT)
-                ->get('/json')
+                ->get($resolvedUrl->url)
                 ->throw()
                 ->json();
+        } catch (InvalidArgumentException) {
+            $this->addError('url', __('cachet::integrations.oh_dear.provided_url_invalid'));
+
+            return;
         } catch (ConnectionException $e) {
             $this->addError('url', $e->getMessage());
 
