@@ -51,15 +51,19 @@ function getTimeUnit(period, metricView) {
 }
 
 window.cachetMetricChart = function () {
-    const metricPoints = this.metric.metric_points.map((point) => ({
+    const rawPoints = (this.metric.chart_points?.raw ?? []).map((point) => ({
+        x: new Date(point.x),
+        y: point.y,
+    }))
+    const hourlyPoints = (this.metric.chart_points?.hourly ?? []).map((point) => ({
         x: new Date(point.x),
         y: point.y,
     }))
 
-    this.points[0] = metricPoints.filter((point) => point.x >= previousHour)
-    this.points[1] = metricPoints.filter((point) => point.x >= previous24Hours)
-    this.points[2] = metricPoints.filter((point) => point.x >= previous7Days)
-    this.points[3] = metricPoints.filter((point) => point.x >= previous30Days)
+    this.points[0] = rawPoints.filter((point) => point.x >= previousHour)
+    this.points[1] = rawPoints.filter((point) => point.x >= previous24Hours)
+    this.points[2] = hourlyPoints.filter((point) => point.x >= previous7Days)
+    this.points[3] = hourlyPoints.filter((point) => point.x >= previous30Days)
 
     let themeColors = getThemeColors()
     const chart = new Chart(this.$refs.canvas, {

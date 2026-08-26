@@ -32,6 +32,7 @@ class UpdateMetric extends Tool
         return [
             'id' => $schema->integer()->required()->description('The metric ID.'),
             'tags' => $schema->array()->items($schema->string())->description('Replace the metric tags.'),
+            'component_id' => $schema->integer()->description('The component this metric is displayed alongside.'),
             'name' => $schema->string()->max(255)->description('The name of the metric.'),
             'suffix' => $schema->string()->max(255)->description('The suffix shown after the metric value, such as ms or %.'),
             'description' => $schema->string()->description('A description of the metric.'),
@@ -53,7 +54,7 @@ class UpdateMetric extends Tool
         }
 
         $data = UpdateMetricRequestData::validateAndCreate(
-            $request->only(['name', 'suffix', 'description', 'default_value', 'threshold'])
+            $request->only(['name', 'suffix', 'description', 'default_value', 'threshold', 'component_id', 'tags'])
         );
 
         return Response::structured(['data' => $this->presentMetric($action->handle($metric, $data))]);

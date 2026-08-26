@@ -16,6 +16,12 @@
     <div data-slot="content" class="flex flex-col gap-4 p-4 sm:gap-5 sm:p-6">
         <div data-slot="header" class="flex flex-wrap items-start justify-between gap-3">
             <div class="flex min-w-0 flex-col gap-1">
+                @if($metric->component)
+                    <div class="truncate text-xs font-medium uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+                        {{ $metric->component->name }}
+                    </div>
+                @endif
+
                 <div class="flex items-center gap-1.5">
                     <h3 data-slot="title" class="truncate text-lg font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
                         {{ $metric->name }}

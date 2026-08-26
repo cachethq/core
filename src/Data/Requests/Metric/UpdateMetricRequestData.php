@@ -14,6 +14,7 @@ final class UpdateMetricRequestData extends BaseData
         public readonly ?string $description = null,
         public readonly ?float $defaultValue = null,
         public readonly ?int $threshold = null,
+        public readonly ?int $componentId = null,
         /** @var list<string>|null */
         public readonly ?array $tags = null,
     ) {}
@@ -26,6 +27,7 @@ final class UpdateMetricRequestData extends BaseData
             'description' => ['string'],
             'default_value' => ['decimal:1,2'],
             'threshold' => ['int', 'min:0', 'max:60', new FactorOfSixty],
+            'component_id' => ['nullable', 'integer', 'exists:components,id'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['string', 'max:255'],
         ];

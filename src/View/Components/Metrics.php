@@ -2,10 +2,13 @@
 
 namespace Cachet\View\Components;
 
+use Cachet\Enums\MetricTypeEnum;
 use Cachet\Models\Metric;
+use Cachet\Models\MetricPoint;
 use Cachet\Settings\AppSettings;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -18,6 +21,16 @@ class Metrics extends Component
      */
     private const CACHE_TTL = 30;
 
+    /**
+     * How far back the raw buckets behind the hour and day windows reach.
+     */
+    private const RAW_WINDOW_HOURS = 24;
+
+    /**
+     * How far back the hourly totals behind the week and month windows reach.
+     */
+    private const HOURLY_WINDOW_DAYS = 30;
+
     public function __construct(protected AppSettings $appSettings)
     {
         //
@@ -25,13 +38,26 @@ class Metrics extends Component
 
     public function render(): View
     {
-        $cacheKey = 'cachet::metrics.'.(auth()->check() ? 'users' : 'guests');
+        $cacheKey = $this->cacheKey();
 
         $cached = Cache::remember($cacheKey, self::CACHE_TTL, fn (): Collection => $this->prepareMetrics());
 
         return view('cachet::components.metrics', [
             'metrics' => $this->validMetrics($cached, $cacheKey),
         ]);
+    }
+
+    /**
+     * The cache key the prepared metrics are stored under.
+     *
+     * Cachet's cache keys are tenant-agnostic: they identify the audience a
+     * value was built for, never the installation it belongs to. Anything
+     * running more than one Cachet against a shared cache store has to
+     * separate them with the cache store's own prefix.
+     */
+    private function cacheKey(): string
+    {
+        return 'cachet::metrics.'.(auth()->check() ? 'users' : 'guests');
     }
 
     /**
@@ -52,35 +78,104 @@ class Metrics extends Component
     }
 
     /**
-     * Build the metrics collection with each point cast to Chart.js format.
+     * Build the metrics collection, with the series each chart draws attached.
+     *
+     * The hour and day windows are drawn from raw buckets, and the week and
+     * month windows from hourly totals rolled up in the database. A month of
+     * raw buckets was previously inlined into the page to draw all four.
      */
     private function prepareMetrics(): Collection
     {
-        $metrics = $this->metrics(Carbon::now()->subDays(30));
+        $rawSince = Carbon::now()->subHours(self::RAW_WINDOW_HOURS);
+        $hourlySince = Carbon::now()->subDays(self::HOURLY_WINDOW_DAYS);
 
-        $metrics->each(function ($metric) {
-            $metric->metricPoints->transform(fn ($point) => [
-                'x' => $point->created_at->utc(),
-                'y' => $point->value,
-            ]);
-        });
+        $metrics = $this->metrics($hourlySince);
 
-        return $metrics;
+        if ($metrics->isEmpty()) {
+            return $metrics;
+        }
+
+        $metricIds = $metrics->map(fn (Metric $metric): int => $metric->id)->all();
+
+        $raw = $this->rawTotals($metricIds, $rawSince);
+        $hourly = MetricPoint::hourlyTotals($metricIds, $hourlySince)
+            ?? $this->rawTotals($metricIds, $hourlySince);
+
+        return $metrics->each(fn (Metric $metric) => $metric->setAttribute('chart_points', [
+            'raw' => $this->chartPoints($metric, $raw[$metric->id] ?? []),
+            'hourly' => $this->chartPoints($metric, $hourly[$metric->id] ?? []),
+        ]));
     }
 
     /**
-     * Fetch the available metrics and their points within the chart window.
+     * Fetch the metrics with a chart to draw.
+     *
+     * @return EloquentCollection<int, Metric>
      */
-    private function metrics(Carbon $startDate): Collection
+    private function metrics(Carbon $startDate): EloquentCollection
     {
         return Metric::query()
             ->visible(auth()->check())
-            ->with([
-                'metricPoints' => fn ($query) => $query->where('created_at', '>=', $startDate)->orderBy('created_at'),
-            ])
+            ->with('component')
             ->where('display_chart', true)
             ->where(fn (Builder $query) => $query->where('show_when_empty', true)->orWhereHas('metricPoints', fn (Builder $query) => $query->where('created_at', '>=', $startDate)))
             ->orderBy('order')
+            ->orderBy('id')
             ->get();
+    }
+
+    /**
+     * Read the raw buckets for the given metrics, keyed by metric.
+     *
+     * @param  array<int, int>  $metricIds
+     * @return array<int, list<array{at: Carbon, sum: float, counter: int}>>
+     */
+    private function rawTotals(array $metricIds, Carbon $since): array
+    {
+        $points = MetricPoint::query()
+            ->whereIn('metric_id', $metricIds)
+            ->where('created_at', '>=', $since)
+            ->orderBy('created_at')
+            ->get(['metric_id', 'created_at', 'sum_value', 'counter']);
+
+        $totals = [];
+
+        foreach ($points as $point) {
+            if (! ($at = $point->created_at) instanceof Carbon) {
+                continue;
+            }
+
+            $totals[(int) $point->metric_id][] = [
+                'at' => $at,
+                'sum' => (float) $point->sum_value,
+                'counter' => (int) $point->counter,
+            ];
+        }
+
+        return $totals;
+    }
+
+    /**
+     * Cast a metric's totals into the series Chart.js draws, resolving each
+     * bucket through the metric's calculation type.
+     *
+     * @param  list<array{at: Carbon, sum: float, counter: int}>  $totals
+     * @return list<array{x: string, y: float}>
+     */
+    private function chartPoints(Metric $metric, array $totals): array
+    {
+        $places = $metric->places ?? 2;
+
+        return array_map(fn (array $total): array => [
+            'x' => $total['at']->utc()->toIso8601String(),
+            'y' => round(
+                MetricPoint::resolveValue(
+                    $metric->calc_type ?? MetricTypeEnum::sum,
+                    $total['sum'],
+                    $total['counter'],
+                ),
+                $places,
+            ),
+        ], $totals);
     }
 }

@@ -3,6 +3,7 @@
 namespace Cachet;
 
 use BladeUI\Icons\Factory;
+use Cachet\Actions\Metric\RecordMetricObservations;
 use Cachet\Badger\BadgerServiceProvider;
 use Cachet\Commands\AssetsCommand;
 use Cachet\Commands\CheckComponentsCommand;
@@ -12,6 +13,7 @@ use Cachet\Commands\NotifyLongRunningIncidentsCommand;
 use Cachet\Commands\PublishScheduledCommand;
 use Cachet\Commands\SendBeaconCommand;
 use Cachet\Commands\VersionCommand;
+use Cachet\Concerns\RecordsMetricObservations;
 use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Database\Seeders\DemoMetricSeeder;
 use Cachet\Listeners\SendWebhookListener;
@@ -21,6 +23,7 @@ use Cachet\Models\Component;
 use Cachet\Models\ComponentCheck;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
+use Cachet\Models\MetricPoint;
 use Cachet\Models\Schedule;
 use Cachet\Models\Subscriber;
 use Cachet\Models\WebhookAttempt;
@@ -67,6 +70,8 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->app->singleton(ViewManager::class);
         $this->app->scoped(Status::class);
         $this->app->register(BadgerServiceProvider::class);
+
+        $this->app->bind(RecordsMetricObservations::class, RecordMetricObservations::class);
 
         $this->configureSettingsCache();
     }
@@ -333,7 +338,7 @@ class CachetCoreServiceProvider extends ServiceProvider
             $schedule->command('cachet:publish-scheduled')->everyMinute();
 
             $schedule->command('model:prune', [
-                '--model' => [WebhookAttempt::class, ComponentCheck::class],
+                '--model' => [WebhookAttempt::class, ComponentCheck::class, MetricPoint::class],
             ])->daily();
 
             $schedule->command('db:seed', [

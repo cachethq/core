@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 
@@ -32,7 +33,9 @@ use Illuminate\Support\Collection;
  * @property MetricViewEnum $default_view
  * @property int $threshold
  * @property int $order
+ * @property ?int $component_id
  * @property ResourceVisibilityEnum $visible
+ * @property ?Component $component
  * @property Collection<int, MetricPoint> $metricPoints
  * @property Collection<int, MetricPoint> $recentMetricPoints
  *
@@ -78,7 +81,22 @@ class Metric extends Model
         'visible',
         'order',
         'threshold',
+        'component_id',
     ];
+
+    /**
+     * Get the component this metric describes, if any.
+     *
+     * The link groups the metric's chart under a component on the status
+     * page and is display only. A metric never drives component status;
+     * that is what component checks and incidents are for.
+     *
+     * @return BelongsTo<Component, $this>
+     */
+    public function component(): BelongsTo
+    {
+        return $this->belongsTo(Component::class);
+    }
 
     /**
      * Get the metrics points.
@@ -87,15 +105,33 @@ class Metric extends Model
      */
     public function metricPoints(): HasMany
     {
-        return $this->hasMany(MetricPoint::class);
+        return $this->hasMany(MetricPoint::class)->chaperone();
     }
 
     /**
      * Get the most recent metric points.
+     *
+     * @return HasMany<MetricPoint, $this>
      */
     public function recentMetricPoints(int $points = 15): HasMany
     {
         return $this->metricPoints()->latest()->limit($points);
+    }
+
+    /**
+     * Get the metric points the API is willing to embed in a metric.
+     *
+     * A metric's point history is unbounded, so the relationship behind
+     * "?include=points" has to be capped. Walk the paginated metric
+     * points endpoint for anything more than the cap.
+     *
+     * @return HasMany<MetricPoint, $this>
+     */
+    public function includedMetricPoints(): HasMany
+    {
+        return $this->recentMetricPoints(
+            (int) config('cachet.metrics.max_included_points', 100)
+        );
     }
 
     /**

@@ -159,7 +159,7 @@ it('normalizes an ISO 8601 metric point timestamp with an explicit offset to the
     $response->assertCreated();
     $this->assertDatabaseHas('metric_points', [
         'metric_id' => $metric->id,
-        'created_at' => '2026-08-06 15:01:30',
+        'created_at' => '2026-08-06 15:00:00',
     ]);
 });
 
