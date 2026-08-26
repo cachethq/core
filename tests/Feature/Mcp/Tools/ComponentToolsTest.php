@@ -14,6 +14,7 @@ use Cachet\Mcp\Tools\Components\ListComponents;
 use Cachet\Mcp\Tools\Components\UpdateComponent;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
@@ -85,9 +86,11 @@ it('updates a component', function () {
     CachetServer::tool(UpdateComponent::class, [
         'id' => $component->id,
         'status' => ComponentStatusEnum::partial_outage->value,
+        'tags' => ['Public API'],
     ])->assertOk();
 
     expect($component->fresh()->status)->toBe(ComponentStatusEnum::partial_outage);
+    expect($component->fresh()->tags->pluck('name')->all())->toBe(['Public API']);
 });
 
 it('deletes a component', function () {
@@ -104,11 +107,18 @@ it('deletes a component', function () {
 
 it('lists component groups with their components', function () {
     $group = ComponentGroup::factory()->create(['name' => 'Core Services']);
-    Component::factory()->create(['component_group_id' => $group->id]);
+    $components = Component::factory(2)->create(['component_group_id' => $group->id]);
+    $components->each->syncTags(['Core']);
 
-    CachetServer::tool(ListComponentGroups::class)
-        ->assertOk()
-        ->assertSee('Core Services');
+    Model::preventLazyLoading();
+
+    try {
+        CachetServer::tool(ListComponentGroups::class)
+            ->assertOk()
+            ->assertSee('Core Services');
+    } finally {
+        Model::preventLazyLoading(false);
+    }
 });
 
 it('creates a component group', function () {

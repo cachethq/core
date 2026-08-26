@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Mcp\CachetServer;
 use Cachet\Mcp\Tools\Schedules\CreateSchedule;
@@ -10,7 +11,9 @@ use Cachet\Mcp\Tools\Schedules\UpdateSchedule;
 use Cachet\Mcp\Tools\ScheduleUpdates\DeleteScheduleUpdate;
 use Cachet\Mcp\Tools\ScheduleUpdates\EditScheduleUpdate;
 use Cachet\Mcp\Tools\ScheduleUpdates\RecordScheduleUpdate;
+use Cachet\Models\Component;
 use Cachet\Models\Schedule;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
@@ -27,10 +30,20 @@ it('lists schedules for guests', function () {
 
 it('gets a schedule by id', function () {
     $schedule = Schedule::factory()->create(['name' => 'Database Upgrade']);
+    $schedule->syncTags(['Database']);
+    $schedule->components()->attach(Component::factory(2)->create(), [
+        'component_status' => ComponentStatusEnum::under_maintenance,
+    ]);
 
-    CachetServer::tool(GetSchedule::class, ['id' => $schedule->id])
-        ->assertOk()
-        ->assertSee('Database Upgrade');
+    Model::preventLazyLoading();
+
+    try {
+        CachetServer::tool(GetSchedule::class, ['id' => $schedule->id])
+            ->assertOk()
+            ->assertSee('Database Upgrade');
+    } finally {
+        Model::preventLazyLoading(false);
+    }
 });
 
 it('returns an error for an unknown schedule', function () {
@@ -66,9 +79,11 @@ it('updates a schedule', function () {
     CachetServer::tool(UpdateSchedule::class, [
         'id' => $schedule->id,
         'name' => 'New Name',
+        'tags' => ['Infrastructure'],
     ])->assertOk();
 
     expect($schedule->fresh()->name)->toBe('New Name');
+    expect($schedule->fresh()->tags->pluck('name')->all())->toBe(['Infrastructure']);
 });
 
 it('deletes a schedule', function () {

@@ -44,7 +44,7 @@ class ListComponentGroups extends Tool
                 if (! $this->isAuthenticated()) {
                     $query->enabled();
                 }
-            }])
+            }, ...$this->componentRelations('components')])
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->orderBy('order')
             ->simplePaginate(perPage: $this->perPage($request), page: $this->page($request));

@@ -17,6 +17,22 @@ use UnitEnum;
 trait PresentsResources
 {
     /**
+     * Relationships required to present a component without lazy loading.
+     *
+     * @return list<string>
+     */
+    protected function componentRelations(string $prefix = ''): array
+    {
+        $prefix = $prefix === '' ? '' : $prefix.'.';
+
+        return [
+            $prefix.'tags',
+            $prefix.'unresolvedIncidents',
+            $prefix.'activeMaintenance',
+        ];
+    }
+
+    /**
      * @return array{value: int|string, name: string}|null
      */
     protected function presentEnum(?UnitEnum $enum): ?array

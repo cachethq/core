@@ -59,7 +59,7 @@ class UpdateComponent extends Tool
         }
 
         $data = UpdateComponentRequestData::validateAndCreate(
-            $request->only(['name', 'description', 'status', 'link', 'order', 'enabled', 'component_group_id'])
+            $request->only(['tags', 'name', 'description', 'status', 'link', 'order', 'enabled', 'component_group_id'])
         );
 
         return Response::structured([

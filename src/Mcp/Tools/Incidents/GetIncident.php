@@ -38,7 +38,11 @@ class GetIncident extends Tool
     {
         $incident = Incident::query()
             ->viewableBy($this->isAuthenticated(), $this->tokenCan('incidents.manage'))
-            ->with(['components', 'updates'])
+            ->with([
+                ...$this->componentRelations('components'),
+                'tags',
+                'updates',
+            ])
             ->find($id = $request->integer('id'));
 
         if ($incident === null) {

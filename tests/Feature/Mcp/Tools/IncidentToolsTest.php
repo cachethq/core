@@ -20,6 +20,7 @@ use Cachet\Mcp\Tools\IncidentUpdates\RecordIncidentUpdate;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
@@ -45,12 +46,20 @@ it('filters incidents by status', function () {
 
 it('gets an incident with its updates and components', function () {
     $incident = Incident::factory()->create(['name' => 'Database Outage']);
+    $incident->syncTags(['Database']);
+    $incident->components()->attach(Component::factory(2)->create());
     $incident->updates()->create(['status' => IncidentStatusEnum::watching, 'message' => 'Monitoring the fix.']);
 
-    CachetServer::tool(GetIncident::class, ['id' => $incident->id])
-        ->assertOk()
-        ->assertSee('Database Outage')
-        ->assertSee('Monitoring the fix.');
+    Model::preventLazyLoading();
+
+    try {
+        CachetServer::tool(GetIncident::class, ['id' => $incident->id])
+            ->assertOk()
+            ->assertSee('Database Outage')
+            ->assertSee('Monitoring the fix.');
+    } finally {
+        Model::preventLazyLoading(false);
+    }
 });
 
 it('returns an error for an unknown incident', function () {
@@ -131,9 +140,11 @@ it('updates an incident', function () {
     CachetServer::tool(UpdateIncident::class, [
         'id' => $incident->id,
         'stickied' => true,
+        'tags' => ['Database'],
     ])->assertOk();
 
     expect($incident->fresh()->stickied)->toBeTrue();
+    expect($incident->fresh()->tags->pluck('name')->all())->toBe(['Database']);
 });
 
 it('deletes an incident', function () {
