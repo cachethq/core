@@ -95,6 +95,21 @@ Stick to the existing structure. Do not invent new top-level directories.
 - `database/`: Migrations, Factories, Seeders.
 - `workbench/`: Testbench application skeleton.
 
+### Package Boundaries
+
+- Core is installed into a host Laravel application. Treat `workbench/` and the
+  Testbench vendor skeleton as disposable hosts, not production source.
+- Run Artisan commands through `vendor/bin/testbench`. Generators may target the
+  host skeleton, so place final package code in the existing package directory.
+- Support the Laravel versions in `composer.json`. Use APIs shared by those
+  versions unless a tested compatibility branch is required.
+- Register integration through the package service providers. Do not edit or
+  assume control of a consumer application's bootstrap, routes, or configuration.
+- Treat config keys, route names, view namespaces, publish tags, migrations, and
+  public PHP APIs as consumer-facing compatibility contracts.
+- Keep source assets in `resources/` and generated distributable assets in
+  `public/`. Never edit Testbench's mirrored asset output directly.
+
 ## 6. Specific Rules (from CLAUDE.md)
 
 - **Laravel Boost Guidelines:**

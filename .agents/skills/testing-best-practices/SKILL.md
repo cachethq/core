@@ -11,6 +11,14 @@ metadata:
 This skill provides rules for designing Laravel tests. Each rule file explains what to do and why. Use `search-docs` for Laravel and Pest API syntax.
 This project uses Pest. Follow the corresponding guidance in each rule.
 
+## Core Package Conventions
+
+- All tests use `Cachet\\Tests\\TestCase`, Orchestra Testbench, `WithWorkbench`, and `RefreshDatabase`.
+- Treat `workbench/` as a host-application fixture. Keep package behavior in `src/` and add workbench code only when a realistic consumer integration needs it.
+- Exercise service-provider registration, namespaced resources, routes, migrations, configuration, and publishing through Testbench rather than assuming an application bootstrap file.
+- Run Artisan test commands through `vendor/bin/testbench`.
+- View tests need the package's compiled Vite assets. When the Testbench manifest is absent, run `composer build` before `npm run build` so the host exists before Vite mirrors assets into it. Use `withoutVite()` only when asset resolution is irrelevant to the behavior under test.
+
 ## Consistency First
 
 Read nearby tests before you choose syntax and organization.
