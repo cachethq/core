@@ -38,8 +38,8 @@ class MetricPointController extends Controller
     {
         $this->ensureMetricVisible($metric);
 
-        $query = MetricPoint::query()
-            ->where('metric_id', $metric->id)
+        // Query through the chaperoned relationship so each point reuses this metric.
+        $query = $metric->metricPoints()
             ->when(! $request->input('sort'), function (Builder $builder) {
                 $builder->orderBy('id');
             });
@@ -48,12 +48,6 @@ class MetricPointController extends Controller
             ->allowedIncludes(['metric'])
             ->allowedSorts(['id', 'value', 'created_at'])
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
-
-        // Every point on this page belongs to the metric we already have, and
-        // each one reads its calculation type back off it.
-        foreach ($points as $point) {
-            $point->setRelation('metric', $metric);
-        }
 
         return MetricPointResource::collection($points);
     }
