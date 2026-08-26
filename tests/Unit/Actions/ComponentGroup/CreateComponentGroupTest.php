@@ -19,6 +19,15 @@ it('can create a component group with just a name', function () {
         ->visible->toBe(ResourceVisibilityEnum::authenticated);
 });
 
+it('preserves nullable visibility input', function () {
+    $data = new CreateComponentGroupRequestData(
+        name: 'Services',
+        visible: null,
+    );
+
+    expect($data->toArray())->not->toHaveKey('visible');
+});
+
 it('can create a component group with a name, order and visibility', function () {
     $data = CreateComponentGroupRequestData::from([
         'name' => 'Services',
