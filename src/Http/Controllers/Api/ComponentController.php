@@ -16,7 +16,6 @@ use Cachet\Filters\MetaFilter;
 use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Component as ComponentResource;
 use Cachet\Models\Component;
-use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
@@ -94,15 +93,9 @@ class ComponentController extends Controller
      */
     protected function visibleComponents(): Builder
     {
-        $visibleGroups = ComponentGroup::query()->visible($this->isAuthenticated())->select('id');
-
         return Component::query()
             ->with(['unresolvedIncidents', 'activeMaintenance'])
-            ->unless($this->isAuthenticated(), fn (Builder $query) => $query->enabled())
-            ->where(function ($query) use ($visibleGroups): void {
-                $query->whereNull('component_group_id')
-                    ->orWhereIn('component_group_id', $visibleGroups);
-            });
+            ->visibleTo($this->isAuthenticated());
     }
 
     /**

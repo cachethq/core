@@ -2,6 +2,8 @@
 
 namespace Cachet\Mcp\Tools\Schedules;
 
+use Cachet\Concerns\ChecksApiAuthentication;
+use Cachet\Mcp\Concerns\GuardsMcpAbilities;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Cachet\Models\Schedule;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
@@ -14,6 +16,8 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[IsReadOnly]
 class GetSchedule extends Tool
 {
+    use ChecksApiAuthentication;
+    use GuardsMcpAbilities;
     use PresentsResources;
 
     protected string $name = 'get_schedule';
@@ -32,7 +36,13 @@ class GetSchedule extends Tool
 
     public function handle(Request $request): Response|ResponseFactory
     {
-        $schedule = Schedule::query()->with(['components', 'updates'])->find($id = $request->integer('id'));
+        $schedule = Schedule::query()
+            ->when(! $this->tokenCan('schedules.manage'), fn ($query) => $query->published())
+            ->with([
+                'components' => fn ($query) => $query->visibleTo($this->isAuthenticated()),
+                'updates',
+            ])
+            ->find($id = $request->integer('id'));
 
         if ($schedule === null) {
             return Response::error("Schedule [{$id}] not found.");

@@ -16,12 +16,11 @@ use Cachet\Filters\ScheduleStatusFilter;
 use Cachet\Filters\TagsFilter;
 use Cachet\Http\Resources\Schedule as ScheduleResource;
 use Cachet\Models\Component;
-use Cachet\Models\ComponentGroup;
 use Cachet\Models\Schedule;
 use Cachet\QueryBuilders\ScheduleBuilder;
 use Dedoc\Scramble\Attributes\Group;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -48,11 +47,16 @@ class ScheduleController extends Controller
     protected function allowedIncludes(): array
     {
         return [
-            'components',
-            AllowedInclude::callback('components.group', function (BelongsTo $query): void {
-                /** @var BelongsTo<ComponentGroup, Component> $query */
-                $query->visible($this->isAuthenticated());
+            AllowedInclude::callback('components', function (BelongsToMany $query): void {
+                /** @var BelongsToMany<Component, Schedule> $query */
+                $query->visibleTo($this->isAuthenticated());
             }),
+            AllowedInclude::callback('components.group', function (BelongsToMany $query): void {
+                /** @var BelongsToMany<Component, Schedule> $query */
+                $query
+                    ->visibleTo($this->isAuthenticated())
+                    ->with(['group' => fn ($query) => $query->visible($this->isAuthenticated())]);
+            }, 'components'),
             'updates',
             'user',
             'meta',

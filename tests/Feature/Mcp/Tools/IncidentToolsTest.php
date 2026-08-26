@@ -18,6 +18,7 @@ use Cachet\Mcp\Tools\IncidentUpdates\DeleteIncidentUpdate;
 use Cachet\Mcp\Tools\IncidentUpdates\EditIncidentUpdate;
 use Cachet\Mcp\Tools\IncidentUpdates\RecordIncidentUpdate;
 use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -303,6 +304,17 @@ it('reveals authenticated-only incidents by id to authenticated callers', functi
     CachetServer::tool(GetIncident::class, ['id' => $incident->id])
         ->assertOk()
         ->assertSee('Internal Incident');
+});
+
+it('does not reveal components in hidden groups through incidents', function () {
+    $group = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $component = Component::factory()->for($group, 'group')->create(['name' => 'Hidden Component']);
+    $incident = Incident::factory()->create();
+    $incident->components()->attach($component, ['component_status' => ComponentStatusEnum::major_outage]);
+
+    CachetServer::tool(GetIncident::class, ['id' => $incident->id])
+        ->assertOk()
+        ->assertDontSee('Hidden Component');
 });
 
 it('overlays the displayed component status while an incident is unresolved', function () {

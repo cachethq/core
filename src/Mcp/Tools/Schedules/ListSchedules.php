@@ -2,6 +2,7 @@
 
 namespace Cachet\Mcp\Tools\Schedules;
 
+use Cachet\Mcp\Concerns\GuardsMcpAbilities;
 use Cachet\Mcp\Concerns\InteractsWithPagination;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Cachet\Models\Schedule;
@@ -15,6 +16,7 @@ use Laravel\Mcp\Server\Tools\Annotations\IsReadOnly;
 #[IsReadOnly]
 class ListSchedules extends Tool
 {
+    use GuardsMcpAbilities;
     use InteractsWithPagination;
     use PresentsResources;
 
@@ -39,6 +41,7 @@ class ListSchedules extends Tool
     {
         $schedules = Schedule::query()
             ->with('tags')
+            ->when(! $this->tokenCan('schedules.manage'), fn ($query) => $query->published())
             ->when($request->filled('name'), fn ($query) => $query->where('name', 'like', '%'.$request->get('name').'%'))
             ->when($request->filled('tags'), fn ($query) => $query->withAnyTags($request->array('tags')))
             ->orderByDesc('scheduled_at')

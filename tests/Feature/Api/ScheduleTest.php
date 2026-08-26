@@ -563,7 +563,7 @@ it('can delete a schedule', function () {
     ]);
 });
 
-it('does not reveal component groups hidden from guests through schedule includes', function () {
+it('does not reveal components in hidden groups through schedule includes', function () {
     $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
     $component = Component::factory()->for($hiddenGroup, 'group')->create();
     $schedule = Schedule::factory()->create();
@@ -575,6 +575,6 @@ it('does not reveal component groups hidden from guests through schedule include
 
     $included = collect($response->json('included'));
 
-    expect($included->firstWhere('id', (string) $component->id))->not->toBeNull()
+    expect($included->firstWhere('id', (string) $component->id))->toBeNull()
         ->and($included->firstWhere('type', 'componentGroups'))->toBeNull();
 });
