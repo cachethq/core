@@ -3,7 +3,7 @@
 ## File Layout
 
 - Name each test file `{ClassName}Test.php`.
-- Place each test file at the same relative path as the class under test. The class `app/Actions/DeleteTeam.php` gets the test `tests/Unit/Actions/DeleteTeamTest.php`.
+- Place each test file at the same relative path as the class under test. The package class `src/Actions/DeleteTeam.php` gets the test `tests/Unit/Actions/DeleteTeamTest.php`.
 - Follow the project's convention for fixture files. If none exists, put fixtures in `tests/Fixtures/` and load them by path.
 - Move large literal values out of the test body and into fixture files.
 
