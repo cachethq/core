@@ -532,6 +532,21 @@ it('can update a schedule with components', function () {
     ]);
 });
 
+it('can remove every component from a schedule', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $schedule = Schedule::factory()->create();
+    $schedule->components()->attach(Component::factory()->create(), [
+        'component_status' => ComponentStatusEnum::under_maintenance,
+    ]);
+
+    putJson('/status/api/schedules/'.$schedule->id, [
+        'components' => [],
+    ])->assertOk();
+
+    expect($schedule->fresh()->components)->toBeEmpty();
+});
+
 it('cannot delete a schedule if not authenticated', function () {
     $schedule = Schedule::factory()->create();
 
