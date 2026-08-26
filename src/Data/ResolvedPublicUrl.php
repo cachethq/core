@@ -2,13 +2,13 @@
 
 namespace Cachet\Data;
 
-final readonly class ResolvedPublicUrl
+final class ResolvedPublicUrl extends BaseData
 {
     public function __construct(
-        public string $url,
-        public string $host,
-        public int $port,
-        public string $address,
+        public readonly string $url,
+        public readonly string $host,
+        public readonly int $port,
+        public readonly string $address,
     ) {}
 
     /**
