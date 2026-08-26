@@ -27,6 +27,10 @@ class NotifyIncidentUpdateSubscribers
             return;
         }
 
+        if (! $incident->isPublished()) {
+            return;
+        }
+
         if (! $this->mailSettings->allow_subscribers) {
             return;
         }

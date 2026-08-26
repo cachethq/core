@@ -1,5 +1,7 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\Mcp\CachetServer;
 use Cachet\Mcp\Tools\Schedules\CreateSchedule;
@@ -10,6 +12,8 @@ use Cachet\Mcp\Tools\Schedules\UpdateSchedule;
 use Cachet\Mcp\Tools\ScheduleUpdates\DeleteScheduleUpdate;
 use Cachet\Mcp\Tools\ScheduleUpdates\EditScheduleUpdate;
 use Cachet\Mcp\Tools\ScheduleUpdates\RecordScheduleUpdate;
+use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Schedule;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
@@ -25,12 +29,56 @@ it('lists schedules for guests', function () {
         ->assertStructuredContent(fn (AssertableJson $json) => $json->has('data', 2)->etc());
 });
 
+it('does not list unpublished schedules for guests', function () {
+    Schedule::factory()->create(['name' => 'Published Maintenance']);
+    Schedule::factory()->create([
+        'name' => 'Embargoed Maintenance',
+        'published_at' => now()->addDay(),
+    ]);
+
+    CachetServer::tool(ListSchedules::class)
+        ->assertOk()
+        ->assertSee('Published Maintenance')
+        ->assertDontSee('Embargoed Maintenance');
+});
+
 it('gets a schedule by id', function () {
     $schedule = Schedule::factory()->create(['name' => 'Database Upgrade']);
 
     CachetServer::tool(GetSchedule::class, ['id' => $schedule->id])
         ->assertOk()
         ->assertSee('Database Upgrade');
+});
+
+it('does not reveal an unpublished schedule to guests by id', function () {
+    $schedule = Schedule::factory()->create(['published_at' => now()->addDay()]);
+
+    CachetServer::tool(GetSchedule::class, ['id' => $schedule->id])
+        ->assertHasErrors(["Schedule [{$schedule->id}] not found."]);
+});
+
+it('reveals unpublished schedules to callers that can manage schedules', function () {
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
+    $schedule = Schedule::factory()->create([
+        'name' => 'Embargoed Maintenance',
+        'published_at' => now()->addDay(),
+    ]);
+
+    CachetServer::tool(GetSchedule::class, ['id' => $schedule->id])
+        ->assertOk()
+        ->assertSee('Embargoed Maintenance');
+});
+
+it('does not reveal components in hidden groups through schedules', function () {
+    $group = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
+    $component = Component::factory()->for($group, 'group')->create(['name' => 'Hidden Component']);
+    $schedule = Schedule::factory()->create();
+    $schedule->components()->attach($component, ['component_status' => ComponentStatusEnum::under_maintenance]);
+
+    CachetServer::tool(GetSchedule::class, ['id' => $schedule->id])
+        ->assertOk()
+        ->assertDontSee('Hidden Component');
 });
 
 it('returns an error for an unknown schedule', function () {

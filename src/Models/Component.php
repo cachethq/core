@@ -54,6 +54,7 @@ use Illuminate\Support\Str;
  * @method static Builder<static>|static enabled()
  * @method static Builder<static>|static outage()
  * @method static Builder<static>|static status(ComponentStatusEnum $status)
+ * @method static Builder<static>|static visibleTo(bool $authenticated)
  * @method static ComponentFactory factory($count = null, $state = [])
  */
 class Component extends Model implements Metable
@@ -240,6 +241,21 @@ class Component extends Model implements Metable
     public function scopeOutage(Builder $query): void
     {
         $query->whereIn('status', ComponentStatusEnum::outage());
+    }
+
+    /**
+     * Scope components to those visible to the current caller.
+     */
+    public function scopeVisibleTo(Builder $query, bool $authenticated): void
+    {
+        $visibleGroups = ComponentGroup::query()->visible($authenticated)->select('id');
+
+        $query
+            ->unless($authenticated, fn (Builder $query) => $query->where('enabled', true))
+            ->where(function (Builder $query) use ($visibleGroups): void {
+                $query->whereNull('component_group_id')
+                    ->orWhereIn('component_group_id', $visibleGroups);
+            });
     }
 
     /**

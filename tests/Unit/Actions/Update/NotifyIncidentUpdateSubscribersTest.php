@@ -69,6 +69,23 @@ it('does not notify unverified subscribers', function () {
     Notification::assertNothingSent();
 });
 
+it('does not notify subscribers about unpublished incident updates', function () {
+    Subscriber::factory()->verified()->create(['global' => true]);
+
+    $incident = Incident::factory()->create([
+        'notifications' => true,
+        'visible' => ResourceVisibilityEnum::guest,
+        'published_at' => now()->addDay(),
+    ]);
+
+    app(CreateUpdate::class)->handle($incident, CreateIncidentUpdateRequestData::from([
+        'message' => 'Embargoed incident details.',
+        'status' => IncidentStatusEnum::identified,
+    ]));
+
+    Notification::assertNothingSent();
+});
+
 it('notifies subscribers about updates to notifiable schedules', function () {
     $subscriber = Subscriber::factory()->verified()->create(['global' => true]);
 
@@ -88,6 +105,21 @@ it('does not notify about updates to schedules that do not want notifications', 
 
     app(CreateUpdate::class)->handle($schedule, CreateScheduleUpdateRequestData::from([
         'message' => 'Maintenance is progressing.',
+    ]));
+
+    Notification::assertNothingSent();
+});
+
+it('does not notify subscribers about unpublished schedule updates', function () {
+    Subscriber::factory()->verified()->create(['global' => true]);
+
+    $schedule = Schedule::factory()->create([
+        'notifications' => true,
+        'published_at' => now()->addDay(),
+    ]);
+
+    app(CreateUpdate::class)->handle($schedule, CreateScheduleUpdateRequestData::from([
+        'message' => 'Embargoed maintenance details.',
     ]));
 
     Notification::assertNothingSent();

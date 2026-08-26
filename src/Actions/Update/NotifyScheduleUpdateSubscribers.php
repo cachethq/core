@@ -26,6 +26,10 @@ class NotifyScheduleUpdateSubscribers
             return;
         }
 
+        if (! $schedule->isPublished()) {
+            return;
+        }
+
         if (! $this->mailSettings->allow_subscribers) {
             return;
         }

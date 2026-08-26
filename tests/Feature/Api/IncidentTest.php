@@ -590,7 +590,7 @@ it('shows an authenticated incident to authenticated users', function () {
     $response->assertJsonPath('data.attributes.id', $incident->id);
 });
 
-it('does not reveal component groups hidden from guests through incident includes', function () {
+it('does not reveal components in hidden groups through incident includes', function () {
     $hiddenGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::hidden]);
     $component = Component::factory()->for($hiddenGroup, 'group')->create();
     $incident = Incident::factory()->create();
@@ -602,7 +602,7 @@ it('does not reveal component groups hidden from guests through incident include
 
     $included = collect($response->json('included'));
 
-    expect($included->firstWhere('id', (string) $component->id))->not->toBeNull()
+    expect($included->firstWhere('id', (string) $component->id))->toBeNull()
         ->and($included->firstWhere('type', 'componentGroups'))->toBeNull();
 });
 
