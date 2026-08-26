@@ -93,6 +93,8 @@ it('exposes unpublished schedules to the mcp server for dashboard management', f
     Schedule::factory()->create(['name' => 'Published now']);
     Schedule::factory()->scheduled()->create(['name' => 'Prescheduled']);
 
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
+
     CachetServer::tool(ListSchedules::class)
         ->assertOk()
         ->assertStructuredContent(fn (AssertableJson $json) => $json->has('data', 2)->etc());
@@ -100,6 +102,8 @@ it('exposes unpublished schedules to the mcp server for dashboard management', f
 
 it('exposes a single unpublished schedule to the mcp server', function () {
     $schedule = Schedule::factory()->scheduled()->create(['name' => 'Prescheduled']);
+
+    Sanctum::actingAs(User::factory()->create(), ['schedules.manage']);
 
     CachetServer::tool(GetSchedule::class, ['id' => $schedule->id])
         ->assertOk()
