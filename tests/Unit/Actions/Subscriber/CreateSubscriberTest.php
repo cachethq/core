@@ -2,6 +2,7 @@
 
 use Cachet\Actions\Subscriber\CreateSubscriber;
 use Cachet\Events\Subscribers\SubscriberCreated;
+use Cachet\Events\Subscribers\SubscriberVerified;
 use Cachet\Models\Component;
 use Cachet\Models\Subscriber;
 use Illuminate\Support\Facades\Event;
@@ -81,9 +82,12 @@ it('updates the global state of an existing subscriber without resetting verific
 it('verifies an existing subscriber when requested', function () {
     $existing = Subscriber::factory()->create(['email' => 'james@alt-three.com']);
 
+    Event::fake([SubscriberVerified::class]);
+
     $subscriber = app(CreateSubscriber::class)->handle($existing->email, verified: true);
 
     expect($subscriber->hasVerifiedEmail())->toBeTrue();
+    Event::assertDispatched(SubscriberVerified::class);
 });
 
 it('does not duplicate an existing component subscription', function () {

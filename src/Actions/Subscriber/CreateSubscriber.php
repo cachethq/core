@@ -13,14 +13,21 @@ class CreateSubscriber
     public function handle(string $email, bool $global = true, array $components = [], bool $verified = false, ?array $meta = null): Subscriber
     {
         return DB::transaction(function () use ($email, $global, $components, $verified, $meta): Subscriber {
-            $subscriber = Subscriber::firstOrNew(['email' => $email]);
+            $subscriber = Subscriber::firstOrCreate(['email' => $email], [
+                'global' => $global,
+                'email_verified_at' => $verified ? now() : null,
+            ]);
+
             $subscriber->fill(['global' => $global]);
 
-            if ($verified && ! $subscriber->hasVerifiedEmail()) {
-                $subscriber->email_verified_at = now();
+            if ($subscriber->isDirty('global')) {
+                $subscriber->save();
             }
 
-            $subscriber->save();
+            if ($verified) {
+                $subscriber->verify();
+            }
+
             $subscriber->components()->syncWithoutDetaching($components);
 
             if ($meta !== null) {
