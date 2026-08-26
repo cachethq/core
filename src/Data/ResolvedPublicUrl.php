@@ -16,6 +16,9 @@ final readonly class ResolvedPublicUrl
      */
     public function curlResolve(): string
     {
-        return sprintf('%s:%d:%s', $this->host, $this->port, $this->address);
+        $host = str_contains($this->host, ':') ? "[{$this->host}]" : $this->host;
+        $address = str_contains($this->address, ':') ? "[{$this->address}]" : $this->address;
+
+        return sprintf('%s:%d:%s', $host, $this->port, $address);
     }
 }

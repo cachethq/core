@@ -107,11 +107,17 @@ class OhDear extends Page
         $this->validate();
 
         try {
+            if (! defined('CURLOPT_RESOLVE')) {
+                throw new ConnectionException('Secure URL resolution requires the PHP cURL extension.');
+            }
+
+            $curlResolveOption = constant('CURLOPT_RESOLVE');
+
             $resolvedUrl = $resolvePublicUrlAction->handle($this->url);
 
             $ohDear = Http::withOptions([
                 'allow_redirects' => false,
-                'curl' => [\CURLOPT_RESOLVE => [$resolvedUrl->curlResolve()]],
+                'curl' => [$curlResolveOption => [$resolvedUrl->curlResolve()]],
             ])
                 ->connectTimeout(5)
                 ->timeout(10)

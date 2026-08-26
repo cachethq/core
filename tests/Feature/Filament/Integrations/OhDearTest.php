@@ -24,7 +24,7 @@ it('renders headings for each import section', function () {
 });
 
 it('rejects private import URLs before sending a request', function () {
-    Http::fake();
+    Http::preventStrayRequests();
 
     livewire(OhDear::class)
         ->fillForm(['url' => 'http://169.254.169.254'])
@@ -35,6 +35,8 @@ it('rejects private import URLs before sending a request', function () {
 });
 
 it('imports from a validated public URL', function () {
+    Http::preventStrayRequests();
+
     Http::fake([
         'https://93.184.216.34/json' => Http::response([
             'sites' => [],

@@ -9,6 +9,13 @@ it('resolves a public IP URL for a pinned request', function () {
         ->and($resolvedUrl->curlResolve())->toBe('93.184.216.34:443:93.184.216.34');
 });
 
+it('brackets public IPv6 addresses for a pinned request', function () {
+    $resolvedUrl = app(ResolvePublicUrl::class)->handle('https://[2606:4700:4700::1111]/');
+
+    expect($resolvedUrl->url)->toBe('https://[2606:4700:4700::1111]/json')
+        ->and($resolvedUrl->curlResolve())->toBe('[2606:4700:4700::1111]:443:[2606:4700:4700::1111]');
+});
+
 it('rejects non-public destinations', function (string $url) {
     app(ResolvePublicUrl::class)->handle($url);
 })->throws(InvalidArgumentException::class)->with([
@@ -19,6 +26,7 @@ it('rejects non-public destinations', function (string $url) {
     'loopback IPv6' => 'http://[::1]',
     'private IPv6' => 'http://[fc00::1]',
     'link-local IPv6' => 'http://[fe80::1]',
+    'site-local IPv6' => 'http://[fec0::1]',
 ]);
 
 it('rejects unsupported URL schemes', function () {
