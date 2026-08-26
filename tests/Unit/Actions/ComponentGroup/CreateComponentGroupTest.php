@@ -7,17 +7,17 @@ use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 
 it('can create a component group with just a name', function () {
-    $data = [
+    $data = CreateComponentGroupRequestData::from([
         'name' => 'Services',
-    ];
+    ]);
 
     $componentGroup = app(CreateComponentGroup::class)->handle($data);
 
     expect($componentGroup)
-        ->name->toBe($data['name'])
+        ->name->toBe($data->name)
         ->order->toBeNull()
-        ->visible->toBeNull();
-})->todo('Make visible default to non-null value?');
+        ->visible->toBe(ResourceVisibilityEnum::authenticated);
+});
 
 it('can create a component group with a name, order and visibility', function () {
     $data = CreateComponentGroupRequestData::from([

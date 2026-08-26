@@ -111,7 +111,7 @@
         "test:lint": [
             "pint --test"
         ],
-        "test:unit": "pest --parallel --processes=10 --ci --compact",
+        "test:unit": "pest --parallel --processes=10 --passthru-php=\"'-d' 'memory_limit=512M'\" --ci --compact",
         "test": [
             "@test:unit"
         ]

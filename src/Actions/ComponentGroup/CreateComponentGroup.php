@@ -11,9 +11,6 @@ class CreateComponentGroup
     /**
      * Handle the action.
      */
-    /**
-     * Handle the action.
-     */
     public function handle(CreateComponentGroupRequestData $data): ComponentGroup
     {
         return tap(ComponentGroup::create(

@@ -9,7 +9,6 @@ use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class CreateIncident
 {
@@ -32,10 +31,9 @@ class CreateIncident
         }
 
         $incident = DB::transaction(function () use ($data): Incident {
-            return tap(Incident::create(array_merge(
-                ['guid' => Str::uuid()],
+            return tap(Incident::create(
                 $data->except('components', 'meta', 'tags')->toArray()
-            )), function (Incident $incident) use ($data) {
+            ), function (Incident $incident) use ($data) {
                 $components = collect($data->components)
                     ->mapWithKeys(fn (IncidentComponentRequestData $component) => [
                         $component->id => ['component_status' => $component->status],

@@ -59,9 +59,4 @@ final class UpdateIncidentRequestData extends BaseData
             'meta' => ['nullable', 'array'],
         ];
     }
-
-    public function toArray(): array
-    {
-        return parent::toArray();
-    }
 }
