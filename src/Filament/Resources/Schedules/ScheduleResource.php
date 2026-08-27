@@ -7,6 +7,7 @@ use Cachet\Cachet;
 use Cachet\Data\Requests\ScheduleUpdate\CreateScheduleUpdateRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ScheduleStatusEnum;
+use Cachet\Filament\Components\ComponentOptions;
 use Cachet\Filament\Resources\Schedules\Pages\CreateSchedule;
 use Cachet\Filament\Resources\Schedules\Pages\EditSchedule;
 use Cachet\Filament\Resources\Schedules\Pages\ListSchedules;
@@ -78,11 +79,11 @@ class ScheduleResource extends Resource
                         ->addActionLabel(__('cachet::schedule.form.add_component.action_label'))
                         ->schema([
                             Select::make('component_id')
+                                ->label(__('cachet::schedule.form.add_component.component_label'))
                                 ->preload()
                                 ->required()
-                                ->relationship('component', 'name')
-                                ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-                                ->label(__('cachet::schedule.form.add_component.component_label')),
+                                ->options(fn (): array => ComponentOptions::forSelect())
+                                ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
                             Select::make('component_status')
                                 ->options(ComponentStatusEnum::class)
                                 ->default(ComponentStatusEnum::under_maintenance->value)
