@@ -3,6 +3,7 @@
 namespace Cachet\Filament\Resources\Schedules\RelationManagers;
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Filament\Components\ComponentOptions;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
@@ -20,7 +21,7 @@ class ComponentsRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('Components');
+        return trans_choice('cachet::component.resource_label', 2);
     }
 
     public function form(Schema $schema): Schema
@@ -35,24 +36,27 @@ class ComponentsRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('name')
-            ->modelLabel(__('Component'))
-            ->pluralModelLabel(__('Components'))
+            ->modelLabel(trans_choice('cachet::component.resource_label', 1))
+            ->pluralModelLabel(trans_choice('cachet::component.resource_label', 2))
             ->columns([
                 TextColumn::make('name')
-                    ->label(__('Name')),
+                    ->label(__('cachet::component.list.headers.name')),
             ])
             ->filters([
                 //
             ])
             ->headerActions([
                 AttachAction::make()
-                    ->preloadRecordSelect()
-                    ->recordSelect(
-                        fn (Select $select) => $select->placeholder(__('Select a component')),
-                    )
+                    ->modalHeading(__('cachet::component.attach.heading'))
                     ->multiple()
-                    ->schema(fn (AttachAction $action): array => [
-                        $action->getRecordSelect(),
+                    ->form(fn (): array => [
+                        Select::make('recordId')
+                            ->label(trans_choice('cachet::component.resource_label', 2))
+                            ->placeholder(__('cachet::component.attach.placeholder'))
+                            ->options(fn (): array => ComponentOptions::forSelect($this->getOwnerRecord()))
+                            ->searchable()
+                            ->multiple()
+                            ->required(),
                         Select::make('component_status')
                             ->options(ComponentStatusEnum::class)
                             ->default(ComponentStatusEnum::under_maintenance->value)
