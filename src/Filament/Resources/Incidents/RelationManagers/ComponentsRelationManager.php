@@ -3,8 +3,7 @@
 namespace Cachet\Filament\Resources\Incidents\RelationManagers;
 
 use Cachet\Enums\ComponentStatusEnum;
-use Cachet\Filament\Resources\Incidents\IncidentResource;
-use Cachet\Models\Incident;
+use Cachet\Filament\Components\ComponentOptions;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
@@ -66,11 +65,7 @@ class ComponentsRelationManager extends RelationManager
                         Select::make('recordId')
                             ->label(trans_choice('cachet::component.resource_label', 2))
                             ->placeholder(__('cachet::component.attach.placeholder'))
-                            ->options(function (): array {
-                                $owner = $this->getOwnerRecord();
-
-                                return IncidentResource::getComponentOptions($owner instanceof Incident ? $owner : null);
-                            })
+                            ->options(fn (): array => ComponentOptions::forSelect($this->getOwnerRecord()))
                             ->searchable()
                             ->multiple()
                             ->required(),
