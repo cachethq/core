@@ -16,7 +16,7 @@ it('can create a component group with just a name', function () {
     expect($componentGroup)
         ->name->toBe($data->name)
         ->order->toBeNull()
-        ->visible->toBe(ResourceVisibilityEnum::authenticated);
+        ->visible->toBe(ResourceVisibilityEnum::unauthenticated);
 });
 
 it('preserves nullable visibility input', function () {
