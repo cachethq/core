@@ -1,39 +1,42 @@
-import { cpSync, existsSync, rmSync } from 'node:fs'
+import { cpSync, existsSync, realpathSync, rmSync } from 'node:fs'
 import { defineConfig } from 'vite'
 import laravel from 'laravel-vite-plugin'
-import tailwindcss from "@tailwindcss/vite"
+import tailwindcss from '@tailwindcss/vite'
 
 /**
  * Mirror the compiled assets into the Testbench skeleton after each build.
  */
 function syncTestbenchAssets() {
-  const source = 'public/build'
-  const target = 'vendor/orchestra/testbench-core/laravel/public/vendor/cachethq/cachet/build'
+    const sourceRoot = 'public'
+    const targetRoot = 'vendor/orchestra/testbench-core/laravel/public/vendor/cachethq/cachet'
+    const source = `${sourceRoot}/build`
+    const target = `${targetRoot}/build`
 
-  return {
-    name: 'cachet-sync-testbench-assets',
-    apply: 'build',
-    closeBundle() {
-      if (!existsSync(`${target}/..`)) {
-        return
-      }
+    return {
+        name: 'cachet-sync-testbench-assets',
+        apply: 'build',
+        closeBundle() {
+            if (!existsSync(targetRoot)) {
+                return
+            }
 
-      rmSync(target, { recursive: true, force: true })
-      cpSync(source, target, { recursive: true })
-    },
-  }
+            // Testbench may expose the package public directory through a symlink.
+            if (realpathSync(sourceRoot) === realpathSync(targetRoot)) {
+                return
+            }
+
+            rmSync(target, { recursive: true, force: true })
+            cpSync(source, target, { recursive: true })
+        },
+    }
 }
 
 export default defineConfig({
-  plugins: [
-    laravel({
-      input: [
-        'resources/css/cachet.css',
-        'resources/css/dashboard/theme.css',
-        'resources/js/cachet.js',
-      ],
-    }),
-    tailwindcss(),
-    syncTestbenchAssets(),
-  ],
+    plugins: [
+        laravel({
+            input: ['resources/css/cachet.css', 'resources/css/dashboard/theme.css', 'resources/js/cachet.js'],
+        }),
+        tailwindcss(),
+        syncTestbenchAssets(),
+    ],
 })
