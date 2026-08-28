@@ -8,9 +8,10 @@ use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Models\Component;
 use Cachet\Models\IncidentTemplate;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Str;
 
 beforeEach(function () {
-    Event::fake();
+    Event::fake([IncidentCreated::class]);
 });
 
 it('can create an incident', function () {
@@ -24,7 +25,8 @@ it('can create an incident', function () {
 
     expect($incident)
         ->name->toBe($data->name)
-        ->message->toBe($data->message);
+        ->message->toBe($data->message)
+        ->and(Str::isUuid((string) $incident->guid))->toBeTrue();
 
     Event::assertDispatched(IncidentCreated::class, fn ($event) => $event->incident->is($incident));
 });
