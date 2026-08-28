@@ -8,13 +8,12 @@ use Cachet\Data\Requests\IncidentUpdate\CreateIncidentUpdateRequestData;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Filament\Components\ComponentOptions;
 use Cachet\Filament\Resources\Incidents\Pages\CreateIncident;
 use Cachet\Filament\Resources\Incidents\Pages\EditIncident;
 use Cachet\Filament\Resources\Incidents\Pages\ListIncidents;
 use Cachet\Filament\Resources\Incidents\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
-use Cachet\Models\Component;
-use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Settings\MailSettings;
 use Cachet\Status;
@@ -95,7 +94,7 @@ class IncidentResource extends Resource
                                 ->label(__('cachet::incident.form.add_component.component_label'))
                                 ->preload()
                                 ->required()
-                                ->options(fn (): array => static::getComponentOptions())
+                                ->options(fn (): array => ComponentOptions::forSelect())
                                 ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
                             ToggleButtons::make('component_status')
                                 ->label(__('cachet::incident.form.add_component.status_label'))
@@ -148,40 +147,6 @@ class IncidentResource extends Resource
                 ])->columnSpanFull(),
             ])
             ->columns(4);
-    }
-
-    /**
-     * Get components grouped by their component group for incident selection.
-     *
-     * @return array<string, array<int, string>>
-     */
-    public static function getComponentOptions(?Incident $excludeAttachedTo = null): array
-    {
-        $query = Component::query()
-            ->with('group')
-            ->leftJoin('component_groups', 'components.component_group_id', '=', 'component_groups.id')
-            ->orderByRaw('component_groups.id is null')
-            ->orderBy('component_groups.order')
-            ->orderBy('component_groups.name')
-            ->orderBy('components.order')
-            ->orderBy('components.name')
-            ->select('components.*');
-
-        if ($excludeAttachedTo instanceof Incident) {
-            $query->whereNotIn('components.id', $excludeAttachedTo->components()->pluck('components.id'));
-        }
-
-        return $query
-            ->get()
-            ->groupBy(function (Component $component): string {
-                $group = $component->group;
-
-                return $group instanceof ComponentGroup
-                    ? $group->name
-                    : __('cachet::component.list.ungrouped');
-            })
-            ->map(fn ($components): array => $components->pluck('name', 'id')->all())
-            ->all();
     }
 
     public static function table(Table $table): Table

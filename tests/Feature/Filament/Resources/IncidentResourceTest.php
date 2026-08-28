@@ -5,7 +5,7 @@ namespace Tests\Feature\Filament\Resources;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
-use Cachet\Filament\Resources\Incidents\IncidentResource;
+use Cachet\Filament\Components\ComponentOptions;
 use Cachet\Filament\Resources\Incidents\Pages\CreateIncident;
 use Cachet\Filament\Resources\Incidents\Pages\EditIncident;
 use Cachet\Filament\Resources\Incidents\Pages\ListIncidents;
@@ -147,7 +147,7 @@ it('excludes already attached components from the attach action options', functi
 
     $incident->components()->attach($attached->id, ['component_status' => ComponentStatusEnum::operational->value]);
 
-    $options = IncidentResource::getComponentOptions($incident);
+    $options = ComponentOptions::forSelect($incident);
 
     expect(collect($options)->flatten()->all())->not->toContain('Already Attached');
 });
