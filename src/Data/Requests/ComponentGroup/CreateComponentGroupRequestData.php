@@ -15,7 +15,7 @@ final class CreateComponentGroupRequestData extends BaseData
     public function __construct(
         public readonly string $name,
         public readonly ?int $order = null,
-        public readonly ?ResourceVisibilityEnum $visible = ResourceVisibilityEnum::unauthenticated,
+        public readonly ?ResourceVisibilityEnum $visible = ResourceVisibilityEnum::guest,
         public readonly ?ComponentGroupVisibilityEnum $collapsed = null,
         public readonly ?ResourceOrderColumnEnum $orderColumn = null,
         public readonly ?ResourceOrderDirectionEnum $orderDirection = null,
