@@ -238,6 +238,30 @@ it('can create a verified subscriber without sending a verification email', func
     Notification::assertNothingSent();
 });
 
+it('can verify and update an existing subscriber', function () {
+    Notification::fake();
+
+    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+
+    $subscriber = Subscriber::factory()->create([
+        'email' => 'james@alt-three.com',
+        'global' => true,
+    ]);
+
+    postJson('/status/api/subscribers', [
+        'email' => $subscriber->email,
+        'global' => false,
+        'verified' => true,
+    ])->assertOk();
+
+    $subscriber->refresh();
+
+    expect((bool) $subscriber->global)->toBeFalse();
+    expect($subscriber->hasVerifiedEmail())->toBeTrue();
+
+    Notification::assertNothingSent();
+});
+
 it('can create a subscriber with component subscriptions', function () {
     Notification::fake();
 

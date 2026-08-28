@@ -45,3 +45,16 @@ it('can update a schedule with components', function () {
         'component_status' => ComponentStatusEnum::major_outage,
     ]);
 });
+
+it('can remove every component from a schedule', function () {
+    $schedule = Schedule::factory()->create();
+    $schedule->components()->attach(Component::factory()->create(), [
+        'component_status' => ComponentStatusEnum::under_maintenance,
+    ]);
+
+    $data = UpdateScheduleRequestData::from(['components' => []]);
+
+    app(UpdateSchedule::class)->handle($schedule, $data);
+
+    expect($schedule->fresh()->components)->toBeEmpty();
+});

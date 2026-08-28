@@ -23,7 +23,7 @@ class UpdateSchedule
             $schedule->syncTags($data->tags);
         }
 
-        if ($data->components) {
+        if ($data->components !== null) {
             $components = collect($data->components)
                 ->mapWithKeys(fn (ScheduleComponentRequestData $component) => [
                     $component->id => ['component_status' => $component->status],
