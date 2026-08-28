@@ -32,7 +32,7 @@ class UnsubscribeSubscriber extends Tool
 
     public function handle(Request $request, UnsubscribeSubscriberAction $action): Response
     {
-        if (! $this->tokenCan('subscribers.delete')) {
+        if (! $this->tokenCanAnd('subscribers.delete', 'viewAny', Subscriber::class)) {
             return $this->missingAbility('subscribers.delete');
         }
 
@@ -42,6 +42,10 @@ class UnsubscribeSubscriber extends Tool
             return Response::error("Subscriber [{$id}] not found.");
         }
 
+        if (! $this->tokenCanAnd('subscribers.delete', 'delete', $subscriber)) {
+            return $this->missingAbility('subscribers.delete');
+        }
+
         $action->handle($subscriber);
 
         return Response::text("Subscriber [{$id}] unsubscribed.");
@@ -49,6 +53,6 @@ class UnsubscribeSubscriber extends Tool
 
     public function shouldRegister(): bool
     {
-        return $this->tokenCan('subscribers.delete');
+        return $this->tokenCanAnd('subscribers.delete', 'viewAny', Subscriber::class);
     }
 }

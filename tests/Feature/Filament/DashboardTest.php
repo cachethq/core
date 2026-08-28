@@ -93,6 +93,7 @@ it('plots all 30 days including days without activity', function () {
 
 it('links overview stats to their relevant resources', function () {
     Filament::setCurrentPanel(Filament::getPanel('cachet'));
+    actingAs(User::factory()->create(['is_admin' => true]));
 
     $overview = new class extends Overview
     {

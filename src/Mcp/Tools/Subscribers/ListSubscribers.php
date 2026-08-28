@@ -39,7 +39,7 @@ class ListSubscribers extends Tool
 
     public function handle(Request $request): Response|ResponseFactory
     {
-        if (! $this->tokenCan('subscribers.manage')) {
+        if (! $this->tokenCanAnd('subscribers.manage', 'viewAny', Subscriber::class)) {
             return $this->missingAbility('subscribers.manage');
         }
 
@@ -57,6 +57,6 @@ class ListSubscribers extends Tool
 
     public function shouldRegister(): bool
     {
-        return $this->tokenCan('subscribers.manage');
+        return $this->tokenCanAnd('subscribers.manage', 'viewAny', Subscriber::class);
     }
 }
