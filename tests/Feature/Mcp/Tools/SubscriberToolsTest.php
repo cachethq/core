@@ -5,8 +5,10 @@ use Cachet\Mcp\Tools\Subscribers\CreateSubscriber;
 use Cachet\Mcp\Tools\Subscribers\ListSubscribers;
 use Cachet\Mcp\Tools\Subscribers\UnsubscribeSubscriber;
 use Cachet\Mcp\Tools\Subscribers\UpdateSubscriber;
+use Cachet\Models\Component;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\VerifySubscriberEmail;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
@@ -31,11 +33,20 @@ it('hides the subscribers list from tokens without the ability', function () {
 it('lists subscribers with the ability', function () {
     Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
 
-    Subscriber::factory(2)->create();
+    $components = Component::factory(2)->create();
+    $components->each->syncTags(['Public API']);
+    $subscriber = Subscriber::factory()->create();
+    $subscriber->components()->attach($components);
 
-    CachetServer::tool(ListSubscribers::class)
-        ->assertOk()
-        ->assertStructuredContent(fn (AssertableJson $json) => $json->has('data', 2)->etc());
+    Model::preventLazyLoading();
+
+    try {
+        CachetServer::tool(ListSubscribers::class)
+            ->assertOk()
+            ->assertStructuredContent(fn (AssertableJson $json) => $json->has('data', 1)->etc());
+    } finally {
+        Model::preventLazyLoading(false);
+    }
 });
 
 it('creates a subscriber and sends a verification email', function () {

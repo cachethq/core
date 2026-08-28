@@ -59,7 +59,7 @@ class UpdateIncident extends Tool
         }
 
         $data = UpdateIncidentRequestData::validateAndCreate(
-            $request->only(['name', 'message', 'status', 'visible', 'stickied', 'notifications', 'occurred_at', 'published_at'])
+            $request->only(['tags', 'name', 'message', 'status', 'visible', 'stickied', 'notifications', 'occurred_at', 'published_at'])
         );
 
         return Response::structured(['data' => $this->presentIncident($action->handle($incident, $data))]);

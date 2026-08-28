@@ -36,7 +36,10 @@ class GetMetric extends Tool
     {
         $metric = Metric::query()
             ->visible($this->isAuthenticated())
-            ->with(['metricPoints' => fn ($query) => $query->latest()->limit(50)])
+            ->with([
+                'metricPoints' => fn ($query) => $query->latest()->limit(50),
+                'tags',
+            ])
             ->find($id = $request->integer('id'));
 
         if ($metric === null) {

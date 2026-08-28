@@ -10,6 +10,7 @@ use Cachet\Mcp\Tools\Metrics\GetMetric;
 use Cachet\Mcp\Tools\Metrics\ListMetrics;
 use Cachet\Mcp\Tools\Metrics\UpdateMetric;
 use Cachet\Models\Metric;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
@@ -26,11 +27,18 @@ it('lists metrics for guests', function () {
 
 it('gets a metric with recent points', function () {
     $metric = Metric::factory()->create(['name' => 'Response Time']);
+    $metric->syncTags(['Latency']);
     $metric->metricPoints()->create(['value' => 42.5]);
 
-    CachetServer::tool(GetMetric::class, ['id' => $metric->id])
-        ->assertOk()
-        ->assertSee('Response Time');
+    Model::preventLazyLoading();
+
+    try {
+        CachetServer::tool(GetMetric::class, ['id' => $metric->id])
+            ->assertOk()
+            ->assertSee('Response Time');
+    } finally {
+        Model::preventLazyLoading(false);
+    }
 });
 
 it('returns an error for an unknown metric', function () {
@@ -57,9 +65,11 @@ it('updates a metric', function () {
     CachetServer::tool(UpdateMetric::class, [
         'id' => $metric->id,
         'suffix' => 'seconds',
+        'tags' => ['Latency'],
     ])->assertOk();
 
     expect($metric->fresh()->suffix)->toBe('seconds');
+    expect($metric->fresh()->tags->pluck('name')->all())->toBe(['Latency']);
 });
 
 it('deletes a metric', function () {

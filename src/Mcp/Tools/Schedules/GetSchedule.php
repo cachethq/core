@@ -32,7 +32,13 @@ class GetSchedule extends Tool
 
     public function handle(Request $request): Response|ResponseFactory
     {
-        $schedule = Schedule::query()->with(['components', 'updates'])->find($id = $request->integer('id'));
+        $schedule = Schedule::query()
+            ->with([
+                ...$this->componentRelations('components'),
+                'tags',
+                'updates',
+            ])
+            ->find($id = $request->integer('id'));
 
         if ($schedule === null) {
             return Response::error("Schedule [{$id}] not found.");

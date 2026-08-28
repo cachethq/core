@@ -63,7 +63,7 @@ class UpdateSchedule extends Tool
         }
 
         $data = UpdateScheduleRequestData::validateAndCreate(
-            $request->only(['name', 'message', 'scheduled_at', 'completed_at', 'published_at', 'components'])
+            $request->only(['tags', 'name', 'message', 'scheduled_at', 'completed_at', 'published_at', 'components'])
         );
 
         return Response::structured(['data' => $this->presentSchedule($action->handle($schedule, $data))]);

@@ -53,7 +53,7 @@ class UpdateMetric extends Tool
         }
 
         $data = UpdateMetricRequestData::validateAndCreate(
-            $request->only(['name', 'suffix', 'description', 'default_value', 'threshold'])
+            $request->only(['tags', 'name', 'suffix', 'description', 'default_value', 'threshold'])
         );
 
         return Response::structured(['data' => $this->presentMetric($action->handle($metric, $data))]);

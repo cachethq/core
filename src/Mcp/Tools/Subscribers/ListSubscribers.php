@@ -44,7 +44,7 @@ class ListSubscribers extends Tool
         }
 
         $subscribers = Subscriber::query()
-            ->with('components')
+            ->with($this->componentRelations('components'))
             ->when($request->filled('email'), fn ($query) => $query->where('email', 'like', '%'.$request->get('email').'%'))
             ->when($request->filled('global'), fn ($query) => $query->where('global', $request->boolean('global')))
             ->simplePaginate(perPage: $this->perPage($request), page: $this->page($request));
