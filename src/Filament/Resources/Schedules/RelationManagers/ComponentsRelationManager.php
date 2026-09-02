@@ -9,6 +9,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
@@ -57,10 +58,12 @@ class ComponentsRelationManager extends RelationManager
                             ->searchable()
                             ->multiple()
                             ->required(),
-                        Select::make('component_status')
+                        ToggleButtons::make('component_status')
                             ->options(ComponentStatusEnum::class)
                             ->default(ComponentStatusEnum::under_maintenance->value)
                             ->required()
+                            ->inline()
+                            ->columnSpanFull()
                             ->label(__('cachet::schedule.form.add_component.status_label')),
                     ]),
             ])
