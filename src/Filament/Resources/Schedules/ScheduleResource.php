@@ -27,6 +27,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
@@ -84,11 +85,12 @@ class ScheduleResource extends Resource
                                 ->required()
                                 ->options(fn (): array => ComponentOptions::forSelect())
                                 ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
-                            Select::make('component_status')
+                            ToggleButtons::make('component_status')
+                                ->label(__('cachet::schedule.form.add_component.status_label'))
+                                ->inline()
                                 ->options(ComponentStatusEnum::class)
                                 ->default(ComponentStatusEnum::under_maintenance->value)
-                                ->required()
-                                ->label(__('cachet::schedule.form.add_component.status_label')),
+                                ->required(),
                         ])
                         ->label(__('cachet::schedule.form.add_component.header'))
                         ->columnSpanFull(),
