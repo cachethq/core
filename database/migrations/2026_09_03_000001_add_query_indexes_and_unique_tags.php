@@ -35,10 +35,6 @@ return new class extends Migration
             $table->index(['notifications', 'published_notified_at', 'published_at'], 'incidents_publish_index');
         });
 
-        Schema::table('metric_points', function (Blueprint $table): void {
-            $table->index(['metric_id', 'created_at'], 'metric_points_metric_created_index');
-        });
-
         Schema::table('updates', function (Blueprint $table): void {
             $table->index(['updateable_type', 'updateable_id', 'created_at', 'id'], 'updates_updateable_created_index');
         });
@@ -78,10 +74,6 @@ return new class extends Migration
             $table->dropIndex('incidents_timeline_occurred_index');
             $table->dropIndex('incidents_timeline_created_index');
             $table->dropIndex('incidents_publish_index');
-        });
-
-        Schema::table('metric_points', function (Blueprint $table): void {
-            $table->dropIndex('metric_points_metric_created_index');
         });
 
         Schema::table('updates', function (Blueprint $table): void {
