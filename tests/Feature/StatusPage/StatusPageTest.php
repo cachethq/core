@@ -12,6 +12,7 @@ use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Cachet\View\RenderHook;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 it('renders the status page', function () {
@@ -322,6 +323,28 @@ it('does not error when the from query parameter is malformed', function () {
 it('does not error when the from query parameter is not a date', function () {
     $this->get(route('cachet.status-page', ['from' => 'not-a-date']))
         ->assertOk();
+});
+
+it('uses indexable timestamp ranges for the recent timeline', function () {
+    $settings = app(AppSettings::class);
+    $settings->recent_incidents_only = true;
+    $settings->save();
+
+    Incident::factory()->create(['occurred_at' => now()]);
+    Schedule::factory()->completed()->create(['completed_at' => now()->subHour()]);
+
+    $timelineQueries = [];
+
+    DB::listen(function ($query) use (&$timelineQueries): void {
+        if (str_contains($query->sql, 'occurred_at') || str_contains($query->sql, 'completed_at')) {
+            $timelineQueries[] = $query->sql;
+        }
+    });
+
+    $this->get(route('cachet.status-page'))->assertOk();
+
+    expect($timelineQueries)->not->toBeEmpty()
+        ->and(implode(' ', $timelineQueries))->not->toMatch('/(?:date|strftime)\s*\(/i');
 });
 
 it('shows upcoming and in progress maintenance in the maintenance block', function () {

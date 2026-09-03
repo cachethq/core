@@ -5,8 +5,8 @@ namespace Cachet\Commands;
 use Cachet\Models\Incident;
 use Cachet\Notifications\LongRunningIncidentNotification;
 use Cachet\Settings\MailSettings;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
 
 class NotifyLongRunningIncidentsCommand extends Command
 {
@@ -35,32 +35,36 @@ class NotifyLongRunningIncidentsCommand extends Command
 
         $threshold = now()->subHours($settings->long_running_incident_hours);
 
-        $incidents = Incident::query()
+        $notifiedIncidents = 0;
+
+        Incident::query()
             ->unresolved()
             ->where('created_at', '<=', $threshold)
             ->whereDoesntHave('updates', fn ($query) => $query->where('created_at', '>', $threshold))
-            ->with('updates')
-            ->get()
+            ->withMax('updates as latest_update_at', 'created_at')
+            ->lazyById()
             ->filter(function (Incident $incident) {
-                $lastActivity = $incident->updates->max('created_at') ?? $incident->created_at;
+                $lastActivity = $incident->getAttribute('latest_update_at') === null
+                    ? $incident->created_at
+                    : Carbon::parse($incident->getAttribute('latest_update_at'));
 
                 return $incident->long_running_notified_at === null
                     || $incident->long_running_notified_at->lt($lastActivity);
+            })
+            ->each(function (Incident $incident) use (&$notifiedIncidents) {
+                config('cachet.user_model')::query()
+                    ->cursor()
+                    ->each(fn ($user) => $user->notify(new LongRunningIncidentNotification($incident)));
+
+                $incident->forceFill(['long_running_notified_at' => now()])->saveQuietly();
+                $notifiedIncidents++;
             });
 
-        if ($incidents->isEmpty()) {
+        if ($notifiedIncidents === 0) {
             return 0;
         }
 
-        $incidents->each(function (Incident $incident) {
-            config('cachet.user_model')::query()
-                ->cursor()
-                ->each(fn ($user) => $user->notify(new LongRunningIncidentNotification($incident)));
-
-            $incident->forceFill(['long_running_notified_at' => Carbon::now()])->saveQuietly();
-        });
-
-        $this->info("Notified about {$incidents->count()} long-running incident(s).");
+        $this->info("Notified about {$notifiedIncidents} long-running incident(s).");
 
         return 0;
     }

@@ -34,6 +34,12 @@ it('notifies dashboard users about long-running incidents', function () {
 
     Notification::assertSentTo($this->user, LongRunningIncidentNotification::class);
 
+    Notification::assertSentTo($this->user, LongRunningIncidentNotification::class, function ($notification): bool {
+        expect($notification->incident->relationLoaded('updates'))->toBeFalse();
+
+        return true;
+    });
+
     expect($incident->fresh()->long_running_notified_at)->not->toBeNull();
 });
 

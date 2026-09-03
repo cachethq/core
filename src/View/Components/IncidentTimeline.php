@@ -57,19 +57,15 @@ class IncidentTimeline extends Component
         $incidents = $this->incidents($startDate, $endDate);
         $schedules = $this->schedules($startDate, $endDate);
 
-        return collect($endDate->toPeriod($startDate))
-            ->keyBy(fn ($period) => $period->toDateString())
-            ->map(fn ($period) => collect())
-            ->union($incidents)
-            ->union($schedules)
-            ->keys()
+        $dates = $onlyDisruptedDays
+            ? $incidents->keys()->merge($schedules->keys())->unique()
+            : collect($endDate->toPeriod($startDate))->map(fn ($period) => $period->toDateString());
+
+        return $dates
             ->mapWithKeys(fn (string $date) => [$date => [
                 'incidents' => $incidents->get($date, collect()),
                 'schedules' => $schedules->get($date, collect()),
             ]])
-            ->when($onlyDisruptedDays, fn ($collection) => $collection->filter(
-                fn (array $day) => $day['incidents']->isNotEmpty() || $day['schedules']->isNotEmpty()
-            ))
             ->sortKeysDesc();
     }
 
@@ -81,6 +77,9 @@ class IncidentTimeline extends Component
      */
     private function incidents(Carbon $startDate, Carbon $endDate): Collection
     {
+        $rangeStart = $endDate->clone()->startOfDay();
+        $rangeEnd = $startDate->clone()->addDay()->startOfDay();
+
         return Incident::query()
             ->with([
                 'components',
@@ -89,30 +88,24 @@ class IncidentTimeline extends Component
             ->viewableBy(auth()->check())
             ->where('stickied', false)
             ->when($this->appSettings->recent_incidents_only, function ($query) {
-                $query->where(function ($query) {
-                    $query->whereDate(
-                        'occurred_at',
-                        '>',
-                        Carbon::now()->subDays($this->appSettings->recent_incidents_days)->format('Y-m-d')
-                    )->orWhere(function ($query) {
-                        $query->whereNull('occurred_at')->whereDate(
-                            'created_at',
-                            '>',
-                            Carbon::now()->subDays($this->appSettings->recent_incidents_days)->format('Y-m-d')
-                        );
-                    });
+                $cutoff = $this->recentCutoff();
+
+                $query->where(function ($query) use ($cutoff) {
+                    $query->where('occurred_at', '>=', $cutoff)
+                        ->orWhere(function ($query) use ($cutoff) {
+                            $query->whereNull('occurred_at')->where('created_at', '>=', $cutoff);
+                        });
                 });
             })
-            ->when(! $this->appSettings->recent_incidents_only, function ($query) use ($endDate, $startDate) {
-                $query->where(function (Builder $query) use ($endDate, $startDate) {
-                    $query->whereBetween('occurred_at', [
-                        $endDate->startOfDay()->toDateTimeString(),
-                        $startDate->endofDay()->toDateTimeString(),
-                    ])->orWhere(function (Builder $query) use ($endDate, $startDate) {
-                        $query->whereNull('occurred_at')->whereBetween('created_at', [
-                            $endDate->startOfDay()->toDateTimeString(),
-                            $startDate->endofDay()->toDateTimeString(),
-                        ]);
+            ->when(! $this->appSettings->recent_incidents_only, function ($query) use ($rangeEnd, $rangeStart) {
+                $query->where(function (Builder $query) use ($rangeEnd, $rangeStart) {
+                    $query->where(function (Builder $query) use ($rangeEnd, $rangeStart) {
+                        $query->where('occurred_at', '>=', $rangeStart)
+                            ->where('occurred_at', '<', $rangeEnd);
+                    })->orWhere(function (Builder $query) use ($rangeEnd, $rangeStart) {
+                        $query->whereNull('occurred_at')
+                            ->where('created_at', '>=', $rangeStart)
+                            ->where('created_at', '<', $rangeEnd);
                     });
                 });
             })
@@ -148,22 +141,27 @@ class IncidentTimeline extends Component
      */
     private function schedules(Carbon $startDate, Carbon $endDate): Collection
     {
+        $rangeStart = $endDate->clone()->startOfDay();
+        $rangeEnd = $startDate->clone()->addDay()->startOfDay();
+
         return Schedule::query()
             ->with(['components', 'updates' => fn ($query) => $query->orderByDesc('created_at')->orderByDesc('id')])
             ->published()
             ->inThePast()
-            ->when($this->appSettings->recent_incidents_only, fn ($query) => $query->whereDate(
-                'completed_at',
-                '>',
-                Carbon::now()->subDays($this->appSettings->recent_incidents_days)->format('Y-m-d')
-            ))
-            ->when(! $this->appSettings->recent_incidents_only, fn ($query) => $query->whereBetween('completed_at', [
-                $endDate->startOfDay()->toDateTimeString(),
-                $startDate->endofDay()->toDateTimeString(),
-            ]))
+            ->when($this->appSettings->recent_incidents_only, fn ($query) => $query->where('completed_at', '>=', $this->recentCutoff()))
+            ->when(! $this->appSettings->recent_incidents_only, fn ($query) => $query
+                ->where('completed_at', '>=', $rangeStart)
+                ->where('completed_at', '<', $rangeEnd))
             ->get()
             ->toBase()
             ->sortByDesc(fn (Schedule $schedule) => $schedule->completed_at)
             ->groupBy(fn (Schedule $schedule) => $schedule->completed_at->toDateString());
+    }
+
+    private function recentCutoff(): Carbon
+    {
+        return Carbon::now()
+            ->subDays(max(0, $this->appSettings->recent_incidents_days - 1))
+            ->startOfDay();
     }
 }
