@@ -8,6 +8,7 @@ use Cachet\Data\Checks\CheckResult;
 use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Models\Component;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Http\Client\ConnectionException;
@@ -16,17 +17,26 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 
-class CheckComponent implements ShouldQueue
+class CheckComponent implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
+    public int $uniqueFor = 300;
+
+    public bool $deleteWhenMissingModels = true;
+
     /**
      * Create a new job instance.
      */
     public function __construct(public Component $component) {}
+
+    public function uniqueId(): string
+    {
+        return (string) $this->component->getKey();
+    }
 
     /**
      * Execute the job.
@@ -38,6 +48,12 @@ class CheckComponent implements ShouldQueue
      */
     public function handle(): void
     {
+        $this->component->refresh();
+
+        if (! $this->component->enabled || ! $this->component->checked || blank($this->component->link)) {
+            return;
+        }
+
         $attempts = 1;
 
         try {
@@ -47,6 +63,7 @@ class CheckComponent implements ShouldQueue
 
                     return $attempt * 100;
                 })
+                ->connectTimeout(2)
                 ->timeout(3)
                 ->get((string) $this->component->link);
 

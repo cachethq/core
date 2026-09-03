@@ -3,8 +3,29 @@
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Jobs\CheckComponent;
 use Cachet\Models\Component;
+use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
+
+it('queues only one outstanding check per component', function () {
+    $component = Component::factory()->checked()->create();
+    $job = new CheckComponent($component);
+
+    expect($job)->toBeInstanceOf(ShouldBeUnique::class)
+        ->and($job->uniqueId())->toBe((string) $component->getKey());
+});
+
+it('skips a stale check after monitoring is disabled', function () {
+    Http::fake();
+
+    $component = Component::factory()->checked()->create();
+    $component->update(['checked' => false]);
+
+    dispatch_sync(new CheckComponent($component));
+
+    Http::assertNothingSent();
+    expect($component->checks()->count())->toBe(0);
+});
 
 it('records an operational check for a healthy component', function () {
     Http::fake([

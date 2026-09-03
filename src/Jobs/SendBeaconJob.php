@@ -9,10 +9,24 @@ use Cachet\Models\Incident;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
 
-class SendBeaconJob
+class SendBeaconJob implements ShouldQueue
 {
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public int $tries = 3;
+
+    public int $timeout = 15;
+
+    /** @var list<int> */
+    public array $backoff = [60, 300];
+
     /**
      * Execute the job.
      */
@@ -25,6 +39,8 @@ class SendBeaconJob
         $request = Http::asJson()
             ->withUserAgent(Cachet::USER_AGENT)
             ->retry(3)
+            ->connectTimeout(3)
+            ->timeout(10)
             ->post('https://cachethq.io/beacon', [
                 'install_id' => app(AppSettings::class)->install_id,
                 'php_version' => PHP_VERSION,

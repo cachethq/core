@@ -17,6 +17,25 @@ it('registers the package schedules by default', function () {
     expect($commands->filter(fn (string $command) => str_contains($command, 'cachet:beacon')))->not->toBeEmpty();
 });
 
+it('checks components every minute without overlapping', function () {
+    $componentCheck = collect(app(Schedule::class)->events())
+        ->first(fn ($event) => str_contains($event->command ?? '', 'cachet:check'));
+
+    expect($componentCheck)
+        ->not->toBeNull()
+        ->expression->toBe('* * * * *')
+        ->withoutOverlapping->toBeTrue()
+        ->expiresAt->toBe(5);
+});
+
+it('prevents every package schedule from overlapping', function () {
+    $events = collect(app(Schedule::class)->events());
+
+    expect($events)->not->toBeEmpty();
+
+    $events->each(fn ($event) => expect($event->withoutOverlapping)->toBeTrue());
+});
+
 it('configures safe image upload defaults', function () {
     expect(config('cachet.uploads'))
         ->disk->toBe('public')

@@ -324,27 +324,30 @@ class CachetCoreServiceProvider extends ServiceProvider
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
             $demoMode = fn () => Cachet::demoMode();
 
-            $schedule->command('cachet:beacon')->daily();
+            $schedule->command('cachet:beacon')->daily()->withoutOverlapping(60);
 
-            $schedule->command('cachet:notify-long-running-incidents')->hourly();
+            // Dispatch component checks frequently without stacking a stalled dispatcher.
+            $schedule->command('cachet:check')->everyMinute()->withoutOverlapping(5);
 
-            $schedule->command('cachet:notify-completed-schedules')->everyFiveMinutes();
+            $schedule->command('cachet:notify-long-running-incidents')->hourly()->withoutOverlapping(60);
 
-            $schedule->command('cachet:publish-scheduled')->everyMinute();
+            $schedule->command('cachet:notify-completed-schedules')->everyFiveMinutes()->withoutOverlapping(10);
+
+            $schedule->command('cachet:publish-scheduled')->everyMinute()->withoutOverlapping(5);
 
             $schedule->command('model:prune', [
                 '--model' => [WebhookAttempt::class, ComponentCheck::class],
-            ])->daily();
+            ])->daily()->withoutOverlapping(60);
 
             $schedule->command('db:seed', [
                 '--class' => DatabaseSeeder::class,
                 '--force',
-            ])->everyThirtyMinutes()->when($demoMode);
+            ])->everyThirtyMinutes()->withoutOverlapping(30)->when($demoMode);
 
             $schedule->command('db:seed', [
                 '--class' => DemoMetricSeeder::class,
                 '--force',
-            ])->everyMinute()->when($demoMode);
+            ])->everyMinute()->withoutOverlapping(5)->when($demoMode);
         });
     }
 

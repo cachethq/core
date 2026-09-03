@@ -6,8 +6,13 @@ use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
+
+it('runs telemetry on the queue', function () {
+    expect(new SendBeaconJob)->toBeInstanceOf(ShouldQueue::class);
+});
 
 it('will not send the beacon if disabled', function () {
     Http::fake();

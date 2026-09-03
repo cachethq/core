@@ -31,8 +31,7 @@ class CheckComponentsCommand extends Command
             ->enabled()
             ->checked()
             ->whereNotNull('link')
-            ->get()
-            ->each(fn (Component $component) => CheckComponent::dispatch($component));
+            ->eachById(fn (Component $component) => CheckComponent::dispatch($component));
 
         $this->components->success('Component check dispatched.');
 
