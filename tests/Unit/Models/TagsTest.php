@@ -4,6 +4,7 @@ use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
+use Illuminate\Support\Facades\DB;
 
 it('tags components, incidents, metrics, and schedules', function (): void {
     $models = [
@@ -61,4 +62,18 @@ it('regenerates a tag slug when its name changes', function (): void {
     $tag->update(['name' => 'Developer API']);
 
     expect($tag->refresh()->slug)->toBe('developer-api');
+});
+
+it('syncs many tags in a fixed number of queries', function (): void {
+    $component = Component::factory()->create();
+    $queries = 0;
+
+    DB::listen(function () use (&$queries): void {
+        $queries++;
+    });
+
+    $component->syncTags(['API', 'Database', 'Workers', 'Storage', 'Queue']);
+
+    expect($queries)->toBeLessThanOrEqual(4)
+        ->and($component->tags()->count())->toBe(5);
 });

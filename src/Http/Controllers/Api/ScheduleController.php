@@ -82,6 +82,7 @@ class ScheduleController extends Controller
                 AllowedFilter::custom('tags', new TagsFilter),
             ])
             ->allowedSorts(['name', 'id', 'scheduled_at', 'completed_at'])
+            ->defaultSort('id')
             ->simplePaginate(Number::clamp($request->integer('per_page', 15), min: 1, max: 100));
 
         return ScheduleResource::collection($schedules);
