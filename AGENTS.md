@@ -110,6 +110,14 @@ Stick to the existing structure. Do not invent new top-level directories.
 - Keep source assets in `resources/` and generated distributable assets in
   `public/`. Never edit Testbench's mirrored asset output directly.
 
+### Evergreen API
+
+- Cachet's HTTP API is evergreen and will never use versioned URL prefixes.
+- Treat every released API field, route, behavior, and error shape as a
+  backwards-compatibility contract.
+- Prefer additive changes. Deprecate before removing or changing behavior, and
+  keep compatibility tests for every supported contract.
+
 ## 6. Specific Rules (from CLAUDE.md)
 
 - **Laravel Boost Guidelines:**

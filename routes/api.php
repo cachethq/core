@@ -30,12 +30,12 @@ Route::apiResources([
 Route::apiResource('incidents.updates', IncidentUpdateController::class, [
     'except' => ['store', 'update', 'destroy'],
 ])
-    ->scoped(['updateable_id']);
+    ->scoped();
 
 Route::apiResource('schedules.updates', ScheduleUpdateController::class, [
     'except' => ['store', 'update', 'destroy'],
 ])
-    ->scoped(['updateable_id']);
+    ->scoped();
 
 Route::apiResource('metrics.points', MetricPointController::class, [
     'except' => ['store', 'update', 'destroy'],
@@ -45,7 +45,7 @@ Route::apiResource('metrics.points', MetricPointController::class, [
 
 Route::middleware(['auth:sanctum'])->group(function () use ($bulkDeletableResources) {
     foreach ($bulkDeletableResources as $resource => $controller) {
-        Route::delete($resource, [$controller, 'destroyMany']);
+        Route::delete($resource, [$controller, 'destroyMany'])->name("{$resource}.destroy_many");
     }
 
     Route::apiResources([
@@ -55,12 +55,12 @@ Route::middleware(['auth:sanctum'])->group(function () use ($bulkDeletableResour
     Route::apiResource('incidents.updates', IncidentUpdateController::class, [
         'except' => ['index', 'show'],
     ])
-        ->scoped(['updateable_id']);
+        ->scoped();
 
     Route::apiResource('schedules.updates', ScheduleUpdateController::class, [
         'except' => ['index', 'show'],
     ])
-        ->scoped(['updateable_id']);
+        ->scoped();
 
     Route::apiResource('metrics.points', MetricPointController::class, [
         'except' => ['index', 'show', 'update'],

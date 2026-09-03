@@ -6,10 +6,22 @@ use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
+use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 
 use function Pest\Laravel\deleteJson;
+
+it('names every collection delete route', function (string $resource) {
+    expect(Route::has("cachet.api.{$resource}.destroy_many"))->toBeTrue();
+})->with([
+    'components',
+    'component-groups',
+    'incidents',
+    'incident-templates',
+    'metrics',
+    'schedules',
+]);
 
 it('can bulk delete every supported resource', function (string $resource, string $ability, string $modelClass, string $table, bool $softDeletes) {
     Sanctum::actingAs(User::factory()->create(), [$ability]);

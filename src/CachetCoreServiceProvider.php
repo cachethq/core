@@ -32,7 +32,6 @@ use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\Operation;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
-use Dedoc\Scramble\Support\Generator\Server;
 use Dedoc\Scramble\Support\RouteInfo;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
@@ -359,9 +358,7 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         Scramble::configure()
             ->withDocumentTransformers(function (OpenApi $openApi) {
-                $openApi->info->description = 'API documentation for Cachet, the open source, self-hosted status page system.';
-
-                $openApi->addServer(Server::make('https://v3.cachethq.io/api')->setDescription('The Cachet v3 demo server.'));
+                $openApi->info->description = 'API documentation for Cachet, the open source, self-hosted status page system. Cachet provides one evergreen, backwards-compatible API.';
                 $openApi->secure(SecurityScheme::http('bearer'));
             })
             ->withOperationTransformers(function (Operation $operation, RouteInfo $routeInfo) {
