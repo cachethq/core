@@ -78,7 +78,7 @@ class MailThemeComposer
     {
         return [
             'banner' => null,
-            'attachment' => Attachment::fromPath(CACHET_PATH.'public/logo.png'),
+            'attachment' => Attachment::fromPath(dirname(__DIR__, 3).'/public/logo.png'),
             'url' => asset('vendor/cachethq/cachet/logo.png'),
         ];
     }

@@ -25,7 +25,7 @@ use Cachet\Models\Schedule;
 use Cachet\Models\Subscriber;
 use Cachet\Models\WebhookAttempt;
 use Cachet\Settings\AppSettings;
-use Cachet\Settings\MailSettings;
+use Cachet\View\Composers\AppSettingsComposer;
 use Cachet\View\Composers\MailThemeComposer;
 use Cachet\View\ViewManager;
 use Dedoc\Scramble\Scramble;
@@ -40,7 +40,6 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Console\AboutCommand;
-use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
@@ -59,41 +58,16 @@ class CachetCoreServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if (! defined('CACHET_PATH')) {
-            define('CACHET_PATH', dirname(__DIR__).'/');
+        $this->mergeConfigFrom(__DIR__.'/../config/cachet.php', 'cachet');
+
+        if (! config('cachet.enabled', true)) {
+            return;
         }
 
         $this->app->singleton(Cachet::class);
         $this->app->singleton(ViewManager::class);
         $this->app->scoped(Status::class);
         $this->app->register(BadgerServiceProvider::class);
-
-        $this->configureSettingsCache();
-    }
-
-    /**
-     * Enable spatie/laravel-settings' cache so settings are not read from the
-     * database on every request. The cache is refreshed automatically when
-     * settings are saved. Must run during registration, before the dashboard
-     * panel provider resolves any settings.
-     */
-    private function configureSettingsCache(): void
-    {
-        if (config('cachet.settings_cache', true)) {
-            config()->set('settings.cache.enabled', true);
-        }
-    }
-
-    /**
-     * Configure Laravel to respect forwarded request headers from Cachet's trusted proxies.
-     */
-    private function configureTrustedProxies(): void
-    {
-        $trustedProxies = config('cachet.trusted_proxies');
-
-        if ($trustedProxies) {
-            TrustProxies::at($trustedProxies);
-        }
     }
 
     /**
@@ -101,11 +75,9 @@ class CachetCoreServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (! $this->app->configurationIsCached()) {
-            $this->mergeConfigFrom(__DIR__.'/../config/cachet.php', 'cachet');
+        if (! config('cachet.enabled', true)) {
+            return;
         }
-
-        $this->configureTrustedProxies();
 
         Route::middlewareGroup('cachet', config('cachet.middleware', []));
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
@@ -124,7 +96,6 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->registerResources();
         $this->registerPublishing();
         $this->registerBladeComponents();
-        $this->configureMail();
 
         Event::listen([
             'Cachet\Events\Incidents\*',
@@ -156,43 +127,6 @@ class CachetCoreServiceProvider extends ServiceProvider
 
         $this->configureRateLimiting();
         $this->registerRoutes();
-    }
-
-    /**
-     * Override the application's mail configuration with Cachet's mail settings, when configured.
-     *
-     * Deferred until the mailer is first resolved so requests that never send
-     * mail do not pay for loading the mail settings.
-     *
-     * Wrapped in rescue() so a missing settings table (pre-setup, pre-migration) is not fatal.
-     */
-    private function configureMail(): void
-    {
-        $this->callAfterResolving('mail.manager', function (): void {
-            $this->applyMailSettings();
-        });
-    }
-
-    private function applyMailSettings(): void
-    {
-        rescue(function (): void {
-            $settings = $this->app->make(MailSettings::class);
-
-            if ($settings->from_address !== null) {
-                config()->set('mail.from.address', $settings->from_address);
-            }
-
-            if ($settings->from_name !== null) {
-                config()->set('mail.from.name', $settings->from_name);
-            }
-
-            if (! $settings->configured()) {
-                return;
-            }
-
-            config()->set('mail.mailers.cachet', $settings->toMailerConfig());
-            config()->set('mail.default', 'cachet');
-        }, report: false);
     }
 
     /**
@@ -269,7 +203,7 @@ class CachetCoreServiceProvider extends ServiceProvider
      */
     private function registerBladeComponents(): void
     {
-        view()->share('appSettings', app(AppSettings::class));
+        view()->composer('cachet::*', AppSettingsComposer::class);
         view()->composer('cachet::mail.*', MailThemeComposer::class);
         Blade::componentNamespace('Cachet\\View\\Components', 'cachet');
 

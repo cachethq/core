@@ -3,10 +3,10 @@
 namespace Cachet\Filament\Widgets;
 
 use Cachet\Filament\Resources\Incidents\IncidentResource;
+use Cachet\Filament\Tables\Columns\TextColumn;
 use Cachet\Filament\Widgets\Concerns\PollsFromAppSettings;
 use Cachet\Models\Incident;
 use Filament\Actions\Action;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 

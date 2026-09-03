@@ -18,13 +18,13 @@ class TrustedProxiesTest extends TestCase
         parent::tearDown();
     }
 
-    protected function trustAllProxies(Application $app): void
+    protected function configureCachetTrustedProxies(Application $app): void
     {
         $app['config']->set('cachet.trusted_proxies', '*');
     }
 
-    #[DefineEnvironment('trustAllProxies')]
-    public function test_it_respects_the_forwarded_scheme_from_trusted_proxies(): void
+    #[DefineEnvironment('configureCachetTrustedProxies')]
+    public function test_it_does_not_change_the_hosts_trusted_proxies(): void
     {
         $request = Request::create('/', server: [
             'HTTP_X_FORWARDED_PROTO' => 'https',
@@ -32,7 +32,7 @@ class TrustedProxiesTest extends TestCase
         ]);
 
         app(TrustProxies::class)->handle($request, function (Request $request): Response {
-            $this->assertTrue($request->isSecure());
+            $this->assertFalse($request->isSecure());
 
             return new Response;
         });

@@ -2,16 +2,14 @@
 
 namespace Cachet\Notifications;
 
-use Cachet\Cachet;
 use Cachet\Models\Schedule;
 use Cachet\Models\Subscriber;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Illuminate\Queue\SerializesModels;
 
-class NewScheduleNotification extends Notification implements ShouldQueue
+class NewScheduleNotification extends CachetNotification implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -45,9 +43,8 @@ class NewScheduleNotification extends Notification implements ShouldQueue
      */
     public function toMail(Subscriber $notifiable): MailMessage
     {
-        return (new MailMessage)
+        return $this->mailMessage()
             ->subject(__('cachet::subscriber.mail.new_schedule.subject', ['schedule' => $this->schedule->name]))
-            ->theme(Cachet::MAIL_THEME)
             ->markdown('cachet::mail.subscribers.new-schedule', [
                 'schedule' => $this->schedule,
                 'unsubscribeUrl' => $notifiable->unsubscribeUrl(),

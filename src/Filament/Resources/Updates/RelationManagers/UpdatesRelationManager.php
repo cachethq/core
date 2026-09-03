@@ -3,6 +3,7 @@
 namespace Cachet\Filament\Resources\Updates\RelationManagers;
 
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Filament\Tables\Columns\TextColumn;
 use Cachet\Models\Incident;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -14,7 +15,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 

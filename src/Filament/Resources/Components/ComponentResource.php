@@ -3,10 +3,13 @@
 namespace Cachet\Filament\Resources\Components;
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Filament\Forms\Components\Toggle;
 use Cachet\Filament\Resources\Components\Pages\CreateComponent;
 use Cachet\Filament\Resources\Components\Pages\EditComponent;
 use Cachet\Filament\Resources\Components\Pages\ListComponents;
 use Cachet\Filament\Resources\Components\RelationManagers\ChecksRelationManager;
+use Cachet\Filament\Schemas\Components\Section;
+use Cachet\Filament\Tables\Columns\TextColumn;
 use Cachet\Models\Component;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -15,13 +18,10 @@ use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ComponentResource extends Resource

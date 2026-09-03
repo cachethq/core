@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Pages;
 
+use Cachet\Filament\Schemas\Components\Section as CachetSection;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -40,14 +41,14 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
         return $schema
             ->inlineLabel(false)
             ->components([
-                Section::make(__('cachet::user.profile_information_title'))
+                CachetSection::make(__('cachet::user.profile_information_title'))
                     ->columns(2)
                     ->schema([
                         $this->getNameFormComponent(),
                         $this->getEmailFormComponent(),
                     ]),
 
-                Section::make(__('cachet::user.security_section_title'))
+                CachetSection::make(__('cachet::user.security_section_title'))
                     ->columns(2)
                     ->schema([
                         $this->getPasswordFormComponent(),

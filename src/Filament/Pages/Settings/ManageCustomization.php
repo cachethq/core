@@ -2,9 +2,9 @@
 
 namespace Cachet\Filament\Pages\Settings;
 
+use Cachet\Filament\Schemas\Components\Section;
 use Cachet\Settings\CustomizationSettings;
 use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class ManageCustomization extends SettingsPage

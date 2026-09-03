@@ -5,9 +5,12 @@ namespace Cachet\Filament\Resources\Metrics;
 use Cachet\Enums\MetricTypeEnum;
 use Cachet\Enums\MetricViewEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Filament\Forms\Components\Toggle;
 use Cachet\Filament\Resources\Metrics\Pages\CreateMetric;
 use Cachet\Filament\Resources\Metrics\Pages\EditMetric;
 use Cachet\Filament\Resources\Metrics\Pages\ListMetrics;
+use Cachet\Filament\Schemas\Components\Section;
+use Cachet\Filament\Tables\Columns\TextColumn;
 use Cachet\Models\Metric;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -15,14 +18,11 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\GridDirection;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class MetricResource extends Resource

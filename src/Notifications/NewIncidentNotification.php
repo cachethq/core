@@ -2,16 +2,14 @@
 
 namespace Cachet\Notifications;
 
-use Cachet\Cachet;
 use Cachet\Models\Incident;
 use Cachet\Models\Subscriber;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Illuminate\Queue\SerializesModels;
 
-class NewIncidentNotification extends Notification implements ShouldQueue
+class NewIncidentNotification extends CachetNotification implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -45,9 +43,8 @@ class NewIncidentNotification extends Notification implements ShouldQueue
      */
     public function toMail(Subscriber $notifiable): MailMessage
     {
-        return (new MailMessage)
+        return $this->mailMessage()
             ->subject(__('cachet::subscriber.mail.new_incident.subject', ['incident' => $this->incident->name]))
-            ->theme(Cachet::MAIL_THEME)
             ->markdown('cachet::mail.subscribers.new-incident', [
                 'incident' => $this->incident,
                 'unsubscribeUrl' => $notifiable->unsubscribeUrl(),

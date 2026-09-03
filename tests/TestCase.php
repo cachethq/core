@@ -6,6 +6,7 @@ use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
 use Dedoc\Scramble\ScrambleServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
+use Filament\Facades\Filament;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Infolists\InfolistsServiceProvider;
@@ -34,6 +35,10 @@ abstract class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'Cachet\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
+
+        if (Filament::getPanel('cachet') !== null) {
+            Filament::setCurrentPanel(Filament::getPanel('cachet'));
+        }
     }
 
     protected function getPackageProviders($app)

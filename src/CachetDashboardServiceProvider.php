@@ -6,9 +6,7 @@ use Cachet\Filament\MultiFactor\AppAuthentication;
 use Cachet\Filament\Pages\EditProfile;
 use Cachet\Http\Middleware\AuthenticateSession;
 use Cachet\Http\Middleware\SetAppLocale;
-use Cachet\Settings\AppSettings;
 use Filament\FontProviders\LocalFontProvider;
-use Filament\Forms\Components\Toggle;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -16,11 +14,8 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Schemas\Components\Section;
 use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentTimezone;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -31,6 +26,15 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class CachetDashboardServiceProvider extends PanelProvider
 {
+    public function register(): void
+    {
+        if (! config('cachet.enabled', true)) {
+            return;
+        }
+
+        parent::register();
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel
@@ -39,7 +43,6 @@ class CachetDashboardServiceProvider extends PanelProvider
                 'ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
                 provider: LocalFontProvider::class,
             )
-            ->default()
             ->login()
             ->passwordReset()
             ->multiFactorAuthentication([
@@ -109,21 +112,6 @@ class CachetDashboardServiceProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->path(Cachet::dashboardPath())
-            ->bootUsing(function (): void {
-                Section::configureUsing(fn (Section $section) => $section->columnSpanFull());
-                Toggle::configureUsing(fn (Toggle $toggle) => $toggle
-                    ->onIcon(Heroicon::Check)
-                    ->offIcon(Heroicon::XMark));
-                ToggleColumn::configureUsing(fn (ToggleColumn $toggle) => $toggle
-                    ->onIcon(Heroicon::Check)
-                    ->offIcon(Heroicon::XMark));
-
-                FilamentTimezone::set(function (): ?string {
-                    $timezone = rescue(fn () => app(AppSettings::class)->timezone, null, report: false);
-
-                    return $timezone === '-' ? null : $timezone;
-                });
-            });
+            ->path(Cachet::dashboardPath());
     }
 }

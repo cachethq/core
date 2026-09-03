@@ -4,9 +4,12 @@ namespace Cachet\Filament\Resources\WebhookSubscriptions;
 
 use Cachet\Cachet;
 use Cachet\Enums\WebhookEventEnum;
+use Cachet\Filament\Forms\Components\Toggle;
 use Cachet\Filament\Resources\WebhookSubscriptions\Pages\CreateWebhookSubscription;
 use Cachet\Filament\Resources\WebhookSubscriptions\Pages\EditWebhookSubscription;
 use Cachet\Filament\Resources\WebhookSubscriptions\Pages\ListWebhookSubscriptions;
+use Cachet\Filament\Schemas\Components\Section;
+use Cachet\Filament\Tables\Columns\TextColumn;
 use Cachet\Models\WebhookSubscription;
 use Cachet\View\Htmlable\TextWithLink;
 use Filament\Actions\Action;
@@ -15,13 +18,10 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Actions;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class WebhookSubscriptionResource extends Resource

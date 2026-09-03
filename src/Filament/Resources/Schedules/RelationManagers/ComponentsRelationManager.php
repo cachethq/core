@@ -4,6 +4,7 @@ namespace Cachet\Filament\Resources\Schedules\RelationManagers;
 
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Filament\Components\ComponentOptions;
+use Cachet\Filament\Tables\Columns\TextColumn;
 use Filament\Actions\AttachAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
@@ -12,7 +13,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 

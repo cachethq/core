@@ -2,6 +2,9 @@
 
 namespace Tests\Unit\Settings;
 
+use Cachet\Models\Incident;
+use Cachet\Models\Subscriber;
+use Cachet\Notifications\NewIncidentNotification;
 use Cachet\Settings\MailSettings;
 
 it('is not configured until a mailer is chosen', function () {
@@ -45,7 +48,13 @@ it('builds a sendmail mailer configuration', function () {
     ]);
 });
 
-it('overrides the application mail configuration when configured and the mailer resolves', function () {
+it('applies Cachet mail settings without changing the host mail defaults', function () {
+    config()->set([
+        'mail.default' => 'log',
+        'mail.from.address' => 'host@example.com',
+        'mail.from.name' => 'Host App',
+    ]);
+
     app(MailSettings::class)->fill([
         'mailer' => 'smtp',
         'host' => 'smtp.example.com',
@@ -53,28 +62,25 @@ it('overrides the application mail configuration when configured and the mailer 
         'from_name' => 'Example Status',
     ])->save();
 
-    app('mail.manager');
+    $message = (new NewIncidentNotification(Incident::factory()->create()))
+        ->toMail(Subscriber::factory()->create());
 
-    expect(config('mail.default'))->toBe('cachet')
+    expect(config('mail.default'))->toBe('log')
         ->and(config('mail.mailers.cachet.host'))->toBe('smtp.example.com')
-        ->and(config('mail.from.address'))->toBe('status@example.com')
-        ->and(config('mail.from.name'))->toBe('Example Status');
+        ->and(config('mail.from.address'))->toBe('host@example.com')
+        ->and(config('mail.from.name'))->toBe('Host App')
+        ->and($message->mailer)->toBe('cachet')
+        ->and($message->from)->toBe(['status@example.com', 'Example Status']);
 });
 
-it('does not touch the mail configuration before the mailer resolves', function () {
-    app(MailSettings::class)->fill([
-        'mailer' => 'smtp',
-        'host' => 'smtp.example.com',
-    ])->save();
-
-    expect(config('mail.mailers.cachet'))->toBeNull();
-});
-
-it('leaves the application mail configuration alone when not configured', function () {
+it('uses the application mail configuration when Cachet is not configured', function () {
     $default = config('mail.default');
 
-    app('mail.manager');
+    $message = (new NewIncidentNotification(Incident::factory()->create()))
+        ->toMail(Subscriber::factory()->create());
 
     expect(config('mail.default'))->toBe($default)
-        ->and(config('mail.mailers.cachet'))->toBeNull();
+        ->and(config('mail.mailers.cachet'))->toBeNull()
+        ->and($message->mailer)->toBeNull()
+        ->and($message->from)->toBe([]);
 });

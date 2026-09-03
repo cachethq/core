@@ -117,8 +117,6 @@ return [
         AuthenticateMcpIfProtected::class,
     ],
 
-    'trusted_proxies' => env('CACHET_TRUSTED_PROXIES', ''),
-
     /*
      |--------------------------------------------------------------------------
      | Cachet API Rate Limit (attempts per minute)
@@ -164,18 +162,6 @@ return [
      |
      */
     'docker' => env('CACHET_DOCKER', false),
-
-    /*
-     |--------------------------------------------------------------------------
-     | Cachet Settings Cache
-     |--------------------------------------------------------------------------
-     |
-     | Cache Cachet's settings so they are not read from the database on every
-     | request. The cache is refreshed automatically whenever settings are
-     | saved, so it never serves stale values.
-     |
-     */
-    'settings_cache' => env('CACHET_SETTINGS_CACHE', true),
 
     /*
      |--------------------------------------------------------------------------

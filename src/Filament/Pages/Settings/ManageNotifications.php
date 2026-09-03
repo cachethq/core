@@ -2,17 +2,17 @@
 
 namespace Cachet\Filament\Pages\Settings;
 
+use Cachet\Filament\Forms\Components\Toggle;
+use Cachet\Filament\Schemas\Components\Section;
 use Cachet\Mail\TestMail;
 use Cachet\Settings\MailSettings;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;

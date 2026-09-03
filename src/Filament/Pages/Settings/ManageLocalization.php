@@ -2,10 +2,10 @@
 
 namespace Cachet\Filament\Pages\Settings;
 
+use Cachet\Filament\Forms\Components\Toggle;
+use Cachet\Filament\Schemas\Components\Section;
 use Cachet\Settings\AppSettings;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;

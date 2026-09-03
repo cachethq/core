@@ -2,9 +2,9 @@
 
 namespace Cachet\Filament\Resources\Components\RelationManagers;
 
+use Cachet\Filament\Tables\Columns\TextColumn;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ChecksRelationManager extends RelationManager

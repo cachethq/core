@@ -31,7 +31,7 @@ it('uses the configured theme accent color', function () {
 
 it('embeds the configured app logo', function () {
     Storage::fake('public');
-    Storage::disk('public')->put('app-logo.png', (string) file_get_contents(CACHET_PATH.'public/logo.png'));
+    Storage::disk('public')->put('app-logo.png', (string) file_get_contents(dirname(__DIR__, 3).'/public/logo.png'));
 
     $theme = app(ThemeSettings::class);
     $theme->app_banner = 'app-logo.png';

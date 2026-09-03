@@ -3,9 +3,13 @@
 namespace Cachet\Filament\Resources\Users;
 
 use Cachet\Cachet;
+use Cachet\Filament\Forms\Components\Toggle;
 use Cachet\Filament\Resources\Users\Pages\CreateUser;
 use Cachet\Filament\Resources\Users\Pages\EditUser;
 use Cachet\Filament\Resources\Users\Pages\ListUsers;
+use Cachet\Filament\Schemas\Components\Section;
+use Cachet\Filament\Tables\Columns\TextColumn;
+use Cachet\Filament\Tables\Columns\ToggleColumn;
 use Cachet\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
@@ -13,13 +17,9 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Builder;

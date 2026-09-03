@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Filament;
 
+use Cachet\Filament\Forms\Components\Toggle as CachetToggle;
 use Cachet\Filament\Pages\Dashboard;
 use Cachet\Filament\Resources\Components\ComponentResource;
 use Cachet\Filament\Resources\Incidents\IncidentResource;
 use Cachet\Filament\Resources\Subscribers\SubscriberResource;
+use Cachet\Filament\Tables\Columns\ToggleColumn as CachetToggleColumn;
 use Cachet\Filament\Widgets\Components;
 use Cachet\Filament\Widgets\Feed;
 use Cachet\Filament\Widgets\OpenIncidents;
@@ -52,15 +54,17 @@ it('allows the sidebar to collapse on desktop', function () {
 });
 
 it('adds consistent icons to form and table toggles', function () {
-    Filament::getPanel('cachet')->boot();
+    $hostFormToggle = Toggle::make('enabled');
+    $hostTableToggle = ToggleColumn::make('enabled');
+    $cachetFormToggle = CachetToggle::make('enabled');
+    $cachetTableToggle = CachetToggleColumn::make('enabled');
 
-    $formToggle = Toggle::make('enabled');
-    $tableToggle = ToggleColumn::make('enabled');
-
-    expect($formToggle->getOnIcon())->toBe(Heroicon::Check)
-        ->and($formToggle->getOffIcon())->toBe(Heroicon::XMark)
-        ->and($tableToggle->getOnIcon())->toBe(Heroicon::Check)
-        ->and($tableToggle->getOffIcon())->toBe(Heroicon::XMark);
+    expect($hostFormToggle->getOnIcon())->toBeNull()
+        ->and($hostTableToggle->getOnIcon())->toBeNull()
+        ->and($cachetFormToggle->getOnIcon())->toBe(Heroicon::Check)
+        ->and($cachetFormToggle->getOffIcon())->toBe(Heroicon::XMark)
+        ->and($cachetTableToggle->getOnIcon())->toBe(Heroicon::Check)
+        ->and($cachetTableToggle->getOffIcon())->toBe(Heroicon::XMark);
 });
 
 it('uses the same system font stack as the status page', function () {

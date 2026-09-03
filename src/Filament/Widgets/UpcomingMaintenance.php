@@ -3,9 +3,9 @@
 namespace Cachet\Filament\Widgets;
 
 use Cachet\Filament\Resources\Schedules\ScheduleResource;
+use Cachet\Filament\Tables\Columns\TextColumn;
 use Cachet\Models\Schedule;
 use Filament\Actions\Action;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 

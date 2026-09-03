@@ -10,6 +10,8 @@ use Cachet\Filament\Resources\ComponentGroups\Pages\CreateComponentGroup;
 use Cachet\Filament\Resources\ComponentGroups\Pages\EditComponentGroup;
 use Cachet\Filament\Resources\ComponentGroups\Pages\ListComponentGroups;
 use Cachet\Filament\Resources\Components\RelationManagers\ComponentsRelationManager;
+use Cachet\Filament\Schemas\Components\Section;
+use Cachet\Filament\Tables\Columns\TextColumn;
 use Cachet\Models\ComponentGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -19,12 +21,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\Resource;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\GridDirection;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ComponentGroupResource extends Resource

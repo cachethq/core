@@ -2,16 +2,14 @@
 
 namespace Cachet\Notifications;
 
-use Cachet\Cachet;
 use Cachet\Filament\Resources\Incidents\IncidentResource;
 use Cachet\Models\Incident;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Illuminate\Queue\SerializesModels;
 
-class LongRunningIncidentNotification extends Notification implements ShouldQueue
+class LongRunningIncidentNotification extends CachetNotification implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -45,9 +43,8 @@ class LongRunningIncidentNotification extends Notification implements ShouldQueu
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
+        return $this->mailMessage()
             ->subject(__('cachet::incident.mail.long_running.subject', ['incident' => $this->incident->name]))
-            ->theme(Cachet::MAIL_THEME)
             ->markdown('cachet::mail.incidents.long-running', [
                 'incident' => $this->incident,
                 'manageUrl' => IncidentResource::getUrl('edit', ['record' => $this->incident], panel: 'cachet'),
