@@ -2,18 +2,16 @@
 
 namespace Cachet\Events\Metrics;
 
-use Cachet\Concerns\SendsWebhook;
+use Cachet\Contracts\WebhookEvent;
 use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\MetricPoint;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
+use Cachet\Webhooks\WebhookPayload;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MetricPointCreated
+class MetricPointCreated implements WebhookEvent
 {
-    use Dispatchable, InteractsWithSockets, SendsWebhook, SerializesModels;
+    use Dispatchable, SerializesModels;
 
     /**
      * Create a new event instance.
@@ -23,21 +21,9 @@ class MetricPointCreated
         //
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, Channel>
-     */
-    public function broadcastOn(): array
-    {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
-    }
-
     public function getWebhookPayload(): array
     {
-        return $this->metric->toArray();
+        return WebhookPayload::metricPoint($this->metric);
     }
 
     public function getWebhookEventName(): WebhookEventEnum

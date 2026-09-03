@@ -15,7 +15,12 @@ function makeWebhookEvent(string $eventClass, WebhookSubscription $subscription,
     return new $eventClass(
         httpVerb: 'POST',
         webhookUrl: $subscription->url,
-        payload: ['event' => WebhookEventEnum::component_created->value, 'body' => []],
+        payload: [
+            'id' => 'test-uuid',
+            'event' => WebhookEventEnum::component_created->value,
+            'created_at' => '2026-09-03T00:00:00.000000Z',
+            'data' => [],
+        ],
         headers: [],
         meta: [
             'subscription_id' => $subscription->id,
@@ -56,8 +61,12 @@ it('records a successful webhook attempt', function () {
         ->response_code->toBe(200)
         ->transfer_time->toEqual(0.42);
 
-    expect(json_decode($attempt->payload, true))
-        ->toBe(['event' => WebhookEventEnum::component_created->value, 'body' => []]);
+    expect($attempt->payload)->toBe([
+        'id' => 'test-uuid',
+        'event' => WebhookEventEnum::component_created->value,
+        'created_at' => '2026-09-03T00:00:00.000000Z',
+        'data' => [],
+    ]);
 });
 
 it('records a failed webhook attempt without response or transfer stats', function () {

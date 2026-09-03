@@ -38,6 +38,11 @@ class Subscriber extends Model implements Metable, MustVerifyEmailContract
     /** @use HasFactory<SubscriberFactory> */
     use HasFactory, HasMeta, MustVerifyEmail, Notifiable;
 
+    /** @var array<string, mixed> */
+    protected $attributes = [
+        'global' => 1,
+    ];
+
     /** @var array<string, string> */
     protected $casts = [
         'email_verified_at' => 'datetime',

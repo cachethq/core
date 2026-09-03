@@ -46,6 +46,17 @@ class Metric extends Model
     use HasTags;
     use HasVisibility;
 
+    /** @var array<string, mixed> */
+    protected $attributes = [
+        'default_view' => 1,
+        'display_chart' => true,
+        'order' => 0,
+        'places' => 2,
+        'show_when_empty' => false,
+        'threshold' => 5,
+        'visible' => 1,
+    ];
+
     /** @var array<string, string> */
     protected $casts = [
         'calc_type' => MetricTypeEnum::class,

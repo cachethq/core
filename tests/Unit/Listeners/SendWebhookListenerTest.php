@@ -1,19 +1,17 @@
 <?php
 
 use Cachet\Actions\Webhook\DispatchWebhooks;
-use Cachet\Concerns\SendsWebhook;
+use Cachet\Contracts\WebhookEvent;
 use Cachet\Enums\WebhookEventEnum;
 use Cachet\Listeners\SendWebhookListener;
 
 use function Pest\Laravel\mock;
 
-it('sends when the event uses SendsWebhook', function () {
+it('sends when the event implements the webhook contract', function () {
     $dispatchWebhooks = mock(DispatchWebhooks::class)->makePartial();
 
-    $event = new class
+    $event = new class implements WebhookEvent
     {
-        use SendsWebhook;
-
         public function getWebhookPayload(): array
         {
             return [];
@@ -30,7 +28,7 @@ it('sends when the event uses SendsWebhook', function () {
     $dispatchWebhooks->shouldHaveReceived('handle')->with($event);
 });
 
-it('will not send if the event doesn\'t implement the SendsWebhook trait', function () {
+it('will not send if the event does not implement the webhook contract', function () {
     $dispatchWebhooks = mock(DispatchWebhooks::class);
 
     $event = new class {};

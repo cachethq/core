@@ -3,20 +3,20 @@
 namespace Cachet\Listeners;
 
 use Cachet\Actions\Webhook\DispatchWebhooks;
-use Cachet\Concerns\SendsWebhook;
+use Cachet\Contracts\WebhookEvent;
 
 class SendWebhookListener
 {
     public function __construct(private DispatchWebhooks $dispatcher) {}
 
-    public function handle(string $eventName, array $data)
+    public function handle(string $eventName, array $data): void
     {
-        // Does this class use the SendsWebhook trait?
-        if (in_array(SendsWebhook::class, class_uses($eventName))) {
-            // The instance is in the first element of the data array
-            [$eventInstance] = $data;
+        $event = $data[0] ?? null;
 
-            $this->dispatcher->handle($eventInstance);
+        if (! $event instanceof WebhookEvent) {
+            return;
         }
+
+        $this->dispatcher->handle($event);
     }
 }

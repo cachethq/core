@@ -2,33 +2,34 @@
 
 namespace Cachet\Actions\Webhook;
 
+use Cachet\Contracts\WebhookEvent;
 use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\WebhookSubscription;
 use Illuminate\Database\Eloquent\Collection;
 
 class DispatchWebhooks
 {
-    protected mixed $event;
-
-    protected WebhookEventEnum $eventName;
-
-    public function handle(mixed $event): void
+    public function handle(WebhookEvent $event): void
     {
-        $this->event = $event;
-        $this->eventName = $this->event->getWebhookEventName();
+        $eventName = $event->getWebhookEventName();
+        $webhookSubscriptions = $this->getWebhookSubscriptionsForEvent($eventName);
 
-        $payload = $this->event->getWebhookPayload();
+        if ($webhookSubscriptions->isEmpty()) {
+            return;
+        }
 
-        foreach ($this->getWebhookSubscriptionsForEvent() as $webhookSubscription) {
-            $webhookSubscription->makeCall($this->eventName, $payload)->dispatch();
+        $payload = $event->getWebhookPayload();
+
+        foreach ($webhookSubscriptions as $webhookSubscription) {
+            $webhookSubscription->makeCall($eventName, $payload)->dispatch();
         }
     }
 
     /**
      * @return Collection<WebhookSubscription>
      */
-    private function getWebhookSubscriptionsForEvent(): Collection
+    private function getWebhookSubscriptionsForEvent(WebhookEventEnum $event): Collection
     {
-        return WebhookSubscription::whereEvent($this->eventName)->get();
+        return WebhookSubscription::whereEvent($event)->get();
     }
 }

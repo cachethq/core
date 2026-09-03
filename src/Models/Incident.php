@@ -79,6 +79,13 @@ class Incident extends Model implements Metable
     use Publishable;
     use SoftDeletes;
 
+    /** @var array<string, mixed> */
+    protected $attributes = [
+        'notifications' => false,
+        'stickied' => false,
+        'visible' => 1,
+    ];
+
     /** @var array<string, string> */
     protected $casts = [
         'status' => IncidentStatusEnum::class,

@@ -13,7 +13,7 @@ class WebhookCallEventListener
             'subscription_id' => $event->meta['subscription_id'],
             'event' => $event->meta['event'],
             'attempt' => $event->attempt,
-            'payload' => json_encode($event->payload),
+            'payload' => $event->payload,
             'response_code' => $event->response?->getStatusCode(),
             'transfer_time' => $event->transferStats?->getTransferTime(),
         ]);

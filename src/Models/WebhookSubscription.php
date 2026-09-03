@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 use Spatie\WebhookServer\WebhookCall;
 
 class WebhookSubscription extends Model
@@ -67,8 +68,10 @@ class WebhookSubscription extends Model
                 'User-Agent' => Cachet::WEBHOOK_USER_AGENT,
             ])
             ->payload([
+                'id' => Str::uuid()->toString(),
                 'event' => $event->value,
-                'body' => $payload,
+                'created_at' => now()->toISOString(),
+                'data' => $payload,
             ])
             ->meta([
                 'subscription_id' => $this->getKey(),

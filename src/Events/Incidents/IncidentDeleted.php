@@ -2,18 +2,16 @@
 
 namespace Cachet\Events\Incidents;
 
-use Cachet\Concerns\SendsWebhook;
+use Cachet\Contracts\WebhookEvent;
 use Cachet\Enums\WebhookEventEnum;
 use Cachet\Models\Incident;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
+use Cachet\Webhooks\WebhookPayload;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class IncidentDeleted
+class IncidentDeleted implements WebhookEvent
 {
-    use Dispatchable, InteractsWithSockets, SendsWebhook, SerializesModels;
+    use Dispatchable, SerializesModels;
 
     /**
      * Create a new event instance.
@@ -25,19 +23,7 @@ class IncidentDeleted
 
     public function getWebhookPayload(): array
     {
-        return $this->incident->toArray();
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, Channel>
-     */
-    public function broadcastOn(): array
-    {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
+        return WebhookPayload::incident($this->incident);
     }
 
     public function getWebhookEventName(): WebhookEventEnum

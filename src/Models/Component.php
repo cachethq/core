@@ -65,6 +65,12 @@ class Component extends Model implements Metable
     use HasTags;
     use SoftDeletes;
 
+    /** @var array<string, mixed> */
+    protected $attributes = [
+        'checked' => false,
+        'enabled' => true,
+    ];
+
     /** @var array<string, string> */
     protected $casts = [
         'checked' => 'bool',
