@@ -270,6 +270,12 @@ a.fi-wi-stats-overview-stat:hover {
     box-shadow: var(--cachet-shadow-elevated);
 }
 
+/* Keep the form actions below floating dropdown panels. */
+.fi-sc-actions {
+    position: relative;
+    z-index: -1;
+}
+
 .fi-badge {
     @apply rounded-full;
 }
