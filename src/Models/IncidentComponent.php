@@ -4,6 +4,7 @@ namespace Cachet\Models;
 
 use Cachet\Database\Factories\IncidentComponentFactory;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Status;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -33,6 +34,16 @@ class IncidentComponent extends Pivot
     protected $casts = [
         'component_status' => ComponentStatusEnum::class,
     ];
+
+    /**
+     * Attaching or detaching a component changes its effective status, so the
+     * cached status-page aggregates are flushed alongside.
+     */
+    protected static function booted(): void
+    {
+        static::saved(fn () => Status::flush());
+        static::deleted(fn () => Status::flush());
+    }
 
     /**
      * Get the incident the component is attached to.
