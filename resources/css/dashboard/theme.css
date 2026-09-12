@@ -160,7 +160,6 @@
     border: 1px solid var(--cachet-border);
     border-radius: 1rem;
     background: var(--cachet-surface);
-    backdrop-filter: blur(12px);
 }
 
 .fi-section:not(.fi-section-not-contained),
