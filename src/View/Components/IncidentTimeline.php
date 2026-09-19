@@ -49,6 +49,7 @@ class IncidentTimeline extends Component
 
     /**
      * Build the timeline of incidents and completed maintenance, grouped by day.
+     * Explicitly empty defaults preserve each collection's model type.
      *
      * @return Collection<string, array{incidents: Collection<int, Incident>, schedules: Collection<int, Schedule>}>
      */
@@ -64,8 +65,8 @@ class IncidentTimeline extends Component
             ->union($schedules)
             ->keys()
             ->mapWithKeys(fn (string $date) => [$date => [
-                'incidents' => $incidents->get($date, collect()),
-                'schedules' => $schedules->get($date, collect()),
+                'incidents' => $incidents->get($date, new Collection([])),
+                'schedules' => $schedules->get($date, new Collection([])),
             ]])
             ->when($onlyDisruptedDays, fn ($collection) => $collection->filter(
                 fn (array $day) => $day['incidents']->isNotEmpty() || $day['schedules']->isNotEmpty()
