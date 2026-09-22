@@ -21,55 +21,12 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
 class UserResource extends Resource
 {
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
-
-    public static function canAccess(): bool
-    {
-        return auth()->user()->isAdmin();
-    }
-
-    public static function getEditAuthorizationResponse(Model $record): Response
-    {
-        if (Cachet::demoMode()) {
-            return Response::deny();
-        }
-
-        if (auth()->user()->is($record)) {
-            return Response::allow();
-        }
-
-        if (auth()->user()->isAdmin()) {
-            return Response::allow();
-        }
-
-        return Response::deny();
-    }
-
-    public static function getDeleteAuthorizationResponse(Model $record): Response
-    {
-        $response = parent::getDeleteAuthorizationResponse($record);
-
-        if ($response->denied()) {
-            return $response;
-        }
-
-        if (! $record instanceof User || auth()->user()->is($record)) {
-            return Response::deny();
-        }
-
-        if ($record->isAdmin() && static::getModel()::query()->where('is_admin', true)->count() <= 1) {
-            return Response::deny();
-        }
-
-        return $response;
-    }
 
     public static function form(Schema $schema): Schema
     {
@@ -147,11 +104,13 @@ class UserResource extends Resource
             ->recordActions([
                 EditAction::make(),
                 Action::make('verify-email')
+                    ->authorize('update')
                     ->label(__('cachet::user.list.actions.verify_email'))
                     ->icon(Heroicon::OutlinedCheckBadge)
                     ->disabled(fn (User $record): bool => $record->hasVerifiedEmail())
                     ->action(fn (Builder $query, User $record) => $record->sendEmailVerificationNotification()),
                 Action::make('reset-two-factor')
+                    ->authorize('update')
                     ->label(__('cachet::user.list.actions.reset_two_factor'))
                     ->icon(Heroicon::OutlinedShieldExclamation)
                     ->requiresConfirmation()

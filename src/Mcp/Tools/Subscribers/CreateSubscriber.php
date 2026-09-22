@@ -6,6 +6,7 @@ use Cachet\Actions\Subscriber\CreateSubscriber as CreateSubscriberAction;
 use Cachet\Data\Requests\Subscriber\CreateSubscriberRequestData;
 use Cachet\Mcp\Concerns\GuardsMcpAbilities;
 use Cachet\Mcp\Concerns\PresentsResources;
+use Cachet\Models\Subscriber;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
@@ -38,7 +39,7 @@ class CreateSubscriber extends Tool
 
     public function handle(Request $request, CreateSubscriberAction $action): Response|ResponseFactory
     {
-        if (! $this->tokenCan('subscribers.manage')) {
+        if (! $this->tokenCanAnd('subscribers.manage', 'create', Subscriber::class)) {
             return $this->missingAbility('subscribers.manage');
         }
 
@@ -60,6 +61,6 @@ class CreateSubscriber extends Tool
 
     public function shouldRegister(): bool
     {
-        return $this->tokenCan('subscribers.manage');
+        return $this->tokenCanAnd('subscribers.manage', 'viewAny', Subscriber::class);
     }
 }

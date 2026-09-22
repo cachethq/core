@@ -84,7 +84,7 @@ class User extends Authenticatable implements CachetUser, FilamentUser, HasAppAu
      */
     public function isAdmin(): bool
     {
-        return $this->is_admin;
+        return (bool) $this->is_admin;
     }
 
     /**

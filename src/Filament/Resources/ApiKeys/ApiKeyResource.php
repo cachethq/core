@@ -5,6 +5,7 @@ namespace Cachet\Filament\Resources\ApiKeys;
 use Cachet\Cachet;
 use Cachet\Filament\Resources\ApiKeys\Pages\CreateApiKey;
 use Cachet\Filament\Resources\ApiKeys\Pages\ListApiKeys;
+use Cachet\Models\Subscriber;
 use Filament\Actions\BulkAction;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\CheckboxList;
@@ -19,6 +20,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -145,6 +147,10 @@ class ApiKeyResource extends Resource
         $abilities = [];
 
         foreach (Cachet::getResourceApiAbilities() as $resource => $apiAbilities) {
+            if ($resource === 'subscribers' && Gate::denies('viewAny', Subscriber::class)) {
+                continue;
+            }
+
             foreach ($apiAbilities as $ability) {
                 $key = "{$resource}.{$ability}";
                 $abilities[$key] = Str::headline(__('cachet::api_key.abilities_label', [

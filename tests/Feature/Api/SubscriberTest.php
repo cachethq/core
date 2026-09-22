@@ -21,7 +21,7 @@ it('cannot list subscribers when not authenticated', function () {
 });
 
 it('cannot list subscribers without the token ability', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]));
 
     Subscriber::factory(2)->create();
 
@@ -30,8 +30,16 @@ it('cannot list subscribers without the token ability', function () {
     $response->assertForbidden();
 });
 
+it('cannot list subscribers as a non-administrator with a wildcard token', function () {
+    Sanctum::actingAs(User::factory()->create(['is_admin' => false]), ['*']);
+
+    Subscriber::factory(2)->create();
+
+    getJson('/status/api/subscribers')->assertForbidden();
+});
+
 it('can list subscribers', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     Subscriber::factory(2)->create();
 
@@ -42,7 +50,7 @@ it('can list subscribers', function () {
 });
 
 it('does not list more than 15 subscribers by default', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     Subscriber::factory(20)->create();
 
@@ -53,7 +61,7 @@ it('does not list more than 15 subscribers by default', function () {
 });
 
 it('can list more than 15 subscribers', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     Subscriber::factory(20)->create();
 
@@ -64,7 +72,7 @@ it('can list more than 15 subscribers', function () {
 });
 
 it('can filter subscribers by email', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     Subscriber::factory(5)->create();
     Subscriber::factory()->create(['email' => 'james@alt-three.com']);
@@ -85,7 +93,7 @@ it('cannot get a subscriber when not authenticated', function () {
 });
 
 it('cannot get a subscriber without the token ability', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]));
 
     $subscriber = Subscriber::factory()->create();
 
@@ -94,8 +102,16 @@ it('cannot get a subscriber without the token ability', function () {
     $response->assertForbidden();
 });
 
+it('cannot get a subscriber as a non-administrator with a wildcard token', function () {
+    Sanctum::actingAs(User::factory()->create(['is_admin' => false]), ['*']);
+
+    $subscriber = Subscriber::factory()->create();
+
+    getJson('/status/api/subscribers/'.$subscriber->id)->assertForbidden();
+});
+
 it('can get a subscriber', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     Subscriber::factory(5)->create();
     $subscriber = Subscriber::factory()->create();
@@ -109,7 +125,7 @@ it('can get a subscriber', function () {
 });
 
 it('can get a subscriber with components', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $subscriber = Subscriber::factory()->hasComponents(2)->create();
 
@@ -120,7 +136,7 @@ it('can get a subscriber with components', function () {
 });
 
 it('can filter subscribers by meta', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     Subscriber::factory(5)->create();
     $subscriber = Subscriber::factory()->create();
@@ -136,7 +152,7 @@ it('can filter subscribers by meta', function () {
 });
 
 it('can include meta on a subscriber', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $subscriber = Subscriber::factory()->create();
     $subscriber->syncMeta(['region' => 'eu-west', 'priority' => 3, 'critical' => true]);
@@ -152,7 +168,7 @@ it('can include meta on a subscriber', function () {
 });
 
 it('does not include meta on a subscriber by default', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $subscriber = Subscriber::factory()->create();
     $subscriber->syncMeta(['region' => 'eu-west']);
@@ -166,7 +182,7 @@ it('does not include meta on a subscriber by default', function () {
 it('can create a subscriber with meta', function () {
     Notification::fake();
 
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $response = postJson('/status/api/subscribers', [
         'email' => 'james@alt-three.com',
@@ -187,7 +203,7 @@ it('cannot create a subscriber when not authenticated', function () {
 });
 
 it('cannot create a subscriber without the token ability', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]));
 
     $response = postJson('/status/api/subscribers', [
         'email' => 'james@alt-three.com',
@@ -196,10 +212,23 @@ it('cannot create a subscriber without the token ability', function () {
     $response->assertForbidden();
 });
 
+it('cannot create a subscriber as a non-administrator with a wildcard token', function () {
+    Notification::fake();
+
+    Sanctum::actingAs(User::factory()->create(['is_admin' => false]), ['*']);
+
+    postJson('/status/api/subscribers', [
+        'email' => 'hidden@example.com',
+    ])->assertForbidden();
+
+    $this->assertDatabaseMissing('subscribers', ['email' => 'hidden@example.com']);
+    Notification::assertNothingSent();
+});
+
 it('can create a subscriber', function () {
     Notification::fake();
 
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $response = postJson('/status/api/subscribers', [
         'email' => 'james@alt-three.com',
@@ -223,7 +252,7 @@ it('can create a subscriber', function () {
 it('can create a verified subscriber without sending a verification email', function () {
     Notification::fake();
 
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $response = postJson('/status/api/subscribers', [
         'email' => 'james@alt-three.com',
@@ -241,7 +270,7 @@ it('can create a verified subscriber without sending a verification email', func
 it('can verify and update an existing subscriber', function () {
     Notification::fake();
 
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $subscriber = Subscriber::factory()->create([
         'email' => 'james@alt-three.com',
@@ -265,7 +294,7 @@ it('can verify and update an existing subscriber', function () {
 it('can create a subscriber with component subscriptions', function () {
     Notification::fake();
 
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $components = Component::factory(2)->create();
 
@@ -287,7 +316,7 @@ it('can create a subscriber with component subscriptions', function () {
 });
 
 it('cannot create a subscriber with an invalid email address', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $response = postJson('/status/api/subscribers', [
         'email' => 'not-an-email',
@@ -298,7 +327,7 @@ it('cannot create a subscriber with an invalid email address', function () {
 });
 
 it('cannot create a subscriber with components that do not exist', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $response = postJson('/status/api/subscribers', [
         'email' => 'james@alt-three.com',
@@ -320,7 +349,7 @@ it('cannot update a subscriber when not authenticated', function () {
 });
 
 it('cannot update a subscriber without the token ability', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]));
 
     $subscriber = Subscriber::factory()->create();
 
@@ -331,8 +360,20 @@ it('cannot update a subscriber without the token ability', function () {
     $response->assertForbidden();
 });
 
+it('cannot update a subscriber as a non-administrator with a wildcard token', function () {
+    Sanctum::actingAs(User::factory()->create(['is_admin' => false]), ['*']);
+
+    $subscriber = Subscriber::factory()->create(['email' => 'hidden@example.com']);
+
+    putJson('/status/api/subscribers/'.$subscriber->id, [
+        'email' => 'exposed@example.com',
+    ])->assertForbidden();
+
+    expect($subscriber->fresh()->email)->toBe('hidden@example.com');
+});
+
 it('can update a subscriber', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $subscriber = Subscriber::factory()->verified()->create();
 
@@ -352,7 +393,7 @@ it('can update a subscriber', function () {
 });
 
 it('can update a subscriber component subscriptions', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $subscriber = Subscriber::factory()->hasComponents(1)->create();
     $components = Component::factory(2)->create();
@@ -367,7 +408,7 @@ it('can update a subscriber component subscriptions', function () {
 });
 
 it('does not detach component subscriptions when components are omitted from an update', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $subscriber = Subscriber::factory()->hasComponents(2)->create();
 
@@ -389,7 +430,7 @@ it('cannot delete a subscriber when not authenticated', function () {
 });
 
 it('cannot delete a subscriber without the token ability', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]));
 
     $subscriber = Subscriber::factory()->create();
 
@@ -398,8 +439,18 @@ it('cannot delete a subscriber without the token ability', function () {
     $response->assertForbidden();
 });
 
+it('cannot delete a subscriber as a non-administrator with a wildcard token', function () {
+    Sanctum::actingAs(User::factory()->create(['is_admin' => false]), ['*']);
+
+    $subscriber = Subscriber::factory()->create();
+
+    deleteJson('/status/api/subscribers/'.$subscriber->id)->assertForbidden();
+
+    expect($subscriber->fresh())->not->toBeNull();
+});
+
 it('can delete a subscriber', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.delete']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.delete']);
 
     $subscriber = Subscriber::factory()->hasComponents(2)->create();
 
