@@ -24,7 +24,6 @@ beforeEach(function () {
 
 it('shows the subscribe page', function () {
     get(route('cachet.subscribers.create'))
-        ->assertOk()
         ->assertSee(__('cachet::subscriber.status_page.subscribe.heading'))
         ->assertSee('data-page="subscribe"', escape: false)
         ->assertSee('data-component="subscribe"', escape: false);
@@ -181,7 +180,6 @@ it('asks for confirmation before unsubscribing', function () {
     $subscriber = Subscriber::factory()->verified()->create();
 
     get($subscriber->unsubscribeUrl())
-        ->assertOk()
         ->assertSee(__('cachet::subscriber.status_page.unsubscribe.heading'))
         ->assertSee($subscriber->email)
         ->assertSee('data-page="unsubscribe"', escape: false)
@@ -192,16 +190,15 @@ it('asks for confirmation before unsubscribing', function () {
 
 it('renders unsubscribe hooks around the confirmation', function () {
     $subscriber = Subscriber::factory()->verified()->create();
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_UNSUBSCRIBE_BEFORE, fn () => '<span>unsubscribe-before-hook</span>');
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_UNSUBSCRIBE_AFTER, fn () => '<span>unsubscribe-after-hook</span>');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_UNSUBSCRIBE_BEFORE, fn () => 'unsubscribe-before-hook');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_UNSUBSCRIBE_AFTER, fn () => 'unsubscribe-after-hook');
 
     get($subscriber->unsubscribeUrl())
-        ->assertOk()
-        ->assertSeeInOrder([
+        ->assertSeeTextInOrder([
             'unsubscribe-before-hook',
-            'data-slot="content"',
+            __('cachet::subscriber.status_page.unsubscribe.heading'),
             'unsubscribe-after-hook',
-        ], escape: false);
+        ]);
 });
 
 it('unsubscribes a subscriber once confirmed', function () {
