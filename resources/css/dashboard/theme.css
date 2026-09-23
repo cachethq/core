@@ -223,6 +223,10 @@ a.fi-wi-stats-overview-stat:hover {
     background: rgb(4 193 71 / 4%);
 }
 
+.fi-ta-selection-cell .fi-checkbox-input {
+    display: block;
+}
+
 /* Controls and overlays */
 .fi-input-wrp {
     border: 1px solid var(--cachet-border);
