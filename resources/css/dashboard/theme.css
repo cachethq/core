@@ -234,6 +234,10 @@ a.fi-wi-stats-overview-stat:hover {
     background: rgb(255 255 255 / 5%);
 }
 
+.fi-fo-key-value-table td.fi-has-action {
+    @apply px-3;
+}
+
 .fi-btn {
     @apply rounded-lg font-semibold;
 }
