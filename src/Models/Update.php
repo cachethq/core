@@ -5,6 +5,7 @@ namespace Cachet\Models;
 use Cachet\Cachet;
 use Cachet\Database\Factories\UpdateFactory;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Status;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -49,8 +50,15 @@ class Update extends Model
 
     protected static function booted(): void
     {
-        static::saved(fn (Update $update) => $update->forgetRssFeed());
-        static::deleted(fn (Update $update) => $update->forgetRssFeed());
+        static::saved(function (Update $update): void {
+            $update->forgetRssFeed();
+            Status::flush();
+        });
+
+        static::deleted(function (Update $update): void {
+            $update->forgetRssFeed();
+            Status::flush();
+        });
     }
 
     /**
