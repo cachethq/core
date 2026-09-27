@@ -94,12 +94,14 @@ class SubscriberResource extends Resource
             ])
             ->recordActions([
                 Action::make('verify')
+                    ->authorize('update')
                     ->label(__('cachet::subscriber.list.actions.verify_label'))
                     ->color('warning')
                     ->action(fn (Subscriber $record) => $record->verify())
                     ->requiresConfirmation()
                     ->hidden(fn (Subscriber $record): bool => $record->hasVerifiedEmail()),
                 Action::make('resend-verification')
+                    ->authorize('update')
                     ->label(__('cachet::subscriber.list.actions.resend_verification_label'))
                     ->color('gray')
                     ->action(function (Subscriber $record) {

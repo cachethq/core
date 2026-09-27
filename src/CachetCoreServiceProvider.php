@@ -24,6 +24,8 @@ use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Subscriber;
 use Cachet\Models\WebhookAttempt;
+use Cachet\Policies\SubscriberPolicy;
+use Cachet\Policies\UserPolicy;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\MailSettings;
 use Cachet\View\Composers\MailThemeComposer;
@@ -44,6 +46,7 @@ use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -106,6 +109,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         }
 
         $this->configureTrustedProxies();
+        $this->registerPolicies();
 
         Route::middlewareGroup('cachet', config('cachet.middleware', []));
         Route::middlewareGroup('cachet:api', config('cachet.api_middleware', []));
@@ -139,6 +143,16 @@ class CachetCoreServiceProvider extends ServiceProvider
         ]);
 
         $this->configureScramble();
+    }
+
+    /**
+     * Register policies for Cachet's models and the configured user model.
+     */
+    private function registerPolicies(): void
+    {
+        Gate::policy(Models\User::class, UserPolicy::class);
+        Gate::policy(config('cachet.user_model'), UserPolicy::class);
+        Gate::policy(Subscriber::class, SubscriberPolicy::class);
     }
 
     /**

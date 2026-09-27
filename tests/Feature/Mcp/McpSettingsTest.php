@@ -120,7 +120,7 @@ it('exposes write tools matching the token abilities', function () {
 it('exposes every tool to tokens with all abilities', function () {
     enableMcp(protected: false);
 
-    Sanctum::actingAs(User::factory()->create(), ['*']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['*']);
 
     $tools = collect(postJson('/status/mcp', mcpRequest('tools/list', ['per_page' => 50]))
         ->assertOk()
@@ -128,6 +128,23 @@ it('exposes every tool to tokens with all abilities', function () {
         ->pluck('name');
 
     expect($tools)->toHaveCount(41);
+});
+
+it('hides subscriber tools from non-administrators with all abilities', function () {
+    enableMcp(protected: false);
+
+    Sanctum::actingAs(User::factory()->create(['is_admin' => false]), ['*']);
+
+    $tools = collect(postJson('/status/mcp', mcpRequest('tools/list', ['per_page' => 50]))
+        ->assertOk()
+        ->json('result.tools'))
+        ->pluck('name');
+
+    expect($tools)
+        ->not->toContain('list_subscribers')
+        ->not->toContain('create_subscriber')
+        ->not->toContain('update_subscriber')
+        ->not->toContain('unsubscribe_subscriber');
 });
 
 it('does not allow guests to call write tools', function () {

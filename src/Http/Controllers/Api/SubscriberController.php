@@ -16,6 +16,7 @@ use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Number;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -37,6 +38,7 @@ class SubscriberController extends Controller
     public function index(Request $request)
     {
         $this->guard('subscribers.manage');
+        Gate::authorize('viewAny', Subscriber::class);
 
         $subscribers = QueryBuilder::for(Subscriber::class)
             ->allowedIncludes(['components', 'meta'])
@@ -57,6 +59,7 @@ class SubscriberController extends Controller
     public function store(CreateSubscriberRequestData $data, CreateSubscriber $createSubscriberAction)
     {
         $this->guard('subscribers.manage');
+        Gate::authorize('create', Subscriber::class);
 
         $subscriber = $createSubscriberAction->handle(
             $data->email,
@@ -80,6 +83,7 @@ class SubscriberController extends Controller
     public function show(Subscriber $subscriber)
     {
         $this->guard('subscribers.manage');
+        Gate::authorize('view', $subscriber);
 
         $subscriberQuery = QueryBuilder::for(Subscriber::class)
             ->allowedIncludes(['components', 'meta'])
@@ -96,6 +100,7 @@ class SubscriberController extends Controller
     public function update(UpdateSubscriberRequestData $data, Subscriber $subscriber, UpdateSubscriber $updateSubscriberAction)
     {
         $this->guard('subscribers.manage');
+        Gate::authorize('update', $subscriber);
 
         $updateSubscriberAction->handle(
             $subscriber,
@@ -114,6 +119,7 @@ class SubscriberController extends Controller
     public function destroy(Subscriber $subscriber, UnsubscribeSubscriber $unsubscribeSubscriberAction)
     {
         $this->guard('subscribers.delete');
+        Gate::authorize('delete', $subscriber);
 
         $unsubscribeSubscriberAction->handle($subscriber);
 

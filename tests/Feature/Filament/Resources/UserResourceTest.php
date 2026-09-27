@@ -61,3 +61,10 @@ it('protects the current administrator during a bulk delete', function () {
     expect($this->admin->fresh())->not->toBeNull()
         ->and($otherAdmin->fresh())->toBeNull();
 });
+
+it('denies non-administrators direct access to users', function () {
+    actingAs(User::factory()->create(['is_admin' => false]));
+
+    $this->get(UserResource::getUrl('index'))
+        ->assertForbidden();
+});

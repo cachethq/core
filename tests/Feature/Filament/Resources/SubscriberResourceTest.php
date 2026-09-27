@@ -5,6 +5,7 @@ namespace Tests\Feature\Filament\Resources;
 use Cachet\Events\Subscribers\SubscriberVerified;
 use Cachet\Filament\Resources\Subscribers\Pages\CreateSubscriber;
 use Cachet\Filament\Resources\Subscribers\Pages\ListSubscribers;
+use Cachet\Filament\Resources\Subscribers\SubscriberResource;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\VerifySubscriberEmail;
 use Filament\Actions\Testing\TestAction;
@@ -84,4 +85,11 @@ it('hides the resend verification action for verified subscribers', function () 
 
     livewire(ListSubscribers::class)
         ->assertActionHidden(TestAction::make('resend-verification')->table($subscriber));
+});
+
+it('denies non-administrators direct access to subscribers', function () {
+    actingAs(User::factory()->create(['is_admin' => false]));
+
+    $this->get(SubscriberResource::getUrl('index'))
+        ->assertForbidden();
 });

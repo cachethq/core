@@ -22,7 +22,7 @@ it('hides the subscribers list from guests', function () {
 });
 
 it('hides the subscribers list from tokens without the ability', function () {
-    Sanctum::actingAs(User::factory()->create());
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]));
 
     Subscriber::factory(2)->create();
 
@@ -30,8 +30,29 @@ it('hides the subscribers list from tokens without the ability', function () {
         ->assertHasErrors();
 });
 
+it('hides subscriber tools from non-administrators with wildcard tokens', function () {
+    Notification::fake();
+
+    Sanctum::actingAs(User::factory()->create(['is_admin' => false]), ['*']);
+
+    $subscriber = Subscriber::factory()->create(['email' => 'hidden@example.com']);
+
+    CachetServer::tool(ListSubscribers::class)->assertHasErrors();
+    CachetServer::tool(CreateSubscriber::class, ['email' => 'new@example.com'])->assertHasErrors();
+    CachetServer::tool(UpdateSubscriber::class, [
+        'id' => $subscriber->id,
+        'email' => 'exposed@example.com',
+    ])->assertHasErrors();
+    CachetServer::tool(UnsubscribeSubscriber::class, ['id' => $subscriber->id])->assertHasErrors();
+
+    expect($subscriber->fresh()->email)->toBe('hidden@example.com')
+        ->and(Subscriber::query()->where('email', 'new@example.com')->exists())->toBeFalse();
+
+    Notification::assertNothingSent();
+});
+
 it('lists subscribers with the ability', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $components = Component::factory(2)->create();
     $components->each->syncTags(['Public API']);
@@ -52,7 +73,7 @@ it('lists subscribers with the ability', function () {
 it('creates a subscriber and sends a verification email', function () {
     Notification::fake();
 
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     CachetServer::tool(CreateSubscriber::class, ['email' => 'james@example.com'])
         ->assertOk()
@@ -68,7 +89,7 @@ it('creates a subscriber and sends a verification email', function () {
 it('creates a verified subscriber without sending a verification email', function () {
     Notification::fake();
 
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     CachetServer::tool(CreateSubscriber::class, [
         'email' => 'james@example.com',
@@ -79,14 +100,14 @@ it('creates a verified subscriber without sending a verification email', functio
 });
 
 it('validates the subscriber email', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     CachetServer::tool(CreateSubscriber::class, ['email' => 'not-an-email'])
         ->assertHasErrors();
 });
 
 it('updates a subscriber', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.manage']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.manage']);
 
     $subscriber = Subscriber::factory()->create(['email' => 'old@example.com']);
 
@@ -99,7 +120,7 @@ it('updates a subscriber', function () {
 });
 
 it('unsubscribes a subscriber', function () {
-    Sanctum::actingAs(User::factory()->create(), ['subscribers.delete']);
+    Sanctum::actingAs(User::factory()->create(['is_admin' => true]), ['subscribers.delete']);
 
     $subscriber = Subscriber::factory()->create();
 

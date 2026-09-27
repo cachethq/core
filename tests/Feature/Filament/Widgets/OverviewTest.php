@@ -8,7 +8,9 @@ use Cachet\Filament\Widgets\Overview;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Subscriber;
+use Workbench\App\User;
 
+use function Pest\Laravel\actingAs;
 use function Pest\Livewire\livewire;
 
 it('overview smoke test', function () {
@@ -58,6 +60,8 @@ it('shows operational components out of the enabled total', function () {
 });
 
 it('shows the total and verified subscriber counts', function () {
+    actingAs(User::factory()->create(['is_admin' => true]));
+
     Subscriber::factory()->count(2)->verified()->create();
     Subscriber::factory()->create();
 
@@ -68,4 +72,14 @@ it('shows the total and verified subscriber counts', function () {
     $component->assertSee(__('cachet::subscriber.overview.total_subscribers_label'));
     $component->assertSee('3');
     $component->assertSee(__('cachet::subscriber.overview.verified_subscribers_description', ['count' => 2]));
+});
+
+it('hides subscriber counts from non-administrators', function () {
+    actingAs(User::factory()->create(['is_admin' => false]));
+
+    Subscriber::factory()->create();
+
+    livewire(Overview::class)
+        ->assertSuccessful()
+        ->assertDontSee(__('cachet::subscriber.overview.total_subscribers_label'));
 });

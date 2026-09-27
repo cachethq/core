@@ -11,6 +11,7 @@ use Cachet\Status;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class Overview extends BaseWidget
 {
@@ -18,7 +19,7 @@ class Overview extends BaseWidget
 
     protected function getColumns(): int
     {
-        return 3;
+        return Gate::allows('viewAny', Subscriber::class) ? 3 : 2;
     }
 
     protected function getStats(): array
@@ -29,7 +30,7 @@ class Overview extends BaseWidget
         $operationalComponents = (int) $components->operational;
         $allOperational = $totalComponents === $operationalComponents;
 
-        return [
+        $stats = [
             Stat::make('open_incidents', $openIncidents)
                 ->label(__('cachet::incident.overview.open_incidents_label'))
                 ->description(__('cachet::incident.overview.open_incidents_description'))
@@ -46,17 +47,24 @@ class Overview extends BaseWidget
                 ->color($allOperational ? 'success' : 'warning')
                 ->url(ComponentResource::getUrl('index')),
 
-            Stat::make('total_subscribers', Subscriber::count())
-                ->label(__('cachet::subscriber.overview.total_subscribers_label'))
-                ->description(__('cachet::subscriber.overview.verified_subscribers_description', [
-                    'count' => Subscriber::query()->whereNotNull('email_verified_at')->count(),
-                ]))
-                ->chart($this->dailyCounts('subscribers'))
-                ->icon('cachet-subscribers')
-                ->chartColor('info')
-                ->color('gray')
-                ->url(SubscriberResource::getUrl('index')),
         ];
+
+        if (Gate::denies('viewAny', Subscriber::class)) {
+            return $stats;
+        }
+
+        $stats[] = Stat::make('total_subscribers', Subscriber::count())
+            ->label(__('cachet::subscriber.overview.total_subscribers_label'))
+            ->description(__('cachet::subscriber.overview.verified_subscribers_description', [
+                'count' => Subscriber::query()->whereNotNull('email_verified_at')->count(),
+            ]))
+            ->chart($this->dailyCounts('subscribers'))
+            ->icon('cachet-subscribers')
+            ->chartColor('info')
+            ->color('gray')
+            ->url(SubscriberResource::getUrl('index'));
+
+        return $stats;
     }
 
     /**

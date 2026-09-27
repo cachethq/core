@@ -41,7 +41,7 @@ class UpdateSubscriber extends Tool
 
     public function handle(Request $request, UpdateSubscriberAction $action): Response|ResponseFactory
     {
-        if (! $this->tokenCan('subscribers.manage')) {
+        if (! $this->tokenCanAnd('subscribers.manage', 'viewAny', Subscriber::class)) {
             return $this->missingAbility('subscribers.manage');
         }
 
@@ -49,6 +49,10 @@ class UpdateSubscriber extends Tool
 
         if ($subscriber === null) {
             return Response::error("Subscriber [{$id}] not found.");
+        }
+
+        if (! $this->tokenCanAnd('subscribers.manage', 'update', $subscriber)) {
+            return $this->missingAbility('subscribers.manage');
         }
 
         $data = UpdateSubscriberRequestData::validateAndCreate($request->only(['email', 'global', 'components']));
@@ -60,6 +64,6 @@ class UpdateSubscriber extends Tool
 
     public function shouldRegister(): bool
     {
-        return $this->tokenCan('subscribers.manage');
+        return $this->tokenCanAnd('subscribers.manage', 'viewAny', Subscriber::class);
     }
 }
