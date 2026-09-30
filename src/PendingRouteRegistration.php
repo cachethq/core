@@ -6,6 +6,7 @@ use Cachet\Http\Controllers\Auth\VerifyEmailController;
 use Cachet\Http\Controllers\HealthController;
 use Cachet\Http\Controllers\RssController;
 use Cachet\Http\Controllers\Setup\SetupController;
+use Cachet\Http\Controllers\SlackRssController;
 use Cachet\Http\Controllers\StatusPage\ComponentBadgeController;
 use Cachet\Http\Controllers\StatusPage\StatusBadgeController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
@@ -63,6 +64,10 @@ class PendingRouteRegistration
                 $router->get('/rss', RssController::class)
                     ->middleware('throttle:60,1')
                     ->name('rss');
+
+                $router->get('/slack.rss', SlackRssController::class)
+                    ->middleware('throttle:60,1')
+                    ->name('slack-rss');
 
             });
 

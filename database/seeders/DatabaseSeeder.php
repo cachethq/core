@@ -232,6 +232,22 @@ EOF
 
         $incident->updates()->save($update);
 
+        $incident = Incident::create([
+            'name' => 'Documentation Search Unavailable',
+            'message' => 'We are investigating an issue preventing searches in the documentation from returning results.',
+            'status' => IncidentStatusEnum::investigating,
+            'visible' => ResourceVisibilityEnum::guest,
+            'guid' => Str::uuid(),
+            'user_id' => $user->id,
+            'created_at' => $timestamp = now()->subMinutes(2),
+            'updated_at' => $timestamp,
+            'occurred_at' => $timestamp,
+        ]);
+
+        $incident->components()->attach($documentation, [
+            'component_status' => ComponentStatusEnum::partial_outage,
+        ]);
+
         IncidentTemplate::create([
             'name' => 'Third-Party Service Outage',
             'slug' => 'third-party-service-outage',

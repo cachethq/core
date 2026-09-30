@@ -274,12 +274,14 @@ class Incident extends Model implements Metable
     }
 
     /**
-     * Clear the cached RSS feed and its HTTP validators.
+     * Clear the cached RSS feeds and their HTTP validators.
      */
     private static function forgetRssFeed(): void
     {
         Cache::forget('cachet::rss-feed');
         Cache::forget('cachet::rss-feed-last-modified');
+        Cache::forget('cachet::slack-rss-feed');
+        Cache::forget('cachet::slack-rss-feed-last-modified');
     }
 
     /**
