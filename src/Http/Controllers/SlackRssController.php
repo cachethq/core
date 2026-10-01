@@ -109,20 +109,26 @@ class SlackRssController
      */
     private function items(Collection $incidents): Collection
     {
-        return $incidents
-            ->flatMap(function (Incident $incident): Collection {
-                $reported = collect([[
-                    'incident' => $incident,
-                    'update' => null,
-                    'publishedAt' => $incident->timestamp,
-                ]]);
+        /** @var Collection<int, array{incident: Incident, update: ?Update, publishedAt: Carbon}> $items */
+        $items = collect();
 
-                return $reported->concat($incident->updates->map(fn (Update $update): array => [
+        foreach ($incidents as $incident) {
+            $items->push([
+                'incident' => $incident,
+                'update' => null,
+                'publishedAt' => $incident->timestamp,
+            ]);
+
+            foreach ($incident->updates as $update) {
+                $items->push([
                     'incident' => $incident,
                     'update' => $update,
                     'publishedAt' => $update->created_at ?? $incident->timestamp,
-                ]));
-            })
+                ]);
+            }
+        }
+
+        return $items
             ->sortByDesc('publishedAt')
             ->take(self::MAX_ITEMS)
             ->values();

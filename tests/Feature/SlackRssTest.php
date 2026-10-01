@@ -86,21 +86,21 @@ it('formats incident events for slack', function () {
     $xml = simplexml_load_string($response->getContent());
 
     expect($xml)->not->toBeFalse()
-        ->and((string) $xml->channel->title)->toBe('Cachet status')
-        ->and((string) $xml->channel->description)->toBe('Cachet status page updates')
+        ->and((string) $xml->channel->title)->toBe('Cachet incident updates')
+        ->and((string) $xml->channel->description)->toBe('Latest incident reports and updates from Cachet')
         ->and($xml->channel->item)->toHaveCount(3)
-        ->and((string) $xml->channel->item[0]->title)->toBe('✅ Cachet - Incident resolved')
+        ->and((string) $xml->channel->item[0]->title)->toBe('[Fixed] Elevated error rates')
         ->and((string) $xml->channel->item[0]->guid)->toEndWith('#update-'.$resolved->id)
         ->and((string) $xml->channel->item[0]->description)
-        ->toContain('Elevated error rates<br/><br/>Status: Fixed')
+        ->toContain('<strong>Status:</strong> Fixed')
         ->toContain('Service has recovered.')
-        ->toContain('⚠️ Affected components: API')
-        ->and((string) $xml->channel->item[1]->title)->toBe('🚨 Cachet - Incident update')
+        ->toContain('<strong>Affected components:</strong> API')
+        ->and((string) $xml->channel->item[1]->title)->toBe('[Identified] Elevated error rates')
         ->and((string) $xml->channel->item[1]->guid)->toEndWith('#update-'.$identified->id)
-        ->and((string) $xml->channel->item[2]->title)->toBe('🚨 Cachet - New incident')
+        ->and((string) $xml->channel->item[2]->title)->toBe('[Reported] Elevated error rates')
         ->and((string) $xml->channel->item[2]->guid)->toEndWith('#reported')
         ->and((string) $xml->channel->item[2]->description)
-        ->toContain('Status: Reported')
+        ->toContain('<strong>Status:</strong> Reported')
         ->toContain('We are investigating.');
 
     $content = $xml->channel->item[0]->children('http://purl.org/rss/1.0/modules/content/');
