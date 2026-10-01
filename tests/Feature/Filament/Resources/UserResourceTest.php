@@ -6,6 +6,8 @@ use Cachet\Filament\Resources\Users\Pages\EditUser;
 use Cachet\Filament\Resources\Users\Pages\ListUsers;
 use Cachet\Filament\Resources\Users\UserResource;
 use Filament\Facades\Filament;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Support\Facades\Notification;
 use Workbench\App\User;
 
 use function Pest\Laravel\actingAs;
@@ -40,6 +42,18 @@ it('cannot change a user email to one that is already taken', function () {
         ->fillForm(['email' => 'taken@example.com'])
         ->call('save')
         ->assertHasFormErrors(['email']);
+});
+
+it('sends a verification email to an unverified user', function () {
+    Notification::fake();
+
+    $user = User::factory()->unverified()->create();
+
+    livewire(ListUsers::class)
+        ->callTableAction('verify-email', $user)
+        ->assertHasNoTableActionErrors();
+
+    Notification::assertSentTo($user, VerifyEmail::class);
 });
 
 it('prevents an administrator from deleting themselves', function () {
