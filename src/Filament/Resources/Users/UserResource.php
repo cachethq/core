@@ -22,7 +22,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
@@ -150,7 +149,9 @@ class UserResource extends Resource
                     ->label(__('cachet::user.list.actions.verify_email'))
                     ->icon(Heroicon::OutlinedCheckBadge)
                     ->disabled(fn (User $record): bool => $record->hasVerifiedEmail())
-                    ->action(fn (Builder $query, User $record) => $record->sendEmailVerificationNotification()),
+                    ->action(function (User $record): void {
+                        $record->sendEmailVerificationNotification();
+                    }),
                 Action::make('reset-two-factor')
                     ->label(__('cachet::user.list.actions.reset_two_factor'))
                     ->icon(Heroicon::OutlinedShieldExclamation)
