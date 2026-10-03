@@ -12,8 +12,6 @@
 
         @if ($incident->components->isNotEmpty())
             <section data-component="affected-components" class="group relative overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
-                <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
-
                 <h2 data-slot="title" class="bg-zinc-50 px-4 py-3 text-lg font-semibold tracking-tight text-zinc-700 dark:bg-zinc-800/50 dark:text-zinc-200 sm:px-6 sm:py-4">
                     {{ __('cachet::incident.affected_components_header') }}
                 </h2>

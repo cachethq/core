@@ -20,8 +20,6 @@
              data-incident-id="{{ $incident->getKey() }}"
              x-data="{ timestamp: new Date(@js($incident->timestamp)) }"
              class="group relative rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
-            <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
-
             <div data-slot="header" class="flex flex-col gap-2 border-b border-zinc-900/10 p-4 dark:border-white/15 sm:p-6">
                 <div class="flex flex-col-reverse items-start justify-between gap-3 sm:flex-row sm:items-center">
                     <div class="flex flex-1 flex-col gap-1">
@@ -103,8 +101,6 @@
              data-schedule-id="{{ $schedule->getKey() }}"
              x-data="{ timestamp: new Date(@js($schedule->completed_at)) }"
              class="group relative rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
-            <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
-
             <div data-slot="header" @class([
                 'flex flex-col gap-2 p-4 sm:p-6',
                 'border-b border-zinc-900/10 dark:border-white/15' => $schedule->updates->isNotEmpty(),

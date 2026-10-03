@@ -106,6 +106,9 @@ class ManageCachet extends SettingsPage
                         Toggle::make('display_graphs')
                             ->label(__('cachet::settings.manage_cachet.toggles.display_graphs'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.display_graphs_helper')),
+                        Toggle::make('display_system_status')
+                            ->label(__('cachet::settings.manage_cachet.toggles.display_system_status'))
+                            ->helperText(__('cachet::settings.manage_cachet.toggles.display_system_status_helper')),
                         Toggle::make('enable_external_dependencies')
                             ->label(__('cachet::settings.manage_cachet.toggles.enable_external_dependencies'))
                             ->helperText(__('cachet::settings.manage_cachet.toggles.enable_external_dependencies_helper')),

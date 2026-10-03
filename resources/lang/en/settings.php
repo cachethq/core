@@ -28,6 +28,8 @@ return [
             'show_about_helper' => 'Display the About this site content on the public status page.',
             'display_graphs' => 'Display graphs',
             'display_graphs_helper' => 'Render metric charts on the status page.',
+            'display_system_status' => 'Display system status',
+            'display_system_status_helper' => 'Show 90 days of uptime for component groups and components.',
             'enable_external_dependencies' => 'Enable external dependencies',
             'enable_external_dependencies_helper' => 'Allow Cachet to load assets such as fonts from external services.',
             'only_show_disrupted_days' => 'Only show disrupted days',

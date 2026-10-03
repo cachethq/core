@@ -54,5 +54,17 @@ class RenderHook
 
     const STATUS_PAGE_STATUS_SUMMARY_BEFORE = 'cachet::status-page.status-summary.before';
 
+    const STATUS_PAGE_SYSTEM_STATUS_AFTER = 'cachet::status-page.system-status.after';
+
+    const STATUS_PAGE_SYSTEM_STATUS_BEFORE = 'cachet::status-page.system-status.before';
+
+    const STATUS_PAGE_SYSTEM_STATUS_COMPONENT_AFTER = 'cachet::status-page.system-status.component.after';
+
+    const STATUS_PAGE_SYSTEM_STATUS_COMPONENT_BEFORE = 'cachet::status-page.system-status.component.before';
+
+    const STATUS_PAGE_SYSTEM_STATUS_GROUP_AFTER = 'cachet::status-page.system-status.group.after';
+
+    const STATUS_PAGE_SYSTEM_STATUS_GROUP_BEFORE = 'cachet::status-page.system-status.group.before';
+
     const FOOTER = 'cachet::footer';
 }
