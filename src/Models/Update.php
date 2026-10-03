@@ -78,13 +78,15 @@ class Update extends Model
     }
 
     /**
-     * Clear the RSS feed when an incident update changes its content.
+     * Clear the RSS feeds when an incident update changes its content.
      */
     private function forgetRssFeed(): void
     {
         if ($this->updateable instanceof Incident) {
             Cache::forget('cachet::rss-feed');
             Cache::forget('cachet::rss-feed-last-modified');
+            Cache::forget('cachet::slack-rss-feed');
+            Cache::forget('cachet::slack-rss-feed-last-modified');
         }
     }
 

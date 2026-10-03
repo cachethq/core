@@ -2,6 +2,9 @@
 
 use Cachet\Database\Seeders\DatabaseSeeder;
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 
@@ -37,4 +40,21 @@ it('seeds polished incident update copy', function () {
     expect($message)
         ->toContain('For more information, read our latest [blog post]')
         ->not->toContain('please you can read');
+});
+
+it('seeds a public documentation incident', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    $incident = Incident::query()
+        ->where('name', 'Documentation Search Unavailable')
+        ->firstOrFail();
+
+    expect($incident)
+        ->status->toBe(IncidentStatusEnum::investigating)
+        ->visible->toBe(ResourceVisibilityEnum::guest)
+        ->and($incident->components)
+        ->toHaveCount(1)
+        ->first()->name->toBe('Cachet Documentation')
+        ->and($incident->components->first()->pivot->component_status)
+        ->toBe(ComponentStatusEnum::partial_outage);
 });

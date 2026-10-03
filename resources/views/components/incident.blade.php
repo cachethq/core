@@ -67,7 +67,7 @@
                     </div>
                     <div class="flex flex-col divide-y divide-zinc-900/10 px-4 dark:divide-white/15 sm:px-6">
                         @foreach ($incident->updates as $update)
-                            <div data-component="incident-update" data-update-id="{{ $update->getKey() }}" class="relative py-5 sm:last:pb-6" x-data="{ timestamp: new Date(@js($update->created_at)) }">
+                            <div @if($headingLevel === 1) id="update-{{ $update->getKey() }}" @endif data-component="incident-update" data-update-id="{{ $update->getKey() }}" class="relative py-5 sm:last:pb-6" x-data="{ timestamp: new Date(@js($update->created_at)) }">
                                 <x-cachet::incident-update-status :status="$update->status" />
                                 @if ($headingLevel === 1)
                                     <h2 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $update->status->getLabel() }}</h2>
@@ -80,7 +80,7 @@
                                 <div data-slot="message" class="prose-sm md:prose prose-zinc dark:prose-invert prose-a:text-accent-content prose-a:underline prose-p:leading-normal mt-2">{!! $update->formattedMessage() !!}</div>
                             </div>
                         @endforeach
-                        <div data-component="incident-update" data-update-id="reported" class="relative py-5 sm:last:pb-6" x-data="{ timestamp: new Date(@js($incident->timestamp)) }">
+                        <div @if($headingLevel === 1) id="reported" @endif data-component="incident-update" data-update-id="reported" class="relative py-5 sm:last:pb-6" x-data="{ timestamp: new Date(@js($incident->timestamp)) }">
                             @php($reportStatus = $incident->updates->isEmpty() ? $incident->status : null)
                             <x-cachet::incident-update-status :status="$reportStatus ?? IncidentStatusEnum::unknown" />
                             @if ($headingLevel === 1)
