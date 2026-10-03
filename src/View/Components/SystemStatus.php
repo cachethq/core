@@ -19,12 +19,12 @@ use Illuminate\View\Component as ViewComponent;
 use Illuminate\View\View;
 
 /**
- * @phpstan-type StatusDays Collection<string, ComponentStatusEnum|null>
+ * @phpstan-type StatusDays Collection<string, covariant ComponentStatusEnum|null>
  * @phpstan-type ComponentDays Collection<string, ComponentStatusEnum>
  * @phpstan-type DayEvent array{label: string, status: ComponentStatusEnum, icon: string}
  * @phpstan-type DayEvents Collection<string, list<DayEvent>>
  * @phpstan-type ComponentRow array{model: Component, status: ComponentStatusEnum, days: ComponentDays, events: DayEvents, uptime: float|null, available_seconds: float, operational_seconds: float}
- * @phpstan-type GroupRow array{model: ComponentGroup, components: Collection<int, ComponentRow>, days: StatusDays, events: DayEvents, uptime: float|null, available_seconds: float, operational_seconds: float}
+ * @phpstan-type GroupRow array{model: ComponentGroup, components: Collection<int, covariant ComponentRow>, days: StatusDays, events: DayEvents, uptime: float|null, available_seconds: float, operational_seconds: float}
  */
 class SystemStatus extends ViewComponent
 {
@@ -58,41 +58,48 @@ class SystemStatus extends ViewComponent
     /**
      * Fetch visible groups and calculate their component and aggregate uptime.
      *
-     * @return Collection<int, GroupRow>
+     * @return Collection<int, covariant GroupRow>
      */
     private function groups(): Collection
     {
-        return ComponentGroup::query()
+        $groups = ComponentGroup::query()
             ->visible(auth()->check())
             ->orderBy('order')
             ->when(auth()->check(), fn (Builder $query) => $query->users(), fn ($query) => $query->guests())
             ->get()
+            ->toBase()
             ->map(function (ComponentGroup $group): array {
                 $components = $this->components(
                     $group->components()->enabled()->orderBy('order')
                 );
 
-                return [
+                /** @var GroupRow $row */
+                $row = [
                     'model' => $group,
                     'components' => $components,
                     'days' => $this->aggregateDays($components),
                     'events' => $this->aggregateEvents($components),
                     ...$this->aggregateUptime($components),
                 ];
+
+                return $row;
             })
             ->filter(fn (array $group): bool => $group['components']->isNotEmpty())
             ->values();
+
+        /** @var Collection<int, covariant GroupRow> $groups */
+        return $groups;
     }
 
     /**
      * Load the history needed to calculate each component's uptime.
      *
      * @param  Builder<Component>|HasMany<Component, ComponentGroup>  $query
-     * @return Collection<int, ComponentRow>
+     * @return Collection<int, covariant ComponentRow>
      */
     private function components(Builder|HasMany $query): Collection
     {
-        return $query
+        $components = $query
             ->with([
                 'statusChanges' => fn ($query) => $query->where('created_at', '>=', $this->start)->orderBy('created_at'),
                 'incidents' => fn ($query) => $query
@@ -110,10 +117,12 @@ class SystemStatus extends ViewComponent
                     ->where(fn ($query) => $query->whereNull('completed_at')->orWhere('completed_at', '>=', $this->start)),
             ])
             ->get()
+            ->toBase()
             ->map(function (Component $component): array {
                 $uptime = $this->uptime($component);
 
-                return [
+                /** @var ComponentRow $row */
+                $row = [
                     'model' => $component,
                     'status' => $this->statusAt($component, $this->end) ?? ComponentStatusEnum::unknown,
                     'days' => $uptime['days'],
@@ -122,7 +131,12 @@ class SystemStatus extends ViewComponent
                     'available_seconds' => $uptime['available_seconds'],
                     'operational_seconds' => $uptime['operational_seconds'],
                 ];
+
+                return $row;
             });
+
+        /** @var Collection<int, covariant ComponentRow> $components */
+        return $components;
     }
 
     /**
@@ -291,20 +305,23 @@ class SystemStatus extends ViewComponent
     }
 
     /**
-     * @param  Collection<int, ComponentRow>  $components
+     * @param  Collection<int, covariant ComponentRow>  $components
      * @return StatusDays
      */
     private function aggregateDays(Collection $components): Collection
     {
-        return collect($this->start->toPeriod($this->end))->mapWithKeys(function (Carbon $day) use ($components): array {
+        /** @var StatusDays $days */
+        $days = collect($this->start->toPeriod($this->end))->mapWithKeys(function (Carbon $day) use ($components): array {
             $date = $day->toDateString();
 
             return [$date => $this->worstStatus($components->pluck('days')->map(fn (Collection $days) => $days->get($date)))];
         });
+
+        return $days;
     }
 
     /**
-     * @param  Collection<int, ComponentRow>  $components
+     * @param  Collection<int, covariant ComponentRow>  $components
      * @return DayEvents
      */
     private function aggregateEvents(Collection $components): Collection
@@ -332,7 +349,7 @@ class SystemStatus extends ViewComponent
     }
 
     /**
-     * @param  Collection<int, ComponentRow>  $components
+     * @param  Collection<int, covariant ComponentRow>  $components
      * @return array{uptime: float|null, available_seconds: float, operational_seconds: float}
      */
     private function aggregateUptime(Collection $components): array
