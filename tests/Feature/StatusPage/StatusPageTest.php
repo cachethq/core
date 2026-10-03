@@ -1,16 +1,19 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Facades\CachetView;
 use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
+use Cachet\Models\ComponentStatusChange;
 use Cachet\Models\Incident;
 use Cachet\Models\Metric;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Cachet\View\RenderHook;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -175,6 +178,146 @@ it('renders status summary and incident timeline hooks', function () {
             'timeline-before-hook',
             'data-component="incident-timeline"',
             'timeline-after-hook',
+        ], escape: false);
+});
+
+it('renders duration-based uptime for the rolling 90-day system status', function () {
+    Carbon::setTestNow('2026-09-30 12:00:00');
+
+    $settings = app(AppSettings::class);
+    $settings->display_system_status = true;
+    $settings->save();
+
+    $group = ComponentGroup::factory()->create(['name' => 'APIs']);
+    $component = Component::factory()->create([
+        'name' => 'Responses',
+        'description' => 'Response **API** status.',
+        'link' => 'https://status.example.com/responses',
+        'component_group_id' => $group->id,
+        'status' => ComponentStatusEnum::operational,
+        'created_at' => now()->subYear(),
+    ]);
+    ComponentStatusChange::unguarded(fn () => $component->statusChanges()->create([
+        'old_status' => ComponentStatusEnum::operational,
+        'new_status' => ComponentStatusEnum::major_outage,
+        'source' => ComponentStatusSourceEnum::Manual,
+        'created_at' => now()->subDays(10),
+        'updated_at' => now()->subDays(10),
+    ]));
+    ComponentStatusChange::unguarded(fn () => $component->statusChanges()->create([
+        'old_status' => ComponentStatusEnum::major_outage,
+        'new_status' => ComponentStatusEnum::operational,
+        'source' => ComponentStatusSourceEnum::Manual,
+        'created_at' => now()->subDays(10)->addMinutes(10),
+        'updated_at' => now()->subDays(10)->addMinutes(10),
+    ]));
+
+    $page = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('data-component="system-status"', escape: false)
+        ->assertSee('APIs')
+        ->assertSee('Responses')
+        ->assertSee('href="https://status.example.com/responses"', escape: false)
+        ->assertSee('Response <strong>API</strong> status.', escape: false)
+        ->assertSee('data-slot="status-icon"', escape: false)
+        ->assertSee('aria-label="Operational"', escape: false)
+        ->assertSee('99.99% uptime')
+        ->assertSee('Jul 3')
+        ->assertSee('Sep 30, 2026')
+        ->assertSee('Status changed to Major outage.')
+        ->assertSee('No incidents or maintenance reported.')
+        ->getContent();
+
+    expect(substr_count($page, 'grid-template-columns: repeat(90'))->toBe(2)
+        ->and($page)->toContain('Sep 20, 2026: Major outage');
+});
+
+it('includes incident and maintenance events with their standard icons', function () {
+    Carbon::setTestNow('2026-09-30 12:00:00');
+
+    $settings = app(AppSettings::class);
+    $settings->display_system_status = true;
+    $settings->save();
+
+    $component = Component::factory()->create([
+        'name' => 'API',
+        'status' => ComponentStatusEnum::operational,
+        'created_at' => now()->subYear(),
+    ]);
+    $incident = Incident::factory()->create([
+        'name' => 'API unavailable',
+        'status' => IncidentStatusEnum::fixed,
+        'occurred_at' => now()->subDays(10),
+        'created_at' => now()->subDays(10),
+        'updated_at' => now()->subDays(10)->addMinutes(10),
+    ]);
+    $incident->components()->attach($component, [
+        'component_status' => ComponentStatusEnum::major_outage,
+    ]);
+    $schedule = Schedule::factory()->published()->create([
+        'name' => 'Database Server Upgrade',
+        'scheduled_at' => now()->subDays(10)->addMinutes(2),
+        'completed_at' => now()->subDays(10)->addMinutes(8),
+    ]);
+    $schedule->components()->attach($component, [
+        'component_status' => ComponentStatusEnum::under_maintenance,
+    ]);
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('99.99% uptime')
+        ->assertSee('Sep 20, 2026: Major outage')
+        ->assertSee('API unavailable')
+        ->assertSee('Database Server Upgrade')
+        ->assertSee('data-event-icon="cachet-incident"', escape: false)
+        ->assertSee('data-event-icon="cachet-maintenance"', escape: false);
+});
+
+it('renders pre-creation days as no data', function () {
+    Carbon::setTestNow('2026-09-30 12:00:00');
+
+    $settings = app(AppSettings::class);
+    $settings->display_system_status = true;
+    $settings->save();
+
+    Component::factory()->create([
+        'name' => 'New API',
+        'status' => ComponentStatusEnum::operational,
+        'created_at' => now()->subDay(),
+    ]);
+
+    $page = $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('New API')
+        ->assertSee('100.00% uptime')
+        ->getContent();
+
+    expect($page)->toContain('Jul 3, 2026: No data');
+});
+
+it('renders hooks around system status groups and components', function () {
+    $settings = app(AppSettings::class);
+    $settings->display_system_status = true;
+    $settings->save();
+
+    $group = ComponentGroup::factory()->create();
+    Component::factory()->create(['component_group_id' => $group->id]);
+
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_SYSTEM_STATUS_BEFORE, fn () => '<span>system-before</span>');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_SYSTEM_STATUS_GROUP_BEFORE, fn () => '<span>group-before</span>');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_SYSTEM_STATUS_COMPONENT_AFTER, fn () => '<span>component-after</span>');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_SYSTEM_STATUS_AFTER, fn () => '<span>system-after</span>');
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSeeInOrder([
+            'system-before',
+            'data-component="system-status"',
+            'group-before',
+            'data-component="system-status-group"',
+            'data-component="system-status-component"',
+            'component-after',
+            'system-after',
         ], escape: false);
 });
 
