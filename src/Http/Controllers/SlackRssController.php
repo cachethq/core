@@ -105,32 +105,31 @@ class SlackRssController
      * Convert incidents and their updates into one chronological event stream.
      *
      * @param  Collection<int, Incident>  $incidents
-     * @return Collection<int, array{incident: Incident, update: ?Update, publishedAt: Carbon}>
+     * @return list<array{incident: Incident, update: ?Update, publishedAt: Carbon}>
      */
-    private function items(Collection $incidents): Collection
+    private function items(Collection $incidents): array
     {
-        /** @var Collection<int, array{incident: Incident, update: ?Update, publishedAt: Carbon}> $items */
-        $items = collect();
+        /** @var list<array{incident: Incident, update: ?Update, publishedAt: Carbon}> $items */
+        $items = [];
 
         foreach ($incidents as $incident) {
-            $items->push([
+            $items[] = [
                 'incident' => $incident,
                 'update' => null,
                 'publishedAt' => $incident->timestamp,
-            ]);
+            ];
 
             foreach ($incident->updates as $update) {
-                $items->push([
+                $items[] = [
                     'incident' => $incident,
                     'update' => $update,
                     'publishedAt' => $update->created_at ?? $incident->timestamp,
-                ]);
+                ];
             }
         }
 
-        return $items
-            ->sortByDesc('publishedAt')
-            ->take(self::MAX_ITEMS)
-            ->values();
+        usort($items, fn (array $left, array $right): int => $right['publishedAt']->getTimestamp() <=> $left['publishedAt']->getTimestamp());
+
+        return array_slice($items, 0, self::MAX_ITEMS);
     }
 }
