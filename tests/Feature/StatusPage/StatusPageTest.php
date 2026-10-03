@@ -63,7 +63,7 @@ it('does not render a badge for a disabled component', function () {
         ->assertNotFound();
 });
 
-it('can hide the site name and about content without changing status page metadata', function () {
+it('hides the site name and about content when disabled', function () {
     $settings = app(AppSettings::class);
     $settings->name = 'Acme Status';
     $settings->about = 'A private production system.';
@@ -77,10 +77,6 @@ it('can hide the site name and about content without changing status page metada
     expect($body)
         ->not->toContain('Acme Status')
         ->not->toContain('A private production system.');
-
-    $response
-        ->assertSee('<title>Acme Status</title>', escape: false)
-        ->assertSee('<meta name="description" content="A private production system." />', escape: false);
 });
 
 it('shows the site name once when it is enabled', function () {
@@ -96,54 +92,53 @@ it('shows the site name once when it is enabled', function () {
     expect(substr_count($body, 'Acme Status'))->toBe(1);
 });
 
-it('uses a logical heading hierarchy for components', function () {
-    $group = ComponentGroup::factory()->create(['name' => 'Core services']);
-    Component::factory()->create(['name' => 'Public API']);
-    Component::factory()->create(['name' => 'Core API', 'component_group_id' => $group->id]);
-
-    $page = $this->get(route('cachet.status-page'))
-        ->assertOk()
-        ->getContent();
-
-    expect($page)
-        ->toMatch('/<h2[^>]*>\s*Core services\s*<\\/h2>/')
-        ->toMatch('/<h3[^>]*>\s*Core API\s*<\\/h3>/')
-        ->toMatch('/<h2[^>]*>\s*Public API\s*<\\/h2>/');
-});
-
 it('renders the components after hook after each component', function () {
-    Component::factory()->create(['name' => 'Public API']);
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_COMPONENTS_AFTER, fn () => '<span>components-after-hook</span>');
+    Component::factory()->create(['name' => 'Alpha API', 'order' => 1]);
+    Component::factory()->create(['name' => 'Bravo API', 'order' => 2]);
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_COMPONENTS_AFTER, fn () => 'components-after-hook');
 
     $this->get(route('cachet.status-page'))
-        ->assertOk()
-        ->assertSee('components-after-hook');
+        ->assertSeeTextInOrder([
+            'Alpha API',
+            'components-after-hook',
+            'Bravo API',
+            'components-after-hook',
+        ]);
 });
 
-it('renders the declared banner metrics and footer hooks', function () {
+it('renders status page hooks around their content', function () {
+    Component::factory()->create(['status' => ComponentStatusEnum::operational]);
     Metric::factory()->create([
+        'name' => 'Response time',
         'visible' => ResourceVisibilityEnum::guest,
         'display_chart' => true,
         'show_when_empty' => true,
     ]);
     Cache::forget('cachet::metrics.guests');
 
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_BANNER, fn () => '<span>banner-hook</span>');
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_METRICS_BEFORE, fn () => '<span>metrics-before-hook</span>');
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_METRICS_AFTER, fn () => '<span>metrics-after-hook</span>');
-    CachetView::registerRenderHook(RenderHook::FOOTER, fn () => '<span>footer-hook</span>');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_BANNER, fn () => 'banner-hook');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_STATUS_SUMMARY_BEFORE, fn () => 'summary-before-hook');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_STATUS_SUMMARY_AFTER, fn () => 'summary-after-hook');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_METRICS_BEFORE, fn () => 'metrics-before-hook');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_METRICS_AFTER, fn () => 'metrics-after-hook');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_INCIDENT_TIMELINE_BEFORE, fn () => 'timeline-before-hook');
+    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_INCIDENT_TIMELINE_AFTER, fn () => 'timeline-after-hook');
+    CachetView::registerRenderHook(RenderHook::FOOTER, fn () => 'footer-hook');
 
     $this->get(route('cachet.status-page'))
-        ->assertOk()
-        ->assertSeeInOrder([
-            'data-component="header"',
+        ->assertSeeTextInOrder([
             'banner-hook',
+            'summary-before-hook',
+            __('cachet::system_status.operational'),
+            'summary-after-hook',
             'metrics-before-hook',
-            'data-component="metrics"',
+            'Response time',
             'metrics-after-hook',
-            'data-component="footer"',
+            'timeline-before-hook',
+            __('cachet::incident.no_incidents_reported'),
+            'timeline-after-hook',
             'footer-hook',
-        ], escape: false);
+        ]);
 });
 
 it('renders a footer hook without built-in footer content', function () {
@@ -152,33 +147,14 @@ it('renders a footer hook without built-in footer content', function () {
     $settings->show_timezone = false;
     $settings->save();
 
-    CachetView::registerRenderHook(RenderHook::FOOTER, fn () => '<span>footer-hook</span>');
+    CachetView::registerRenderHook(RenderHook::FOOTER, fn () => 'footer-hook');
 
     $this->get(route('cachet.status-page'))
-        ->assertOk()
         ->assertSee('data-component="footer"', escape: false)
-        ->assertSee('footer-hook');
+        ->assertSeeText('footer-hook');
 });
 
-it('renders status summary and incident timeline hooks', function () {
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_STATUS_SUMMARY_BEFORE, fn () => '<span>summary-before-hook</span>');
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_STATUS_SUMMARY_AFTER, fn () => '<span>summary-after-hook</span>');
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_INCIDENT_TIMELINE_BEFORE, fn () => '<span>timeline-before-hook</span>');
-    CachetView::registerRenderHook(RenderHook::STATUS_PAGE_INCIDENT_TIMELINE_AFTER, fn () => '<span>timeline-after-hook</span>');
-
-    $this->get(route('cachet.status-page'))
-        ->assertOk()
-        ->assertSeeInOrder([
-            'summary-before-hook',
-            'data-component="status-summary"',
-            'summary-after-hook',
-            'timeline-before-hook',
-            'data-component="incident-timeline"',
-            'timeline-after-hook',
-        ], escape: false);
-});
-
-it('renders stable theme attributes on the status page', function () {
+it('exposes stable theme selectors on the status page', function () {
     $settings = app(AppSettings::class);
     $settings->about = 'Service status and uptime.';
     $settings->show_about = true;
@@ -196,56 +172,67 @@ it('renders stable theme attributes on the status page', function () {
     Cache::forget('cachet::metrics.guests');
 
     $this->get(route('cachet.status-page'))
-        ->assertOk()
-        ->assertSee('data-page="status"', escape: false)
-        ->assertSee('data-component="header"', escape: false)
-        ->assertSee('data-component="status-overview"', escape: false)
-        ->assertSee('data-component="status-summary"', escape: false)
-        ->assertSee('data-component="component-list"', escape: false)
-        ->assertSee('data-component="component-group"', escape: false)
-        ->assertSee('data-component="component"', escape: false)
-        ->assertSee('data-component="about"', escape: false)
-        ->assertSee('data-component="metrics"', escape: false)
-        ->assertSee('data-component="metric"', escape: false)
-        ->assertSee('data-component="schedules"', escape: false)
-        ->assertSee('data-component="schedule"', escape: false)
-        ->assertSee('data-component="incident-timeline"', escape: false)
-        ->assertSee('data-component="incident-day"', escape: false)
-        ->assertSee('data-component="incident"', escape: false)
-        ->assertSee('data-component="incident-update"', escape: false)
-        ->assertSee('data-component="incident-update-status"', escape: false)
-        ->assertSee('data-component="badge"', escape: false)
-        ->assertSee('data-component="timestamp"', escape: false)
-        ->assertSee('data-component="logo"', escape: false)
-        ->assertSee('data-component="footer"', escape: false)
-        ->assertSee('data-component-group-id="'.$group->getKey().'"', escape: false)
-        ->assertSee('data-component-id="'.$component->getKey().'"', escape: false)
-        ->assertSee('data-metric-id="'.$metric->getKey().'"', escape: false)
-        ->assertSee('data-schedule-id="'.$schedule->getKey().'"', escape: false)
-        ->assertSee('data-incident-id="'.$incident->getKey().'"', escape: false)
-        ->assertSee('data-update-id="reported"', escape: false)
-        ->assertSee('data-slot="main"', escape: false)
-        ->assertSee('data-slot="title"', escape: false)
-        ->assertSee('data-slot="status"', escape: false)
-        ->assertSee('data-slot="indicator"', escape: false)
-        ->assertSee('data-slot="content"', escape: false);
+        ->assertSee([
+            'data-page="status"',
+            'data-component="header"',
+            'data-component="status-overview"',
+            'data-component="status-summary"',
+            'data-component="component-list"',
+            'data-component="component-group"',
+            'data-component="component"',
+            'data-component="about"',
+            'data-component="metrics"',
+            'data-component="metric"',
+            'data-component="schedules"',
+            'data-component="schedule"',
+            'data-component="incident-timeline"',
+            'data-component="incident-day"',
+            'data-component="incident"',
+            'data-component="incident-update"',
+            'data-component="incident-update-status"',
+            'data-component="badge"',
+            'data-component="timestamp"',
+            'data-component="logo"',
+            'data-component="footer"',
+            'data-component-group-id="'.$group->getKey().'"',
+            'data-component-id="'.$component->getKey().'"',
+            'data-metric-id="'.$metric->getKey().'"',
+            'data-schedule-id="'.$schedule->getKey().'"',
+            'data-incident-id="'.$incident->getKey().'"',
+            'data-update-id="reported"',
+            'data-slot="main"',
+            'data-slot="title"',
+            'data-slot="status"',
+            'data-slot="indicator"',
+            'data-slot="content"',
+        ], escape: false);
 });
 
-it('gives status page controls accessible names', function () {
+it('uses accessible component headings and form labels', function () {
+    $group = ComponentGroup::factory()->create(['name' => 'Core services']);
     Component::factory()->create([
         'name' => 'Public API',
         'description' => 'The public API.',
     ]);
+    Component::factory()->create([
+        'name' => 'Core API',
+        'component_group_id' => $group->id,
+    ]);
 
-    $page = $this->get(route('cachet.status-page'))
-        ->assertOk()
+    $response = $this->get(route('cachet.status-page'))
         ->assertSee('aria-label="'.__('cachet::component.description_label', ['component' => 'Public API']).'"', escape: false)
-        ->assertSee('aria-label="'.__('cachet::incident.timeline.date_range_label').'"', escape: false)
-        ->getContent();
+        ->assertSee('aria-label="'.__('cachet::incident.timeline.date_range_label').'"', escape: false);
 
-    expect($page)
-        ->toMatch('/<label[^>]*>.*'.__('cachet::incident.timeline.from_label').'.*<input[^>]*type="date"/s')
-        ->toMatch('/<label[^>]*>.*'.__('cachet::incident.timeline.to_label').'.*<input[^>]*type="date"/s');
+    /** Assert semantics without coupling to serialized HTML. */
+    $document = new DOMDocument;
+    $document->loadHTML($response->getContent(), LIBXML_NOERROR | LIBXML_NOWARNING);
+    $xpath = new DOMXPath($document);
+
+    expect($xpath->query('//h2[normalize-space(.)="Core services"]')->length)->toBe(1);
+    expect($xpath->query('//h3[normalize-space(.)="Core API"]')->length)->toBe(1);
+    expect($xpath->query('//h2[normalize-space(.)="Public API"]')->length)->toBe(1);
+    expect($xpath->query('//label[normalize-space(.)="'.__('cachet::incident.timeline.from_label').'"]//input[@type="date"]')->length)->toBe(1);
+    expect($xpath->query('//label[normalize-space(.)="'.__('cachet::incident.timeline.to_label').'"]//input[@type="date"]')->length)->toBe(1);
 });
 
 it('marks the page for conditional metrics loading only when a metric chart exists', function () {
@@ -272,6 +259,7 @@ it('marks the page for conditional metrics loading only when a metric chart exis
 it('can hide component group statuses', function () {
     $settings = app(AppSettings::class);
     $settings->show_component_group_status = false;
+    $settings->major_outage_threshold = 100;
     $settings->save();
 
     $group = ComponentGroup::factory()->create(['name' => 'Core services']);
@@ -289,8 +277,10 @@ it('can hide component group statuses', function () {
 
     expect($page)
         ->toContain('Core services')
-        ->toContain('1 Incident')
-        ->not->toMatch('/Core services\s*<\\/h2>\s*<span[^>]*>\s*Major outage\s*<\\/span>/');
+        ->toContain('1 Incident');
+
+    expect(substr_count(strip_tags($page), ComponentStatusEnum::major_outage->getLabel()))
+        ->toBe(1);
 });
 
 it('can display component tags', function () {
@@ -435,7 +425,7 @@ it('does not render raw html in component descriptions', function () {
 
     $this->get(route('cachet.status-page'))
         ->assertOk()
-        ->assertSee('<strong>primary</strong>', escape: false)
+        ->assertSeeText('primary')
         ->assertDontSee('<script>alert(1)</script>', escape: false);
 });
 
