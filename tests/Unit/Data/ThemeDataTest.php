@@ -59,3 +59,12 @@ it('falls back to the cachet accent when the stored accent is unknown', function
 
     expect((new ThemeData($settings))->styles)->toContain('--accent:');
 });
+
+it('compiles dark styles for both the class strategy and the system preference fallback', function () {
+    $styles = (new ThemeData(app(ThemeSettings::class)))->styles;
+
+    expect($styles)
+        ->toContain(':root.dark')
+        ->toContain('@media(prefers-color-scheme: dark)')
+        ->toContain(':root:not(.light)');
+});

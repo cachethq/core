@@ -54,6 +54,7 @@ class Cachet extends Component
             'cachet_footer' => $this->customizationSettings->footer,
             'refresh_rate' => $this->appSettings->refresh_rate,
             'theme' => new ThemeData($this->themeSettings),
+            'theme_mode' => $this->themeSettings->theme_mode,
             'favicon' => $this->favicon(),
             'page' => $this->page,
         ]);

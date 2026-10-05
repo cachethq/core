@@ -4,10 +4,12 @@ namespace Cachet\Filament\Pages\Settings;
 
 use Cachet\Cachet;
 use Cachet\Data\Cachet\ThemeData;
+use Cachet\Enums\ThemeModeEnum;
 use Cachet\Settings\ThemeSettings;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -50,6 +52,18 @@ class ManageTheme extends SettingsPage
                         ->disk((string) config('cachet.uploads.disk'))
                         ->columnSpanFull(),
                 ]),
+
+                Section::make()
+                    ->heading(__('cachet::settings.manage_theme.theme_mode.heading'))
+                    ->description(__('cachet::settings.manage_theme.theme_mode.description'))
+                    ->schema([
+                        ToggleButtons::make('theme_mode')
+                            ->label(__('cachet::settings.manage_theme.theme_mode.label'))
+                            ->helperText(__('cachet::settings.manage_theme.theme_mode.helper'))
+                            ->options(ThemeModeEnum::class)
+                            ->inline()
+                            ->required(),
+                    ]),
 
                 Section::make()->columns(2)
                     ->heading(__('cachet::settings.manage_theme.status_page_accent.heading'))

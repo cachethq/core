@@ -12,6 +12,7 @@
 /vendor
 /.phpunit.xml
 /.phpunit.result.cache
+/tests/Browser/Screenshots
 Thumbs.db
 
 /.mcp.json

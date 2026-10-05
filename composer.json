@@ -50,6 +50,7 @@
         "laravel/pint": "^1.24",
         "orchestra/testbench": "^10.0|^11.0",
         "pestphp/pest": "^4.3",
+        "pestphp/pest-plugin-browser": "^4.3",
         "pestphp/pest-plugin-laravel": "^4.0",
         "pestphp/pest-plugin-livewire": "*",
         "pestphp/pest-plugin-type-coverage": "^4.0",

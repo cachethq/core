@@ -28,6 +28,7 @@
                     </form>
                 @endauth
             @endif
+            <x-cachet::theme-toggle />
         </nav>
     </div>
 </header>
