@@ -12,6 +12,7 @@ use Cachet\Concerns\Publishable;
 use Cachet\Database\Factories\ScheduleFactory;
 use Cachet\Enums\ScheduleStatusEnum;
 use Cachet\QueryBuilders\ScheduleBuilder;
+use Cachet\Status;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -71,6 +72,9 @@ class Schedule extends Model implements Metable
                 $schedule->published_notified_at = $schedule->freshTimestamp();
             }
         });
+
+        self::saved(fn () => Status::flush());
+        self::deleted(fn () => Status::flush());
 
         self::updated(function (Schedule $schedule) {
             if ($schedule->wasChanged('completed_at') && $schedule->status === ScheduleStatusEnum::complete) {

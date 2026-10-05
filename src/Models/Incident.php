@@ -15,6 +15,7 @@ use Cachet\Events\Incidents\IncidentCreated;
 use Cachet\Events\Incidents\IncidentDeleted;
 use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Filament\Resources\Incidents\IncidentResource;
+use Cachet\Status;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
@@ -129,8 +130,15 @@ class Incident extends Model implements Metable
             }
         });
 
-        self::saved(fn () => self::forgetRssFeed());
-        self::deleted(fn () => self::forgetRssFeed());
+        self::saved(function (): void {
+            self::forgetRssFeed();
+            Status::flush();
+        });
+
+        self::deleted(function (): void {
+            self::forgetRssFeed();
+            Status::flush();
+        });
     }
 
     /**
