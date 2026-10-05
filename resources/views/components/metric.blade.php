@@ -11,8 +11,6 @@
      data-cachet-metric
      x-data="chart_{{ $metric->id }}"
      class="group relative overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-zinc-900/10 dark:bg-zinc-900 dark:ring-white/15">
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
-
     <div data-slot="content" class="flex flex-col gap-4 p-4 sm:gap-5 sm:p-6">
         <div data-slot="header" class="flex flex-wrap items-start justify-between gap-3">
             <div class="flex min-w-0 flex-col gap-1">

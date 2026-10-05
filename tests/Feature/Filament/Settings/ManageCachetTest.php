@@ -48,6 +48,17 @@ it('saves the component group status visibility setting', function () {
     expect(app(AppSettings::class)->refresh()->show_component_group_status)->toBeFalse();
 });
 
+it('saves the system status display setting', function () {
+    expect(app(AppSettings::class)->display_system_status)->toBeFalse();
+
+    livewire(ManageCachet::class)
+        ->fillForm(['display_system_status' => true])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect(app(AppSettings::class)->refresh()->display_system_status)->toBeTrue();
+});
+
 it('saves the status page title and about visibility settings', function () {
     expect(app(AppSettings::class))
         ->show_site_name->toBeFalse()

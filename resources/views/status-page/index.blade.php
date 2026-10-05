@@ -5,18 +5,21 @@
     @php($siteName = $appSettings->name ?: config('cachet.title', 'Cachet'))
 
     <main data-slot="main" class="status-page container mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
-        <section data-component="status-overview" class="status-overview relative">
-            <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent" aria-hidden="true"></div>
-            @if ($appSettings->show_site_name)
-                <div data-slot="masthead" class="status-overview__masthead">
-                    <h1 data-slot="title" class="status-overview__title font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{{ $siteName }}</h1>
-                </div>
-            @endif
+        @if ($appSettings->display_system_status)
+            <x-cachet::system-status />
+        @else
+            <section data-component="status-overview" class="status-overview relative">
+                @if ($appSettings->show_site_name)
+                    <div data-slot="masthead" class="status-overview__masthead">
+                        <h1 data-slot="title" class="status-overview__title font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{{ $siteName }}</h1>
+                    </div>
+                @endif
 
-            <x-cachet::status-bar :is-heading="! $appSettings->show_site_name" />
+                <x-cachet::status-bar :is-heading="! $appSettings->show_site_name" />
 
-            <x-cachet::component-groups />
-        </section>
+                <x-cachet::component-groups />
+            </section>
+        @endif
 
         <x-cachet::about :show-site-name="false" />
 
