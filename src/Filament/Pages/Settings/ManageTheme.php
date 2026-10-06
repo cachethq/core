@@ -14,6 +14,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
+use Illuminate\Support\Facades\Storage;
 
 class ManageTheme extends SettingsPage
 {
@@ -42,7 +43,7 @@ class ManageTheme extends SettingsPage
                     FileUpload::make('app_banner')
                         ->acceptedFileTypes((array) config('cachet.uploads.image_mime_types'))
                         ->maxSize((int) config('cachet.uploads.max_size'))
-                        ->preventFilePathTampering()
+                        ->preventFilePathTampering(allowFilePathUsing: fn (string $file): bool => Storage::disk((string) config('cachet.uploads.disk'))->exists($file))
                         ->imageEditor()
                         ->label(__('cachet::settings.manage_theme.app_banner_label'))
                         ->hiddenLabel()
