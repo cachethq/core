@@ -1,7 +1,9 @@
 <?php
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Update;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -189,6 +191,45 @@ it('can create an incident update', function () {
         'status' => IncidentStatusEnum::identified->value,
         'message' => 'This is a test message.',
     ]);
+});
+
+it('can create an incident update that moves its component statuses', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incident-updates.manage']);
+
+    $incident = Incident::factory()->create();
+    $component = Component::factory()->create();
+    $incident->components()->attach($component->id, [
+        'component_status' => ComponentStatusEnum::major_outage,
+    ]);
+
+    $response = postJson("/status/api/incidents/{$incident->id}/updates", [
+        'status' => IncidentStatusEnum::identified->value,
+        'message' => 'The API is recovering.',
+        'components' => [
+            ['id' => $component->id, 'status' => ComponentStatusEnum::performance_issues->value],
+        ],
+    ]);
+
+    $response->assertCreated();
+
+    expect($incident->components()->first()->pivot->component_status)
+        ->toEqual(ComponentStatusEnum::performance_issues);
+});
+
+it('rejects an incident update with an unknown component', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incident-updates.manage']);
+
+    $incident = Incident::factory()->create();
+
+    $response = postJson("/status/api/incidents/{$incident->id}/updates", [
+        'status' => IncidentStatusEnum::identified->value,
+        'message' => 'The API is recovering.',
+        'components' => [
+            ['id' => 999999, 'status' => ComponentStatusEnum::operational->value],
+        ],
+    ]);
+
+    $response->assertUnprocessable();
 });
 
 it('cannot update an incident update if not authenticated', function () {

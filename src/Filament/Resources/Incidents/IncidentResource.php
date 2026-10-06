@@ -14,6 +14,7 @@ use Cachet\Filament\Resources\Incidents\Pages\EditIncident;
 use Cachet\Filament\Resources\Incidents\Pages\ListIncidents;
 use Cachet\Filament\Resources\Incidents\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
+use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Settings\MailSettings;
 use Cachet\Status;
@@ -268,6 +269,31 @@ class IncidentResource extends Resource
                     ->default(fn (Incident $record) => $record->user_id ?? auth()->id())
                     ->searchable()
                     ->preload(),
+                Repeater::make('components')
+                    ->label(__('cachet::incident.record_update.form.components_label'))
+                    ->helperText(__('cachet::incident.record_update.form.components_helper'))
+                    ->addActionLabel(__('cachet::incident.record_update.form.components_add_action_label'))
+                    ->default(fn (Incident $record): array => $record->components
+                        ->map(fn (Component $component): array => [
+                            'id' => $component->id,
+                            'status' => $component->pivot->component_status ?? $component->status,
+                        ])
+                        ->values()
+                        ->all())
+                    ->schema([
+                        Select::make('id')
+                            ->label(__('cachet::incident.form.add_component.component_label'))
+                            ->preload()
+                            ->required()
+                            ->options(fn (): array => ComponentOptions::forSelect())
+                            ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+                        ToggleButtons::make('status')
+                            ->label(__('cachet::incident.form.add_component.status_label'))
+                            ->inline()
+                            ->options(ComponentStatusEnum::class)
+                            ->required(),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 

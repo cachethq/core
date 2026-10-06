@@ -93,6 +93,9 @@ return [
             'status_label' => 'Status',
             'user_label' => 'User',
             'user_helper' => 'The user who reported the incident.',
+            'components_label' => 'Components',
+            'components_helper' => 'Update the status of the components affected by this incident.',
+            'components_add_action_label' => 'Add a component status',
         ],
     ],
     'overview' => [
