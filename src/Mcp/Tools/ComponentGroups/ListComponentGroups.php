@@ -5,8 +5,10 @@ namespace Cachet\Mcp\Tools\ComponentGroups;
 use Cachet\Concerns\ChecksApiAuthentication;
 use Cachet\Mcp\Concerns\InteractsWithPagination;
 use Cachet\Mcp\Concerns\PresentsResources;
+use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\ResponseFactory;
@@ -40,7 +42,8 @@ class ListComponentGroups extends Tool
     {
         $groups = ComponentGroup::query()
             ->visible($this->isAuthenticated())
-            ->with(['components' => function ($query): void {
+            ->with(['components' => function (HasMany $query): void {
+                /** @var HasMany<Component, ComponentGroup> $query */
                 if (! $this->isAuthenticated()) {
                     $query->enabled();
                 }
