@@ -39,6 +39,7 @@ use Illuminate\Support\Str;
  * @property string $name
  * @property ?IncidentStatusEnum $status
  * @property string $message
+ * @property ?string $private_note
  * @property ?Carbon $created_at
  * @property ?Carbon $updated_at
  * @property ?Carbon $deleted_at
@@ -111,6 +112,7 @@ class Incident extends Model implements Metable
         'stickied',
         'notifications',
         'message',
+        'private_note',
         'scheduled_at',
         'occurred_at',
         'published_at',
@@ -290,6 +292,26 @@ class Incident extends Model implements Metable
     public function formattedMessage(): string
     {
         return Cachet::markdown($this->message);
+    }
+
+    /**
+     * Exclude private notes, including chaperoned incident copies in loaded relations.
+     */
+    public function toWebhookArray(): array
+    {
+        $redact = function (array $data) use (&$redact): array {
+            unset($data['private_note']);
+
+            foreach ($data as $key => $value) {
+                if (is_array($value)) {
+                    $data[$key] = $redact($value);
+                }
+            }
+
+            return $data;
+        };
+
+        return $redact($this->toArray());
     }
 
     /**
