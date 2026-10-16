@@ -3,9 +3,34 @@
 use Cachet\Actions\Incident\SyncIncidentStatus;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Events\Incidents\IncidentCreated;
+use Cachet\Events\Incidents\IncidentDeleted;
+use Cachet\Events\Incidents\IncidentUpdated;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
 use Cachet\Models\Update;
+
+it('keeps private notes out of incident webhooks', function () {
+    $incident = Incident::factory()->create(['private_note' => 'Internal ticket SEC-482']);
+    $incident->updates()->create(['message' => 'Public update']);
+    $incident->load('updates');
+
+    expect($incident->fresh()->private_note)->toBe('Internal ticket SEC-482');
+
+    foreach ([IncidentCreated::class, IncidentUpdated::class, IncidentDeleted::class] as $event) {
+        $payload = (new $event($incident))->getWebhookPayload();
+
+        expect($payload)
+            ->toHaveKey('message', $incident->message)
+            ->not->toHaveKey('private_note')
+            ->and($payload['updates'][0]['message'])->toBe('Public update')
+            ->and($payload['updates'][0]['updateable']['message'])->toBe($incident->message)
+            ->and(json_encode($payload))->not->toContain('private_note', 'Internal ticket SEC-482');
+    }
+
+    expect($incident->private_note)->toBe('Internal ticket SEC-482')
+        ->and($incident->updates->first()->updateable->private_note)->toBe('Internal ticket SEC-482');
+});
 
 it('can have multiple components', function () {
     $incident = Incident::factory()->create();

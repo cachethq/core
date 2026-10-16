@@ -58,6 +58,8 @@ return [
         'name_label' => 'Name',
         'status_label' => 'Status',
         'message_label' => 'Message',
+        'private_note_label' => 'Private note',
+        'private_note_helper' => 'Only visible in the dashboard. Never shown on the status page or included in API responses, webhooks, or subscriber notifications.',
         'occurred_at_label' => 'Occurred at',
         'occurred_at_helper' => 'The incident\'s created timestamp will be used if left empty.',
         'published_at_label' => 'Published at',

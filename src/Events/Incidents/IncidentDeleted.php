@@ -25,7 +25,7 @@ class IncidentDeleted
 
     public function getWebhookPayload(): array
     {
-        return $this->incident->toArray();
+        return $this->incident->toWebhookArray();
     }
 
     /**

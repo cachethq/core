@@ -27,6 +27,7 @@ use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\ToggleButtons;
@@ -70,6 +71,11 @@ class IncidentResource extends Resource
                     MarkdownEditor::make('message')
                         ->label(__('cachet::incident.form.message_label'))
                         ->required()
+                        ->columnSpanFull(),
+                    Textarea::make('private_note')
+                        ->label(__('cachet::incident.form.private_note_label'))
+                        ->helperText(__('cachet::incident.form.private_note_helper'))
+                        ->rows(3)
                         ->columnSpanFull(),
                     DateTimePicker::make('occurred_at')
                         ->label(__('cachet::incident.form.occurred_at_label'))

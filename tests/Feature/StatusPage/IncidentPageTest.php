@@ -1,8 +1,33 @@
 <?php
 
 use Cachet\Enums\ComponentStatusEnum;
+use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
+use Workbench\App\User;
+
+it('never exposes a public incident private note to status page or API viewers', function (bool $authenticated) {
+    if ($authenticated) {
+        $this->actingAs(User::factory()->create(['is_admin' => true]));
+    }
+
+    $incident = Incident::factory()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+        'message' => 'Public incident message',
+        'private_note' => 'Internal ticket SEC-482',
+    ]);
+
+    $this->get(route('cachet.status-page.incident', $incident))
+        ->assertOk()
+        ->assertSee('Public incident message')
+        ->assertDontSee('Internal ticket SEC-482');
+
+    $this->getJson('/status/api/incidents/'.$incident->id)
+        ->assertOk()
+        ->assertJsonPath('data.attributes.message', 'Public incident message')
+        ->assertJsonMissingPath('data.attributes.private_note')
+        ->assertDontSee('Internal ticket SEC-482');
+})->with([false, true]);
 
 it('shows the affected components on the incident page', function () {
     $component = Component::factory()->create(['name' => 'API']);

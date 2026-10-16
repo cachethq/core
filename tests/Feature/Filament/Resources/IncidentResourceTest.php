@@ -29,6 +29,40 @@ beforeEach(function () {
     actingAs(User::factory()->create(['is_admin' => true]));
 });
 
+it('can create, reload, edit and clear a private note on a public incident', function () {
+    livewire(CreateIncident::class)
+        ->fillForm([
+            'name' => 'Public outage',
+            'status' => IncidentStatusEnum::investigating,
+            'message' => 'We are investigating.',
+            'visible' => ResourceVisibilityEnum::guest,
+            'private_note' => 'Internal ticket SEC-482',
+        ])
+        ->call('create')
+        ->assertHasNoFormErrors();
+
+    $incident = Incident::where('name', 'Public outage')->sole();
+
+    expect($incident->private_note)->toBe('Internal ticket SEC-482')
+        ->and($incident->visible)->toBe(ResourceVisibilityEnum::guest);
+
+    livewire(EditIncident::class, ['record' => $incident->getKey()])
+        ->assertFormSet(['private_note' => 'Internal ticket SEC-482'])
+        ->fillForm(['private_note' => 'Escalated to the security team'])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($incident->fresh()->private_note)->toBe('Escalated to the security team');
+
+    livewire(EditIncident::class, ['record' => $incident->getKey()])
+        ->assertFormSet(['private_note' => 'Escalated to the security team'])
+        ->fillForm(['private_note' => null])
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect($incident->fresh()->private_note)->toBeNull();
+});
+
 it('hides the notify subscribers toggle when subscriptions are not allowed', function () {
     $this->get(CreateIncident::getUrl())
         ->assertOk()
