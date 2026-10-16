@@ -3,6 +3,7 @@
 namespace Tests\Feature\Filament\Settings;
 
 use Cachet\Filament\Pages\Settings\ManageTheme;
+use Cachet\Settings\ThemeSettings;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Http\UploadedFile;
@@ -70,4 +71,18 @@ it('accepts app logos within the configured constraints', function () {
         ])
         ->call('save')
         ->assertHasNoFormErrors();
+});
+
+it('allows saving when a banner image is already stored', function () {
+    Storage::disk('public')->put('app-banner.png', 'fake-image-bytes');
+
+    $settings = app(ThemeSettings::class);
+    $settings->app_banner = 'app-banner.png';
+    $settings->save();
+
+    livewire(ManageTheme::class)
+        ->call('save')
+        ->assertHasNoFormErrors();
+
+    expect(app(ThemeSettings::class)->refresh()->app_banner)->toBe('app-banner.png');
 });
