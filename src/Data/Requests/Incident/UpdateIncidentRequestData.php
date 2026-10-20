@@ -16,6 +16,7 @@ final class UpdateIncidentRequestData extends BaseData
     public function __construct(
         public readonly Optional|string $name,
         public readonly ?string $message = null,
+        public readonly ?string $privateNote = null,
         public readonly ?IncidentStatusEnum $status = null,
         public readonly ?bool $visible = null,
         public readonly ?bool $stickied = null,
@@ -35,6 +36,10 @@ final class UpdateIncidentRequestData extends BaseData
         return [
             'name' => ['string', 'max:255'],
             'message' => ['string'],
+            /**
+             * A dashboard-only note. Never shown on the status page, in webhooks or in subscriber notifications. Requires the incident-private-notes.manage token ability.
+             */
+            'private_note' => ['nullable', 'string'],
             'status' => [Rule::enum(IncidentStatusEnum::class)],
             'visible' => ['boolean'],
             'stickied' => ['boolean'],
