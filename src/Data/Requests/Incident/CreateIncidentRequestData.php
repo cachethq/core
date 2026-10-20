@@ -28,6 +28,7 @@ final class CreateIncidentRequestData extends BaseData
         public readonly ?string $message = null,
         #[RequiredWithout('message')]
         public readonly ?string $template = null,
+        public readonly ?string $privateNote = null,
         public readonly bool $visible = false,
         public readonly bool $stickied = false,
         public readonly bool $notifications = false,
@@ -55,6 +56,10 @@ final class CreateIncidentRequestData extends BaseData
             'message' => ['required_without:template', 'string'],
             'template' => ['required_without:message', 'string', Rule::exists('incident_templates', 'slug')],
             'status' => ['required', Rule::enum(IncidentStatusEnum::class)],
+            /**
+             * A dashboard-only note. Never shown on the status page, in webhooks or in subscriber notifications. Requires the incident-private-notes.manage token ability.
+             */
+            'private_note' => ['nullable', 'string'],
             'visible' => ['boolean'],
             'stickied' => ['boolean'],
             'notifications' => ['boolean'],
@@ -99,6 +104,7 @@ final class CreateIncidentRequestData extends BaseData
             status: $this->status,
             message: $message,
             template: $this->template,
+            privateNote: $this->privateNote,
             visible: $this->visible,
             stickied: $this->stickied,
             notifications: $this->notifications,

@@ -98,6 +98,7 @@ class Cachet
             'components' => ['manage', 'delete'],
             'component-groups' => ['manage', 'delete'],
             'incidents' => ['manage', 'delete'],
+            'incident-private-notes' => ['manage'],
             'incident-updates' => ['manage', 'delete'],
             'incident-templates' => ['manage', 'delete'],
             'metrics' => ['manage', 'delete'],
