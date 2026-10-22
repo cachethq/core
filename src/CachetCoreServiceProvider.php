@@ -324,7 +324,7 @@ class CachetCoreServiceProvider extends ServiceProvider
             $schedule = $this->app->make(\Illuminate\Console\Scheduling\Schedule::class);
             $demoMode = fn () => Cachet::demoMode();
 
-            $schedule->command('cachet:beacon')->daily();
+            $schedule->command('cachet:beacon')->daily()->when(fn () => config('cachet.beacon'));
 
             $schedule->command('cachet:notify-long-running-incidents')->hourly();
 
