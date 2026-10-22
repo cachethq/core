@@ -124,7 +124,8 @@ class Status
                 ->latest('updated_at')
                 ->value('updated_at'),
             Update::query()
-                ->whereHasMorph('updateable', [Incident::class], fn (Builder $query) => $query->viewableBy(false))
+                ->where('updateable_type', (new Incident)->getMorphClass())
+                ->whereIn('updateable_id', Incident::query()->viewableBy(false)->select('id'))
                 ->latest('updated_at')
                 ->value('updated_at'),
         ])->filter()->max();
