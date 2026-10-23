@@ -12,7 +12,7 @@
     <div class="divide-y divide-zinc-900/10 dark:divide-white/15">
         @foreach ($groups as $group)
             {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_SYSTEM_STATUS_GROUP_BEFORE) }}
-            <div data-component="system-status-group" data-component-group-id="{{ $group['model']->getKey() }}" x-data x-disclosure>
+            <div data-component="system-status-group" data-component-group-id="{{ $group['model']->getKey() }}" x-data x-disclosure @if ($group['model']->isExpanded(auth()->user())) default-open @endif>
                 <button data-slot="trigger" x-disclosure:button class="w-full px-5 py-4 text-left transition hover:bg-zinc-50/60 dark:hover:bg-white/[0.02] sm:px-6">
                     <div class="flex items-center justify-between gap-4">
                         <span class="flex min-w-0 items-center gap-2">
