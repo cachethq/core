@@ -106,7 +106,7 @@ class SystemStatus extends ViewComponent
         $authenticated = Cachet::user() !== null;
 
         return Component::query()
-            ->whereHas('incidents', fn ($query) => $query->unresolved()->viewableBy($authenticated))
+            ->whereHas('incidents', fn ($query) => $query->whereIn('incidents.id', Incident::query()->unresolved()->viewableBy($authenticated)->select('id')))
             ->pluck('id')
             ->toBase();
     }
