@@ -1,5 +1,6 @@
 <?php
 
+use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\ComponentStatusSourceEnum;
 use Cachet\Enums\IncidentStatusEnum;
@@ -16,6 +17,7 @@ use Cachet\View\RenderHook;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Workbench\App\User;
 
 it('renders the status page', function () {
     $this->get(route('cachet.status-page'))
@@ -320,6 +322,91 @@ it('renders hooks around system status groups and components', function () {
             'system-after',
         ], escape: false);
 });
+
+it('opens system status groups by default according to their collapsed setting', function () {
+    $settings = app(AppSettings::class);
+    $settings->display_system_status = true;
+    $settings->save();
+
+    $expanded = ComponentGroup::factory()->create(['collapsed' => ComponentGroupVisibilityEnum::expanded]);
+    $collapsed = ComponentGroup::factory()->create(['collapsed' => ComponentGroupVisibilityEnum::collapsed]);
+    $collapsedWithIncident = ComponentGroup::factory()->create(['collapsed' => ComponentGroupVisibilityEnum::collapsed]);
+    Component::factory()->create(['component_group_id' => $expanded->id]);
+    Component::factory()->create(['component_group_id' => $collapsed->id]);
+    Incident::factory()->create()->components()->attach(
+        Component::factory()->create(['component_group_id' => $collapsedWithIncident->id]),
+        ['component_status' => ComponentStatusEnum::major_outage],
+    );
+
+    $page = $this->get(route('cachet.status-page'))->assertOk()->getContent();
+
+    expect($page)
+        ->toMatch(systemStatusGroupPattern($expanded, open: true))
+        ->toMatch(systemStatusGroupPattern($collapsed, open: false))
+        ->toMatch(systemStatusGroupPattern($collapsedWithIncident, open: false));
+});
+
+it('opens a collapsed unless incident system status group only for an unresolved incident on a displayed component', function (Closure $setup, bool $open) {
+    $settings = app(AppSettings::class);
+    $settings->display_system_status = true;
+    $settings->save();
+
+    $group = ComponentGroup::factory()->create(['collapsed' => ComponentGroupVisibilityEnum::collapsed_unless_incident]);
+    Component::factory()->create(['component_group_id' => $group->id]);
+    $setup($group);
+
+    $page = $this->get(route('cachet.status-page'))->assertOk()->getContent();
+
+    expect($page)->toMatch(systemStatusGroupPattern($group, $open));
+})->with([
+    'no incident' => [fn (ComponentGroup $group) => null, false],
+    'unresolved incident' => [fn (ComponentGroup $group) => Incident::factory()->create()->components()->attach(
+        $group->components()->first(),
+        ['component_status' => ComponentStatusEnum::major_outage],
+    ), true],
+    'resolved incident' => [fn (ComponentGroup $group) => Incident::factory()->create(['status' => IncidentStatusEnum::fixed])->components()->attach(
+        $group->components()->first(),
+        ['component_status' => ComponentStatusEnum::major_outage],
+    ), false],
+    'unresolved incident on a disabled component' => [fn (ComponentGroup $group) => Incident::factory()->create()->components()->attach(
+        Component::factory()->disabled()->create(['component_group_id' => $group->id]),
+        ['component_status' => ComponentStatusEnum::major_outage],
+    ), false],
+    'unpublished incident' => [fn (ComponentGroup $group) => Incident::factory()->scheduled()->create()->components()->attach(
+        $group->components()->first(),
+        ['component_status' => ComponentStatusEnum::major_outage],
+    ), false],
+]);
+
+it('opens a collapsed unless incident system status group for an authenticated-only incident only when signed in', function (bool $authenticated) {
+    $settings = app(AppSettings::class);
+    $settings->display_system_status = true;
+    $settings->save();
+
+    $group = ComponentGroup::factory()->create(['collapsed' => ComponentGroupVisibilityEnum::collapsed_unless_incident]);
+    Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated])->components()->attach(
+        Component::factory()->create(['component_group_id' => $group->id]),
+        ['component_status' => ComponentStatusEnum::major_outage],
+    );
+
+    if ($authenticated) {
+        $this->actingAs(User::factory()->create());
+    }
+
+    $page = $this->get(route('cachet.status-page'))->assertOk()->getContent();
+
+    expect($page)->toMatch(systemStatusGroupPattern($group, open: $authenticated));
+})->with([
+    'guest' => [false],
+    'signed in' => [true],
+]);
+
+function systemStatusGroupPattern(ComponentGroup $group, bool $open): string
+{
+    $tag = '<div data-component="system-status-group" data-component-group-id="'.$group->id.'" x-data x-disclosure';
+
+    return '/'.preg_quote($tag, '/').($open ? '\s+default-open\s*>' : '\s*>').'/';
+}
 
 it('renders stable theme attributes on the status page', function () {
     $settings = app(AppSettings::class);
