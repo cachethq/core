@@ -35,5 +35,12 @@ return [
         'subscribe' => [
             'button_label' => 'Inscrever-se',
         ],
+        'captcha' => [
+            'verifying' => 'Verificando que você não é um robô…',
+            'verified' => 'Verificado. Você já pode se inscrever.',
+            'error' => 'Não foi possível verificar o seu navegador. Recarregue a página e tente novamente.',
+            'noscript' => 'É preciso JavaScript para se inscrever.',
+            'failed' => 'Não foi possível verificar que você não é um robô. Tente novamente.',
+        ],
     ],
 ];

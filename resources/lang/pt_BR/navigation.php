@@ -7,6 +7,7 @@ return [
             'manage_cachet' => 'Gerenciar Cachet',
             'manage_customization' => 'Gerenciar Personalização',
             'manage_localization' => 'Gerenciar Localização',
+            'manage_captcha' => 'Gerenciar Captcha',
             'manage_theme' => 'Gerenciar Tema',
             'manage_api_keys' => 'Gerenciar Chaves de API',
             'manage_webhooks' => 'Gerenciar Webhooks',
