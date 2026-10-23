@@ -3,9 +3,11 @@
 namespace Cachet\Http\Controllers\Subscribers;
 
 use Cachet\Actions\Subscriber\CreateSubscriber;
+use Cachet\Captcha\CaptchaManager;
 use Cachet\Settings\MailSettings;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class SubscriberController
@@ -23,13 +25,19 @@ class SubscriberController
     /**
      * Subscribe to status page updates.
      */
-    public function store(Request $request, MailSettings $mailSettings, CreateSubscriber $createSubscriber): RedirectResponse
+    public function store(Request $request, MailSettings $mailSettings, CaptchaManager $captcha, CreateSubscriber $createSubscriber): RedirectResponse
     {
         abort_unless($mailSettings->allow_subscribers, 404);
 
         $validated = $request->validate([
             'email' => ['required', 'email', 'max:255'],
         ]);
+
+        if (! $captcha->driver()->verify($request)) {
+            throw ValidationException::withMessages([
+                'captcha' => __('cachet::subscriber.status_page.captcha.failed'),
+            ]);
+        }
 
         $subscriber = $createSubscriber->handle($validated['email']);
 

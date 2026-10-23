@@ -4,6 +4,7 @@ namespace Cachet;
 
 use BladeUI\Icons\Factory;
 use Cachet\Badger\BadgerServiceProvider;
+use Cachet\Captcha\CaptchaManager;
 use Cachet\Commands\AssetsCommand;
 use Cachet\Commands\CheckComponentsCommand;
 use Cachet\Commands\MakeUserCommand;
@@ -66,6 +67,7 @@ class CachetCoreServiceProvider extends ServiceProvider
         $this->app->singleton(Cachet::class);
         $this->app->singleton(ViewManager::class);
         $this->app->scoped(Status::class);
+        $this->app->scoped(CaptchaManager::class);
         $this->app->register(BadgerServiceProvider::class);
 
         $this->configureSettingsCache();

@@ -10,6 +10,7 @@ use Cachet\Http\Controllers\SlackRssController;
 use Cachet\Http\Controllers\StatusPage\ComponentBadgeController;
 use Cachet\Http\Controllers\StatusPage\StatusBadgeController;
 use Cachet\Http\Controllers\StatusPage\StatusPageController;
+use Cachet\Http\Controllers\Subscribers\SubscriberCaptchaController;
 use Cachet\Http\Controllers\Subscribers\SubscriberController;
 use Cachet\Http\Controllers\Subscribers\UnsubscribeSubscriberController;
 use Cachet\Http\Controllers\Subscribers\VerifySubscriberEmailController;
@@ -49,6 +50,9 @@ class PendingRouteRegistration
                 $router->post('/subscribe', [SubscriberController::class, 'store'])
                     ->middleware('throttle:6,1')
                     ->name('subscribers.store');
+                $router->get('/subscribe/captcha', SubscriberCaptchaController::class)
+                    ->middleware('throttle:30,1')
+                    ->name('subscribers.captcha');
                 $router->get('/subscribers/verify/{subscriber}/{hash}', VerifySubscriberEmailController::class)
                     ->middleware(['signed', 'throttle:6,1'])
                     ->name('subscribers.verify');

@@ -71,6 +71,31 @@ return [
             'show_timezone_helper' => 'Mostra o fuso horário ativo ao lado das datas na página de status.',
         ],
     ],
+    'manage_captcha' => [
+        'section_title' => 'Captcha',
+        'section_description' => 'Proteja o formulário público de inscrição contra bots e contra o envio de emails de confirmação para endereços que não os pediram.',
+        'provider_label' => 'Serviço',
+        'providers' => [
+            'none' => 'Nenhum',
+            'altcha' => 'ALTCHA (auto-hospedado)',
+            'turnstile' => 'Cloudflare Turnstile',
+            'hcaptcha' => 'hCaptcha',
+            'recaptcha' => 'Google reCAPTCHA v2',
+        ],
+        'provider_helpers' => [
+            'none' => 'O formulário de inscrição tem apenas limite de pedidos.',
+            'altcha' => 'O navegador do visitante resolve um pequeno desafio de prova de trabalho. Não precisa de serviço externo, cookies nem chaves.',
+            'turnstile' => 'O navegador do visitante carrega um script da Cloudflare, e o Cachet precisa de acesso a challenges.cloudflare.com para validar as respostas.',
+            'hcaptcha' => 'O navegador do visitante carrega um script do hCaptcha, e o Cachet precisa de acesso a api.hcaptcha.com para validar as respostas.',
+            'recaptcha' => 'O navegador do visitante carrega um script do Google, e o Cachet precisa de acesso a www.google.com para validar as respostas.',
+        ],
+        'site_key_label' => 'Chave do site',
+        'secret_key_label' => 'Chave secreta',
+        'keys_helper' => 'Crie as chaves em :url.',
+        'altcha_complexity_label' => 'Complexidade',
+        'altcha_complexity_helper' => 'O número máximo que o navegador pode ter de testar. Valores mais altos atrasam os bots, mas também os visitantes em dispositivos lentos.',
+    ],
+
     'manage_theme' => [
         'app_banner_label' => 'Imagem do Banner',
         'app_banner_helper' => 'Uma imagem exibida no topo da página de status.',
