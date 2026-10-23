@@ -7,6 +7,8 @@ use Cachet\Models\Component;
 use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
 use Cachet\Models\IncidentTemplate;
+use Cachet\Models\Update;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Laravel\Sanctum\Sanctum;
 use Workbench\App\User;
 
@@ -636,4 +638,126 @@ it('rejects a duplicate component in the same incident', function () {
     ])->assertUnprocessable()->assertInvalid('components.1.id');
 
     expect(Incident::query()->where('name', 'Duplicated')->exists())->toBeFalse();
+});
+
+it('does not expose a private note to guests', function () {
+    $incident = Incident::factory()->create(['private_note' => 'Internal ticket SEC-482']);
+
+    getJson('/status/api/incidents')
+        ->assertOk()
+        ->assertJsonMissingPath('data.0.attributes.private_note')
+        ->assertDontSee('Internal ticket SEC-482');
+
+    getJson('/status/api/incidents/'.$incident->id)
+        ->assertOk()
+        ->assertJsonMissingPath('data.attributes.private_note')
+        ->assertDontSee('Internal ticket SEC-482');
+});
+
+it('does not expose a private note to a token without the private notes ability', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $incident = Incident::factory()->create(['private_note' => 'Internal ticket SEC-482']);
+
+    getJson('/status/api/incidents/'.$incident->id)
+        ->assertOk()
+        ->assertJsonMissingPath('data.attributes.private_note')
+        ->assertDontSee('Internal ticket SEC-482');
+});
+
+it('exposes a private note to a token with the private notes ability', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incident-private-notes.manage']);
+
+    $incident = Incident::factory()->create(['private_note' => 'Internal ticket SEC-482']);
+
+    getJson('/status/api/incidents')
+        ->assertOk()
+        ->assertJsonPath('data.0.attributes.private_note', 'Internal ticket SEC-482');
+
+    getJson('/status/api/incidents/'.$incident->id)
+        ->assertOk()
+        ->assertJsonPath('data.attributes.private_note', 'Internal ticket SEC-482');
+});
+
+it('does not expose a private note through the incident updates include without the ability', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $incident = Incident::factory()->create(['private_note' => 'Internal ticket SEC-482']);
+    $update = Update::factory()->create([
+        'updateable_id' => $incident->id,
+        'updateable_type' => Relation::getMorphAlias(Incident::class),
+    ]);
+
+    getJson('/status/api/incidents/'.$incident->id.'/updates/'.$update->id.'?include=incident')
+        ->assertOk()
+        ->assertDontSee('Internal ticket SEC-482');
+});
+
+it('can create an incident with a private note', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage', 'incident-private-notes.manage']);
+
+    postJson('/status/api/incidents', [
+        'name' => 'Test',
+        'message' => 'Something happened.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'private_note' => 'Internal ticket SEC-482',
+    ])
+        ->assertCreated()
+        ->assertJsonPath('data.attributes.private_note', 'Internal ticket SEC-482');
+
+    expect(Incident::query()->firstWhere('name', 'Test')->private_note)->toBe('Internal ticket SEC-482');
+});
+
+it('cannot create an incident with a private note without the private notes ability', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    postJson('/status/api/incidents', [
+        'name' => 'Test',
+        'message' => 'Something happened.',
+        'status' => IncidentStatusEnum::investigating->value,
+        'private_note' => 'Internal ticket SEC-482',
+    ])->assertForbidden();
+
+    expect(Incident::query()->where('name', 'Test')->exists())->toBeFalse();
+});
+
+it('can update an incident private note', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage', 'incident-private-notes.manage']);
+
+    $incident = Incident::factory()->create(['private_note' => 'Internal ticket SEC-482']);
+
+    putJson('/status/api/incidents/'.$incident->id, [
+        'private_note' => 'Escalated to the security team',
+    ])
+        ->assertOk()
+        ->assertJsonPath('data.attributes.private_note', 'Escalated to the security team');
+
+    expect($incident->fresh()->private_note)->toBe('Escalated to the security team');
+});
+
+it('cannot update an incident private note without the private notes ability', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $incident = Incident::factory()->create(['private_note' => 'Internal ticket SEC-482']);
+
+    putJson('/status/api/incidents/'.$incident->id, [
+        'name' => 'Renamed',
+        'private_note' => 'Escalated to the security team',
+    ])->assertForbidden();
+
+    expect($incident->fresh())
+        ->name->not->toBe('Renamed')
+        ->private_note->toBe('Internal ticket SEC-482');
+});
+
+it('can update an incident without touching its private note', function () {
+    Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
+
+    $incident = Incident::factory()->create(['private_note' => 'Internal ticket SEC-482']);
+
+    putJson('/status/api/incidents/'.$incident->id, ['name' => 'Renamed'])->assertOk();
+
+    expect($incident->fresh())
+        ->name->toBe('Renamed')
+        ->private_note->toBe('Internal ticket SEC-482');
 });

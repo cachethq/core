@@ -90,9 +90,10 @@ class IncidentController extends Controller
     /**
      * Create Incident
      */
-    public function store(CreateIncidentRequestData $data, CreateIncident $createIncidentAction)
+    public function store(Request $request, CreateIncidentRequestData $data, CreateIncident $createIncidentAction)
     {
         $this->guard('incidents.manage');
+        $this->guardPrivateNote($request);
 
         $incident = $createIncidentAction->handle($data);
 
@@ -118,13 +119,24 @@ class IncidentController extends Controller
     /**
      * Update Incident
      */
-    public function update(UpdateIncidentRequestData $data, Incident $incident, UpdateIncident $updateIncidentAction)
+    public function update(Request $request, UpdateIncidentRequestData $data, Incident $incident, UpdateIncident $updateIncidentAction)
     {
         $this->guard('incidents.manage');
+        $this->guardPrivateNote($request);
 
         $updateIncidentAction->handle($incident, $data);
 
         return IncidentResource::make($incident->fresh());
+    }
+
+    /**
+     * Require the private notes ability when the request carries a private note.
+     */
+    private function guardPrivateNote(Request $request): void
+    {
+        if ($request->has('private_note')) {
+            $this->guard('incident-private-notes.manage');
+        }
     }
 
     /**

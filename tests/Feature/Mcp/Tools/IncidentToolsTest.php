@@ -87,6 +87,19 @@ it('creates an incident', function () {
     assertDatabaseHas('incidents', ['name' => 'API Slowdown']);
 });
 
+it('ignores a private note when creating an incident', function () {
+    Sanctum::actingAs(User::factory()->create(), ['*']);
+
+    CachetServer::tool(CreateIncident::class, [
+        'name' => 'API Slowdown',
+        'status' => IncidentStatusEnum::investigating->value,
+        'message' => 'We are investigating API latency.',
+        'private_note' => 'Internal ticket SEC-482',
+    ])->assertOk()->assertDontSee('Internal ticket SEC-482');
+
+    expect(Incident::query()->firstWhere('name', 'API Slowdown')->private_note)->toBeNull();
+});
+
 it('creates an incident and updates the affected components', function () {
     Sanctum::actingAs(User::factory()->create(), ['incidents.manage']);
 
