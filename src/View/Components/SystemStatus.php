@@ -2,6 +2,8 @@
 
 namespace Cachet\View\Components;
 
+use Cachet\Cachet;
+use Cachet\Enums\ComponentGroupVisibilityEnum;
 use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Component;
@@ -24,7 +26,7 @@ use Illuminate\View\View;
  * @phpstan-type DayEvent array{label: string, status: ComponentStatusEnum, icon: string}
  * @phpstan-type DayEvents Collection<string, list<DayEvent>>
  * @phpstan-type ComponentRow array{model: Component, status: ComponentStatusEnum, days: ComponentDays, events: DayEvents, uptime: float|null, available_seconds: float, operational_seconds: float}
- * @phpstan-type GroupRow array{model: ComponentGroup, components: Collection<int, covariant ComponentRow>, days: StatusDays, events: DayEvents, uptime: float|null, available_seconds: float, operational_seconds: float}
+ * @phpstan-type GroupRow array{model: ComponentGroup, expanded: bool, components: Collection<int, covariant ComponentRow>, days: StatusDays, events: DayEvents, uptime: float|null, available_seconds: float, operational_seconds: float}
  */
 class SystemStatus extends ViewComponent
 {
@@ -62,13 +64,15 @@ class SystemStatus extends ViewComponent
      */
     private function groups(): Collection
     {
+        $componentsWithActiveIncidents = $this->componentsWithActiveIncidents();
+
         $groups = ComponentGroup::query()
             ->visible(auth()->check())
             ->orderBy('order')
             ->when(auth()->check(), fn (Builder $query) => $query->users(), fn ($query) => $query->guests())
             ->get()
             ->toBase()
-            ->map(function (ComponentGroup $group): array {
+            ->map(function (ComponentGroup $group) use ($componentsWithActiveIncidents): array {
                 $components = $this->components(
                     $group->components()->enabled()->orderBy('order')
                 );
@@ -76,6 +80,7 @@ class SystemStatus extends ViewComponent
                 /** @var GroupRow $row */
                 $row = [
                     'model' => $group,
+                    'expanded' => $this->isExpanded($group, $components, $componentsWithActiveIncidents),
                     'components' => $components,
                     'days' => $this->aggregateDays($components),
                     'events' => $this->aggregateEvents($components),
@@ -89,6 +94,37 @@ class SystemStatus extends ViewComponent
 
         /** @var Collection<int, covariant GroupRow> $groups */
         return $groups;
+    }
+
+    /**
+     * Fetch the IDs of components affected by an unresolved incident the current viewer can see.
+     *
+     * @return Collection<int, int>
+     */
+    private function componentsWithActiveIncidents(): Collection
+    {
+        $authenticated = Cachet::user() !== null;
+
+        return Component::query()
+            ->whereHas('incidents', fn ($query) => $query->unresolved()->viewableBy($authenticated))
+            ->pluck('id')
+            ->toBase();
+    }
+
+    /**
+     * Determine whether a group renders open, judged only by the components it displays.
+     *
+     * @param  Collection<int, covariant ComponentRow>  $components
+     * @param  Collection<int, int>  $componentsWithActiveIncidents
+     */
+    private function isExpanded(ComponentGroup $group, Collection $components, Collection $componentsWithActiveIncidents): bool
+    {
+        return match ($group->collapsed) {
+            ComponentGroupVisibilityEnum::expanded => true,
+            ComponentGroupVisibilityEnum::collapsed_unless_incident => $components
+                ->contains(fn (array $component): bool => $componentsWithActiveIncidents->contains($component['model']->getKey())),
+            default => false,
+        };
     }
 
     /**
