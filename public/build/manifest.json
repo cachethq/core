@@ -1,6 +1,6 @@
 {
   "resources/css/cachet.css": {
-    "file": "assets/cachet-Bx3l3HHD.css",
+    "file": "assets/cachet-BNNjAaz0.css",
     "name": "cachet",
     "names": [
       "cachet.css"
@@ -9,7 +9,7 @@
     "isEntry": true
   },
   "resources/css/dashboard/theme.css": {
-    "file": "assets/theme-DuFjw7tD.css",
+    "file": "assets/theme-CVytCKmM.css",
     "name": "theme",
     "names": [
       "theme.css"
@@ -17,17 +17,27 @@
     "src": "resources/css/dashboard/theme.css",
     "isEntry": true
   },
+  "resources/js/altcha.js": {
+    "file": "assets/altcha-DuVHT5LC.js",
+    "name": "altcha",
+    "src": "resources/js/altcha.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/cachet.js"
+    ]
+  },
   "resources/js/cachet.js": {
-    "file": "assets/cachet-DHCAi8ZN.js",
+    "file": "assets/cachet-tmFzj8iP.js",
     "name": "cachet",
     "src": "resources/js/cachet.js",
     "isEntry": true,
     "dynamicImports": [
-      "resources/js/metrics.js"
+      "resources/js/metrics.js",
+      "resources/js/altcha.js"
     ]
   },
   "resources/js/metrics.js": {
-    "file": "assets/metrics-0rXi1BiZ.js",
+    "file": "assets/metrics-BtN9hG-b.js",
     "name": "metrics",
     "src": "resources/js/metrics.js",
     "isDynamicEntry": true
