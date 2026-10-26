@@ -58,6 +58,13 @@ return [
         'email_label' => 'Email address',
         'email_placeholder' => 'you@example.com',
         'subscribe_button' => 'Subscribe',
+        'captcha' => [
+            'verifying' => 'Checking that you\'re not a robot…',
+            'verified' => 'Verified. You can subscribe now.',
+            'error' => 'We couldn\'t verify your browser. Reload the page and try again.',
+            'noscript' => 'JavaScript is required to subscribe.',
+            'failed' => 'We couldn\'t verify that you\'re not a robot. Please try again.',
+        ],
     ],
     'mail' => [
         'unsubscribe' => 'Unsubscribe',

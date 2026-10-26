@@ -79,6 +79,31 @@ return [
             'show_timezone_helper' => 'Show the active timezone next to dates on the status page.',
         ],
     ],
+    'manage_captcha' => [
+        'section_title' => 'Captcha',
+        'section_description' => 'Protect the public subscribe form from bots and from being used to send confirmation emails to addresses that didn\'t ask for them.',
+        'provider_label' => 'Provider',
+        'providers' => [
+            'none' => 'None',
+            'altcha' => 'ALTCHA (self-hosted)',
+            'turnstile' => 'Cloudflare Turnstile',
+            'hcaptcha' => 'hCaptcha',
+            'recaptcha' => 'Google reCAPTCHA v2',
+        ],
+        'provider_helpers' => [
+            'none' => 'The subscribe form is only rate limited.',
+            'altcha' => 'Visitors\' browsers solve a small proof-of-work puzzle. No external service, cookies or keys are needed.',
+            'turnstile' => 'Visitors\' browsers load a script from Cloudflare, and Cachet must be able to reach challenges.cloudflare.com to verify responses.',
+            'hcaptcha' => 'Visitors\' browsers load a script from hCaptcha, and Cachet must be able to reach api.hcaptcha.com to verify responses.',
+            'recaptcha' => 'Visitors\' browsers load a script from Google, and Cachet must be able to reach www.google.com to verify responses.',
+        ],
+        'site_key_label' => 'Site key',
+        'secret_key_label' => 'Secret key',
+        'keys_helper' => 'Create the keys at :url.',
+        'altcha_complexity_label' => 'Complexity',
+        'altcha_complexity_helper' => 'The highest number the browser may have to try. Higher values slow down bots but also visitors on slow devices.',
+    ],
+
     'manage_notifications' => [
         'subscriptions_section_title' => 'Subscriptions',
         'allow_subscribers_label' => 'Allow subscriptions',

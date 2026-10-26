@@ -17,6 +17,10 @@ async function startAlpine() {
         await import('./metrics.js')
     }
 
+    if (document.querySelector('[data-captcha="altcha"]')) {
+        await import('./altcha.js')
+    }
+
     Alpine.start()
 }
 

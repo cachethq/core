@@ -5,6 +5,7 @@ return [
         'label' => 'Settings',
         'items' => [
             'manage_cachet' => 'Manage Cachet',
+            'manage_captcha' => 'Manage Captcha',
             'manage_customization' => 'Manage Customization',
             'manage_localization' => 'Manage Localization',
             'manage_notifications' => 'Manage Notifications',

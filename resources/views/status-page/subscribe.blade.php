@@ -84,7 +84,9 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground shadow-sm ring-1 ring-accent/30 transition hover:opacity-90">
+                    <x-cachet::captcha />
+
+                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground shadow-sm ring-1 ring-accent/30 transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
                         {{ __('cachet::subscriber.status_page.subscribe_button') }}
                     </button>
                 </form>
