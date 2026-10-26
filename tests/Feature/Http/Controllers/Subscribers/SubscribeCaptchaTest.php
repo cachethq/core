@@ -79,7 +79,9 @@ describe('altcha', function () {
         get(route('cachet.subscribers.create'))
             ->assertOk()
             ->assertSee('data-captcha="altcha"', escape: false)
-            ->assertSee(route('cachet.subscribers.captcha'));
+            ->assertSee('x-data="cachetAltcha(', escape: false)
+            ->assertSee(str_replace('/', '\/', route('cachet.subscribers.captcha')), escape: false)
+            ->assertDontSee('crypto.subtle', escape: false);
     });
 
     it('serves a signed challenge', function () {
@@ -119,6 +121,13 @@ describe('altcha', function () {
         'not base64' => ['%%%'],
         'not json' => [base64_encode('nope')],
     ]);
+
+    it('rejects a solution sent as an array', function () {
+        post(route('cachet.subscribers.store'), ['email' => 'james@example.com', 'altcha' => ['x']])
+            ->assertSessionHasErrors('captcha');
+
+        expect(Subscriber::query()->count())->toBe(0);
+    });
 
     it('rejects a wrong number', function () {
         $challenge = getJson(route('cachet.subscribers.captcha'))->json();

@@ -59,7 +59,13 @@ class AltchaCaptcha implements Captcha
 
     public function verify(Request $request): bool
     {
-        $payload = json_decode(base64_decode((string) $request->input('altcha'), true) ?: '', true);
+        $input = $request->input('altcha');
+
+        if (! is_string($input) || $input === '') {
+            return false;
+        }
+
+        $payload = json_decode(base64_decode($input, true) ?: '', true);
 
         if (! is_array($payload)) {
             return false;
