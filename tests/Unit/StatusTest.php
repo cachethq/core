@@ -121,6 +121,70 @@ it('returns the most recent enabled component update timestamp', function () {
         ->toEqual($component->updated_at);
 });
 
+it('includes public incidents in the last updated timestamp', function () {
+    Component::factory()->create([
+        'enabled' => true,
+        'updated_at' => now()->subYear(),
+    ]);
+
+    $this->travel(-1)->hours();
+    $incident = Incident::factory()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+    ]);
+    $this->travelBack();
+
+    expect((new Status)->lastUpdated())->toEqual($incident->updated_at);
+});
+
+it('includes updates to public incidents in the last updated timestamp', function () {
+    Component::factory()->create([
+        'enabled' => true,
+        'updated_at' => now()->subYear(),
+    ]);
+
+    $this->travel(-1)->days();
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::identified->value,
+        'visible' => ResourceVisibilityEnum::guest,
+    ]);
+    $this->travelBack();
+
+    $this->travel(-1)->hours();
+    $update = Update::factory()->forIncident($incident)->create([
+        'status' => IncidentStatusEnum::identified->value,
+    ]);
+    $this->travelBack();
+
+    expect((new Status)->lastUpdated())->toEqual($update->updated_at);
+});
+
+it('excludes non-public incidents and their updates from the last updated timestamp', function (ResourceVisibilityEnum $visibility) {
+    $component = Component::factory()->create([
+        'enabled' => true,
+        'updated_at' => now()->subYear(),
+    ]);
+
+    $incident = Incident::factory()->create([
+        'visible' => $visibility,
+    ]);
+    Update::factory()->forIncident($incident)->create();
+
+    expect((new Status)->lastUpdated())->toEqual($component->updated_at);
+})->with([ResourceVisibilityEnum::authenticated, ResourceVisibilityEnum::hidden]);
+
+it('excludes unpublished incidents from the last updated timestamp', function () {
+    $component = Component::factory()->create([
+        'enabled' => true,
+        'updated_at' => now()->subYear(),
+    ]);
+
+    Incident::factory()->scheduled()->create([
+        'visible' => ResourceVisibilityEnum::guest,
+    ]);
+
+    expect((new Status)->lastUpdated())->toEqual($component->updated_at);
+});
+
 it('excludes disabled components from component overview', function () {
     Component::factory()->create([
         'status' => ComponentStatusEnum::operational->value,
