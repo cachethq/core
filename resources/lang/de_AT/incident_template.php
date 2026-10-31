@@ -5,8 +5,8 @@ return [
     'list' => [
         'headers' => [
             'name' => 'Name',
-            'slug' => 'Schlagwort',
-            'engine' => 'Methode',
+            'slug' => 'Slug',
+            'engine' => 'Template-Engine',
             'created_at' => 'Erstellt am',
             'updated_at' => 'Aktualisiert am',
             'deleted_at' => 'Gelöscht am',
@@ -18,14 +18,14 @@ return [
     ],
     'form' => [
         'name_label' => 'Name',
-        'slug_label' => 'Schlagwort',
+        'slug_label' => 'Slug',
         'template_label' => 'Vorlage',
-        'engine_label' => 'Methode',
+        'engine_label' => 'Template-Engine',
     ],
     'engine' => [
         'laravel_blade' => 'Laravel Blade',
-        'laravel_blade_docs' => 'Laravel Blade Dokumentation',
+        'laravel_blade_docs' => 'Dokumentation zu Laravel Blade',
         'twig' => 'Twig',
-        'twig_docs' => 'Twig Dokumentation',
+        'twig_docs' => 'Twig-Dokumentation',
     ],
 ];

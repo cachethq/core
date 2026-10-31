@@ -7,17 +7,20 @@ return [
     'list' => [
         'headers' => [
             'name' => 'Name',
-            'email' => 'Email-Addresse',
-            'email_verified_at' => 'Email verifiziert am',
+            'email' => 'E-Mail-Adresse',
+            'email_verified_at' => 'E-Mail verifiziert am',
             'is_admin' => 'Administrator',
         ],
         'actions' => [
-            'verify_email' => 'Email verifizieren',
+            'verify_email' => 'E-Mail verifizieren',
+            'reset_two_factor' => 'Zwei-Faktor-Authentifizierung zurücksetzen',
+            'reset_two_factor_confirmation' => 'Dadurch werden die Zwei-Faktor-Einrichtung und die Wiederherstellungscodes dieses Benutzers entfernt. Bis zur erneuten Einrichtung genügt zur Anmeldung das Passwort.',
+            'reset_two_factor_success' => 'Zwei-Faktor-Authentifizierung zurückgesetzt.',
         ],
     ],
     'form' => [
         'name_label' => 'Name',
-        'email_label' => 'Email-Addresse',
+        'email_label' => 'E-Mail-Adresse',
         'password_label' => 'Passwort',
         'password_confirmation_label' => 'Passwort bestätigen',
         'preferred_locale' => 'Bevorzugte Sprache',

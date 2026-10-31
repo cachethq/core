@@ -13,8 +13,8 @@ return [
         'desc' => 'Absteigend',
     ],
     'visibility' => [
-        'authenticated' => 'Benutzer',
+        'authenticated' => 'Angemeldete Benutzer',
         'guest' => 'Gäste',
-        'hidden' => 'Immer versteckt',
+        'hidden' => 'Immer ausgeblendet',
     ],
 ];

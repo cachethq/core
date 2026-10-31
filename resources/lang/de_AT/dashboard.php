@@ -26,7 +26,7 @@ return [
         'headers' => [
             'name' => 'Name',
             'status' => 'Status',
-            'scheduled_at' => 'Terminiert für',
+            'scheduled_at' => 'Geplant für',
         ],
         'actions' => [
             'create' => 'Wartung planen',

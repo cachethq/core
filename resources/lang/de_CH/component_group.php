@@ -6,13 +6,13 @@ return [
     'visibility' => [
         'expanded' => 'Immer ausgeklappt',
         'collapsed' => 'Immer eingeklappt',
-        'collapsed_unless_incident' => 'Eingeklappt - außer bei aktivem Vorfall',
+        'collapsed_unless_incident' => 'Eingeklappt – ausser bei aktivem Vorfall',
     ],
     'list' => [
         'headers' => [
             'name' => 'Name',
             'visible' => 'Sichtbar',
-            'collapsed' => 'Ausgeklappt',
+            'collapsed' => 'Eingeklappt',
             'order_column' => 'Sortierung der Komponentengruppe',
             'created_at' => 'Erstellt am',
             'updated_at' => 'Aktualisiert am',
@@ -25,8 +25,9 @@ return [
     'form' => [
         'name_label' => 'Name',
         'visible_label' => 'Sichtbar',
-        'collapsed_label' => 'Ausgeklappt',
+        'collapsed_label' => 'Eingeklappt',
         'order_column_label' => 'Sortierung der Komponentengruppe',
         'order_direction' => 'Sortierrichtung',
+        'meta_label' => 'Metadaten',
     ],
 ];
