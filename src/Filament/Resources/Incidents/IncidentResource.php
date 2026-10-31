@@ -176,8 +176,10 @@ class IncidentResource extends Resource
                     ->boolean(),
                 TextColumn::make('occurred_at')
                     ->label(__('cachet::incident.list.headers.occurred_at'))
+                    ->state(fn (Incident $record) => $record->timestamp)
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable(query: fn (Builder $query, string $direction): Builder => $query
+                        ->orderByRaw('coalesce(occurred_at, created_at) '.($direction === 'asc' ? 'asc' : 'desc'))),
                 TextColumn::make('published_at')
                     ->label(__('cachet::incident.list.headers.published_at'))
                     ->dateTime()
@@ -232,7 +234,7 @@ class IncidentResource extends Resource
             ])
             ->defaultSort(fn (Builder $query): Builder => $query
                 ->orderByRaw('case when status = ? then 1 else 0 end', [IncidentStatusEnum::fixed->value])
-                ->orderByDesc('occurred_at'))
+                ->orderByRaw('coalesce(occurred_at, created_at) desc'))
             ->emptyStateHeading(__('cachet::incident.list.empty_state.heading'))
             ->emptyStateDescription(__('cachet::incident.list.empty_state.description'));
     }
