@@ -26,7 +26,7 @@ class OpenIncidents extends TableWidget
                     ->unresolved()
                     ->with('updates')
                     ->withCount('components')
-                    ->orderByDesc('occurred_at')
+                    ->orderByRaw('coalesce(occurred_at, created_at) desc')
             )
             ->heading(__('cachet::dashboard.open_incidents.heading'))
             ->poll($this->getPollingInterval())
@@ -40,6 +40,7 @@ class OpenIncidents extends TableWidget
                     ->badge(),
                 TextColumn::make('occurred_at')
                     ->label(__('cachet::dashboard.open_incidents.headers.occurred_at'))
+                    ->state(fn (Incident $record) => $record->timestamp)
                     ->since()
                     ->tooltip(fn (Incident $record): string => $record->timestamp->toDayDateTimeString()),
                 TextColumn::make('components_count')

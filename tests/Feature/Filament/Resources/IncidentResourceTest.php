@@ -185,3 +185,18 @@ it('excludes already attached components from the attach action options', functi
 
     expect(collect($options)->flatten()->all())->not->toContain('Already Attached');
 });
+
+it('lists incidents without an occurred time by their created time', function () {
+    $older = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+        'occurred_at' => now()->subDays(2),
+    ]);
+    $newer = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+        'occurred_at' => null,
+    ]);
+
+    livewire(ListIncidents::class)
+        ->assertCanSeeTableRecords([$newer, $older], inOrder: true)
+        ->assertTableColumnStateSet('occurred_at', $newer->created_at, $newer);
+});
