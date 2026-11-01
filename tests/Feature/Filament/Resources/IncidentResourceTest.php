@@ -16,6 +16,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Subscriber;
 use Cachet\Notifications\NewIncidentNotification;
 use Cachet\Settings\MailSettings;
+use Filament\Actions\Testing\TestAction;
 use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Notification;
 use Workbench\App\User;
@@ -184,4 +185,70 @@ it('excludes already attached components from the attach action options', functi
     $options = ComponentOptions::forSelect($incident);
 
     expect(collect($options)->flatten()->all())->not->toContain('Already Attached');
+});
+
+it('syncs the incident status when an update is deleted from the updates tab', function () {
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::fixed]);
+    $incident->updates()->create([
+        'message' => 'Cause identified.',
+        'status' => IncidentStatusEnum::identified,
+        'user_id' => auth()->id(),
+        'created_at' => now()->subHour(),
+    ]);
+    $fixed = $incident->updates()->create([
+        'message' => 'All fixed.',
+        'status' => IncidentStatusEnum::fixed,
+        'user_id' => auth()->id(),
+    ]);
+
+    livewire(UpdatesRelationManager::class, [
+        'ownerRecord' => $incident,
+        'pageClass' => EditIncident::class,
+    ])
+        ->callAction(TestAction::make('delete')->table($fixed));
+
+    expect($incident->fresh()->status)->toBe(IncidentStatusEnum::identified);
+});
+
+it('syncs the incident status when updates are bulk deleted from the updates tab', function () {
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::fixed]);
+    $incident->updates()->create([
+        'message' => 'Cause identified.',
+        'status' => IncidentStatusEnum::identified,
+        'user_id' => auth()->id(),
+        'created_at' => now()->subHour(),
+    ]);
+    $fixed = $incident->updates()->create([
+        'message' => 'All fixed.',
+        'status' => IncidentStatusEnum::fixed,
+        'user_id' => auth()->id(),
+    ]);
+
+    livewire(UpdatesRelationManager::class, [
+        'ownerRecord' => $incident,
+        'pageClass' => EditIncident::class,
+    ])
+        ->selectTableRecords([$fixed])
+        ->callAction(TestAction::make('delete')->table()->bulk());
+
+    expect($incident->fresh()->status)->toBe(IncidentStatusEnum::identified);
+});
+
+it('syncs the incident status when an update status is edited from the updates tab', function () {
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::identified]);
+    $update = $incident->updates()->create([
+        'message' => 'Cause identified.',
+        'status' => IncidentStatusEnum::identified,
+        'user_id' => auth()->id(),
+    ]);
+
+    livewire(UpdatesRelationManager::class, [
+        'ownerRecord' => $incident,
+        'pageClass' => EditIncident::class,
+    ])
+        ->callAction(TestAction::make('edit')->table($update), data: [
+            'status' => IncidentStatusEnum::fixed,
+        ]);
+
+    expect($incident->fresh()->status)->toBe(IncidentStatusEnum::fixed);
 });
