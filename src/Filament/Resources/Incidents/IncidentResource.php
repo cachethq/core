@@ -16,7 +16,6 @@ use Cachet\Filament\Resources\Incidents\RelationManagers\ComponentsRelationManag
 use Cachet\Filament\Resources\Updates\RelationManagers\UpdatesRelationManager;
 use Cachet\Models\Incident;
 use Cachet\Settings\MailSettings;
-use Cachet\Status;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -311,7 +310,7 @@ class IncidentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return (string) (int) app(Status::class)->incidents()->unresolved;
+        return (string) Incident::query()->unresolved()->count();
     }
 
     public static function getNavigationBadgeColor(): string
