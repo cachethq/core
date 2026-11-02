@@ -50,6 +50,7 @@ it('uses a short localized subscribe label', function (string $locale, string $l
     'Dutch' => ['nl', 'Abonneren'],
     'Filipino' => ['ph', 'Mag-subscribe'],
     'Brazilian Portuguese' => ['pt_BR', 'Inscrever-se'],
+    'European Portuguese' => ['pt_PT', 'Subscrever'],
     'Simplified Chinese' => ['zh_CN', '订阅'],
     'Traditional Chinese' => ['zh_TW', '訂閱'],
 ]);

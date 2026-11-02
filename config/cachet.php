@@ -270,6 +270,7 @@ return [
         'nl' => 'Nederlands',
         'ph' => 'Filipino',
         'pt_BR' => 'Português (BR)',
+        'pt_PT' => 'Português (PT)',
         'zh_CN' => '简体中文',
         'zh_TW' => '繁體中文',
     ],
