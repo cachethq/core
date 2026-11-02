@@ -6,6 +6,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Components\ComponentOptions;
+use Cachet\Filament\Resources\Incidents\IncidentResource;
 use Cachet\Filament\Resources\Incidents\Pages\CreateIncident;
 use Cachet\Filament\Resources\Incidents\Pages\EditIncident;
 use Cachet\Filament\Resources\Incidents\Pages\ListIncidents;
@@ -27,6 +28,15 @@ beforeEach(function () {
     Filament::setCurrentPanel(Filament::getPanel('cachet'));
 
     actingAs(User::factory()->create(['is_admin' => true]));
+});
+
+it('counts every open incident in the navigation badge', function () {
+    Incident::factory()->create(['status' => IncidentStatusEnum::investigating, 'visible' => ResourceVisibilityEnum::authenticated]);
+    Incident::factory()->create(['status' => IncidentStatusEnum::identified, 'visible' => ResourceVisibilityEnum::hidden]);
+    Incident::factory()->create(['status' => IncidentStatusEnum::fixed, 'visible' => ResourceVisibilityEnum::guest]);
+
+    expect(IncidentResource::getNavigationBadge())->toBe('2')
+        ->and(IncidentResource::getNavigationBadgeColor())->toBe('danger');
 });
 
 it('can create, reload, edit and clear a private note on a public incident', function () {
