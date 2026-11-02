@@ -64,6 +64,12 @@ class PendingRouteRegistration
                 $router->get('/rss', RssController::class)
                     ->middleware('throttle:60,1')
                     ->name('rss');
+                $router->get('/rss/incidents', [RssController::class, 'incidents'])
+                    ->middleware('throttle:60,1')
+                    ->name('rss.incidents');
+                $router->get('/rss/maintenance', [RssController::class, 'maintenance'])
+                    ->middleware('throttle:60,1')
+                    ->name('rss.maintenance');
 
                 $router->get('/slack.rss', SlackRssController::class)
                     ->middleware('throttle:60,1')

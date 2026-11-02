@@ -6,6 +6,7 @@ use Cachet\Cachet;
 use Cachet\Settings\AppSettings;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Component;
 
 class Footer extends Component
@@ -28,6 +29,7 @@ class Footer extends Component
             'cachetVersion' => Cachet::version(),
             'showTimezone' => $this->appSettings->show_timezone,
             'timezone' => $this->appSettings->timezone,
+            'showRss' => Route::has('cachet.rss'),
         ]);
     }
 }

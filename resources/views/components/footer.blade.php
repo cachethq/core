@@ -1,8 +1,13 @@
 @php($footerHook = \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::FOOTER))
 
-@if ($showSupport || $showTimezone || (string) $footerHook !== '')
+@if ($showSupport || $showTimezone || (string) $footerHook !== '' || $showRss)
     <footer data-component="footer" class="mt-auto border-t border-zinc-900/10 dark:border-white/15">
         <div data-slot="content" class="container mx-auto flex max-w-5xl flex-col items-center justify-center gap-3 px-4 py-8 text-center text-xs text-zinc-500 dark:text-zinc-400 sm:px-6 lg:px-8">
+            @if($showRss)
+                <a data-slot="rss" href="{{ route('cachet.rss') }}" title="{{ __('cachet::cachet.rss_feed_link') }}" aria-label="{{ __('cachet::cachet.rss_feed_link') }}" class="text-zinc-500 transition hover:text-accent-content dark:text-zinc-400">
+                    @svg('cachet-rss', 'size-5')
+                </a>
+            @endif
             @if($showSupport)
                 <div data-slot="support" class="inline-flex items-center gap-2 tracking-tight">
                     <span>{{ __('cachet::cachet.powered_by') }}</span>

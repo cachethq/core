@@ -1,9 +1,15 @@
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_INCIDENT_TIMELINE_BEFORE) }}
 <section data-component="incident-timeline" class="flex flex-col gap-4">
     <div data-slot="header" class="flex flex-col justify-between gap-3 md:flex-row md:items-center md:gap-0">
-        <h2 data-slot="title" class="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
-            {{ $recentIncidentsOnly ? __('cachet::incident.timeline.recent_incidents_header') : __('cachet::incident.timeline.past_incidents_header') }}
-        </h2>
+        <div class="flex items-center gap-3">
+            <h2 data-slot="title" class="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">
+                {{ $recentIncidentsOnly ? __('cachet::incident.timeline.recent_incidents_header') : __('cachet::incident.timeline.past_incidents_header') }}
+            </h2>
+
+            <a data-slot="rss" href="{{ route('cachet.rss.incidents') }}" title="{{ __('cachet::cachet.rss_incidents_feed') }}" aria-label="{{ __('cachet::cachet.rss_incidents_feed') }}" class="text-zinc-500 transition hover:text-accent-content dark:text-zinc-400">
+                @svg('cachet-rss', 'size-5')
+            </a>
+        </div>
 
         <fieldset data-slot="filters" aria-label="{{ __('cachet::incident.timeline.date_range_label') }}" class="grid grid-cols-2 gap-3 text-sm text-zinc-500 dark:text-zinc-400">
             <label class="flex flex-col gap-1">

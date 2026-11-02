@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @property int $id
@@ -65,6 +66,16 @@ class Schedule extends Model implements Metable
      */
     protected static function booted(): void
     {
+        $forgetRssFeeds = function () {
+            foreach (['', '-maintenance'] as $suffix) {
+                Cache::forget('cachet::rss-feed'.$suffix);
+                Cache::forget('cachet::rss-feed'.$suffix.'-last-modified');
+            }
+        };
+
+        self::saved($forgetRssFeeds);
+        self::deleted($forgetRssFeeds);
+
         self::creating(function (Schedule $schedule) {
             if ($schedule->published_at === null) {
                 $schedule->published_at = $schedule->freshTimestamp();
