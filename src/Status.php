@@ -7,6 +7,7 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\SystemStatusEnum;
 use Cachet\Models\Component;
 use Cachet\Models\Incident;
+use Cachet\Models\Update;
 use Cachet\Settings\AppSettings;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -104,14 +105,30 @@ class Status
     }
 
     /**
-     * Get the most recent update timestamp across enabled components.
+     * Get the most recent update timestamp across enabled components and public incidents.
+     *
+     * Linking a component to an incident does not touch the component itself, so
+     * incidents and their updates are considered too. Otherwise the status page
+     * keeps showing the last time a component was edited, even after incidents
+     * have been opened and resolved since.
      */
     public function lastUpdated(): ?CarbonInterface
     {
-        return Component::query()
-            ->enabled()
-            ->latest('updated_at')
-            ->first(['updated_at'])?->updated_at;
+        return collect([
+            Component::query()
+                ->enabled()
+                ->latest('updated_at')
+                ->value('updated_at'),
+            Incident::query()
+                ->viewableBy(false)
+                ->latest('updated_at')
+                ->value('updated_at'),
+            Update::query()
+                ->where('updateable_type', (new Incident)->getMorphClass())
+                ->whereIn('updateable_id', Incident::query()->viewableBy(false)->select('id'))
+                ->latest('updated_at')
+                ->value('updated_at'),
+        ])->filter()->max();
     }
 
     /**
