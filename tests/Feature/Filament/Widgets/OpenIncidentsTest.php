@@ -48,3 +48,18 @@ it('shows the empty state when there are no open incidents', function () {
 
     $component->assertSee(__('cachet::dashboard.open_incidents.empty_state.heading'));
 });
+
+it('uses the created time for incidents without an occurred time', function () {
+    $older = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+        'occurred_at' => now()->subDays(2),
+    ]);
+    $newer = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+        'occurred_at' => null,
+    ]);
+
+    livewire(OpenIncidents::class)
+        ->assertCanSeeTableRecords([$newer, $older], inOrder: true)
+        ->assertTableColumnStateSet('occurred_at', $newer->created_at, $newer);
+});
