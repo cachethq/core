@@ -2,6 +2,7 @@
 
 namespace Cachet\Filament\Resources\Updates\RelationManagers;
 
+use Cachet\Actions\Incident\SyncIncidentStatus;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Models\Incident;
 use Filament\Actions\BulkActionGroup;
@@ -103,13 +104,25 @@ class UpdatesRelationManager extends RelationManager
                     ->visible(fn (): bool => $this->getOwnerRecord() instanceof Incident),
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()->after(fn () => $this->syncIncidentStatus()),
+                DeleteAction::make()->after(fn () => $this->syncIncidentStatus()),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()->after(fn () => $this->syncIncidentStatus()),
                 ]),
             ]);
+    }
+
+    /**
+     * Keep the incident's status on its latest update, as the update actions do.
+     */
+    private function syncIncidentStatus(): void
+    {
+        $incident = $this->getOwnerRecord();
+
+        if ($incident instanceof Incident) {
+            app(SyncIncidentStatus::class)->handle($incident);
+        }
     }
 }
