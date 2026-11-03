@@ -10,6 +10,7 @@ use Cachet\Models\Incident;
 use Cachet\Models\Schedule;
 use Cachet\Settings\AppSettings;
 use Cachet\Settings\RssSettings;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
@@ -104,13 +105,9 @@ class RssController
             $components = explode(',', $components);
         }
 
-        if (! is_array($components)) {
-            return [];
-        }
-
-        return collect($components)
-            ->filter(fn ($id) => is_scalar($id) && ctype_digit((string) $id))
-            ->map(fn ($id) => (int) $id)
+        return collect(array_filter($components, 'is_string'))
+            ->filter(fn (string $id) => ctype_digit($id))
+            ->map(fn (string $id) => (int) $id)
             ->unique()
             ->values()
             ->all();
@@ -212,11 +209,12 @@ class RssController
     /**
      * Limit components to those a guest can see: enabled, and ungrouped or in a guest-visible group.
      *
-     * @param  Builder<Component>|Relation<Component, *, *>  $query
+     * @param  Builder<*>|Relation<*, *, *>  $query
+     * @return Builder<*>|Relation<*, *, *>
      */
     private function publicComponents(Builder|Relation $query): Builder|Relation
     {
-        return $query->enabled()->where(function ($query) {
+        return $query->where('components.enabled', true)->where(function ($query) {
             $query->whereNull('components.component_group_id')
                 ->orWhereIn('components.component_group_id', ComponentGroup::query()->guests()->select('id'));
         });
@@ -227,20 +225,23 @@ class RssController
      *
      * @param  Collection<int, Incident>  $incidents
      * @param  Collection<int, Schedule>  $schedules
-     * @return Collection<int, array{model: Incident|Schedule, publishedAt: Carbon}>
+     * @return Collection<int, array{model: Incident|Schedule, publishedAt: CarbonInterface|null}>
      */
     private function items(Collection $incidents, Collection $schedules): Collection
     {
-        return $incidents->toBase()
+        /** @var Collection<int, array{model: Incident|Schedule, publishedAt: CarbonInterface|null}> $items */
+        $items = $incidents->toBase()
             ->merge($schedules->toBase())
             ->map(function (Incident|Schedule $model) {
-                $publishedAt = $model->updates->last()?->updated_at
+                $publishedAt = $model->updates->last()->updated_at
                     ?? ($model instanceof Schedule ? $model->scheduled_at : $model->created_at)
                     ?? $model->created_at;
 
                 return ['model' => $model, 'publishedAt' => $publishedAt];
             })
-            ->sortByDesc(fn (array $item) => $item['publishedAt']->getTimestamp())
+            ->sortByDesc(fn (array $item) => $item['publishedAt'])
             ->values();
+
+        return $items;
     }
 }
