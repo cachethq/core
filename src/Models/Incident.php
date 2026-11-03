@@ -282,6 +282,8 @@ class Incident extends Model implements Metable
     {
         Cache::forget('cachet::rss-feed');
         Cache::forget('cachet::rss-feed-last-modified');
+        Cache::forget('cachet::rss-feed-incidents');
+        Cache::forget('cachet::rss-feed-incidents-last-modified');
         Cache::forget('cachet::slack-rss-feed');
         Cache::forget('cachet::slack-rss-feed-last-modified');
     }

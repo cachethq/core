@@ -8,6 +8,7 @@ return [
             'manage_customization' => 'Manage Customization',
             'manage_localization' => 'Manage Localization',
             'manage_notifications' => 'Manage Notifications',
+            'manage_rss' => 'Manage RSS',
             'manage_theme' => 'Manage Theme',
             'manage_api_keys' => 'Manage API Keys',
             'manage_webhooks' => 'Manage Webhooks',

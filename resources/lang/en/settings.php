@@ -79,6 +79,18 @@ return [
             'show_timezone_helper' => 'Show the active timezone next to dates on the status page.',
         ],
     ],
+    'manage_rss' => [
+        'feed_section_title' => 'Feed',
+        'max_items_label' => 'Maximum items',
+        'max_items_helper' => 'The most incidents and the most maintenance events included in a feed.',
+        'refresh_interval_label' => 'Refresh interval',
+        'refresh_interval_helper' => 'How long a feed is cached, and how long readers are told to wait before checking again.',
+        'refresh_interval_suffix' => 'seconds',
+        'incidents_section_title' => 'Incidents',
+        'incidents_section_description' => 'Include incidents in these statuses in the RSS feeds.',
+        'maintenance_section_title' => 'Maintenance',
+        'maintenance_section_description' => 'Include maintenance in these states in the RSS feeds.',
+    ],
     'manage_notifications' => [
         'subscriptions_section_title' => 'Subscriptions',
         'allow_subscribers_label' => 'Allow subscriptions',

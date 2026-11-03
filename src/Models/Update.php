@@ -85,8 +85,17 @@ class Update extends Model
         if ($this->updateable instanceof Incident) {
             Cache::forget('cachet::rss-feed');
             Cache::forget('cachet::rss-feed-last-modified');
+            Cache::forget('cachet::rss-feed-incidents');
+            Cache::forget('cachet::rss-feed-incidents-last-modified');
             Cache::forget('cachet::slack-rss-feed');
             Cache::forget('cachet::slack-rss-feed-last-modified');
+        }
+
+        if ($this->updateable instanceof Schedule) {
+            Cache::forget('cachet::rss-feed');
+            Cache::forget('cachet::rss-feed-last-modified');
+            Cache::forget('cachet::rss-feed-maintenance');
+            Cache::forget('cachet::rss-feed-maintenance-last-modified');
         }
     }
 

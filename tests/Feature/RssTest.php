@@ -1,6 +1,10 @@
 <?php
 
+use Cachet\Enums\ResourceVisibilityEnum;
+use Cachet\Models\Component;
+use Cachet\Models\ComponentGroup;
 use Cachet\Models\Incident;
+use Cachet\Models\Schedule;
 use Cachet\Models\Update;
 use Illuminate\Support\Carbon;
 
@@ -71,4 +75,100 @@ it('produces valid xml when an incident message contains a cdata terminator', fu
         ->and((string) $xml->channel->item[0]->description)
         ->toContain(']]&gt;alert(1)')
         ->toContain(']]&gt;alert(2)');
+});
+
+it('includes incidents and maintenance in the combined feed', function () {
+    $incident = Incident::factory()->create();
+    $schedule = Schedule::factory()->create();
+
+    $this->get('/status/rss')
+        ->assertOk()
+        ->assertSee($incident->name)
+        ->assertSee($schedule->name);
+});
+
+it('limits the incidents feed to incidents', function () {
+    $incident = Incident::factory()->create();
+    $schedule = Schedule::factory()->create();
+
+    $this->get('/status/rss/incidents')
+        ->assertOk()
+        ->assertSee($incident->name)
+        ->assertDontSee($schedule->name);
+});
+
+it('limits the maintenance feed to maintenance', function () {
+    $incident = Incident::factory()->create();
+    $schedule = Schedule::factory()->create();
+
+    $this->get('/status/rss/maintenance')
+        ->assertOk()
+        ->assertSee($schedule->name)
+        ->assertDontSee($incident->name);
+});
+
+it('filters feeds by components', function () {
+    $component = Component::factory()->create();
+    $matching = Incident::factory()->create();
+    $matching->components()->attach($component);
+    $other = Incident::factory()->create();
+
+    $this->get('/status/rss/incidents?components='.$component->id)
+        ->assertOk()
+        ->assertSee($matching->name)
+        ->assertDontSee($other->name);
+
+    $this->get('/status/rss/incidents?components[]='.$component->id)
+        ->assertOk()
+        ->assertSee($matching->name)
+        ->assertDontSee($other->name);
+});
+
+it('lists affected components on each item', function () {
+    $component = Component::factory()->create();
+    $incident = Incident::factory()->create();
+    $incident->components()->attach($component);
+
+    $item = simplexml_load_string($this->get('/status/rss')->assertOk()->getContent())->channel->item[0];
+
+    expect((string) $item->category)->toBe($component->name)
+        ->and((string) $item->category['domain'])->toBe('component:'.$component->id);
+});
+
+it('does not expose disabled or non-public components', function () {
+    $public = Component::factory()->create();
+    $disabled = Component::factory()->create(['name' => 'Disabled part zq3', 'enabled' => false]);
+    $privateGroup = ComponentGroup::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    $grouped = Component::factory()->create(['name' => 'Grouped part zq4', 'component_group_id' => $privateGroup->id]);
+
+    $incident = Incident::factory()->create();
+    $incident->components()->attach([$public->id, $disabled->id, $grouped->id]);
+    $schedule = Schedule::factory()->create();
+    $schedule->components()->attach([$disabled->id, $grouped->id], ['component_status' => 1]);
+
+    $this->get('/status/rss')
+        ->assertOk()
+        ->assertSee($incident->name)
+        ->assertSee($public->name)
+        ->assertDontSee($disabled->name)
+        ->assertDontSee($grouped->name);
+
+    foreach ([$disabled, $grouped] as $hidden) {
+        $this->get('/status/rss?components='.$hidden->id)
+            ->assertOk()
+            ->assertDontSee($incident->name)
+            ->assertDontSee($schedule->name);
+    }
+});
+
+it('hides unpublished and non-public incidents and maintenance', function () {
+    $unpublished = Incident::factory()->create(['published_at' => now()->addDay()]);
+    $private = Incident::factory()->create(['visible' => ResourceVisibilityEnum::authenticated]);
+    $futureSchedule = Schedule::factory()->create(['published_at' => now()->addDay()]);
+
+    $this->get('/status/rss')
+        ->assertOk()
+        ->assertDontSee($unpublished->name)
+        ->assertDontSee($private->name)
+        ->assertDontSee($futureSchedule->name);
 });
