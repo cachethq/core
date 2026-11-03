@@ -225,12 +225,11 @@ class RssController
      *
      * @param  Collection<int, Incident>  $incidents
      * @param  Collection<int, Schedule>  $schedules
-     * @return Collection<int, array{model: Incident|Schedule, publishedAt: CarbonInterface|null}>
+     * @return list<array{model: Incident|Schedule, publishedAt: CarbonInterface|null}>
      */
-    private function items(Collection $incidents, Collection $schedules): Collection
+    private function items(Collection $incidents, Collection $schedules): array
     {
-        /** @var Collection<int, array{model: Incident|Schedule, publishedAt: CarbonInterface|null}> $items */
-        $items = $incidents->toBase()
+        return $incidents->toBase()
             ->merge($schedules->toBase())
             ->map(function (Incident|Schedule $model) {
                 $publishedAt = $model->updates->last()->updated_at
@@ -240,8 +239,7 @@ class RssController
                 return ['model' => $model, 'publishedAt' => $publishedAt];
             })
             ->sortByDesc(fn (array $item) => $item['publishedAt'])
-            ->values();
-
-        return $items;
+            ->values()
+            ->all();
     }
 }
