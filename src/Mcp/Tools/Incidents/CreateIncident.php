@@ -9,6 +9,7 @@ use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Mcp\Concerns\GuardsMcpAbilities;
 use Cachet\Mcp\Concerns\PresentsResources;
 use Illuminate\Contracts\JsonSchema\JsonSchema;
+use Illuminate\Support\Arr;
 use Laravel\Mcp\Request;
 use Laravel\Mcp\Response;
 use Laravel\Mcp\ResponseFactory;
@@ -71,7 +72,7 @@ class CreateIncident extends Tool
             'template' => ['required_without:message', 'nullable', 'string'],
         ]);
 
-        $data = CreateIncidentRequestData::validateAndCreate($request->all());
+        $data = CreateIncidentRequestData::validateAndCreate(Arr::except($request->all(), 'private_note'));
 
         $incident = $action->handle($data)->load(['components', 'updates']);
 

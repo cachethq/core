@@ -17,6 +17,10 @@ class Incident extends JsonApiResource
             'guid' => $this->guid,
             'name' => $this->name,
             'message' => $this->message,
+            'private_note' => $this->when(
+                (bool) $request->user('sanctum')?->tokenCan('incident-private-notes.manage'),
+                fn () => $this->private_note,
+            ),
             'visible' => $this->visible,
             'stickied' => $this->stickied,
             'notifications' => $this->notifications,
