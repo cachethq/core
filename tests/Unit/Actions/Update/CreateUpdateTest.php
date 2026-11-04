@@ -101,6 +101,69 @@ it('keeps the impact an incident recorded when its update resolves it', function
         ->toEqual(ComponentStatusEnum::operational);
 });
 
+it('updates the impacted components when the update carries component statuses', function () {
+    $incident = Incident::factory()->create([
+        'status' => IncidentStatusEnum::investigating,
+    ]);
+
+    $component = Component::factory()->create();
+
+    $incident->components()->attach($component->id, [
+        'component_status' => ComponentStatusEnum::major_outage,
+    ]);
+
+    $data = CreateIncidentUpdateRequestData::from([
+        'message' => 'The API is recovering.',
+        'status' => IncidentStatusEnum::identified,
+        'components' => [
+            ['id' => $component->id, 'status' => ComponentStatusEnum::performance_issues],
+        ],
+    ]);
+
+    app(CreateUpdate::class)->handle($incident, $data);
+
+    expect($incident->components()->first()->pivot->component_status)
+        ->toEqual(ComponentStatusEnum::performance_issues);
+});
+
+it('attaches components that are not yet impacted by the incident', function () {
+    $incident = Incident::factory()->create();
+    $component = Component::factory()->create();
+
+    $data = CreateIncidentUpdateRequestData::from([
+        'message' => 'A new component is impacted.',
+        'status' => IncidentStatusEnum::investigating,
+        'components' => [
+            ['id' => $component->id, 'status' => ComponentStatusEnum::partial_outage],
+        ],
+    ]);
+
+    app(CreateUpdate::class)->handle($incident, $data);
+
+    expect($incident->components()->first())
+        ->id->toEqual($component->id)
+        ->pivot->component_status->toEqual(ComponentStatusEnum::partial_outage);
+});
+
+it('leaves the incident components untouched when the update carries none', function () {
+    $incident = Incident::factory()->create();
+    $component = Component::factory()->create();
+
+    $incident->components()->attach($component->id, [
+        'component_status' => ComponentStatusEnum::major_outage,
+    ]);
+
+    $data = CreateIncidentUpdateRequestData::from([
+        'message' => 'Still investigating.',
+        'status' => IncidentStatusEnum::investigating,
+    ]);
+
+    app(CreateUpdate::class)->handle($incident, $data);
+
+    expect($incident->components()->first()->pivot->component_status)
+        ->toEqual(ComponentStatusEnum::major_outage);
+});
+
 it('can create a schedule update', function () {
     $schedule = Schedule::factory()->create();
 
