@@ -401,6 +401,30 @@ it('opens a collapsed unless incident system status group for an authenticated-o
     'signed in' => [true],
 ]);
 
+it('shows the worst component status of a system status group', function (bool $showGroupStatus) {
+    $settings = app(AppSettings::class);
+    $settings->display_system_status = true;
+    $settings->show_component_group_status = $showGroupStatus;
+    $settings->save();
+
+    $group = ComponentGroup::factory()->create(['name' => 'Core services']);
+    Component::factory()->create(['component_group_id' => $group->id, 'status' => ComponentStatusEnum::major_outage]);
+    Component::factory()->create(['component_group_id' => $group->id]);
+
+    $page = $this->get(route('cachet.status-page'))->assertOk()->getContent();
+    $header = str($page)->after('data-component-group-id="'.$group->id.'"')->before('Core services')->toString();
+
+    expect($header)->not->toContain('text-emerald-500');
+    if ($showGroupStatus) {
+        expect($header)->toContain('aria-label="Major outage"');
+    } else {
+        expect($header)->not->toContain('data-slot="status-icon"');
+    }
+})->with([
+    'group status shown' => [true],
+    'group status hidden' => [false],
+]);
+
 function systemStatusGroupPattern(ComponentGroup $group, bool $open): string
 {
     $tag = '<div data-component="system-status-group" data-component-group-id="'.$group->id.'" x-data x-disclosure';
