@@ -1,4 +1,5 @@
 {{ \Cachet\Facades\CachetView::renderHook(\Cachet\View\RenderHook::STATUS_PAGE_SYSTEM_STATUS_BEFORE) }}
+@php($showComponentGroupStatus = app(\Cachet\Settings\AppSettings::class)->show_component_group_status)
 <section data-component="system-status" class="status-overview">
     <header class="status-overview__masthead">
         <h2 data-slot="title" class="font-semibold tracking-tight text-zinc-900 dark:text-zinc-100">{{ __('cachet::system_status.title') }}</h2>
@@ -16,9 +17,15 @@
                 <button data-slot="trigger" x-disclosure:button class="w-full px-5 py-4 text-left transition hover:bg-zinc-50/60 dark:hover:bg-white/[0.02] sm:px-6">
                     <div class="flex items-center justify-between gap-4">
                         <span class="flex min-w-0 items-center gap-2">
-                            <span x-show="! $disclosure.isOpen" class="flex shrink-0">
-                                <x-heroicon-s-check-circle class="size-4 text-emerald-500" />
-                            </span>
+                            @if ($showComponentGroupStatus)
+                                @php($groupStatus = $group['model']->worstComponentStatus())
+                                <span x-show="! $disclosure.isOpen" class="flex shrink-0">
+                                    @svg($groupStatus->getIcon(), 'size-4 shrink-0 '.$groupStatus->getTextColorClasses(), [
+                                        'data-slot' => 'status-icon',
+                                        'aria-label' => $groupStatus->getLabel(),
+                                    ])
+                                </span>
+                            @endif
                             <span class="truncate font-semibold text-zinc-900 dark:text-zinc-100">{{ $group['model']->name }}</span>
                             <x-heroicon-m-chevron-down ::class="$disclosure.isOpen && 'rotate-180'" class="size-3.5 shrink-0 text-zinc-400 transition" />
                             <span class="hidden shrink-0 text-sm text-zinc-500 dark:text-zinc-400 lg:inline">{{ trans_choice('cachet::system_status.component_count', $group['components']->count(), ['count' => $group['components']->count()]) }}</span>
