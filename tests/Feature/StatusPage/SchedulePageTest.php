@@ -2,9 +2,12 @@
 
 namespace Tests\Feature\StatusPage;
 
+use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
+use Cachet\Models\Component;
 use Cachet\Models\Schedule;
 use Cachet\Models\Update;
+use Cachet\Settings\AppSettings;
 
 use function Pest\Laravel\get;
 
@@ -25,6 +28,24 @@ it('renders the schedule page', function () {
         ->assertOk()
         ->assertSee('Database maintenance')
         ->assertSee('Maintenance window confirmed.');
+});
+
+it('translates the affected components label', function () {
+    $settings = app(AppSettings::class);
+    $settings->locale = 'de';
+    $settings->save();
+
+    $database = Component::factory()->create(['name' => 'Database']);
+    $website = Component::factory()->create(['name' => 'Website']);
+    $schedule = Schedule::factory()->create(['scheduled_at' => now()->addDay()]);
+    $schedule->components()->attach([$database->id, $website->id], [
+        'component_status' => ComponentStatusEnum::under_maintenance,
+    ]);
+
+    get(route('cachet.status-page.schedule', ['schedule' => $schedule]))
+        ->assertOk()
+        ->assertSee('Betroffene Komponenten: Database und Website')
+        ->assertDontSee('Affected Components');
 });
 
 it('links to schedules from the status page', function () {

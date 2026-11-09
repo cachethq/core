@@ -544,6 +544,24 @@ it('renders the status page in the configured locale', function () {
     expect(app()->getLocale())->toBe('de');
 });
 
+it('translates the affected components label of incidents', function () {
+    $settings = app(AppSettings::class);
+    $settings->locale = 'de';
+    $settings->save();
+
+    $api = Component::factory()->create(['name' => 'API']);
+    $website = Component::factory()->create(['name' => 'Website']);
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+    $incident->components()->attach([$api->id, $website->id], [
+        'component_status' => ComponentStatusEnum::major_outage,
+    ]);
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('Betroffene Komponenten: API und Website')
+        ->assertDontSee('Affected Components');
+});
+
 it('does not error when the from query parameter is malformed', function () {
     $this->get(route('cachet.status-page', ['from' => '2024-04-15/']))
         ->assertOk();

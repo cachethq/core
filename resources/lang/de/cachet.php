@@ -18,4 +18,5 @@ return [
     'open_source_status_page' => 'Die Open-Source-Statusseite.',
     'all_times_shown_in' => 'Alle Zeiten werden angezeigt in *:timezone*.',
     'rss_feed' => ':name RSS-Feed',
+    'and' => 'und',
 ];

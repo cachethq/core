@@ -52,7 +52,7 @@
 
                 @if ($incident->components->isNotEmpty())
                     <div data-slot="affected-components" class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ __('Affected Components') }}: {{ $incident->components->pluck('name')->join(', ', ' and ') }}
+                        {{ __('cachet::incident.affected_components_header') }}: {{ $incident->components->pluck('name')->join(', ', ' '.__('cachet::cachet.and').' ') }}
                     </div>
                 @endif
             </div>
@@ -122,7 +122,7 @@
 
                 @if ($schedule->components->isNotEmpty())
                     <div data-slot="affected-components" class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ __('Affected Components') }}: {{ $schedule->components->pluck('name')->join(', ', ' and ') }}
+                        {{ __('cachet::incident.affected_components_header') }}: {{ $schedule->components->pluck('name')->join(', ', ' '.__('cachet::cachet.and').' ') }}
                     </div>
                 @endif
 
