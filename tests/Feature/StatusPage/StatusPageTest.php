@@ -562,6 +562,23 @@ it('translates the affected components label of incidents', function () {
         ->assertDontSee('Affected Components');
 });
 
+it('translates the reported label of incidents with updates', function () {
+    $settings = app(AppSettings::class);
+    $settings->locale = 'de';
+    $settings->save();
+
+    $incident = Incident::factory()->create(['status' => IncidentStatusEnum::investigating]);
+    $incident->updates()->create([
+        'message' => 'We have identified the issue.',
+        'status' => IncidentStatusEnum::identified,
+    ]);
+
+    $this->get(route('cachet.status-page'))
+        ->assertOk()
+        ->assertSee('Gemeldet')
+        ->assertDontSee('Reported');
+});
+
 it('does not error when the from query parameter is malformed', function () {
     $this->get(route('cachet.status-page', ['from' => '2024-04-15/']))
         ->assertOk();

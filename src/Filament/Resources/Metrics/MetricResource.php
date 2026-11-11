@@ -46,7 +46,7 @@ class MetricResource extends Resource
                         ->label(__('cachet::metric.form.suffix_label'))
                         ->required()
                         ->maxLength(255)
-                        ->placeholder('e.g. ms, %, etc.'),
+                        ->placeholder(__('cachet::metric.form.suffix_placeholder')),
                     MarkdownEditor::make('description')
                         ->label(__('cachet::metric.form.description_label'))
                         ->maxLength(255)

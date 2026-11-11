@@ -26,6 +26,7 @@ return [
     'form' => [
         'name_label' => 'Name',
         'suffix_label' => 'Suffix',
+        'suffix_placeholder' => 'z. B. ms, %, usw.',
         'description_label' => 'Beschreibung',
         'default_view_label' => 'Standardansicht',
         'default_value_label' => 'Standardwert',

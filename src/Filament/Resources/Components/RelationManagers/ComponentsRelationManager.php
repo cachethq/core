@@ -29,7 +29,7 @@ class ComponentsRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('Components');
+        return trans_choice('cachet::component.resource_label', 2);
     }
 
     public function form(Schema $schema): Schema

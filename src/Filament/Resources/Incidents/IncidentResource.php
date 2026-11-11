@@ -124,7 +124,7 @@ class IncidentResource extends Resource
                         ->default(ResourceVisibilityEnum::guest)
                         ->required(),
                     Select::make('user_id')
-                        ->label(__('User'))
+                        ->label(__('cachet::incident.form.user_label'))
                         ->helperText(__('cachet::incident.form.user_helper'))
                         ->relationship('user', 'name')
                         ->default(auth()->id())
