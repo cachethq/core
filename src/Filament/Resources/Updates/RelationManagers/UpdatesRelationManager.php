@@ -27,36 +27,36 @@ class UpdatesRelationManager extends RelationManager
         return $schema
             ->components([
                 MarkdownEditor::make('message')
-                    ->label(__('Message'))
+                    ->label(__('cachet::update.form.message_label'))
                     ->required()
                     ->minHeight('200px')
                     ->maxHeight('300px')
                     ->columnSpanFull(),
                 Select::make('user_id')
-                    ->label(__('User'))
-                    ->hint(__('The user who reported the incident.'))
+                    ->label(__('cachet::update.form.user_label'))
+                    ->hint(__('cachet::update.form.user_helper'))
                     ->relationship('user', 'name')
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
                         TextInput::make('name')
-                            ->label(__('Name'))
+                            ->label(__('cachet::user.form.name_label'))
                             ->required()
                             ->maxLength(255),
                         TextInput::make('email')
-                            ->label(__('Email'))
+                            ->label(__('cachet::user.form.email_label'))
                             ->required()
                             ->email()
                             ->maxLength(255),
                         TextInput::make('password')
-                            ->label(__('Password'))
+                            ->label(__('cachet::user.form.password_label'))
                             ->required()
                             ->password()
                             ->confirmed()
                             ->minLength(8),
                     ]),
                 ToggleButtons::make('status')
-                    ->label(__('Status'))
+                    ->label(__('cachet::update.form.status_label'))
                     ->inline()
                     ->columnSpanFull()
                     ->options(IncidentStatusEnum::class)
@@ -69,28 +69,28 @@ class UpdatesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('message')
-            ->modelLabel(__('Update'))
-            ->pluralModelLabel(__('Updates'))
+            ->modelLabel(trans_choice('cachet::update.resource_label', 1))
+            ->pluralModelLabel(trans_choice('cachet::update.resource_label', 2))
             ->columns([
                 TextColumn::make('message')
-                    ->label(__('Message'))
+                    ->label(__('cachet::update.list.headers.message'))
                     ->searchable()
                     ->limit(80)
                     ->wrap(),
                 TextColumn::make('status')
-                    ->label(__('Status'))
+                    ->label(__('cachet::update.list.headers.status'))
                     ->badge()
                     ->sortable()
                     ->visible(fn (): bool => $this->getOwnerRecord() instanceof Incident),
                 TextColumn::make('user.name')
-                    ->label(__('User'))
+                    ->label(__('cachet::update.list.headers.user'))
                     ->sortable(),
                 TextColumn::make('created_at')
-                    ->label(__('Created at'))
+                    ->label(__('cachet::update.list.headers.created_at'))
                     ->dateTime()
                     ->sortable(),
                 TextColumn::make('updated_at')
-                    ->label(__('Updated at'))
+                    ->label(__('cachet::update.list.headers.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -98,7 +98,7 @@ class UpdatesRelationManager extends RelationManager
             ->defaultSort('created_at', 'desc')
             ->filters([
                 SelectFilter::make('status')
-                    ->label(__('Status'))
+                    ->label(__('cachet::update.list.headers.status'))
                     ->options(IncidentStatusEnum::class)
                     ->visible(fn (): bool => $this->getOwnerRecord() instanceof Incident),
             ])

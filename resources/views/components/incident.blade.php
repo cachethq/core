@@ -52,7 +52,7 @@
 
                 @if ($incident->components->isNotEmpty())
                     <div data-slot="affected-components" class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ __('Affected Components') }}: {{ $incident->components->pluck('name')->join(', ', ' and ') }}
+                        {{ __('cachet::incident.affected_components_header') }}: {{ $incident->components->pluck('name')->join(', ', ' '.__('cachet::cachet.and').' ') }}
                     </div>
                 @endif
             </div>
@@ -82,9 +82,9 @@
                             @php($reportStatus = $incident->updates->isEmpty() ? $incident->status : null)
                             <x-cachet::incident-update-status :status="$reportStatus ?? IncidentStatusEnum::unknown" />
                             @if ($headingLevel === 1)
-                                <h2 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $reportStatus?->getLabel() ?? __('Reported') }}</h2>
+                                <h2 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $reportStatus?->getLabel() ?? __('cachet::incident.status.reported') }}</h2>
                             @else
-                                <h3 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $reportStatus?->getLabel() ?? __('Reported') }}</h3>
+                                <h3 class="text-sm font-semibold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-base">{{ $reportStatus?->getLabel() ?? __('cachet::incident.status.reported') }}</h3>
                             @endif
                             <span class="text-xs text-zinc-500 dark:text-zinc-400">
                                 <x-cachet::timestamp :timestamp="$incident->timestamp" />
@@ -122,7 +122,7 @@
 
                 @if ($schedule->components->isNotEmpty())
                     <div data-slot="affected-components" class="text-xs text-zinc-500 dark:text-zinc-400">
-                        {{ __('Affected Components') }}: {{ $schedule->components->pluck('name')->join(', ', ' and ') }}
+                        {{ __('cachet::incident.affected_components_header') }}: {{ $schedule->components->pluck('name')->join(', ', ' '.__('cachet::cachet.and').' ') }}
                     </div>
                 @endif
 

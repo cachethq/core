@@ -6,6 +6,7 @@ use Cachet\Enums\ComponentStatusEnum;
 use Cachet\Enums\IncidentStatusEnum;
 use Cachet\Enums\ResourceVisibilityEnum;
 use Cachet\Filament\Components\ComponentOptions;
+use Cachet\Filament\Resources\Components\RelationManagers\ComponentsRelationManager;
 use Cachet\Filament\Resources\Incidents\IncidentResource;
 use Cachet\Filament\Resources\Incidents\Pages\CreateIncident;
 use Cachet\Filament\Resources\Incidents\Pages\EditIncident;
@@ -18,6 +19,7 @@ use Cachet\Models\Subscriber;
 use Cachet\Notifications\NewIncidentNotification;
 use Cachet\Settings\MailSettings;
 use Filament\Facades\Filament;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Facades\Notification;
 use Workbench\App\User;
 
@@ -183,6 +185,20 @@ it('shows the update message as the primary update information', function () {
     ])
         ->assertTableColumnExists('message')
         ->assertTableColumnStateSet('message', $update->message, $update);
+});
+
+it('translates the update and component relation managers', function () {
+    app()->setLocale('de');
+    $incident = Incident::factory()->create();
+
+    livewire(UpdatesRelationManager::class, [
+        'ownerRecord' => $incident,
+        'pageClass' => EditIncident::class,
+    ])
+        ->assertTableColumnExists('message', fn (TextColumn $column): bool => $column->getLabel() === 'Nachricht')
+        ->assertTableColumnExists('created_at', fn (TextColumn $column): bool => $column->getLabel() === 'Erstellt am');
+
+    expect(ComponentsRelationManager::getTitle($incident, EditIncident::class))->toBe('Komponenten');
 });
 
 it('excludes already attached components from the attach action options', function () {
